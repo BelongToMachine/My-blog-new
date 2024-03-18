@@ -1,8 +1,14 @@
 import React from "react";
 import AboutMe from "../components/AboutMe";
+import Hero from "../components/Hero";
 
 const AboutMePage = () => {
-  return <AboutMe />;
+  return (
+    <>
+      <Hero />
+      <AboutMe />
+    </>
+  );
 };
 
 export default AboutMePage;

@@ -1,5 +1,5 @@
 import React from "react";
-import MyProjects from "../components/MyPorjects";
+import MyProjects from "../components/ProjectTags";
 
 const Project = () => {
   return <MyProjects />;

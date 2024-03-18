@@ -5,7 +5,8 @@ import BlogChart from "./BlogChart";
 import { Flex, Grid } from "@radix-ui/themes";
 import { Metadata } from "next";
 import AboutMe from "./components/AboutMe";
-import MyProjects from "./components/MyPorjects";
+import ProjectTags from "./components/ProjectTags";
+import Hero from "./components/Hero";
 
 export default async function Home() {
   const open = await prisma.issue.count({
@@ -17,11 +18,13 @@ export default async function Home() {
   const closed = await prisma.issue.count({
     where: { status: "CLOSED" },
   });
+
   return (
     <main>
+      <Hero />
       <AboutMe />
       <div className="container mt-24 mx-auto px-12 py-4">
-        <MyProjects />
+        <ProjectTags />
         <Grid columns={{ initial: "1", md: "2" }} gap="5">
           <Flex direction="column" gap="5">
             <BlogSummary open={open} inProgress={inProgress} closed={closed} />
