@@ -1,3 +1,4 @@
+"use client";
 import {
   AspectRatio,
   Badge,
@@ -12,16 +13,31 @@ import React from "react";
 import selfie from "@/public/images/selfie.png"; // Update the image import
 import Image from "next/image";
 import { Color, colors } from "./color";
+import { TypeAnimation } from "react-type-animation";
 
 const AboutMePage = () => {
   return (
     <div className="container mx-auto px-12 py-4">
       <div className="grid grid-cols-1 sm:grid-cols-12">
         <div className="col-span-7 place-self-center text-center sm:text-left">
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-4">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-4 text-yellow-500">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-600">
-              Hello I'm Jie
+              Hello I'm {""}
             </span>
+            <TypeAnimation
+              sequence={[
+                // Same substring at the start will only be typed out once, initially
+                "Jie",
+                1000, // wait 1s before replacing "Mice" with "Hamsters"
+                "a front end developer",
+                1000,
+                "开发者",
+                1000,
+              ]}
+              wrapper="span"
+              speed={50}
+              repeat={Infinity}
+            />
           </h1>
           <p className="mb-6">
             A developer based in China (UTC+08:00), with a strong passion for
