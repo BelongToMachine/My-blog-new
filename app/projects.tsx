@@ -1,12 +1,10 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import ProjectTags from "./components/ProjectTags";
 import ProjectsDetail from "./components/ProjectsDetail";
-import { Tag } from "@prisma/client";
-import prisma from "@/prisma/client";
 import { motion, useInView } from "framer-motion";
 
-const projects = () => {
+const Projects = () => {
   //   const definedTags = Object.values();
   //   const tag = definedTags.includes(searchParams.tag)
   //     ? searchParams.tag
@@ -37,7 +35,7 @@ const projects = () => {
         variants={cardVariants}
         initial="initial"
         animate={isInView ? "animate" : "initial"}
-        transition={{ duration: 1.5, delay: 0.8 }}
+        transition={{ duration: 1.5, delay: 0.3 }}
       >
         <ProjectTags />
         <ProjectsDetail />
@@ -46,4 +44,4 @@ const projects = () => {
   );
 };
 
-export default projects;
+export default Projects;

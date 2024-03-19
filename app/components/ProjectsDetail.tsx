@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import projectImage from "@/public/images/project.jpg";
 import Link from "next/link";
 import { CodeBracketIcon, EyeIcon } from "@heroicons/react/24/outline";
@@ -9,7 +9,6 @@ import { Project } from "@prisma/client";
 import axios from "axios";
 import Skeleton from "../components/Skeleton";
 import { useRouter } from "next/navigation";
-import { motion, useInView } from "framer-motion";
 
 const useProjects = () =>
   useQuery<Project[]>({
