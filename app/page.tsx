@@ -32,7 +32,10 @@ export default async function Home({ searchParams }: Props) {
       <AboutMe />
       <div className="container mt-6 mx-auto px-12 py-2">
         <Projects />
-        <Grid columns={{ initial: "1", md: "2" }} gap="5">
+        <h1 className="text-center text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-600 lg:text-6xl">
+          My Blogs Summary
+        </h1>
+        <Grid columns={{ initial: "1", md: "2" }} gap="5" mt="8">
           <Flex direction="column" gap="5">
             <BlogSummary open={open} inProgress={inProgress} closed={closed} />
             <BlogChart open={open} inProgress={inProgress} closed={closed} />
@@ -45,6 +48,6 @@ export default async function Home({ searchParams }: Props) {
 }
 
 export const metadata: Metadata = {
-  title: "Blogs Summary",
-  description: "View the summary of my blogs",
+  title: "Jie's Home Page",
+  description: "View Jie's blog",
 };

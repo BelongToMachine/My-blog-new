@@ -42,7 +42,7 @@ const ProjectTags = () => {
 
   return (
     <>
-      <Box className="text-center mb-3">
+      <Box id="projects" className="text-center mb-3 ">
         <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-600 lg:text-6xl">
           Projects
         </h1>

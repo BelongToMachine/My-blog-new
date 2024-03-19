@@ -1,10 +1,12 @@
-import React from "react";
+"use client";
+import React, { useEffect, useRef, useState } from "react";
 import ProjectTags from "./components/ProjectTags";
 import ProjectsDetail from "./components/ProjectsDetail";
 import { Tag } from "@prisma/client";
 import prisma from "@/prisma/client";
+import { motion, useInView } from "framer-motion";
 
-const projects = async () => {
+const projects = () => {
   //   const definedTags = Object.values();
   //   const tag = definedTags.includes(searchParams.tag)
   //     ? searchParams.tag
@@ -19,12 +21,28 @@ const projects = async () => {
   //       },
   //     },
   //   });
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
+  const cardVariants = {
+    initial: { x: -100, opacity: 0 },
+    animate: { x: 0, opacity: 1 },
+  };
+  useEffect(() => {
+    console.log(isInView);
+  }, [isInView]);
 
   return (
-    <>
-      <ProjectTags />
-      <ProjectsDetail />
-    </>
+    <div ref={ref}>
+      <motion.div
+        variants={cardVariants}
+        initial="initial"
+        animate={isInView ? "animate" : "initial"}
+        transition={{ duration: 1.5, delay: 0.8 }}
+      >
+        <ProjectTags />
+        <ProjectsDetail />
+      </motion.div>
+    </div>
   );
 };
 
