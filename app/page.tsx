@@ -8,8 +8,14 @@ import AboutMe from "./components/AboutMe";
 import ProjectTags from "./components/ProjectTags";
 import Hero from "./components/Hero";
 import ProjectsDetail from "./components/ProjectsDetail";
+import Projects from "./projects";
+import { Tag } from "@prisma/client";
 
-export default async function Home() {
+interface Props {
+  searchParams: { tags: Tag };
+}
+
+export default async function Home({ searchParams }: Props) {
   const open = await prisma.issue.count({
     where: { status: "FINISHED" },
   });
@@ -24,9 +30,8 @@ export default async function Home() {
     <main>
       <Hero />
       <AboutMe />
-      <div className="container mt-24 mx-auto px-12 py-4">
-        <ProjectTags />
-        <ProjectsDetail />
+      <div className="container mt-6 mx-auto px-12 py-2">
+        <Projects />
         <Grid columns={{ initial: "1", md: "2" }} gap="5">
           <Flex direction="column" gap="5">
             <BlogSummary open={open} inProgress={inProgress} closed={closed} />

@@ -1,17 +1,37 @@
+"use client";
 import prisma from "@/prisma/client";
 import React from "react";
 import projectImage from "@/public/images/project.jpg";
 import Link from "next/link";
 import { CodeBracketIcon, EyeIcon } from "@heroicons/react/24/outline";
 import { Text } from "@radix-ui/themes";
+import { useQuery } from "@tanstack/react-query";
+import { Project } from "@prisma/client";
+import axios from "axios";
+import { data } from "autoprefixer";
+import Skeleton from "../components/Skeleton";
+import { useRouter, useSearchParams } from "next/navigation";
 
-const ProjectsDetail = async () => {
-  const projects = await prisma.project.findMany();
+const useProjects = () =>
+  useQuery<Project[]>({
+    queryKey: ["projects"],
+    queryFn: () => axios.get("/api/projects").then((res) => res.data),
+    staleTime: 60 * 1000,
+    retry: 3,
+  });
+
+const ProjectsDetail = () => {
+  const router = useRouter();
+  const { data: projects, isLoading } = useProjects();
+
+  if (isLoading) return <Skeleton />;
+
+  if (!projects) return null;
 
   return (
     <div className="grid lg:grid-cols-2 gap-8 md:gap-12 ">
       {projects.map((project) => (
-        <div>
+        <div key={project.id}>
           <div
             className="h-52 md:h-72 rounded-xl relative group border-teal-500 border-2"
             style={{

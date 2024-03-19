@@ -1,27 +1,35 @@
 "use client";
 import { useState } from "react";
 import { Box, Heading } from "@radix-ui/themes";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
-interface Tag {
+export interface Tag {
   name: string;
   isSelected?: boolean;
 }
 
-const MyProjects = () => {
+const ProjectTags = () => {
+  const router = useRouter();
   const [tags, setTags] = useState<Tag[]>([
     { name: "All", isSelected: true },
     { name: "Full Stack" },
     { name: "Web" },
     { name: "Mobile" },
   ]);
+  const currentPath = usePathname();
 
   const handleTagClick = (index: number) => {
     const updatedTags = [...tags];
     updatedTags.forEach((tag, i) => {
       if (i === index) {
         tag.isSelected = true;
+
+        const params = new URLSearchParams();
+        params.append("tag", tag.name);
+        const query = params.size ? "?" + params.toString() : "";
+        router.push(currentPath + query, { scroll: false });
       } else {
-        tag.isSelected = false; // Deselect other tags
+        tag.isSelected = false;
       }
     });
     setTags(updatedTags);
@@ -35,7 +43,9 @@ const MyProjects = () => {
   return (
     <>
       <Box className="text-center mb-3">
-        <Heading color="blue">Projects</Heading>
+        <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-600 lg:text-6xl">
+          Projects
+        </h1>
       </Box>
       <div className="flex justify-center items-center gap-2 py-6 text-yellow-500 font-bold">
         {tags.map((tagItem, index) => (
@@ -54,4 +64,4 @@ const MyProjects = () => {
   );
 };
 
-export default MyProjects;
+export default ProjectTags;

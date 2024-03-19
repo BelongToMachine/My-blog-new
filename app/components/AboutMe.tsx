@@ -17,8 +17,8 @@ import { TypeAnimation } from "react-type-animation";
 
 const AboutMePage = () => {
   return (
-    <div className="container mx-auto px-12 py-4">
-      <Box className="flex flex-col space-y-4 mb-8">
+    <div className="container mx-auto px-12 py-2">
+      <Box className="flex flex-col space-y-4 mb-4">
         <Card>
           <Flex className="flex flex-wrap items-center" gap="3">
             <Heading className="shrink-0" color="sky">
