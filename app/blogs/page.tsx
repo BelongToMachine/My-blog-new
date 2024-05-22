@@ -1,6 +1,5 @@
 import React from "react";
 import prisma from "@/prisma/client";
-import delay from "delay";
 import IssueActions from "./IssueActions";
 import { Status } from "@prisma/client";
 import BlogTable, { BlogQuery } from "@/app/blogs/BlogTable";
@@ -13,7 +12,9 @@ interface Props {
 }
 
 const IssuesPage = async ({ searchParams }: Props) => {
+  // In NextJs page.js searchParams props automatically comes from url query
   const statuses = Object.values(Status);
+
   const status = statuses.includes(searchParams.status)
     ? searchParams.status
     : undefined;
@@ -36,8 +37,6 @@ const IssuesPage = async ({ searchParams }: Props) => {
   const issueCount = await prisma.issue.count({
     where,
   });
-
-  await delay(1000);
 
   return (
     <div className="space-y-3 p-5">

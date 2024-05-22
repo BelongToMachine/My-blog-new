@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Box, Heading } from "@radix-ui/themes";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 export interface Tag {
   name: string;
@@ -21,20 +22,7 @@ const ProjectTags = () => {
     const updatedTags = [...tags];
     updateTags(updatedTags, index);
     setTags(updatedTags);
-  };
-
-  const updateTags = (tags: Tag[], index: number) => {
-    tags.forEach((tag, i) => {
-      if (i === index) {
-        tag.isSelected = true;
-        const params = new URLSearchParams();
-        params.append("tag", tag.name);
-        const query = params.size ? "?" + params.toString() : "";
-        router.push(currentPath + query, { scroll: false });
-      } else {
-        tag.isSelected = false;
-      }
-    });
+    updateRouter(tags, currentPath, router);
   };
 
   return (
@@ -57,6 +45,31 @@ const ProjectTags = () => {
       </div>
     </>
   );
+};
+
+const updateTags = (tags: Tag[], index: number) => {
+  tags.forEach((tag, i) => {
+    if (i === index) {
+      tag.isSelected = true;
+    } else {
+      tag.isSelected = false;
+    }
+  });
+};
+
+const updateRouter = (
+  tags: Tag[],
+  currentPath: string,
+  router: AppRouterInstance
+) => {
+  const params = new URLSearchParams();
+  tags.some((tag) => {
+    if (tag.isSelected === true) {
+      params.append("tag", tag.name);
+      const query = params.size ? "?" + params.toString() : "";
+      router.push(currentPath + query, { scroll: false });
+    }
+  });
 };
 
 const buttonStyles = (isSelected: boolean) =>

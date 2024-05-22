@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 
 const Hero = () => {
   return (
-    <div id="about-me-section" className="container mx-auto px-5 py-4">
+    <div id="about-me-section" className="pb-4">
       <div className="grid grid-cols-1 sm:grid-cols-12">
         <motion.div
           initial={{ opacity: 0, scale: 0.5 }}
@@ -24,12 +24,12 @@ const Hero = () => {
                 // Same substring at the start will only be typed out once, initially
                 "Jie",
                 1500, // wait 1s before replacing "Mice" with "Hamsters"
-                "a full-stack developer",
+                "a web developer",
                 1500,
                 "开发者",
                 1500,
               ]}
-              wrapper="span"
+              wrapper="div"
               speed={50}
               repeat={Infinity}
             />
