@@ -10,26 +10,28 @@ import axios from "axios";
 import Skeleton from "../components/Skeleton";
 import { useRouter } from "next/navigation";
 
-const useProjects = () =>
-  useQuery<Project[]>({
-    queryKey: ["projects"],
-    queryFn: () => axios.get("/api/projects").then((res) => res.data),
-    staleTime: 60 * 1000,
-    retry: 3,
-  });
-
 const ProjectsDetail = () => {
   const router = useRouter();
-  const { data: projects, isLoading } = useProjects();
+  let { data: projects, isLoading } = useProjects();
 
   if (isLoading) return <Skeleton />;
 
-  if (!projects) return null;
+  if (projects?.length === 0) {
+    const projectPlaceholder: Project = {
+      id: "noContentFound",
+      title: "N/A",
+      content: "Could not find a project",
+      isAuthor: false,
+      link: null,
+      imgUrl: null,
+    };
+    projects = [projectPlaceholder];
+  }
 
   return (
     <section className="mb-16">
       <ul className="grid lg:grid-cols-2 gap-8 md:gap-12">
-        {projects.map((project, index) => (
+        {projects?.map((project, index) => (
           <div key={index}>
             <div
               className="h-52 md:h-72 rounded-xl relative group border-teal-500 border-2"
@@ -65,5 +67,13 @@ const ProjectsDetail = () => {
     </section>
   );
 };
+
+const useProjects = () =>
+  useQuery<Project[]>({
+    queryKey: ["projects"],
+    queryFn: () => axios.get("/api/projects").then((res) => res.data),
+    staleTime: 60 * 1000,
+    retry: 3,
+  });
 
 export default ProjectsDetail;

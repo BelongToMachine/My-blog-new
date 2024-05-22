@@ -5,20 +5,6 @@ import ProjectsDetail from "./components/ProjectsDetail";
 import { motion, useInView } from "framer-motion";
 
 const Projects = () => {
-  //   const definedTags = Object.values();
-  //   const tag = definedTags.includes(searchParams.tag)
-  //     ? searchParams.tag
-  //     : undefined;
-
-  //   const filteredProjects = await prisma.project.findMany({
-  //     where: {
-  //       tags: {
-  //         some: {
-  //           name: tag,
-  //         },
-  //       },
-  //     },
-  //   });
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
   const cardVariants = {
