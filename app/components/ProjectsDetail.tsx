@@ -17,15 +17,7 @@ const ProjectsDetail = () => {
   if (isLoading) return <Skeleton />;
 
   if (projects?.length === 0) {
-    const projectPlaceholder: Project = {
-      id: "noContentFound",
-      title: "N/A",
-      content: "Could not find a project",
-      isAuthor: false,
-      link: null,
-      imgUrl: null,
-    };
-    projects = [projectPlaceholder];
+    projects = generateProjects();
   }
 
   return (
@@ -75,5 +67,16 @@ const useProjects = () =>
     staleTime: 60 * 1000,
     retry: 3,
   });
+
+const generateProjects = (): Project[] => [
+  {
+    id: "noContentFound",
+    title: "N/A",
+    content: "Could not find a project",
+    isAuthor: false,
+    link: null,
+    imgUrl: null,
+  },
+];
 
 export default ProjectsDetail;

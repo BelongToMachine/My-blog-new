@@ -20,6 +20,7 @@ const BlogSummary = ({ open, inProgress, closed }: Props) => {
     { label: "InProgress Blogs", value: inProgress, status: "IN_PROGRESS" },
     { label: "Closed Blogs", value: closed, status: "CLOSED" },
   ];
+
   return (
     <Flex gap="4">
       {containers.map((container) => (
