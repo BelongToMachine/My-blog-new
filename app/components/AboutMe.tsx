@@ -42,24 +42,7 @@ const AboutMePage = () => {
   );
 };
 
-const skills: string[] = [
-  "Html",
-  "CSS",
-  "JavaScript",
-  "React",
-  "NextJS",
-  "Vue",
-  "Java",
-  "NodeJS",
-  "NuxtJS",
-  "Prisma",
-  "MySQL",
-  "Webpack",
-  "Vite",
-  "Saas",
-  "gulp",
-  "Docker",
-];
+const skills: string[] = ["JavaScript", "NodeJS", "TypeScript", "Python"];
 
 const generateRandomColor: () => Color = () => {
   return colors[Math.floor(Math.random() * colors.length)] as Color;

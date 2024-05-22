@@ -10,20 +10,23 @@ export interface Tag {
 
 const ProjectTags = () => {
   const router = useRouter();
+  const currentPath = usePathname();
   const [tags, setTags] = useState<Tag[]>([
     { name: "All", isSelected: true },
     { name: "Full Stack" },
-    { name: "Web" },
-    { name: "Mobile" },
+    { name: "Backend" },
   ]);
-  const currentPath = usePathname();
 
   const handleTagClick = (index: number) => {
     const updatedTags = [...tags];
-    updatedTags.forEach((tag, i) => {
+    updateTags(updatedTags, index);
+    setTags(updatedTags);
+  };
+
+  const updateTags = (tags: Tag[], index: number) => {
+    tags.forEach((tag, i) => {
       if (i === index) {
         tag.isSelected = true;
-
         const params = new URLSearchParams();
         params.append("tag", tag.name);
         const query = params.size ? "?" + params.toString() : "";
@@ -32,13 +35,7 @@ const ProjectTags = () => {
         tag.isSelected = false;
       }
     });
-    setTags(updatedTags);
   };
-
-  const buttonStyles = (isSelected: boolean) =>
-    isSelected
-      ? "text-yellow-700 border-teal-600"
-      : "text-yellow-500 border-teal-400 hover:border-teal-600";
 
   return (
     <>
@@ -50,7 +47,7 @@ const ProjectTags = () => {
       <div className="flex justify-center items-center gap-2 py-6 text-yellow-500 font-bold">
         {tags.map((tagItem, index) => (
           <button
-            key={tagItem.name}
+            key={index}
             className={`${buttonStyles(
               tagItem.isSelected!
             )} rounded-full border-4 px-6 py-3 text-xl cursor-pointer`}
@@ -63,5 +60,10 @@ const ProjectTags = () => {
     </>
   );
 };
+
+const buttonStyles = (isSelected: boolean) =>
+  isSelected
+    ? "text-yellow-700 border-teal-600"
+    : "text-yellow-500 border-teal-400 hover:border-teal-600";
 
 export default ProjectTags;

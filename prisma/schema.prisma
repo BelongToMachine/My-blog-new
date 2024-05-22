@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -19,7 +19,7 @@ model Issue {
   updatedAt        DateTime @updatedAt
   assignedToUserId String?  @db.VarChar(255)
   assignedToUser   User?    @relation(fields: [assignedToUserId], references: [id]) //map 'assignedToUserId' of Issue to "id" of User, also we need assign the same relationship to User model
-}
+} 
 
 enum Status {
   FINISHED

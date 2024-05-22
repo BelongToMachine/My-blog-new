@@ -7,7 +7,6 @@ import { Metadata } from "next";
 import AboutMe from "./components/AboutMe";
 import ProjectTags from "./components/ProjectTags";
 import Hero from "./components/Hero";
-import ProjectsDetail from "./components/ProjectsDetail";
 import Projects from "./projects";
 import { Tag } from "@prisma/client";
 
