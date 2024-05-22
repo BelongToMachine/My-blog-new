@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 
 const Hero = () => {
   return (
-    <div id="about-me-section" className="container mx-auto px-12 py-4">
+    <div id="about-me-section" className="container mx-auto px-5 py-4">
       <div className="grid grid-cols-1 sm:grid-cols-12">
         <motion.div
           initial={{ opacity: 0, scale: 0.5 }}

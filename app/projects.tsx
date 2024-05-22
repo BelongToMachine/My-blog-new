@@ -17,7 +17,7 @@ const Projects = () => {
   }, [isInView]);
 
   return (
-    <div ref={ref}>
+    <div ref={ref} className="md:">
       <motion.div
         variants={cardVariants}
         initial="initial"

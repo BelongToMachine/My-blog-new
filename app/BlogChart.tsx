@@ -11,9 +11,9 @@ interface Props {
 
 const BlogChart = ({ open, inProgress, closed }: Props) => {
   const data = [
-    { label: "Open", value: open },
-    { label: "In Progress", value: inProgress },
-    { label: "Closed", value: closed },
+    { label: "Web2 Blogs", value: open },
+    { label: "Web3 Blogs", value: inProgress },
+    { label: "Non-tech Blogs", value: closed },
   ];
 
   return (

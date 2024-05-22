@@ -11,19 +11,19 @@ interface Props {
 }
 
 const BlogSummary = ({ open, inProgress, closed }: Props) => {
-  const containers: {
+  const categoryData: {
     label: string;
     value: number;
     status: Status;
   }[] = [
-    { label: "Finished Blogs", value: open, status: "FINISHED" },
-    { label: "InProgress Blogs", value: inProgress, status: "IN_PROGRESS" },
-    { label: "Closed Blogs", value: closed, status: "CLOSED" },
+    { label: "Web2 Blogs", value: open, status: "FINISHED" },
+    { label: "Web3 Blogs", value: inProgress, status: "IN_PROGRESS" },
+    { label: "Non-tech Blogs", value: closed, status: "CLOSED" },
   ];
 
   return (
     <Flex gap="4">
-      {containers.map((container) => (
+      {categoryData.map((container) => (
         <Card key={container.label}>
           <Flex direction="column" gap="1">
             <Link

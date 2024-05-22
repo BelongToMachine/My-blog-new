@@ -40,9 +40,7 @@ const ProjectTags = () => {
   return (
     <>
       <Box id="projects" className="text-center mb-3 ">
-        <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-600 lg:text-6xl">
-          Projects
-        </h1>
+        <h1 className="home-page-heading">Projects</h1>
       </Box>
       <div className="flex justify-center items-center gap-2 py-6 text-yellow-500 font-bold">
         {tags.map((tagItem, index) => (
