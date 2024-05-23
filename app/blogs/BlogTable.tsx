@@ -65,7 +65,7 @@ const BlogTable = ({ searchParams, issues }: Props) => {
 
 const columns: { label: string; value: keyof Issue; className?: string }[] = [
   { label: "Blog", value: "title" },
-  { label: "Status", value: "status", className: "hidden md:table-cell" },
+  { label: "Category", value: "status", className: "hidden md:table-cell" },
   { label: "Created", value: "createdAt", className: "hidden md:table-cell" },
 ];
 
