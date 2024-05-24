@@ -1,9 +1,9 @@
-import { AuthStatus, links } from "@/app/NavBar";
 import classNames from "classnames";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 import { PiGithubLogoFill } from "react-icons/pi";
+import { AuthStatus } from "./AuthStatus";
 
 const DesktopNav = () => {
   return (
@@ -40,3 +40,11 @@ const NavLinks = () => {
     </ul>
   );
 };
+
+const links = [
+  { label: "Home", href: "/" },
+  { label: "About me", href: "#about-me-section" },
+  { label: "Projects", href: "#projects" },
+  { label: "Blogs", href: "/blogs" },
+  { label: "instagram", href: "https://www.instagram.com/henrqaz/" },
+];

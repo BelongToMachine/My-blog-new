@@ -1,11 +1,10 @@
 import { LuMoreVertical } from "react-icons/lu";
-import React, { useState } from "react";
+import React from "react";
 import { PiGithubLogoFill } from "react-icons/pi";
 import Link from "next/link";
 import { Button, DropdownMenu } from "@radix-ui/themes";
 import { FaBook } from "react-icons/fa6";
-import classNames from "classnames";
-import { usePathname } from "next/navigation";
+import { IoLogoInstagram } from "react-icons/io5";
 
 const MobileNav = () => {
   return (
@@ -33,23 +32,17 @@ const Menu = () => {
       <DropdownMenu.Content size="1">
         {mobileLinks.map((link, index) => {
           return (
-            <>
+            <div key={index}>
               <DropdownMenu.Item className="flex justify-between">
-                <Link key={link.href} href={link.href}>
+                <Link key={link.href} href={link.href} className="pr-3">
                   {link.label}
                 </Link>
-                <FaBook />
+                <Icon label={link.label} />
               </DropdownMenu.Item>
-            </>
+            </div>
           );
         })}
         <DropdownMenu.Separator />
-        <DropdownMenu.Item shortcut="⌘ N">Archive</DropdownMenu.Item>
-
-        <DropdownMenu.Separator />
-        <DropdownMenu.Item shortcut="⌘ ⌫" color="red">
-          Delete
-        </DropdownMenu.Item>
       </DropdownMenu.Content>
     </DropdownMenu.Root>
   );
@@ -57,5 +50,14 @@ const Menu = () => {
 
 const mobileLinks = [
   { label: "Blogs", href: "/blogs" },
-  { label: "instagram", href: "https://www.instagram.com/henrqaz/" },
+  { label: "Instagram", href: "https://www.instagram.com/henrqaz/" },
 ];
+
+const Icon = ({ label }: { label: string }) => {
+  switch (label) {
+    case "Blogs":
+      return <FaBook />;
+    case "Instagram":
+      return <IoLogoInstagram />;
+  }
+};

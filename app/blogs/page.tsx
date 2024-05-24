@@ -51,7 +51,7 @@ const IssuesPage = async ({ searchParams }: Props) => {
   );
 };
 
-export const dynamic = "force-dynamic";
+export const dynamic = "force-static";
 
 export const metadata: Metadata = {
   title: "Blogs List",

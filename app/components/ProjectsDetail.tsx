@@ -1,18 +1,44 @@
 "use client";
-import React from "react";
-import projectImage from "@/public/images/project.jpg";
+import "dotenv/config";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { CodeBracketIcon, EyeIcon } from "@heroicons/react/24/outline";
 import { Text } from "@radix-ui/themes";
 import { useQuery } from "@tanstack/react-query";
-import { Project } from "@prisma/client";
 import axios from "axios";
 import Skeleton from "../components/Skeleton";
 import { useRouter } from "next/navigation";
 
+interface Project1 {
+  id: number;
+  title: string;
+  description: string;
+  tag: string;
+  repository: string | null;
+  website: string | null;
+  created_at: string;
+  image_url: string | null;
+  is_author: boolean;
+}
+
 const ProjectsDetail = () => {
-  const router = useRouter();
-  let { data: projects, isLoading } = useProjects();
+  let [projects, setProjects] = useState<Project1[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    axios
+      .get<Project1[]>("http://127.0.0.1:8000/blog/projects/")
+      .then((response) => {
+        setProjects(response.data);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        setIsLoading(false);
+      });
+  }, []);
+
+  // let { data: projects, isLoading } = useProjects();
 
   if (isLoading) return <Skeleton />;
 
@@ -28,7 +54,7 @@ const ProjectsDetail = () => {
             <div
               className="h-52 md:h-72 rounded-xl relative group border-teal-500 border-2"
               style={{
-                backgroundImage: `url(${projectImage.src})`,
+                backgroundImage: `url(${generateImageUrl(project)})`,
                 backgroundSize: "cover",
               }}
             >
@@ -47,12 +73,12 @@ const ProjectsDetail = () => {
                 </Link>
               </div>
             </div>
-            <Link href={project.link || ""}>
+            <Link href={project.website || ""}>
               <h5 className="text-xl font-semibold mb-2 text-cyan-600 text-center">
                 {project.title}
               </h5>
             </Link>
-            <Text>{project.content}</Text>
+            <Text>{project.description}</Text>
           </div>
         ))}
       </ul>
@@ -61,22 +87,31 @@ const ProjectsDetail = () => {
 };
 
 const useProjects = () =>
-  useQuery<Project[]>({
+  useQuery<Project1[]>({
     queryKey: ["projects"],
-    queryFn: () => axios.get("/api/projects").then((res) => res.data),
+    queryFn: () => axios.get(API + "/projects").then((res) => res.data),
     staleTime: 60 * 1000,
     retry: 3,
   });
 
-const generateProjects = (): Project[] => [
+const generateProjects = (): Project1[] => [
   {
-    id: "noContentFound",
+    id: -2,
     title: "N/A",
-    content: "Could not find a project",
-    isAuthor: false,
-    link: null,
-    imgUrl: null,
+    description: "Could not find a project",
+    is_author: false,
+    repository: null,
+    image_url: null,
+    website: null,
+    tag: "N/A",
+    created_at: "",
   },
 ];
+
+const generateImageUrl = (project: Project1): string => {
+  return project.image_url || "/images/project.jpg";
+};
+
+const API = process.env.NEXT_PUBLIC_DJANGO!;
 
 export default ProjectsDetail;
