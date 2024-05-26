@@ -29,9 +29,6 @@ const ProjectTags = () => {
 
   return (
     <>
-      <Box id="projects" className="text-center mb-3 ">
-        <h1 className="home-page-heading">Projects</h1>
-      </Box>
       <div className="flex items-center md:justify-center gap-2 py-6 text-yellow-500 font-bold overflow-x-auto whitespace-nowrap">
         {tags.map((tagItem, index) => (
           <button

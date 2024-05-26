@@ -1,13 +1,10 @@
+"use client";
 import "dotenv/config";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { CodeBracketIcon, EyeIcon } from "@heroicons/react/24/outline";
 import { Text } from "@radix-ui/themes";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import Skeleton from "../components/Skeleton";
-import { useRouter } from "next/navigation";
-import { Project } from "@prisma/client";
 import useProjects, {
   DjProject,
   generateDummyProjects,

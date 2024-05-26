@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from "react";
 import ProjectTags from "./components/ProjectTags";
 import ProjectsDetail from "./components/ProjectsDetail";
 import { motion, useInView } from "framer-motion";
+import { Box } from "@radix-ui/themes";
 
 const Projects = () => {
   const ref = useRef(null);
@@ -12,22 +13,23 @@ const Projects = () => {
     animate: { x: 0, opacity: 1 },
   };
 
-  useEffect(() => {
-    console.log(isInView);
-  }, [isInView]);
-
   return (
-    <div ref={ref} className="md:">
-      <motion.div
-        variants={cardVariants}
-        initial="initial"
-        animate={isInView ? "animate" : "initial"}
-        transition={{ duration: 1.5, delay: 0.3 }}
-      >
-        <ProjectTags />
-        <ProjectsDetail />
-      </motion.div>
-    </div>
+    <>
+      <Box id="projects" className="text-center mb-3 ">
+        <h1 className="home-page-heading">Projects</h1>
+      </Box>
+      <div ref={ref}>
+        <motion.div
+          variants={cardVariants}
+          initial="initial"
+          animate={isInView ? "animate" : "initial"}
+          transition={{ duration: 1.5, delay: 0.3 }}
+        >
+          <ProjectTags />
+          <ProjectsDetail />
+        </motion.div>
+      </div>
+    </>
   );
 };
 
