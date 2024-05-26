@@ -5,7 +5,6 @@ import BlogChart from "./BlogChart";
 import { Flex, Grid } from "@radix-ui/themes";
 import { Metadata } from "next";
 import AboutMe from "./components/AboutMe";
-import ProjectTags from "./components/ProjectTags";
 import Hero from "./components/Hero";
 import Projects from "./projects";
 import { Tag } from "@prisma/client";

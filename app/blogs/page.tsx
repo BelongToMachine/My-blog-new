@@ -1,22 +1,19 @@
 import React from "react";
 import prisma from "@/prisma/client";
+import delay from "delay";
 import IssueActions from "./IssueActions";
 import { Status } from "@prisma/client";
 import BlogTable, { BlogQuery } from "@/app/blogs/BlogTable";
 import Pagination from "../components/Pagination";
 import { columnNames } from "@/app/blogs/BlogTable";
 import { Metadata } from "next";
-import { blogs } from "./staticData";
-import { useRouter, useSearchParams } from "next/navigation";
 
 interface Props {
   searchParams: BlogQuery;
 }
 
 const IssuesPage = async ({ searchParams }: Props) => {
-  // In NextJs page.js searchParams props automatically comes from url query
   const statuses = Object.values(Status);
-
   const status = statuses.includes(searchParams.status)
     ? searchParams.status
     : undefined;
@@ -52,6 +49,8 @@ const IssuesPage = async ({ searchParams }: Props) => {
     </div>
   );
 };
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Blogs List",

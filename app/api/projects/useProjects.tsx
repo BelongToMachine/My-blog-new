@@ -1,7 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import React from "react";
-
 export interface DjProject {
   id: number;
   title: string;
@@ -17,11 +15,25 @@ export interface DjProject {
 const useProjects = () =>
   useQuery<DjProject[]>({
     queryKey: ["projects"],
-    queryFn: () => axios.get(API + "/projects").then((res) => res.data),
-    staleTime: 60 * 1000,
+    queryFn: () => axios.get(getApi()).then((res) => res.data),
+    staleTime: 60 * 10000,
     retry: 3,
   });
 export default useProjects;
+
+const getApi = () => {
+  const API = process.env.NEXT_PUBLIC_DJANGO!;
+  switch (process.env.NEXT_PUBLIC_PRODUCTION_MODE) {
+    case "static":
+      return "/db/projects.json";
+    case "dynamic":
+      return API + "projects";
+    default:
+      throw new Error(
+        `${process.env.NEXT_PUBLIC_PRODUCTION_MODE} is not a vaild mode`
+      );
+  }
+};
 
 export const generateDummyProjects = (): DjProject[] => {
   return [
@@ -38,5 +50,3 @@ export const generateDummyProjects = (): DjProject[] => {
     },
   ];
 };
-
-const API = process.env.NEXT_PUBLIC_DJANGO!;
