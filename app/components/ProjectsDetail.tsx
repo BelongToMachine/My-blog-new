@@ -1,4 +1,3 @@
-"use client";
 import "dotenv/config";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
@@ -8,42 +7,19 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Skeleton from "../components/Skeleton";
 import { useRouter } from "next/navigation";
-
-interface Project1 {
-  id: number;
-  title: string;
-  description: string;
-  tag: string;
-  repository: string | null;
-  website: string | null;
-  created_at: string;
-  image_url: string | null;
-  is_author: boolean;
-}
+import { Project } from "@prisma/client";
+import useProjects, {
+  DjProject,
+  generateDummyProjects,
+} from "../api/projects/useProjects";
 
 const ProjectsDetail = () => {
-  let [projects, setProjects] = useState<Project1[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    axios
-      .get<Project1[]>("http://127.0.0.1:8000/blog/projects/")
-      .then((response) => {
-        setProjects(response.data);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-        setIsLoading(false);
-      });
-  }, []);
-
-  // let { data: projects, isLoading } = useProjects();
+  let { data: projects, isLoading } = useProjects();
 
   if (isLoading) return <Skeleton />;
 
-  if (projects?.length === 0) {
-    projects = generateProjects();
+  if (projects?.length === 0 || !projects) {
+    projects = generateDummyProjects();
   }
 
   return (
@@ -86,32 +62,8 @@ const ProjectsDetail = () => {
   );
 };
 
-const useProjects = () =>
-  useQuery<Project1[]>({
-    queryKey: ["projects"],
-    queryFn: () => axios.get(API + "/projects").then((res) => res.data),
-    staleTime: 60 * 1000,
-    retry: 3,
-  });
-
-const generateProjects = (): Project1[] => [
-  {
-    id: -2,
-    title: "N/A",
-    description: "Could not find a project",
-    is_author: false,
-    repository: null,
-    image_url: null,
-    website: null,
-    tag: "N/A",
-    created_at: "",
-  },
-];
-
-const generateImageUrl = (project: Project1): string => {
+const generateImageUrl = (project: DjProject): string => {
   return project.image_url || "/images/project.jpg";
 };
-
-const API = process.env.NEXT_PUBLIC_DJANGO!;
 
 export default ProjectsDetail;

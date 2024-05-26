@@ -3,7 +3,6 @@ import { Table } from "@radix-ui/themes";
 import Link from "next/link";
 import React from "react";
 import { IssueStatusBadge } from "../components";
-import NextLink from "next/link";
 import { Issue, Status } from "@prisma/client";
 
 export interface BlogQuery {
@@ -27,13 +26,13 @@ const BlogTable = ({ searchParams, issues }: Props) => {
               key={column.value}
               className={column.className}
             >
-              <NextLink
+              <Link
                 href={{
                   query: { ...searchParams, orderBy: column.value },
                 }}
               >
                 {column.label}
-              </NextLink>
+              </Link>
               {column.value === searchParams.orderBy && (
                 <ArrowUpIcon className="inline " />
               )}
@@ -54,7 +53,7 @@ const BlogTable = ({ searchParams, issues }: Props) => {
               <IssueStatusBadge status={issue.status} />
             </Table.Cell>
             <Table.Cell className="hidden md:table-cell">
-              {issue.createdAt.toDateString()}
+              {issue.createdAt.toLocaleString()}
             </Table.Cell>
           </Table.Row>
         ))}

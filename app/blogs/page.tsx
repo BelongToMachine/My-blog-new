@@ -6,6 +6,8 @@ import BlogTable, { BlogQuery } from "@/app/blogs/BlogTable";
 import Pagination from "../components/Pagination";
 import { columnNames } from "@/app/blogs/BlogTable";
 import { Metadata } from "next";
+import { blogs } from "./staticData";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface Props {
   searchParams: BlogQuery;
@@ -50,8 +52,6 @@ const IssuesPage = async ({ searchParams }: Props) => {
     </div>
   );
 };
-
-export const dynamic = "force-static";
 
 export const metadata: Metadata = {
   title: "Blogs List",
