@@ -23,6 +23,8 @@ const ProjectsDetail = () => {
 
   projects = filterProjects(projects, params);
 
+  console.log(projects);
+
   if (projects?.length === 0 || !projects) {
     projects = generateDummyProjects();
   }

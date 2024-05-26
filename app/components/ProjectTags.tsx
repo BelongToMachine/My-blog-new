@@ -17,7 +17,7 @@ const ProjectTags = () => {
     { name: "All", link: "ALL", isSelected: true },
     { name: "Full Stack", link: "FULL_STACK" },
     { name: "Backend", link: "BACKEND" },
-    { name: "Frontend", link: "FRONTEND" },
+    { name: "Frontend", link: "FRONT_END" },
     { name: "Mobile", link: "MOBILE" },
   ]);
 
