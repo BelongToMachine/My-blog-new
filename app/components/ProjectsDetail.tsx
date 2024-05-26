@@ -8,11 +8,20 @@ import useProjects, {
   DjProject,
   generateDummyProjects,
 } from "../api/projects/useProjects";
+import { useSearchParams } from "next/navigation";
 
 const ProjectsDetail = () => {
-  let { data: projects, isLoading } = useProjects();
+  const searchParams = useSearchParams();
+
+  const params = searchParams.get("tag");
+
+  let { data: projects, isLoading } = useProjects({
+    tag: searchParams.get("tag"),
+  });
 
   if (isLoading) return <Skeleton />;
+
+  projects = filterProjects(projects, params);
 
   if (projects?.length === 0 || !projects) {
     projects = generateDummyProjects();
@@ -56,6 +65,17 @@ const ProjectsDetail = () => {
       </ul>
     </section>
   );
+};
+
+const filterProjects = (
+  projects: DjProject[] | undefined,
+  params: string | null
+) => {
+  if (params === "ALL" || null) return projects;
+  const filteredProjects = projects?.filter((project) => {
+    return project.tag === params;
+  });
+  return filteredProjects;
 };
 
 const generateImageUrl = (project: DjProject): string => {

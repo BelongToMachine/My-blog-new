@@ -12,10 +12,10 @@ export interface DjProject {
   is_author: boolean;
 }
 
-const useProjects = () =>
+const useProjects = (params: { tag: string | null }) =>
   useQuery<DjProject[]>({
     queryKey: ["projects"],
-    queryFn: () => axios.get(getApi()).then((res) => res.data),
+    queryFn: () => axios.get(getApi(), { params }).then((res) => res.data),
     staleTime: 60 * 10000,
     retry: 3,
   });
@@ -27,7 +27,7 @@ const getApi = () => {
     case "static":
       return "/db/projects.json";
     case "dynamic":
-      return API + "projects";
+      return API + "/projects";
     default:
       throw new Error(
         `${process.env.NEXT_PUBLIC_PRODUCTION_MODE} is not a vaild mode`

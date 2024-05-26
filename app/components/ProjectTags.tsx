@@ -6,6 +6,7 @@ import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.share
 
 export interface Tag {
   name: string;
+  link: string;
   isSelected?: boolean;
 }
 
@@ -13,11 +14,11 @@ const ProjectTags = () => {
   const router = useRouter();
   const currentPath = usePathname();
   const [tags, setTags] = useState<Tag[]>([
-    { name: "All", isSelected: true },
-    { name: "Full Stack" },
-    { name: "Backend" },
-    { name: "Frontend" },
-    { name: "Mobile" },
+    { name: "All", link: "ALL", isSelected: true },
+    { name: "Full Stack", link: "FULL_STACK" },
+    { name: "Backend", link: "BACKEND" },
+    { name: "Frontend", link: "FRONTEND" },
+    { name: "Mobile", link: "MOBILE" },
   ]);
 
   const handleTagClick = (index: number) => {
@@ -64,7 +65,7 @@ const updateRouter = (
   const params = new URLSearchParams();
   tags.some((tag) => {
     if (tag.isSelected === true) {
-      params.append("tag", tag.name);
+      params.append("tag", tag.link);
       const query = params.size ? "?" + params.toString() : "";
       router.push(currentPath + query, { scroll: false });
     }
