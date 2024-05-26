@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+
 export interface DjProject {
   id: number;
   title: string;
@@ -12,11 +13,11 @@ export interface DjProject {
   is_author: boolean;
 }
 
-const useProjects = (params: { tag: string | null }) =>
+const useProjects = () =>
   useQuery<DjProject[]>({
     queryKey: ["projects"],
-    queryFn: () => axios.get(getApi(), { params }).then((res) => res.data),
-    staleTime: 60 * 10000,
+    queryFn: () => axios.get(getApi()).then((res) => res.data),
+    staleTime: 60 * 1000, // 10 minutes
     retry: 3,
   });
 export default useProjects;
@@ -30,7 +31,7 @@ const getApi = () => {
       return API + "/projects";
     default:
       throw new Error(
-        `${process.env.NEXT_PUBLIC_PRODUCTION_MODE} is not a vaild mode`
+        `${process.env.NEXT_PUBLIC_PRODUCTION_MODE} is not a valid mode`
       );
   }
 };

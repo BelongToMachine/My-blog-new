@@ -7,13 +7,14 @@ url = "http://localhost:8000/mysite/projects/"
 try:
     # Make a GET request to the API
     response = requests.get(url)
+    
     response.raise_for_status()  # Raise an exception for HTTP errors
 
     # Parse the JSON response
     projects = response.json()
 
     # Specify the file path where you want to save the data
-    file_path = 'db/projects.json'
+    file_path = 'public/db/projects.json'
 
     # Write the JSON data to a file
     with open(file_path, 'w') as file:

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef } from "react";
+import React, { Suspense, useEffect, useRef } from "react";
 import ProjectTags from "./components/ProjectTags";
 import ProjectsDetail from "./components/ProjectsDetail";
 import { motion, useInView } from "framer-motion";
@@ -26,7 +26,9 @@ const Projects = () => {
           transition={{ duration: 1.5, delay: 0.3 }}
         >
           <ProjectTags />
-          <ProjectsDetail />
+          <Suspense fallback={<>Loading...</>}>
+            <ProjectsDetail />
+          </Suspense>
         </motion.div>
       </div>
     </>
