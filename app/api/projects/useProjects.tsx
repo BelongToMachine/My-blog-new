@@ -11,6 +11,7 @@ export interface DjProject {
   created_at: string;
   image_url: string | null;
   is_author: boolean;
+  static_image_path: string;
 }
 
 const useProjects = () =>
@@ -23,8 +24,7 @@ const useProjects = () =>
 export default useProjects;
 
 const getApi = () => {
-  const API = process.env.NEXT_PUBLIC_DJANGO!;
-  switch (process.env.NEXT_PUBLIC_PRODUCTION_MODE) {
+  switch (MODE) {
     case "static":
       return "/db/projects.json";
     case "dynamic":
@@ -48,6 +48,39 @@ export const generateDummyProjects = (): DjProject[] => {
       website: null,
       tag: "N/A",
       created_at: "",
+      static_image_path: "",
     },
   ];
 };
+
+export const generateImageUrl = (project: DjProject) => {
+  const imageUrl =
+    MODE === "static" ? project.static_image_path : project.image_url;
+  console.log(imageUrl);
+  if (!imageUrl) return "/images/project.jpg";
+  return imageUrl;
+  // const ifExist = await ifImageValid(imageUrl);
+  // console.log(ifExist);
+  // return ifExist ? imageUrl : "/images/project.jpg";
+};
+
+const ifImageValid = async (url: string) => {
+  return new Promise((resolve, reject) => {
+    const request = new XMLHttpRequest();
+    request.open("HEAD", url, true); // Use HEAD request to get headers only
+    request.onload = () => {
+      if (request.status >= 200 && request.status < 300) {
+        resolve(true); // Image URL is valid
+      } else {
+        resolve(false); // Image URL is invalid
+      }
+    };
+    request.onerror = () => {
+      resolve(false); // Network error or other issue
+    };
+    request.send();
+  });
+};
+
+const API = process.env.NEXT_PUBLIC_DJANGO!;
+const MODE = process.env.NEXT_PUBLIC_PRODUCTION_MODE;

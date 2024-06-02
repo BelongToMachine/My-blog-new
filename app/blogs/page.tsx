@@ -12,7 +12,7 @@ interface Props {
   searchParams: BlogQuery;
 }
 
-const IssuesPage = async ({ searchParams }: Props) => {
+const IndexPage = async ({ searchParams }: Props) => {
   const statuses = Object.values(Status);
   const status = statuses.includes(searchParams.status)
     ? searchParams.status
@@ -56,4 +56,4 @@ export const metadata: Metadata = {
   title: "Blogs List",
   description: "View all of my blogs",
 };
-export default IssuesPage;
+export default IndexPage;
