@@ -10,9 +10,9 @@ const statusMap: Record<
   Status,
   { label: string; color: "red" | "violet" | "green" }
 > = {
-  FINISHED: { label: "Finished", color: "red" },
-  IN_PROGRESS: { label: "In Progress", color: "violet" },
-  CLOSED: { label: "Closed", color: "green" },
+  FINISHED: { label: "WEB2", color: "red" },
+  IN_PROGRESS: { label: "WEB3", color: "violet" },
+  CLOSED: { label: "Non Tech", color: "green" },
 };
 
 const IssueStatusBadge = ({ status }: Props) => {
