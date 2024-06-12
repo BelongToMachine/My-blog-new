@@ -3,7 +3,7 @@ import "dotenv/config";
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { CodeBracketIcon, EyeIcon } from "@heroicons/react/24/outline";
-import { Text } from "@radix-ui/themes";
+import { Callout, Text } from "@radix-ui/themes";
 import Skeleton from "../components/Skeleton";
 import useProjects, {
   DjProject,
@@ -11,6 +11,8 @@ import useProjects, {
   generateImageUrl,
 } from "../api/projects/useProjects";
 import { useSearchParams } from "next/navigation";
+import { InfoCircledIcon } from "@radix-ui/react-icons";
+import Dialog from "./Dialog";
 
 const ProjectsDetail = () => {
   const searchParams = useSearchParams();
@@ -18,9 +20,9 @@ const ProjectsDetail = () => {
   const ref = useRef<HTMLDialogElement>(null);
   const handleLinkClick = (
     event: React.MouseEvent<HTMLAnchorElement>,
-    repository: string | null
+    link: string | null
   ) => {
-    if (!repository) {
+    if (!link) {
       event.preventDefault();
       ref.current!.showModal();
     }
@@ -38,10 +40,7 @@ const ProjectsDetail = () => {
 
   return (
     <>
-      <dialog ref={ref}>
-        <p>No repository available for this project.</p>
-        <button onClick={() => ref.current!.close()}>Close</button>
-      </dialog>
+      <Dialog ref={ref} message="该项目的github链接/上线网址不存在..." />
       <section className="mb-16">
         <ul className="grid lg:grid-cols-2 gap-8 md:gap-12">
           {projects?.map((project, index) => (
@@ -64,8 +63,9 @@ const ProjectsDetail = () => {
                     <CodeBracketIcon className="h-10 w-10 text-[#ADB7BE] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 cursor-pointer group-hover/link:text-white" />
                   </Link>
                   <Link
-                    href={"/"}
+                    href={project.website || "#"}
                     className="h-14 w-14 border-2 relative rounded-full border-[#ADB7BE] hover:border-white group/link"
+                    onClick={(event) => handleLinkClick(event, project.website)}
                   >
                     <EyeIcon className="h-10 w-10 text-[#ADB7BE] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 cursor-pointer group-hover/link:text-white" />
                   </Link>
