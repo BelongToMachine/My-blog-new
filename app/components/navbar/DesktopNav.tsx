@@ -42,9 +42,9 @@ const NavLinks = () => {
 };
 
 const links = [
-  { label: "Home", href: "/" },
-  { label: "About me", href: "#about-me-section" },
-  { label: "Projects", href: "#projects" },
-  { label: "Blogs", href: "/blogs" },
+  { label: "主页", href: "/" },
+  { label: "关于我", href: "#about-me-section" },
+  { label: "我的项目", href: "#projects" },
+  { label: "我的博客", href: "/blogs" },
   { label: "instagram", href: "https://www.instagram.com/henrqaz/" },
 ];

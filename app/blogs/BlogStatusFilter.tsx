@@ -9,10 +9,10 @@ import {
 } from "next/navigation";
 
 const statuses: { label: String; value?: Status }[] = [
-  { label: "All" },
-  { label: "Finished", value: "FINISHED" },
-  { label: "In Progress", value: "IN_PROGRESS" },
-  { label: "Closed", value: "CLOSED" },
+  { label: "全部" },
+  { label: "WEB2", value: "FINISHED" },
+  { label: "WEB3", value: "IN_PROGRESS" },
+  { label: "非技术类", value: "CLOSED" },
 ];
 
 const BlogStatusFilter = () => {
@@ -29,7 +29,7 @@ const BlogStatusFilter = () => {
         router.push("/blogs" + query);
       }}
     >
-      <Select.Trigger placeholder="Filter by status" />
+      <Select.Trigger placeholder="按博客类型分类" />
       <Select.Content>
         {statuses.map((status, index) => (
           <Select.Item key={index} value={status.value || "unSelected"}>

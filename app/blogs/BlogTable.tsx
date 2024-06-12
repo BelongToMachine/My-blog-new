@@ -63,9 +63,9 @@ const BlogTable = ({ searchParams, issues }: Props) => {
 };
 
 const columns: { label: string; value: keyof Issue; className?: string }[] = [
-  { label: "Blog", value: "title" },
-  { label: "Category", value: "status", className: "hidden md:table-cell" },
-  { label: "Created", value: "createdAt", className: "hidden md:table-cell" },
+  { label: "标题", value: "title" },
+  { label: "博客类型", value: "status", className: "hidden md:table-cell" },
+  { label: "创建于", value: "createdAt", className: "hidden md:table-cell" },
 ];
 
 export const columnNames = columns.map((column) => column.value);

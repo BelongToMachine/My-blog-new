@@ -14,11 +14,11 @@ const ProjectTags = () => {
   const router = useRouter();
   const currentPath = usePathname();
   const [tags, setTags] = useState<Tag[]>([
-    { name: "All", link: "ALL", isSelected: true },
-    { name: "Full Stack", link: "FULL_STACK" },
-    { name: "Backend", link: "BACKEND" },
-    { name: "Frontend", link: "FRONT_END" },
-    { name: "Mobile", link: "MOBILE" },
+    { name: "全部", link: "ALL", isSelected: true },
+    { name: "全栈", link: "FULL_STACK" },
+    { name: "后端", link: "BACKEND" },
+    { name: "移动端", link: "FRONT_END" },
+    { name: "移动端", link: "MOBILE" },
   ]);
 
   const handleTagClick = (index: number) => {

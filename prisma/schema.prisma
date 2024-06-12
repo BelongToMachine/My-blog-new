@@ -26,7 +26,6 @@ enum Status {
   IN_PROGRESS
   CLOSED
 }
-
 model Account {
   id                String  @id @default(cuid())
   userId            String

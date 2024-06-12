@@ -13,7 +13,7 @@ const BlogChart = ({ open, inProgress, closed }: Props) => {
   const data = [
     { label: "Web2", value: open },
     { label: "Web3", value: inProgress },
-    { label: "Non-tech", value: closed },
+    { label: "非技术类", value: closed },
   ];
 
   return (

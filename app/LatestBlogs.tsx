@@ -16,7 +16,7 @@ const LatestBlogs = async () => {
   return (
     <Card>
       <Heading size="4" mb="4">
-        The Latest Blogs
+        最近的博客
       </Heading>
       <Table.Root>
         <Table.Body>

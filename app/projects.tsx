@@ -16,7 +16,7 @@ const Projects = () => {
   return (
     <>
       <Box id="projects" className="text-center mb-3 ">
-        <h1 className="home-page-heading">Projects</h1>
+        <h1 className="home-page-heading">我的项目</h1>
       </Box>
       <div ref={ref}>
         <motion.div
@@ -26,7 +26,7 @@ const Projects = () => {
           transition={{ duration: 1.5, delay: 0.3 }}
         >
           <ProjectTags />
-          <Suspense fallback={<>Loading...</>}>
+          <Suspense fallback={<>加载中...</>}>
             <ProjectsDetail />
           </Suspense>
         </motion.div>

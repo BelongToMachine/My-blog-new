@@ -16,9 +16,9 @@ const BlogSummary = ({ open, inProgress, closed }: Props) => {
     value: number;
     status: Status;
   }[] = [
-    { label: "Web2 Blogs", value: open, status: "FINISHED" },
-    { label: "Web3 Blogs", value: inProgress, status: "IN_PROGRESS" },
-    { label: "Non-tech Blogs", value: closed, status: "CLOSED" },
+    { label: "Web2博客", value: open, status: "FINISHED" },
+    { label: "Web3博客", value: inProgress, status: "IN_PROGRESS" },
+    { label: "非技术类博客", value: closed, status: "CLOSED" },
   ];
 
   return (
