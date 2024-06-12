@@ -48,7 +48,7 @@ const Hero = () => {
             </button>
             <button className="px-1 py-1 rounded-full  hover:bg-slate-200  mt-3 w-full sm:w-fit bg-gradient-to-br  from-primary-500 to-secondary-500 ">
               <span className="block text-[#1D3E56] bg-[#F1FAFD] hover:bg-slate:800 rounded-full px-5 py-2">
-                <a href="/resume" download="永杰">
+                <a href="/resume/543.pdf" download="永杰">
                   Download Resume
                 </a>
               </span>

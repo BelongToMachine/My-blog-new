@@ -1,18 +1,6 @@
-import {
-  AspectRatio,
-  Badge,
-  Box,
-  Card,
-  Flex,
-  Grid,
-  Heading,
-  Text,
-} from "@radix-ui/themes";
+import { Badge, Box, Card, Flex, Heading } from "@radix-ui/themes";
 import React from "react";
-import selfie from "@/public/images/selfie.png"; // Update the image import
-import Image from "next/image";
 import { Color, colors } from "./color";
-import { TypeAnimation } from "react-type-animation";
 
 const AboutMePage = () => {
   return (
@@ -32,8 +20,19 @@ const AboutMePage = () => {
         </Card>
         <Card>
           <Flex className="flex flex-wrap items-center" gap="3">
+            <Heading color="sky">Toolkits</Heading>
+            {toolkits.map((toolkit) => (
+              <Badge key={toolkit} color={generateRandomColor()}>
+                {toolkit}
+              </Badge>
+            ))}
+          </Flex>
+        </Card>
+        <Card>
+          <Flex className="flex flex-wrap items-center" gap="3">
             <Heading color="sky">Eduction</Heading>
             <Badge color="ruby">GuangZhou University</Badge>
+            <Badge color="ruby">广州大学</Badge>
           </Flex>
         </Card>
       </Box>
@@ -42,6 +41,18 @@ const AboutMePage = () => {
 };
 
 const skills: string[] = ["JavaScript", "NodeJS", "TypeScript", "Python"];
+
+const toolkits: string[] = [
+  "React",
+  "NextJs",
+  "MySql",
+  "Vue",
+  "Django",
+  "Express",
+  "gulp",
+  "git",
+  "...",
+];
 
 const generateRandomColor: () => Color = () => {
   return colors[Math.floor(Math.random() * colors.length)] as Color;
