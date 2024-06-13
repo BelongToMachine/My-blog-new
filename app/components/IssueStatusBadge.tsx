@@ -8,11 +8,11 @@ interface Props {
 
 const statusMap: Record<
   Status,
-  { label: string; color: "red" | "violet" | "green" }
+  { label: string; color: "red" | "violet" | "green" | "yellow" }
 > = {
-  FINISHED: { label: "Finished", color: "red" },
-  IN_PROGRESS: { label: "In Progress", color: "violet" },
-  CLOSED: { label: "Closed", color: "green" },
+  FINISHED: { label: "WEB2", color: "yellow" },
+  IN_PROGRESS: { label: "WEB3", color: "violet" },
+  CLOSED: { label: "非技术类", color: "green" },
 };
 
 const IssueStatusBadge = ({ status }: Props) => {
