@@ -17,7 +17,7 @@ const Contact: React.FC = () => {
     const now = new Date().getTime();
 
     if (isOverLimitation(now)) {
-      setFormStatus("You can only send one message per day.");
+      setFormStatus("您每天仅可以发送一次邮箱");
       return;
     }
 
@@ -56,7 +56,7 @@ const Contact: React.FC = () => {
         className="flex mb-3 mt-10 justify-center items-center"
       >
         <h1 id="contact-me" className="home-page-heading">
-          Contact Me
+          联系我
         </h1>
         <TooltipIcon />
       </Box>
@@ -70,9 +70,7 @@ const Contact: React.FC = () => {
                 : "text-red-700 bg-red-100"
             } rounded-lg`}
           >
-            {formStatus === "SUCCESS!"
-              ? "Your message has been sent!"
-              : formStatus}
+            {formStatus === "SUCCESS!" ? "您的邮件已送达!" : formStatus}
           </div>
         )}
 
@@ -82,7 +80,7 @@ const Contact: React.FC = () => {
               htmlFor="name"
               className="block text-sm font-medium text-gray-700"
             >
-              Name
+              您的名字
             </Label.Root>
             <input
               type="text"
@@ -103,7 +101,7 @@ const Contact: React.FC = () => {
               htmlFor="email"
               className="block text-sm font-medium text-gray-700"
             >
-              Email
+              您的邮箱
             </Label.Root>
             <input
               type="email"
@@ -124,7 +122,7 @@ const Contact: React.FC = () => {
               htmlFor="message"
               className="block text-sm font-medium text-gray-700"
             >
-              Message
+              消息
             </Label.Root>
             <textarea
               name="message"

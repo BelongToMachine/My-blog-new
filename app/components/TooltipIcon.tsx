@@ -18,10 +18,10 @@ const TooltipIcon = () => {
             sideOffset={5}
           >
             <Text as="p" color="red">
-              You can only send me one email here per day
+              在这里，您每天仅可发送一次邮箱
             </Text>
             <Text as="p" className="pt-2">
-              For instant contact, find me with QQ/instagram
+              想立即与我取得联系，请使用QQ或Instagram
             </Text>
             <Tooltip.Arrow className="fill-white" />
           </Tooltip.Content>
