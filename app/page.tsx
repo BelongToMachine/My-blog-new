@@ -9,6 +9,7 @@ import Hero from "./components/Hero";
 import Projects from "./projects";
 import { Tag } from "@prisma/client";
 import SummaryHeader from "./SummaryHeader";
+import Contact from "./Contact";
 
 interface Props {
   searchParams: { tags: Tag };
@@ -38,6 +39,7 @@ export default async function Home({ searchParams }: Props) {
         </Flex>
         <LatestBlogs />
       </Grid>
+      <Contact />
     </main>
   );
 }

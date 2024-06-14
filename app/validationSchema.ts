@@ -19,3 +19,17 @@ export const patchIssueSchema = z.object({
     .optional()
     .nullable(),
 });
+
+export const contactSchema = z.object({
+  user_name: z
+    .string()
+    .min(2, { message: "Name must be at least 2 characters long" }),
+  user_email: z.string().email({ message: "Invalid email address" }),
+  message: z
+    .string()
+    .min(15, { message: "Message must be at least 15 characters long" }),
+});
+
+export type ContactFormErrors = {
+  [key: string]: string;
+};

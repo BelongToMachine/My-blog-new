@@ -56,12 +56,8 @@ export const generateDummyProjects = (): DjProject[] => {
 export const generateImageUrl = (project: DjProject) => {
   const imageUrl =
     MODE === "static" ? project.static_image_path : project.image_url;
-  console.log(imageUrl);
   if (!imageUrl) return "/images/project.jpg";
   return imageUrl;
-  // const ifExist = await ifImageValid(imageUrl);
-  // console.log(ifExist);
-  // return ifExist ? imageUrl : "/images/project.jpg";
 };
 
 const ifImageValid = async (url: string) => {
