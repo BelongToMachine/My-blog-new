@@ -38,8 +38,8 @@ export default async function Home({ searchParams }: Props) {
           <BlogChart open={open} inProgress={inProgress} closed={closed} />
         </Flex>
         <LatestBlogs />
-        <Contact />
       </Grid>
+      <Contact />
     </main>
   );
 }

@@ -2,8 +2,10 @@
 import React, { useRef, FormEvent, useState } from "react";
 import emailjs from "@emailjs/browser";
 import * as Label from "@radix-ui/react-label";
-import { z } from "zod";
 import { contactSchema, ContactFormErrors } from "./validationSchema";
+import { Box } from "@radix-ui/themes";
+import * as Tooltip from "@radix-ui/react-tooltip";
+import TooltipIcon from "./components/TooltipIcon";
 
 const Contact: React.FC = () => {
   const form = useRef<HTMLFormElement>(null);
@@ -48,92 +50,105 @@ const Contact: React.FC = () => {
   };
 
   return (
-    <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md">
-      {formStatus && (
-        <div
-          className={`p-4 mb-4 text-sm ${
-            formStatus === "SUCCESS!"
-              ? "text-green-700 bg-green-100"
-              : "text-red-700 bg-red-100"
-          } rounded-lg`}
-        >
-          {formStatus === "SUCCESS!"
-            ? "Your message has been sent!"
-            : formStatus}
-        </div>
-      )}
-      <form ref={form} onSubmit={sendEmail} className="space-y-6">
-        <div className="space-y-2">
-          <Label.Root
-            htmlFor="name"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Name
-          </Label.Root>
-          <input
-            type="text"
-            name="user_name"
-            id="name"
-            required
-            className={`block w-full p-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
-              errors.user_name ? "border-red-500" : "border-gray-300"
-            }`}
-          />
-          {errors.user_name && (
-            <p className="text-red-500 text-sm">{errors.user_name}</p>
-          )}
-        </div>
+    <>
+      <Box
+        id="projects"
+        className="flex mb-3 mt-10 justify-center items-center"
+      >
+        <h1 id="contact-me" className="home-page-heading">
+          Contact Me
+        </h1>
+        <TooltipIcon />
+      </Box>
 
-        <div className="space-y-2">
-          <Label.Root
-            htmlFor="email"
-            className="block text-sm font-medium text-gray-700"
+      <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md mt-5">
+        {formStatus && (
+          <div
+            className={`p-4 mb-4 text-sm ${
+              formStatus === "SUCCESS!"
+                ? "text-green-700 bg-green-100"
+                : "text-red-700 bg-red-100"
+            } rounded-lg`}
           >
-            Email
-          </Label.Root>
-          <input
-            type="email"
-            name="user_email"
-            id="email"
-            required
-            className={`block w-full p-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
-              errors.user_email ? "border-red-500" : "border-gray-300"
-            }`}
-          />
-          {errors.user_email && (
-            <p className="text-red-500 text-sm">{errors.user_email}</p>
-          )}
-        </div>
+            {formStatus === "SUCCESS!"
+              ? "Your message has been sent!"
+              : formStatus}
+          </div>
+        )}
 
-        <div className="space-y-2">
-          <Label.Root
-            htmlFor="message"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Message
-          </Label.Root>
-          <textarea
-            name="message"
-            id="message"
-            required
-            className={`block w-full p-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
-              errors.message ? "border-red-500" : "border-gray-300"
-            }`}
-          />
-          {errors.message && (
-            <p className="text-red-500 text-sm">{errors.message}</p>
-          )}
-        </div>
+        <form ref={form} onSubmit={sendEmail} className="space-y-6">
+          <div className="space-y-2">
+            <Label.Root
+              htmlFor="name"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Name
+            </Label.Root>
+            <input
+              type="text"
+              name="user_name"
+              id="name"
+              required
+              className={`block w-full p-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
+                errors.user_name ? "border-red-500" : "border-gray-300"
+              }`}
+            />
+            {errors.user_name && (
+              <p className="text-red-500 text-sm">{errors.user_name}</p>
+            )}
+          </div>
 
-        <div>
-          <input
-            type="submit"
-            value="Send"
-            className="w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer"
-          />
-        </div>
-      </form>
-    </div>
+          <div className="space-y-2">
+            <Label.Root
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Email
+            </Label.Root>
+            <input
+              type="email"
+              name="user_email"
+              id="email"
+              required
+              className={`block w-full p-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
+                errors.user_email ? "border-red-500" : "border-gray-300"
+              }`}
+            />
+            {errors.user_email && (
+              <p className="text-red-500 text-sm">{errors.user_email}</p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label.Root
+              htmlFor="message"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Message
+            </Label.Root>
+            <textarea
+              name="message"
+              id="message"
+              required
+              className={`block w-full p-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
+                errors.message ? "border-red-500" : "border-gray-300"
+              }`}
+            />
+            {errors.message && (
+              <p className="text-red-500 text-sm">{errors.message}</p>
+            )}
+          </div>
+
+          <div>
+            <input
+              type="submit"
+              value="Send"
+              className="w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer"
+            />
+          </div>
+        </form>
+      </div>
+    </>
   );
 };
 
