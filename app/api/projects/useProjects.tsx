@@ -41,7 +41,7 @@ export const generateDummyProjects = (): DjProject[] => {
     {
       id: -2,
       title: "N/A",
-      description: "Could not find a project",
+      description: "还没有相关的项目",
       is_author: false,
       repository: null,
       image_url: null,

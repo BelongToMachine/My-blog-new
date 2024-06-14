@@ -12,12 +12,12 @@ export const AuthStatus = () => {
   if (status === "unauthenticated")
     return (
       <Link className="nav-link pr-4" href={link}>
-        Login
+        登陆
       </Link>
     );
   return (
     <Box>
-      <Link href="/api/auth/signout">Log out</Link>
+      <Link href="/api/auth/signout">登出</Link>
     </Box>
   );
 };
