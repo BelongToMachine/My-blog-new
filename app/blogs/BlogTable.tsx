@@ -68,6 +68,18 @@ const columns: { label: string; value: keyof Issue; className?: string }[] = [
   { label: "创建于", value: "createdAt", className: "hidden md:table-cell" },
 ];
 
+// const switcher = (original: string) => {
+//   // FINISHED
+//   // IN_PROGRESS
+//   // CLOSED
+//   switch (original) {
+//     case "FINISHED":
+//       return "Web2";
+//     default:
+//       return original;
+//   }
+// };
+
 export const columnNames = columns.map((column) => column.value);
 
 export default BlogTable;
