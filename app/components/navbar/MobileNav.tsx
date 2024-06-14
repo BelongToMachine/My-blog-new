@@ -49,13 +49,13 @@ const Menu = () => {
 };
 
 const mobileLinks = [
-  { label: "Blogs", href: "/blogs" },
+  { label: "我的博客", href: "/blogs" },
   { label: "Instagram", href: "https://www.instagram.com/henrqaz/" },
 ];
 
 const Icon = ({ label }: { label: string }) => {
   switch (label) {
-    case "Blogs":
+    case "我的博客":
       return <FaBook />;
     case "Instagram":
       return <IoLogoInstagram />;
