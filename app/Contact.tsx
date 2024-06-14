@@ -11,10 +11,10 @@ const Contact: React.FC = () => {
     if (form.current) {
       emailjs
         .sendForm(
-          "YOUR_SERVICE_ID",
-          "YOUR_TEMPLATE_ID",
+          service_id!,
+          "template_02pba33", //template_id
           form.current,
-          "YOUR_PUBLIC_KEY"
+          public_key
         )
         .then(
           () => {
@@ -39,5 +39,8 @@ const Contact: React.FC = () => {
     </form>
   );
 };
+
+const public_key = process.env.NEXT_PUBLIC_PUBLIC_KEY;
+const service_id = process.env.NEXT_PUBLIC_SERVICE_ID;
 
 export default Contact;
