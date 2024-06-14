@@ -29,7 +29,7 @@ const BlogStatusFilter = () => {
         router.push("/blogs" + query);
       }}
     >
-      <Select.Trigger placeholder="Filter by status" />
+      <Select.Trigger placeholder="Filter by category" />
       <Select.Content>
         {statuses.map((status, index) => (
           <Select.Item key={index} value={status.value || "unSelected"}>
