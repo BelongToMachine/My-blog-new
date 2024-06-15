@@ -8,10 +8,10 @@ interface Props {
 
 const statusMap: Record<
   Status,
-  { label: string; color: "red" | "violet" | "green" | "yellow" }
+  { label: string; color: "red" | "violet" | "green" | "yellow" | "blue" }
 > = {
-  FINISHED: { label: "WEB2", color: "yellow" },
-  IN_PROGRESS: { label: "WEB3", color: "violet" },
+  FINISHED: { label: "Web开发", color: "blue" },
+  IN_PROGRESS: { label: "科技类", color: "violet" },
   CLOSED: { label: "非技术类", color: "green" },
 };
 
