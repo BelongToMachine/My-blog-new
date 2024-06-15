@@ -17,7 +17,7 @@ const ProjectTags = () => {
     { name: "全部", link: "ALL", isSelected: true },
     { name: "全栈", link: "FULL_STACK" },
     { name: "后端", link: "BACKEND" },
-    { name: "移动端", link: "FRONT_END" },
+    { name: "前端", link: "FRONT_END" },
     { name: "移动端", link: "MOBILE" },
   ]);
 
