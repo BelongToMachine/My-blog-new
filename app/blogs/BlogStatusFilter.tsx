@@ -10,8 +10,8 @@ import {
 
 const statuses: { label: String; value?: Status }[] = [
   { label: "全部" },
-  { label: "WEB2", value: "FINISHED" },
-  { label: "WEB3", value: "IN_PROGRESS" },
+  { label: "Web开发", value: "FINISHED" },
+  { label: "科技类", value: "IN_PROGRESS" },
   { label: "非技术类", value: "CLOSED" },
 ];
 
