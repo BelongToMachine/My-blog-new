@@ -1,0 +1,25 @@
+# Environment variables declared in this file are automatically made available to Prisma.
+# See the documentation for more detail: https://pris.ly/d/prisma-schema#accessing-environment-variables-from-the-schema
+
+# Prisma supports the native connection string format for PostgreSQL, MySQL, SQLite, SQL Server, MongoDB and CockroachDB.
+# See the documentation for all the connection string options: https://pris.ly/d/connection-strings
+
+
+DATABASE_URL="mysql://root:Liaoliao0@localhost:3306/myblog"
+# DIRECT_URL="postgres://postgres.okreruobbcctzjaakrvl:Sevval77520!@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres"
+# DATABASE_URL="postgres://postgres.oitobaaaufjnuhcbmlak:RGtkFprDdaSAE5tz@aws-0-ap-northeast-2.pooler.supabase.com:5432/postgres"
+NEXTAUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="pCBU2gpHs86DwdlhNXY84nY6Loy3mtir5kEwNKeY6A4="
+GOOGLE_CLINET_ID="59261781369-barr00j08n1r7ko94nufhco2bqrlme1d.apps.googleusercontent.com"
+GOOGLE_CLINET_SECRET="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"
+
+NEXT_PUBLIC_DJANGO ="http://localhost:8000/mysite"
+NEXT_PUBLIC_PRODUCTION_MODE = "dynamic" #"static" or "dynamic"
+NEXT_PUBLIC_DEV_MODE = "production" #"dev" or "production"
+
+# Email.js
+NEXT_PUBLIC_SERVICE_ID="service_y6ydvn4"
+NEXT_PUBLIC_PUBLIC_KEY="IRn0_X2CIq0svF325"
+
+
+
