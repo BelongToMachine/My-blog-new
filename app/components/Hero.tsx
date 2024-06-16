@@ -37,10 +37,8 @@ const Hero = () => {
           <p className="mb-6">
             A developer based in China (UTC+08:00), with a strong passion for
             creating user-friendly and accessible websites and web applications.
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum,
-            magni! Ex quisquam libero at quasi, laboriosam aut id ipsum rerum,
-            obcaecati dignissimos fugiat! Cumque accusantium modi placeat
-            aliquid maiores. Blanditiis.
+            <br />
+            来自中国(UTC+08:00)的开发者，热爱新技术，喜欢技术提高工作效率。
           </p>
           <div>
             <button className="px-6 py-3 rounded-full mr-4 hover:bg-slate-200 text-white w-full sm:w-fit bg-gradient-to-br from-primary-500 to-secondary-500">
