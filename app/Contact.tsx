@@ -39,7 +39,6 @@ const Contact: React.FC = () => {
             setFormStatus("SUCCESS!");
             form.current!.reset();
             localStorage.setItem("lastSubmissionTime", now.toString());
-            setTimeout(() => setFormStatus(""), 3000);
           },
           (error: any) => {
             console.log("FAILED...", error.text);
