@@ -1,0 +1,50 @@
+[
+  {
+    "id": 21,
+    "title": "\u6211\u7684\u535a\u5ba2",
+    "description": "\u6211\u7684\u4e2a\u4eba\u7f51\u7ad9\uff0c\u65e8\u5728\u63d0\u4f9b\u4e00\u4e2a\u529f\u80fd\u4e30\u5bcc\u3001\u9ad8\u5ea6\u53ef\u5b9a\u5236\u4e14\u5b89\u5168\u53ef\u9760\u7684\u5e73\u53f0\uff0c\u4e3a\u7528\u6237\u63d0\u4f9b\u535a\u5ba2\u529f\u80fd\uff0c\u5728\u7ebf\u5c55\u793a\u6211\u7684\u4e2a\u4eba\u9879\u76ee\u548c\u6280\u672f\u6808\uff0c\u5e76\u652f\u6301Google\u8eab\u4efd\u9a8c\u8bc1\u548c\u6388\u6743\u3002",
+    "tag": "FULL_STACK",
+    "repository": "https://github.com/JieLuis/My-blog-new",
+    "website": "https://my-blog-new-mu.vercel.app/",
+    "created_at": "2024-06-14T09:29:07.490637Z",
+    "is_author": true,
+    "image_url": null,
+    "static_image_path": "/images/projects/mysite.png"
+  },
+  {
+    "id": 22,
+    "title": "FireBase\u5728\u7ebf\u804a\u5929\u5ba4",
+    "description": "\u4e00\u4e2a\u57fa\u4e8eVue + Firebase\u7684\u7b80\u5355\u5728\u7ebf\u804a\u5929\u5ba4",
+    "tag": "FULL_STACK",
+    "repository": "https://github.com/JieLuis/FireBase-ChatRoom",
+    "website": "https://fire-base-chat-room.vercel.app/",
+    "created_at": "2024-06-16T05:32:51.640243Z",
+    "is_author": true,
+    "image_url": null,
+    "static_image_path": "/images/projects/chatroom.png"
+  },
+  {
+    "id": 24,
+    "title": "JieBuy\u6c38\u6770\u8d2d\u7269\u5546\u573aAPI",
+    "description": "\u4e00\u4e2aDjango\u540e\u7aef\u5e94\u7528\uff0c\u7528\u4e8e\u670d\u52a1\u6211\u7684\u5404\u79cd\u5404\u6837\u7684\u524d\u7aef",
+    "tag": "BACKEND",
+    "repository": "https://github.com/JieLuis/Django_Backend",
+    "website": "https://jiebuy-f97dfef19743.herokuapp.com/store/",
+    "created_at": "2024-06-16T05:42:39.181995Z",
+    "is_author": true,
+    "image_url": null,
+    "static_image_path": "images/projects/jiebuy.png"
+  },
+  {
+    "id": 26,
+    "title": "GameHub\u5355\u673a\u6e38\u620f\u5546\u57ce",
+    "description": "\u662f\u4e00\u4e2a\u5c55\u793a\u70ed\u95e8\u5355\u673a\u6e38\u620f\u7684\u9759\u6001\u7f51\u7ad9\uff0c\u4e3b\u8981\u5b9e\u73b0\u4e86\u6839\u636e\u641c\u7d22\u6587\u672c\u3001\u5206\u7c7b\u4ee5\u53ca\u5c55\u793a\u8c03\u7528\u76f8\u5e94\u7684\u540e\u7aef API \u6570\u636e\u7b49\u529f\u80fd\u3002\u91c7\u7528\u4e86\u4e00\u7cfb\u5217\u73b0\u4ee3\u5316\u7684\u6280\u672f\uff0c\u4e3a\u7528\u6237\u63d0\u4f9b\u9ad8\u6548\u3001\u53ef\u9760\u7684\u4f53\u9a8c\u3002",
+    "tag": "FRONT_END",
+    "repository": "https://github.com/JieLuis/Gamehub",
+    "website": "https://game-hub-zeta-lake.vercel.app/",
+    "created_at": "2024-06-16T05:55:23.310076Z",
+    "is_author": true,
+    "image_url": null,
+    "static_image_path": ""
+  }
+]
