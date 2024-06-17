@@ -21,12 +21,12 @@
     "created_at": "2024-06-16T05:32:51.640243Z",
     "is_author": true,
     "image_url": null,
-    "static_image_path": "/images/projects/chatroom.png"
+    "static_image_path": "/images/projects/chatRoom.png"
   },
   {
     "id": 24,
     "title": "JieBuy\u6c38\u6770\u8d2d\u7269\u5546\u573aAPI",
-    "description": "\u4e00\u4e2aDjango\u540e\u7aef\u5e94\u7528\uff0c\u7528\u4e8e\u670d\u52a1\u6211\u7684\u5404\u79cd\u5404\u6837\u7684\u524d\u7aef",
+    "description": "\u57fa\u4e8eDjangoRestFramewrok+redis+celery+mysql\uff0c\u4e00\u4e2aDjango\u540e\u7aef\u5e94\u7528\uff0c\u7528\u4e8e\u670d\u52a1\u6211\u7684\u5404\u79cd\u5404\u6837\u7684\u524d\u7aef",
     "tag": "BACKEND",
     "repository": "https://github.com/JieLuis/Django_Backend",
     "website": "https://jiebuy-f97dfef19743.herokuapp.com/store/",
