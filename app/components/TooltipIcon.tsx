@@ -21,7 +21,7 @@ const TooltipIcon = () => {
               在这里，您每天仅可发送一次邮箱
             </Text>
             <Text as="p" className="pt-2">
-              想立即与我取得联系，请使用QQ或Instagram
+              想立即与我取得联系，请使用LinkedIn
             </Text>
             <Tooltip.Arrow className="fill-white" />
           </Tooltip.Content>
