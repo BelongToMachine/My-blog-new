@@ -11,7 +11,6 @@ import useProjects, {
   generateImageUrl,
 } from "../api/projects/useProjects";
 import { useSearchParams } from "next/navigation";
-import { InfoCircledIcon } from "@radix-ui/react-icons";
 import Dialog from "./Dialog";
 
 const ProjectsDetail = () => {
