@@ -4,7 +4,7 @@ import { PiGithubLogoFill } from "react-icons/pi";
 import Link from "next/link";
 import { Button, DropdownMenu } from "@radix-ui/themes";
 import { FaBook } from "react-icons/fa6";
-import { IoLogoInstagram } from "react-icons/io5";
+import { FaLinkedin } from "react-icons/fa";
 
 const MobileNav = () => {
   return (
@@ -50,14 +50,17 @@ const Menu = () => {
 
 const mobileLinks = [
   { label: "我的博客", href: "/blogs" },
-  { label: "Instagram", href: "https://www.instagram.com/henrqaz/" },
+  {
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/in/jie-liao-070162296/",
+  },
 ];
 
 const Icon = ({ label }: { label: string }) => {
   switch (label) {
     case "我的博客":
       return <FaBook />;
-    case "Instagram":
-      return <IoLogoInstagram />;
+    case "LinkedIn":
+      return <FaLinkedin />;
   }
 };
