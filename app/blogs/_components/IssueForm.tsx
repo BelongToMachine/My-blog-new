@@ -12,7 +12,7 @@ import ErrorMessage from "@/app/components/ErrorMessage";
 import Spinner from "@/app/components/Spinner";
 import { Issue } from "@prisma/client";
 import SimpleMDE from "react-simplemde-editor";
-import AssigneeSelect from "@/app/blogs/[id]/AssigneeSelect";
+
 
 type IssueFormData = z.infer<typeof issueSchema>;
 
