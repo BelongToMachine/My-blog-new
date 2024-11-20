@@ -40,7 +40,7 @@ export default async function Home({ searchParams }: Props) {
           </li>
         ))}
       </ul>
-      {/* <Hero />
+      <Hero />
       <AboutMe />
       <Projects />
       <SummaryHeader />
@@ -51,7 +51,7 @@ export default async function Home({ searchParams }: Props) {
         </Flex>
         <LatestBlogs />
       </Grid>
-      <Contact /> */}
+      <Contact />
     </main>
   );
 }
