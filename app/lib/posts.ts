@@ -14,7 +14,7 @@ export interface ArticleHeader {
   author: string
 }
 
-const postsDirectory = path.join(process.cwd(), "app", "posts");
+const postsDirectory = path.join(process.cwd(), "posts");
 
 export function getAllPosts() {
   const fileNames = fs.readdirSync(postsDirectory);
