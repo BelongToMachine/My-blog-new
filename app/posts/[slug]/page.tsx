@@ -5,7 +5,11 @@ import styles from "@/app/posts/post.module.css"
 
 type Params = { slug : string }
 
-const md = new MarkdownIt()
+const md = new MarkdownIt({
+    html: true,  // Enable HTML rendering
+    linkify: true,
+    typographer: true
+  })
 
 const fetchPosts = async (slug : string) => {
     const posts = getAllPosts()
@@ -20,6 +24,9 @@ export default async function Post ({ params } : { params: Params}){
 
     const htmlContent = md.render(post.content)
 
+    const headings = extractHeadings(htmlContent)
+
+    
     return (
         <article className={styles.article}>
             <h1 className="">{post.header.title}</h1>
@@ -28,6 +35,6 @@ export default async function Post ({ params } : { params: Params}){
             className="post-content"
             dangerouslySetInnerHTML={{ __html: htmlContent }}
             />
-      </article>
+        </article>
     )
 }
