@@ -6,7 +6,7 @@ const TableOfContent = ({ headings }: { headings: Heading[] }) => (
   <ScrollArea.Root className="overflow-hidden rounded bg-white shadow-blackA4">
     <ScrollArea.Viewport className="size-full rounded">
       <div className="px-5 py-[15px]">
-        <div className="text-[15px] font-medium leading-[18px] text-violet11 bg-[#00005506]">
+        <div className="text-[15px] font-medium leading-[18px] text-violet">
           Table of Content
         </div>
         {headings.map((heading) => (

@@ -17,7 +17,7 @@ const Hero = () => {
         >
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-4 text-yellow-500">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-600">
-              {`Hello I'm `}
+              {`Heya I'm `}
             </span>
             <TypeAnimation
               sequence={[
@@ -35,8 +35,7 @@ const Hero = () => {
             />
           </h1>
           <p className="mb-6">
-            A developer based in China (UTC+08:00), with a strong passion for
-            creating user-friendly and accessible websites and web applications.
+            I'm a developer based in Hangzhou,
             <br />
             来自中国(UTC+08:00)的开发者，热爱新技术，喜欢用技术提高工作效率。
           </p>
