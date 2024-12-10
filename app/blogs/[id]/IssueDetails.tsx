@@ -25,7 +25,7 @@ export interface Heading {
 const md = new MarkdownIt({
   html: true,
   linkify: true,
-  typographer: true
+  typographer: true,
 })
 
 md.renderer.rules.heading_open = function (tokens, idx) {
@@ -59,7 +59,10 @@ function extractHeadings(htmlContent: string): Heading[] {
 }
 
 const IssueDetails = ({ issue }: { issue: Issue }) => {
-  const [tocPosition, setTocPosition] = useState<React.CSSProperties>({})
+  const [tocPosition, setTocPosition] = useState<React.CSSProperties>({
+    display: "none",
+    position: "fixed",
+  })
   const mainContentRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -73,8 +76,6 @@ const IssueDetails = ({ issue }: { issue: Issue }) => {
             position: "fixed",
             top: `calc(50px + var(--parent-offset))`,
             left: `calc(${mainContentRect.right}px + 20px)`,
-            height: "fit-content",
-            maxWidth: "300px",
           })
         } else {
           // On mobile, reset positioning
@@ -126,7 +127,7 @@ const IssueDetails = ({ issue }: { issue: Issue }) => {
       </Box>
 
       <Box
-        className="w-full max-w-sm rounded-lg p-4 md:static"
+        className="w-full max-w-sm rounded-lg p-4"
         style={{
           ...tocPosition,
           width: "100%",
