@@ -70,15 +70,13 @@ const IssueDetails = ({ issue }: { issue: Issue }) => {
       if (mainContentRef.current) {
         const mainContentRect = mainContentRef.current.getBoundingClientRect()
 
-        // On larger screens, position the ToC
-        if (window.innerWidth >= 768) {
+        if (window.innerWidth >= 1048) {
           setTocPosition({
             position: "fixed",
-            top: `calc(50px + var(--parent-offset))`,
+            top: `calc(30px + var(--parent-offset))`,
             left: `calc(${mainContentRect.right}px + 20px)`,
           })
         } else {
-          // On mobile, reset positioning
           setTocPosition({})
         }
       }
@@ -106,7 +104,7 @@ const IssueDetails = ({ issue }: { issue: Issue }) => {
     >
       <Box
         ref={mainContentRef}
-        className="flex-grow max-w-4xl bg-white rounded-lg shadow-lg p-6"
+        className="flex-grow max-w-3xl bg-white rounded-lg shadow-lg p-6"
       >
         <Heading className="text-2xl font-bold">{issue.title}</Heading>
         <Flex className="space-x-4 mt-2 text-gray-600 text-sm" align="center">
