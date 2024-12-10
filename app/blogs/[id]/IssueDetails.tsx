@@ -1,7 +1,7 @@
 "use client"
 
 import { IssueStatusBadge, Link } from "@/app/components"
-import styles from "@/app/posts/post.module.css"
+import styles from "@/app/blogs/[id]/post.module.css"
 import { Issue } from "@prisma/client"
 import { Box, Card, Flex, Heading, Text } from "@radix-ui/themes"
 import matter from "gray-matter"
@@ -38,7 +38,7 @@ md.renderer.rules.heading_open = function (tokens, idx) {
   return `<h${level} id="${id}">${content}</h${level}>`
 }
 
-function extractHeadings(htmlContent: string): Heading[] {
+const extractHeadings = (htmlContent: string): Heading[] => {
   const headingRegex = /<h([2])\s*(?:id="([^"]*)")?[^>]*>([^<]+)<\/h\1>/g
   const headings: Heading[] = []
   let match

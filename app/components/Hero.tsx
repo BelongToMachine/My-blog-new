@@ -1,9 +1,9 @@
-"use client";
-import React from "react";
-import selfie from "@/public/images/selfie.png"; // Update the image import
-import Image from "next/image";
-import { TypeAnimation } from "react-type-animation";
-import { motion } from "framer-motion";
+"use client"
+import React from "react"
+import selfie from "@/public/images/selfie.png" // Update the image import
+import Image from "next/image"
+import { TypeAnimation } from "react-type-animation"
+import { motion } from "framer-motion"
 
 const Hero = () => {
   return (
@@ -35,9 +35,9 @@ const Hero = () => {
             />
           </h1>
           <p className="mb-6">
-            I'm a developer based in Hangzhou,
+            {`I'm a developer based in Hangzhou,`}
             <br />
-            来自中国(UTC+08:00)的开发者，热爱新技术，喜欢用技术提高工作效率。
+            {`来自中国(UTC+08:00)的开发者，热爱新技术，喜欢用技术提高工作效率。`}
           </p>
           <div>
             <button className="px-6 py-3 rounded-full mr-4 hover:bg-slate-200 text-white w-full sm:w-fit bg-gradient-to-br from-primary-500 to-secondary-500">
@@ -70,7 +70,7 @@ const Hero = () => {
         </motion.div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Hero;
+export default Hero
