@@ -10,6 +10,9 @@ import Projects from "./projects";
 import { Tag } from "@prisma/client";
 import SummaryHeader from "./SummaryHeader";
 import Contact from "./Contact";
+import { getAllPosts } from "@/app/lib/posts"
+import { Post } from "@/app/lib/posts";
+import { Link } from "./components";
 
 interface Props {
   searchParams: { tags: Tag };
@@ -26,8 +29,18 @@ export default async function Home({ searchParams }: Props) {
     where: { status: "CLOSED" },
   });
 
+  const posts : Post[] = getAllPosts();
+
   return (
     <main className="container">
+      <ul>
+        {posts.map((post) => (
+          <li key={post.slug}>
+            <Link href={`/posts/${post.slug}`}>{post.header.title}</Link>
+            <p>{post.header.date}</p>
+          </li>   
+        ))}
+      </ul>
       <Hero />
       <AboutMe />
       <Projects />
