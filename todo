@@ -1,1 +1,19 @@
 [ ]Fix can't login error
+
+Development branch explanation:
+
+main - This is for update the backbone of the application
+
+feature/... - This is for developing the main feature of the application
+
+bugfix/... - This is for fixing the main bug of the application
+
+article/... - This is for updating blog
+
+CN-pro - This is for Chinese version production
+
+-- When ready for production, should merge 'feature/...', 'bugfix/...' and 'article/...' into CN-pro
+
+-- After finish developing on 'feature/...', 'bugfix/...' and 'article/...', should merge them into main
+
+-- Everytime create a new branch 'feature/...', 'bugfix/...' and 'article/...', should create them from main, so keep in mind that main should be updated before create a new branch from it

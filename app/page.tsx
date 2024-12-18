@@ -28,15 +28,7 @@ export default async function Home({ searchParams }: Props) {
 
   return (
     <main className="container">
-      <ul>
-        {posts.map((post) => (
-          <li key={post.slug}>
-            <a href={`/posts/${post.slug}`}>{post.header.title}</a>
-            <p>{post.header.date}</p>
-          </li>
-        ))}
-      </ul>
-      {/* <Hero />
+      <Hero />
       <AboutMe />
       <Projects />
       <SummaryHeader />
@@ -47,7 +39,7 @@ export default async function Home({ searchParams }: Props) {
         </Flex>
         <LatestBlogs />
       </Grid>
-      <Contact /> */}
+      <Contact />
     </main>
   )
 }
