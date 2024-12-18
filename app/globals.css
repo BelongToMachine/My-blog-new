@@ -26,3 +26,7 @@ body {
     @apply text-center text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-600 lg:text-6xl leading-normal lg:leading-relaxed;
   }
 }
+
+ul li {
+  margin-bottom: 0.5rem;
+}

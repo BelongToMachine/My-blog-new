@@ -46,5 +46,8 @@ const links = [
   { label: "About me", href: "#about-me-section" },
   { label: "Projects", href: "#projects" },
   { label: "Blogs", href: "/blogs" },
-  { label: "instagram", href: "https://www.instagram.com/henrqaz/" },
+  {
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/in/jie-liao-070162296/",
+  },
 ];

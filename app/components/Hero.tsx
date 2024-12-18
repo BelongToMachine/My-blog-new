@@ -1,9 +1,9 @@
-"use client";
-import React from "react";
-import selfie from "@/public/images/selfie.png"; // Update the image import
-import Image from "next/image";
-import { TypeAnimation } from "react-type-animation";
-import { motion } from "framer-motion";
+"use client"
+import React from "react"
+import selfie from "@/public/images/selfie.png" // Update the image import
+import Image from "next/image"
+import { TypeAnimation } from "react-type-animation"
+import { motion } from "framer-motion"
 
 const Hero = () => {
   return (
@@ -17,7 +17,7 @@ const Hero = () => {
         >
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-4 text-yellow-500">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-600">
-              {`Hello I'm `}
+              {`Heya I'm `}
             </span>
             <TypeAnimation
               sequence={[
@@ -35,12 +35,9 @@ const Hero = () => {
             />
           </h1>
           <p className="mb-6">
-            A developer based in China (UTC+08:00), with a strong passion for
-            creating user-friendly and accessible websites and web applications.
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum,
-            magni! Ex quisquam libero at quasi, laboriosam aut id ipsum rerum,
-            obcaecati dignissimos fugiat! Cumque accusantium modi placeat
-            aliquid maiores. Blanditiis.
+            {`I'm a developer based in Hangzhou,`}
+            <br />
+            {`来自中国(UTC+08:00)的开发者，热爱新技术，喜欢用技术提高工作效率。`}
           </p>
           <div>
             <button className="px-6 py-3 rounded-full mr-4 hover:bg-slate-200 text-white w-full sm:w-fit bg-gradient-to-br from-primary-500 to-secondary-500">
@@ -48,7 +45,7 @@ const Hero = () => {
             </button>
             <button className="px-1 py-1 rounded-full  hover:bg-slate-200  mt-3 w-full sm:w-fit bg-gradient-to-br  from-primary-500 to-secondary-500 ">
               <span className="block text-[#1D3E56] bg-[#F1FAFD] hover:bg-slate:800 rounded-full px-5 py-2">
-                <a href="/resume/543.pdf" download="永杰">
+                <a href="/resume/resume.pdf" download="resume">
                   Download Resume
                 </a>
               </span>
@@ -73,7 +70,7 @@ const Hero = () => {
         </motion.div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Hero;
+export default Hero

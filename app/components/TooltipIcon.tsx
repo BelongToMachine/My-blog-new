@@ -21,7 +21,7 @@ const TooltipIcon = () => {
               You can only send me one email here per day
             </Text>
             <Text as="p" className="pt-2">
-              For instant contact, find me with QQ/instagram
+              For instant contact, find me with LinkedIn
             </Text>
             <Tooltip.Arrow className="fill-white" />
           </Tooltip.Content>
