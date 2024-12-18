@@ -8,6 +8,7 @@ import { getServerSession } from "next-auth"
 import authOptions from "@/app/auth/authOptions"
 import AssigneeSelect from "./AssigneeSelect"
 import { cache } from "react"
+import LikeAndDislike from "./LikeAndDislike"
 
 interface Props {
   params: { id: string }
@@ -29,6 +30,7 @@ const IssueDetailPage = async ({ params }: Props) => {
       <Box className="md:col-span-5">
         <IssueDetails issue={issue} />
       </Box>
+      <LikeAndDislike />
       {session && (
         <Box>
           <Flex direction="column" gap="4">

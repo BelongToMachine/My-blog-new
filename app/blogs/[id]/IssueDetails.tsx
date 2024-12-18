@@ -3,12 +3,13 @@
 import { IssueStatusBadge, Link } from "@/app/components"
 import styles from "@/app/blogs/[id]/post.module.css"
 import { Issue } from "@prisma/client"
-import { Box, Card, Flex, Heading, Text } from "@radix-ui/themes"
+import { Box, Button, Card, Flex, Heading, Text } from "@radix-ui/themes"
 import matter from "gray-matter"
 import MarkdownIt from "markdown-it"
 import { v4 as uuidv4 } from "uuid"
 import { useState, useEffect, useRef, ReactElement } from "react"
 import TableOfContent from "../_components/TableOfContent"
+import LikeAndDislike from "./LikeAndDislike"
 
 interface ArticleHeader {
   title: string
@@ -133,6 +134,7 @@ const IssueDetails = ({ issue }: { issue: Issue }) => {
         }}
       >
         <TableOfContent headings={headings} />
+        <LikeAndDislike />
       </Box>
     </Flex>
   )
