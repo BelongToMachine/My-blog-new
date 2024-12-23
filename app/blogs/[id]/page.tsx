@@ -30,7 +30,6 @@ const IssueDetailPage = async ({ params }: Props) => {
       <Box className="md:col-span-5">
         <IssueDetails issue={issue} />
       </Box>
-      <LikeAndDislike />
       {session && (
         <Box>
           <Flex direction="column" gap="4">

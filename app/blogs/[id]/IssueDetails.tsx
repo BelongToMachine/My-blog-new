@@ -133,7 +133,7 @@ const IssueDetails = ({ issue }: { issue: Issue }) => {
           maxWidth: "300px",
         }}
       >
-        <TableOfContent headings={headings} />
+        {/* <TableOfContent headings={headings} /> */}
         <LikeAndDislike />
       </Box>
     </Flex>
