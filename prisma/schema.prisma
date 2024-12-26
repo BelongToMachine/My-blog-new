@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -19,7 +19,7 @@ model Issue {
   updatedAt        DateTime @updatedAt
   assignedToUserId String?  @db.VarChar(255)
   assignedToUser   User?    @relation(fields: [assignedToUserId], references: [id]) //map 'assignedToUserId' of Issue to "id" of User, also we need assign the same relationship to User model
-} 
+}
 
 enum Status {
   FINISHED
@@ -61,24 +61,24 @@ model User {
   emailVerified DateTime?
   image         String?
   accounts      Account[]
-  sessions      Session[] 
+  sessions      Session[]
   assignedIssue Issue[]
 }
 
 model Project {
-  id            String  @id @default(cuid())
-  title         String  @db.VarChar(255)
-  content       String  @db.Text
-  isAuthor      Boolean @default(false)
-  link          String?  
-  imgUrl        String?
-  tags          Tag[] 
+  id       String  @id @default(cuid())
+  title    String  @db.VarChar(255)
+  content  String  @db.Text
+  isAuthor Boolean @default(false)
+  link     String?
+  imgUrl   String?
+  tags     Tag[]
 }
 
-model Tag {  
-  id            String   @id @default(cuid())  
-  name          String   @unique  
-  projects      Project[]  
+model Tag {
+  id       String    @id @default(cuid())
+  name     String    @unique
+  projects Project[]
 }
 
 model VerificationToken {
