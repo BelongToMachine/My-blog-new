@@ -18,6 +18,16 @@ const LikeAndDislike = () => {
     setIsCursorLocked(isCursorRelesed)
   }, [])
 
+  const handleClick = useCallback(
+    (e: React.MouseEvent) => {
+      if (!isCursorLocked) {
+        document.body.requestPointerLock()
+        setCursorPosition({ x: e.clientX, y: e.clientY })
+      }
+    },
+    [isCursorLocked]
+  )
+
   const updateCursorPosition = useCallback((e: MouseEvent) => {
     setCursorPosition((prev) => {
       let newX = prev.x + e.movementX
@@ -74,13 +84,9 @@ const LikeAndDislike = () => {
   })
 
   return (
-    <Box ref={modalRef} className="w-full max-w-sm rounded-lg p-4 mt-6">
+    <Box ref={modalRef} onClick={handleClick} className="w-full max-w-sm rounded-lg p-4 mt-6">
       <Flex className="space-x-4" align="center">
-        <Cursor
-          ref={cursorRef}
-          position={cursorPosition}
-          isVisible={isCursorLocked}
-        />
+        <Cursor ref={cursorRef} position={cursorPosition} isVisible={isCursorLocked} />
         {/* <Fan windOffsetX={windOffsetX} /> */}
       </Flex>
     </Box>

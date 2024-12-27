@@ -10,6 +10,7 @@ import { v4 as uuidv4 } from "uuid"
 import { useState, useEffect, useRef, ReactElement } from "react"
 import TableOfContent from "../_components/TableOfContent"
 import LikeAndDislike from "./LikeAndDislike"
+import { useCursorStore } from "@/app/service/Store"
 
 interface ArticleHeader {
   title: string
@@ -57,6 +58,19 @@ const extractHeadings = (htmlContent: string): Heading[] => {
   }
 
   return headings
+}
+
+const HoverWrapper = ({ children }: { children: React.ReactNode }) => {
+  const switchMagicCursor = useCursorStore((state) => state.switchMagicCursor)
+
+  return (
+    <div
+      onMouseEnter={() => switchMagicCursor(true)}
+      onMouseLeave={() => switchMagicCursor(false)}
+    >
+      {children}
+    </div>
+  )
 }
 
 const IssueDetails = ({ issue }: { issue: Issue }) => {
@@ -125,17 +139,19 @@ const IssueDetails = ({ issue }: { issue: Issue }) => {
         </Card>
       </Box>
 
-      <Box
-        className="w-full max-w-sm rounded-lg p-4"
-        style={{
-          ...tocPosition,
-          width: "100%",
-          maxWidth: "300px",
-        }}
-      >
-        {/* <TableOfContent headings={headings} /> */}
-        <LikeAndDislike />
-      </Box>
+      <HoverWrapper>
+        <Box
+          className="w-full max-w-sm rounded-lg p-4"
+          style={{
+            ...tocPosition,
+            width: "100%",
+            maxWidth: "300px",
+          }}
+        >
+          <TableOfContent headings={headings} />
+          <LikeAndDislike />
+        </Box>
+      </HoverWrapper>
     </Flex>
   )
 }
