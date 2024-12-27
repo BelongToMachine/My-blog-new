@@ -19,6 +19,7 @@ const Cursor = forwardRef(({ position, isVisible }: CursorProps, ref) => {
     willChange: "transform",
     transform: `translateX(${position.x}px) translateY(${position.y}px)`,
     transition: `transform 0.1s linear`,
+    display: isVisible ? `block` : `none`,
   }
   return (
     <Box ref={typedRef} style={cursorStyles}>

@@ -3,8 +3,10 @@
 import { Box, Button, Flex } from "@radix-ui/themes"
 import React, { useCallback, useEffect, useRef, useState } from "react"
 import Cursor from "./Cursor"
+import { useCursorStore } from "@/app/service/Store"
 
 const LikeAndDislike = () => {
+  const isMagicCursor = useCursorStore((state) => state.isMagicCursor)
   const [isCursorLocked, setIsCursorLocked] = useState(false)
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 })
   const modalRef = useRef<HTMLDivElement>(null)
@@ -17,16 +19,6 @@ const LikeAndDislike = () => {
     const isCursorRelesed = document.pointerLockElement !== null
     setIsCursorLocked(isCursorRelesed)
   }, [])
-
-  const handleClick = useCallback(
-    (e: React.MouseEvent) => {
-      if (!isCursorLocked) {
-        document.body.requestPointerLock()
-        setCursorPosition({ x: e.clientX, y: e.clientY })
-      }
-    },
-    [isCursorLocked]
-  )
 
   const updateCursorPosition = useCallback((e: MouseEvent) => {
     setCursorPosition((prev) => {
@@ -50,7 +42,7 @@ const LikeAndDislike = () => {
   }, [handlePointerLockChange])
 
   useEffect(() => {
-    if (isCursorLocked) {
+    if (isMagicCursor) {
       document.addEventListener("mousemove", updateCursorPosition)
     } else {
       document.removeEventListener("mousemove", updateCursorPosition)
@@ -58,7 +50,7 @@ const LikeAndDislike = () => {
     return () => {
       document.removeEventListener("mousemove", updateCursorPosition)
     }
-  }, [isCursorLocked, updateCursorPosition])
+  }, [isMagicCursor, updateCursorPosition])
 
   useEffect(() => {
     let animationFrameId: number
@@ -71,7 +63,7 @@ const LikeAndDislike = () => {
       const timeDelta = Math.min(20, Math.max(10, currTime - prevTime))
       prevTime = currTime
 
-      if (isCursorLocked) {
+      if (isMagicCursor) {
         setWindOffsetX((prev) => prev - 0.6 * timeDelta)
         setCursorPosition((prev) => ({
           x: Math.max(0, prev.x - 0.6 * timeDelta),
@@ -84,9 +76,8 @@ const LikeAndDislike = () => {
   })
 
   return (
-    <Box ref={modalRef} onClick={handleClick} className="w-full max-w-sm rounded-lg p-4 mt-6">
+    <Box ref={modalRef} className="w-full max-w-sm rounded-lg p-4 mt-6">
       <Flex className="space-x-4" align="center">
-        <Cursor ref={cursorRef} position={cursorPosition} isVisible={isCursorLocked} />
         {/* <Fan windOffsetX={windOffsetX} /> */}
       </Flex>
     </Box>
