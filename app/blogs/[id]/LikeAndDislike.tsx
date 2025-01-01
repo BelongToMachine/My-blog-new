@@ -3,10 +3,10 @@
 import { Box, Button, Flex } from "@radix-ui/themes"
 import React, { useCallback, useEffect, useRef, useState } from "react"
 import Cursor from "./Cursor"
-import { useCursorStore } from "@/app/service/Store"
+import { useDefaultCursorStore } from "@/app/service/Store"
 
 const LikeAndDislike = () => {
-  const isMagicCursor = useCursorStore((state) => state.isMagicCursor)
+  const isMagicCursor = useDefaultCursorStore((state) => state.isMagicCursor)
   const [isCursorLocked, setIsCursorLocked] = useState(false)
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 })
   const modalRef = useRef<HTMLDivElement>(null)
@@ -72,6 +72,14 @@ const LikeAndDislike = () => {
       }
 
       animationFrameId = window.requestAnimationFrame(animationFrameStep)
+    }
+
+    animationFrameId = window.requestAnimationFrame(animationFrameStep)
+
+    return () => {
+      if (animationFrameId) {
+        window.cancelAnimationFrame(animationFrameId)
+      }
     }
   })
 

@@ -2,20 +2,31 @@ import { create } from "zustand"
 
 interface CursorStateStore {
   isMagicCursor: boolean
-  magicCursorStyle: string
   switchMagicCursor: (value: boolean) => void
-  setMagicCursorStyle: (style: string) => void
 }
 
-export const useCursorStore = create<CursorStateStore>((set) => ({
+interface VirtualCursorStore {
+  position:
+    | {
+        x: number
+        y: number
+      }
+    | undefined
+  setCursorPostion: (userInputPosition: { x: number; y: number }) => void
+}
+
+export const useDefaultCursorStore = create<CursorStateStore>((set) => ({
   isMagicCursor: false,
-  magicCursorStyle: `url('/images/cursor.png'), auto`,
 
   switchMagicCursor: (value: boolean) => {
     set({ isMagicCursor: value })
   },
+}))
 
-  setMagicCursorStyle: (style: string) => {
-    set({ magicCursorStyle: style })
+export const useVirtualCursorStore = create<VirtualCursorStore>((set) => ({
+  position: undefined,
+
+  setCursorPostion: (userInputPosition) => {
+    set({ position: userInputPosition })
   },
 }))

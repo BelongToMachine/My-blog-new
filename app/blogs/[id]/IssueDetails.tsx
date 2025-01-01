@@ -10,7 +10,10 @@ import { v4 as uuidv4 } from "uuid"
 import { useState, useEffect, useRef, ReactElement } from "react"
 import TableOfContent from "../_components/TableOfContent"
 import LikeAndDislike from "./LikeAndDislike"
-import { useCursorStore } from "@/app/service/Store"
+import {
+  useDefaultCursorStore,
+  useVirtualCursorStore,
+} from "@/app/service/Store"
 
 interface ArticleHeader {
   title: string
@@ -61,13 +64,20 @@ const extractHeadings = (htmlContent: string): Heading[] => {
 }
 
 const HoverWrapper = ({ children }: { children: React.ReactNode }) => {
-  const switchMagicCursor = useCursorStore((state) => state.switchMagicCursor)
+  const switchMagicCursor = useDefaultCursorStore(
+    (state) => state.switchMagicCursor
+  )
+
+  const handleMouseEnter = (event: React.MouseEvent<HTMLDivElement>) => {
+    switchMagicCursor(true)
+  }
 
   return (
     <div
-      onMouseEnter={() => switchMagicCursor(true)}
+      onMouseEnter={handleMouseEnter}
       onMouseLeave={() => switchMagicCursor(false)}
     >
+      <div></div>
       {children}
     </div>
   )
