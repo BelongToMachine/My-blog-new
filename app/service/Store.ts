@@ -12,7 +12,7 @@ interface VirtualCursorStore {
         y: number
       }
     | undefined
-  setCursorPostion: (userInputPosition: { x: number; y: number }) => void
+  setCursorPosition: (userInputPosition: { x: number; y: number }) => void
 }
 
 export const useDefaultCursorStore = create<CursorStateStore>((set) => ({
@@ -26,7 +26,7 @@ export const useDefaultCursorStore = create<CursorStateStore>((set) => ({
 export const useVirtualCursorStore = create<VirtualCursorStore>((set) => ({
   position: undefined,
 
-  setCursorPostion: (userInputPosition) => {
+  setCursorPosition: (userInputPosition) => {
     set({ position: userInputPosition })
   },
 }))

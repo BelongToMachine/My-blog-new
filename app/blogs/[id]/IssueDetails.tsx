@@ -68,14 +68,31 @@ const HoverWrapper = ({ children }: { children: React.ReactNode }) => {
     (state) => state.switchMagicCursor
   )
 
+  const setCursorPosition = useVirtualCursorStore(
+    (state) => state.setCursorPosition
+  )
+
   const handleMouseEnter = (event: React.MouseEvent<HTMLDivElement>) => {
+    setCursorPosition({
+      x: event.clientX,
+      y: event.clientY,
+    })
+
     switchMagicCursor(true)
+  }
+
+  const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
+    setCursorPosition({
+      x: event.clientX,
+      y: event.clientY,
+    })
   }
 
   return (
     <div
       onMouseEnter={handleMouseEnter}
       onMouseLeave={() => switchMagicCursor(false)}
+      onMouseMove={handleMouseMove} // Update cursor position during movement
     >
       <div></div>
       {children}

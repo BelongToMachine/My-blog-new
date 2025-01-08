@@ -20,7 +20,9 @@ const CursorManager = () => {
     borderRadius: "50%",
     backgroundSize: "contain",
     willChange: "transform",
-    transform: `translateX(${position.x}px) translateY(${position.y}px)`,
+    transform: position
+      ? `translateX(${position.x}px) translateY(${position.y - 50}px)`
+      : `none`,
     transition: `transform 0.1s linear`,
     display: isMagicCursor ? `block` : `none`,
   }
