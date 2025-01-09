@@ -85,14 +85,7 @@ const LikeAndDislike = () => {
 
   return (
     <Box ref={modalRef} className="w-full max-w-sm rounded-lg p-4 mt-6">
-      <Flex className="space-x-4" align="center">
-        {/* <Cursor
-          ref={cursorRef}
-          position={cursorPosition}
-          isVisible={isMagicCursor}
-        /> */}
-        {/* <Fan windOffsetX={windOffsetX} /> */}
-      </Flex>
+      <Flex className="space-x-4 wind" align="center"></Flex>
     </Box>
   )
 }

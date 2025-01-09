@@ -14,6 +14,8 @@ import {
   useDefaultCursorStore,
   useVirtualCursorStore,
 } from "@/app/service/Store"
+import Image from "next/image"
+import fan from "@/public/images/fan.png"
 
 interface ArticleHeader {
   title: string
@@ -176,7 +178,16 @@ const IssueDetails = ({ issue }: { issue: Issue }) => {
           }}
         >
           <TableOfContent headings={headings} />
-          <LikeAndDislike />
+          <Flex>
+            <LikeAndDislike />
+            <Image
+              src={fan}
+              alt="a fan"
+              width={100}
+              height={100}
+              className="relative left-24"
+            />
+          </Flex>
         </Box>
       </HoverWrapper>
     </Flex>

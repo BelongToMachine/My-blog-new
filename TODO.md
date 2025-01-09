@@ -7,4 +7,6 @@ To do:
 
 [√] When it convert to magic cursor, initialize its position to where it is
 
+[ ] Put the fan on the right hand
+
 [ ] Change that cursor pointer to have a specific look, and figure out if the position of the cursor can be changed
