@@ -91,14 +91,13 @@ const HoverWrapper = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <div
+    <Flex
       onMouseEnter={handleMouseEnter}
       onMouseLeave={() => switchMagicCursor(false)}
       onMouseMove={handleMouseMove} // Update cursor position during movement
     >
-      <div></div>
       {children}
-    </div>
+    </Flex>
   )
 }
 
@@ -168,28 +167,26 @@ const IssueDetails = ({ issue }: { issue: Issue }) => {
         </Card>
       </Box>
 
-      <HoverWrapper>
-        <Box
-          className="w-full max-w-sm rounded-lg p-4"
-          style={{
-            ...tocPosition,
-            width: "100%",
-            maxWidth: "300px",
-          }}
-        >
-          <TableOfContent headings={headings} />
-          <Flex>
-            <LikeAndDislike />
-            <Image
-              src={fan}
-              alt="a fan"
-              width={100}
-              height={100}
-              className="relative left-24"
-            />
-          </Flex>
-        </Box>
-      </HoverWrapper>
+      <Box
+        className="w-full max-w-sm rounded-lg p-4"
+        style={{
+          ...tocPosition,
+          width: "100%",
+          maxWidth: "300px",
+        }}
+      >
+        <TableOfContent headings={headings} />
+        <HoverWrapper>
+          <LikeAndDislike />
+          <Image
+            src={fan}
+            alt="a fan"
+            width={100}
+            height={100}
+            className="relative left-24"
+          />
+        </HoverWrapper>
+      </Box>
     </Flex>
   )
 }

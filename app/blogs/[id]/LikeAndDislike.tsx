@@ -10,28 +10,10 @@ import {
 
 const LikeAndDislike = () => {
   const isMagicCursor = useDefaultCursorStore((state) => state.isMagicCursor)
-  const [isCursorLocked, setIsCursorLocked] = useState(false)
-  const position = useVirtualCursorStore((state) => state.position)
-  const setCursorPosition = useVirtualCursorStore(
+  const updateCursorPosition = useVirtualCursorStore(
     (state) => state.updateCursorPosition
   )
-  const modalRef = useRef<HTMLDivElement>(null)
   const [windOffsetX, setWindOffsetX] = useState(0)
-  const cursorRef = useRef<HTMLElement>(null)
-
-  const handlePointerLockChange = useCallback(() => {
-    // If the element is locked, which means the cursord is hidden
-    // If an element has been locked (via element.requestPointerLock()), document.pointerLockElement will return that element.
-    const isCursorRelesed = document.pointerLockElement !== null
-    setIsCursorLocked(isCursorRelesed)
-  }, [])
-
-  useEffect(() => {
-    document.addEventListener("pointerlockchange", handlePointerLockChange)
-    return () => {
-      document.removeEventListener("pointerlockchange", handlePointerLockChange)
-    }
-  }, [handlePointerLockChange])
 
   useEffect(() => {
     let animationFrameId: number
@@ -47,7 +29,7 @@ const LikeAndDislike = () => {
       setWindOffsetX((prev) => prev - 0.6 * timeDelta)
 
       if (isMagicCursor) {
-        setCursorPosition((prev) => ({
+        updateCursorPosition((prev) => ({
           x: Math.max(0, prev.x - 0.6 * timeDelta),
           y: prev.y,
         }))
@@ -66,7 +48,7 @@ const LikeAndDislike = () => {
   })
 
   return (
-    <Box ref={modalRef} className="w-full max-w-sm rounded-lg p-4 mt-6">
+    <Box className="w-full max-w-sm rounded-lg p-4 mt-6">
       <Flex
         className="space-x-4 wind"
         align="center"

@@ -12,7 +12,7 @@ const CursorManager = () => {
   const position = useVirtualCursorStore((state) => state.position)
 
   const virtualCursorStyles: React.CSSProperties = {
-    position: "absolute",
+    position: "fixed",
     zIndex: 100,
     width: "23px",
     height: "23px",
@@ -35,3 +35,4 @@ const CursorManager = () => {
 }
 
 export default CursorManager
+1

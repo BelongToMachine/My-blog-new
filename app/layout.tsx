@@ -31,7 +31,7 @@ export default function RootLayout({
             <Theme appearance="light" accentColor="sky" radius="small">
               <NavBar />
               <CursorManager />
-              <main className="p-3 bg-teal-50 pt-4">
+              <main className="p-3 bg-teal-50 pt-16">
                 <Container>{children}</Container>
               </main>
             </Theme>
