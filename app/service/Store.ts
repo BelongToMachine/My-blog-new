@@ -8,11 +8,12 @@ interface CursorStateStore {
 interface VirtualCursorStore {
   position:
     | {
-        x: number
-        y: number
+        x: number;
+        y: number;
       }
-    | undefined
-  setCursorPosition: (userInputPosition: { x: number; y: number }) => void
+    | undefined;
+  updateCursorPosition: (updateFn: (prev: { x: number; y: number }) => { x: number; y: number }) => void;
+  setCursorPosition: (userInputPosition : { x : number; y : number}) => void
 }
 
 export const useDefaultCursorStore = create<CursorStateStore>((set) => ({
@@ -26,7 +27,16 @@ export const useDefaultCursorStore = create<CursorStateStore>((set) => ({
 export const useVirtualCursorStore = create<VirtualCursorStore>((set) => ({
   position: undefined,
 
+  updateCursorPosition: (updateFn) => {
+    set((state) => {
+      const currentPosition = state.position ?? { x: 0, y: 0 };
+      const updatedPosition = updateFn(currentPosition);
+      
+      return { position: updatedPosition };
+    });
+  },
+
   setCursorPosition: (userInputPosition) => {
     set({ position: userInputPosition })
   },
-}))
+}));
