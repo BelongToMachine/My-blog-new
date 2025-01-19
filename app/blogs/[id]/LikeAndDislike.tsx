@@ -14,7 +14,7 @@ const LikeAndDislike = () => {
   const cursorRef = useRef<HTMLElement>(null)
 
   const handlePointerLockChange = useCallback(() => {
-    // If the element is locked, which means the cursor is hidden
+    // If the element is locked, which means the cursord is hidden
     // If an element has been locked (via element.requestPointerLock()), document.pointerLockElement will return that element.
     const isCursorRelesed = document.pointerLockElement !== null
     setIsCursorLocked(isCursorRelesed)
@@ -63,8 +63,9 @@ const LikeAndDislike = () => {
       const timeDelta = Math.min(20, Math.max(10, currTime - prevTime))
       prevTime = currTime
 
+      setWindOffsetX((prev) => prev - 0.6 * timeDelta)
+
       if (isMagicCursor) {
-        setWindOffsetX((prev) => prev - 0.6 * timeDelta)
         setCursorPosition((prev) => ({
           x: Math.max(0, prev.x - 0.6 * timeDelta),
           y: prev.y,
@@ -85,7 +86,11 @@ const LikeAndDislike = () => {
 
   return (
     <Box ref={modalRef} className="w-full max-w-sm rounded-lg p-4 mt-6">
-      <Flex className="space-x-4 wind" align="center"></Flex>
+      <Flex
+        className="space-x-4 wind"
+        align="center"
+        style={{ backgroundPositionX: `${windOffsetX}px` }}
+      ></Flex>
     </Box>
   )
 }
