@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import {
   useDefaultCursorStore,
   useVirtualCursorStore,
@@ -10,6 +10,8 @@ import { Box } from "@radix-ui/themes"
 const CursorManager = () => {
   const isMagicCursor = useDefaultCursorStore((state) => state.isMagicCursor)
   const position = useVirtualCursorStore((state) => state.position)
+  const setCursorRect = useVirtualCursorStore((state) => state.setCursorRect)
+  const cursorRef = useRef<HTMLDivElement>(null)
 
   const virtualCursorStyles: React.CSSProperties = {
     position: "fixed",
@@ -28,10 +30,22 @@ const CursorManager = () => {
   }
 
   useEffect(() => {
+    console.log(cursorRef)
+    if (cursorRef.current) {
+      const rect = cursorRef.current.getBoundingClientRect()
+      setCursorRect(rect)
+    }
+  }, [])
+
+  useEffect(() => {
     document.body.style.cursor = isMagicCursor ? "none" : "auto"
   }, [isMagicCursor])
 
-  return <Box style={virtualCursorStyles}> </Box>
+  return (
+    <Box ref={cursorRef} style={virtualCursorStyles}>
+      {" "}
+    </Box>
+  )
 }
 
 export default CursorManager
