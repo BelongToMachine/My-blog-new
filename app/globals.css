@@ -21,8 +21,7 @@ body {
 .wind {
   position: relative;
   top: -3vh;
-  width: calc(100vw - (60vh * (481 / 812)) + 7vh);
-  height: 18vh;
+  height: 130px;
   background-image: url("/images/wind.png");
   background-repeat: repeat;
   background-size: calc(46vh / 8);

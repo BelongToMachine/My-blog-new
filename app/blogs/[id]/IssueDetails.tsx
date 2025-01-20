@@ -1,13 +1,13 @@
 "use client"
 
-import { IssueStatusBadge, Link } from "@/app/components"
+import { IssueStatusBadge } from "@/app/components"
 import styles from "@/app/blogs/[id]/post.module.css"
 import { Issue } from "@prisma/client"
-import { Box, Button, Card, Flex, Heading, Text } from "@radix-ui/themes"
+import { Box, Card, Flex, Heading, Text } from "@radix-ui/themes"
 import matter from "gray-matter"
 import MarkdownIt from "markdown-it"
 import { v4 as uuidv4 } from "uuid"
-import { useState, useEffect, useRef, ReactElement } from "react"
+import { useState, useEffect, useRef } from "react"
 import TableOfContent from "../_components/TableOfContent"
 import LikeAndDislike from "./LikeAndDislike"
 import {
@@ -94,7 +94,11 @@ const HoverWrapper = ({ children }: { children: React.ReactNode }) => {
     <Flex
       onMouseEnter={handleMouseEnter}
       onMouseLeave={() => switchMagicCursor(false)}
-      onMouseMove={handleMouseMove} // Update cursor position during movement
+      onMouseMove={handleMouseMove}
+      style={{
+        alignItems: "center",
+        justifyContent: "center",
+      }}
     >
       {children}
     </Flex>
@@ -178,13 +182,7 @@ const IssueDetails = ({ issue }: { issue: Issue }) => {
         <TableOfContent headings={headings} />
         <HoverWrapper>
           <LikeAndDislike />
-          <Image
-            src={fan}
-            alt="a fan"
-            width={100}
-            height={100}
-            className="relative left-24"
-          />
+          <Image src={fan} alt="a fan" height={130} />
         </HoverWrapper>
       </Box>
     </Flex>

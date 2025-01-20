@@ -1,8 +1,7 @@
 "use client"
 
-import { Box, Button, Flex } from "@radix-ui/themes"
-import React, { useCallback, useEffect, useRef, useState } from "react"
-import Cursor from "./Cursor"
+import { Box, Flex } from "@radix-ui/themes"
+import React, { useEffect, useRef, useState } from "react"
 import {
   useDefaultCursorStore,
   useVirtualCursorStore,
@@ -10,7 +9,7 @@ import {
 
 const LikeAndDislike = () => {
   const isMagicCursor = useDefaultCursorStore((state) => state.isMagicCursor)
-  const updateCursorPosition = useVirtualCursorStore(
+  const setCursorPosition = useVirtualCursorStore(
     (state) => state.updateCursorPosition
   )
   const [windOffsetX, setWindOffsetX] = useState(0)
@@ -29,7 +28,7 @@ const LikeAndDislike = () => {
       setWindOffsetX((prev) => prev - 0.6 * timeDelta)
 
       if (isMagicCursor) {
-        updateCursorPosition((prev) => ({
+        setCursorPosition((prev) => ({
           x: Math.max(0, prev.x - 0.6 * timeDelta),
           y: prev.y,
         }))
@@ -48,13 +47,11 @@ const LikeAndDislike = () => {
   })
 
   return (
-    <Box className="w-full max-w-sm rounded-lg p-4 mt-6">
-      <Flex
-        className="space-x-4 wind"
-        align="center"
-        style={{ backgroundPositionX: `${windOffsetX}px` }}
-      ></Flex>
-    </Box>
+    <Flex
+      className="space-x-4 wind w-full max-w-sm rounded-lg p-4 mt-6"
+      align="center"
+      style={{ backgroundPositionX: `${windOffsetX}px` }}
+    ></Flex>
   )
 }
 
