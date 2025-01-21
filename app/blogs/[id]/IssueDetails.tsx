@@ -120,7 +120,7 @@ const IssueDetails = ({ issue }: { issue: Issue }) => {
         if (window.innerWidth >= 1048) {
           setTocPosition({
             position: "fixed",
-            top: `calc(30px + var(--parent-offset))`,
+            top: `10vh`,
             left: `calc(${mainContentRect.right}px + 20px)`,
           })
         } else {
@@ -172,7 +172,7 @@ const IssueDetails = ({ issue }: { issue: Issue }) => {
       </Box>
 
       <Box
-        className="w-full max-w-sm rounded-lg p-4"
+        className="w-full max-w-sm rounded-lg mt-6"
         style={{
           ...tocPosition,
           width: "100%",
