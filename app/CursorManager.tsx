@@ -29,12 +29,17 @@ const CursorManager = () => {
     display: isMagicCursor ? `block` : `none`,
   }
 
-  useEffect(() => {
-    console.log(cursorRef)
+  const updateCursorRect = () => {
     if (cursorRef.current) {
       const rect = cursorRef.current.getBoundingClientRect()
       setCursorRect(rect)
     }
+  }
+
+  useEffect(() => {
+    const interval = setInterval(updateCursorRect, 100)
+
+    return () => clearInterval(interval)
   }, [])
 
   useEffect(() => {
@@ -49,4 +54,3 @@ const CursorManager = () => {
 }
 
 export default CursorManager
-1

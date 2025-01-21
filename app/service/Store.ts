@@ -8,14 +8,16 @@ interface CursorStateStore {
 interface VirtualCursorStore {
   position:
     | {
-        x: number;
-        y: number;
+        x: number
+        y: number
       }
-    | undefined;
-  cursorRect: DOMRect | null;
-  updateCursorPosition: (updateFn: (prev: { x: number; y: number }) => { x: number; y: number }) => void;
-  setCursorPosition: (userInputPosition : { x : number; y : number}) => void
-  setCursorRect: (cursorReact : DOMRect) => void
+    | undefined
+  cursorRect: DOMRect | null
+  updateCursorPosition: (
+    updateFn: (prev: { x: number; y: number }) => { x: number; y: number }
+  ) => void
+  setCursorPosition: (userInputPosition: { x: number; y: number }) => void
+  setCursorRect: (cursorReact: DOMRect | null) => void
 }
 
 export const useDefaultCursorStore = create<CursorStateStore>((set) => ({
@@ -33,11 +35,11 @@ export const useVirtualCursorStore = create<VirtualCursorStore>((set) => ({
 
   updateCursorPosition: (updateFn) => {
     set((state) => {
-      const currentPosition = state.position ?? { x: 0, y: 0 };
-      const updatedPosition = updateFn(currentPosition);
-      
-      return { position: updatedPosition };
-    });
+      const currentPosition = state.position ?? { x: 0, y: 0 }
+      const updatedPosition = updateFn(currentPosition)
+
+      return { position: updatedPosition }
+    })
   },
 
   setCursorPosition: (userInputPosition) => {
@@ -45,6 +47,8 @@ export const useVirtualCursorStore = create<VirtualCursorStore>((set) => ({
   },
 
   setCursorRect: (cursorReact) => {
-    set({ cursorRect: cursorReact})
+    if (cursorReact instanceof DOMRect) {
+      set({ cursorRect: cursorReact })
+    } else console.warn("Invalid DOMRect passed to setCursorRect")
   },
-}));
+}))

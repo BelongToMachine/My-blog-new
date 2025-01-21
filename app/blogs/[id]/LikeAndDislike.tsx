@@ -12,22 +12,20 @@ const LikeAndDislike = () => {
   const setCursorPosition = useVirtualCursorStore(
     (state) => state.updateCursorPosition
   )
-  const cursorRect = useVirtualCursorStore((state) => state.cursorRect)
+  const { getState } = useVirtualCursorStore
   const [windOffsetX, setWindOffsetX] = useState(0)
   const windRef = useRef<HTMLDivElement>(null)
   const [isOverlapping, setIsOverlapping] = useState(false)
 
   const checkOverlap = () => {
-    // console.log(windRef, cursorRect)
+    const cursorRect = getState().cursorRect
     if (windRef.current && cursorRect) {
       const movingRect = windRef.current.getBoundingClientRect()
       const staticRect = cursorRect
 
-      console.log(movingRect, staticRect)
-
       // Check if the bounding boxes overlap
       const isOverlapping =
-        movingRect.left < staticRect.right &&
+        movingRect.left + 80 < staticRect.right &&
         movingRect.right > staticRect.left &&
         movingRect.top < staticRect.bottom &&
         movingRect.bottom > staticRect.top
@@ -37,8 +35,8 @@ const LikeAndDislike = () => {
   }
 
   useEffect(() => {
-    const interval = setInterval(checkOverlap, 50) // Periodically check for overlap
-    return () => clearInterval(interval) // Cleanup the interval on unmount
+    const interval = setInterval(checkOverlap, 100)
+    return () => clearInterval(interval)
   }, [])
 
   useEffect(() => {
@@ -54,7 +52,7 @@ const LikeAndDislike = () => {
 
       setWindOffsetX((prev) => prev - 0.6 * timeDelta)
 
-      if (isMagicCursor) {
+      if (isMagicCursor && isOverlapping) {
         setCursorPosition((prev) => ({
           x: Math.max(0, prev.x - 0.6 * timeDelta),
           y: prev.y,
@@ -83,9 +81,7 @@ const LikeAndDislike = () => {
       className="space-x-4 wind w-full max-w-sm rounded-lg p-4 mt-6"
       align="center"
       style={{ backgroundPositionX: `${windOffsetX}px` }}
-    >
-      {isOverlapping && "hiiiiiiiii"}
-    </Flex>
+    ></Flex>
   )
 }
 
