@@ -3,7 +3,7 @@
 import { IssueStatusBadge } from "@/app/components"
 import styles from "@/app/blogs/[id]/post.module.css"
 import { Issue } from "@prisma/client"
-import { Box, Card, Flex, Heading, Text } from "@radix-ui/themes"
+import { Box, Button, Card, Flex, Heading, Text } from "@radix-ui/themes"
 import matter from "gray-matter"
 import MarkdownIt from "markdown-it"
 import { v4 as uuidv4 } from "uuid"
@@ -98,6 +98,7 @@ const HoverWrapper = ({ children }: { children: React.ReactNode }) => {
       style={{
         alignItems: "center",
         justifyContent: "center",
+        flexGrow: "1",
       }}
     >
       {children}
@@ -176,14 +177,20 @@ const IssueDetails = ({ issue }: { issue: Issue }) => {
         style={{
           ...tocPosition,
           width: "100%",
-          maxWidth: "300px",
         }}
       >
         <TableOfContent headings={headings} />
-        <HoverWrapper>
-          <LikeAndDislike />
+
+        <Flex className="items-center">
+          <Button style={{ marginRight: "10px" }}>Like</Button>
+
+          <HoverWrapper>
+            <Button className="absolute right-30">Dislike</Button>
+            <LikeAndDislike />
+          </HoverWrapper>
+
           <Image src={fan} alt="a fan" height={130} />
-        </HoverWrapper>
+        </Flex>
       </Box>
     </Flex>
   )

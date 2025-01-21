@@ -8,6 +8,7 @@ const TableOfContent = ({ headings }: { headings: Heading[] }) => (
     style={{
       maxHeight: "60vh",
       overflow: "auto",
+      maxWidth: "300px",
     }}
   >
     <ScrollArea.Viewport className="size-full rounded">

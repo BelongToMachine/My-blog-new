@@ -23,7 +23,7 @@ const CursorManager = () => {
     backgroundSize: "contain",
     willChange: "transform",
     transform: position
-      ? `translateX(${position.x}px) translateY(${position.y - 50}px)`
+      ? `translateX(${position.x}px) translateY(${position.y}px)`
       : `none`,
     transition: `transform 0.1s linear`,
     display: isMagicCursor ? `block` : `none`,
