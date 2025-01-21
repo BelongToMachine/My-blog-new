@@ -177,15 +177,16 @@ const IssueDetails = ({ issue }: { issue: Issue }) => {
         style={{
           ...tocPosition,
           width: "100%",
+          height: "85vh",
         }}
       >
         <TableOfContent headings={headings} />
 
-        <Flex className="items-center">
+        <Flex className="items-center absolute bottom-0 w-full">
           <Button style={{ marginRight: "10px" }}>Like</Button>
 
           <HoverWrapper>
-            <Button className="absolute right-30">Dislike</Button>
+            <Button className="absolute right-24">Dislike</Button>
             <LikeAndDislike />
           </HoverWrapper>
 
