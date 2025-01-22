@@ -16,6 +16,7 @@ import {
 } from "@/app/service/Store"
 import Image from "next/image"
 import fan from "@/public/images/fan.png"
+import { toggleLike } from "@/app/actions/blogAction"
 
 interface ArticleHeader {
   title: string
@@ -111,6 +112,7 @@ const IssueDetails = ({ issue }: { issue: Issue }) => {
     display: "none",
     position: "fixed",
   })
+  const [likes, setLikes] = useState<number>(issue.likes)
   const mainContentRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -143,6 +145,18 @@ const IssueDetails = ({ issue }: { issue: Issue }) => {
   const htmlContent = md.render(content)
 
   const headings = extractHeadings(htmlContent)
+
+  const updateLikes = async () => {
+    try {
+      const updatedBlog = await toggleLike({
+        blogId: issue.id,
+        action: "like",
+      })
+      setLikes(updatedBlog!.likes)
+    } catch (e) {
+      console.error("Cannot update like" + e)
+    }
+  }
 
   return (
     <Flex
@@ -183,7 +197,9 @@ const IssueDetails = ({ issue }: { issue: Issue }) => {
         <TableOfContent headings={headings} />
 
         <Flex className="items-center absolute bottom-0 w-full">
-          <Button style={{ marginRight: "10px" }}>Like</Button>
+          <Button style={{ marginRight: "10px" }} onClick={updateLikes}>
+            Likes ({likes})
+          </Button>
 
           <HoverWrapper>
             <Button className="absolute right-24">Dislike</Button>
