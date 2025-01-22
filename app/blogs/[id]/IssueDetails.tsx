@@ -10,13 +10,10 @@ import { v4 as uuidv4 } from "uuid"
 import { useState, useEffect, useRef } from "react"
 import TableOfContent from "../_components/TableOfContent"
 import LikeAndDislike from "./LikeAndDislike"
-import {
-  useDefaultCursorStore,
-  useVirtualCursorStore,
-} from "@/app/service/Store"
 import Image from "next/image"
 import fan from "@/public/images/fan.png"
 import { toggleLike } from "@/app/actions/blogAction"
+import HoverWrapper from "../_components/HoverWrapper"
 
 interface ArticleHeader {
   title: string
@@ -36,7 +33,7 @@ const md = new MarkdownIt({
   typographer: true,
 })
 
-md.renderer.rules.heading_open = function (tokens, idx) {
+md.renderer.rules.heading_open = (tokens, idx) => {
   const token = tokens[idx]
   const level = token.tag.slice(1)
   const content = tokens[idx + 1].content
@@ -64,47 +61,6 @@ const extractHeadings = (htmlContent: string): Heading[] => {
   }
 
   return headings
-}
-
-const HoverWrapper = ({ children }: { children: React.ReactNode }) => {
-  const switchMagicCursor = useDefaultCursorStore(
-    (state) => state.switchMagicCursor
-  )
-
-  const setCursorPosition = useVirtualCursorStore(
-    (state) => state.setCursorPosition
-  )
-
-  const handleMouseEnter = (event: React.MouseEvent<HTMLDivElement>) => {
-    setCursorPosition({
-      x: event.clientX,
-      y: event.clientY,
-    })
-
-    switchMagicCursor(true)
-  }
-
-  const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
-    setCursorPosition({
-      x: event.clientX,
-      y: event.clientY,
-    })
-  }
-
-  return (
-    <Flex
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={() => switchMagicCursor(false)}
-      onMouseMove={handleMouseMove}
-      style={{
-        alignItems: "center",
-        justifyContent: "center",
-        flexGrow: "1",
-      }}
-    >
-      {children}
-    </Flex>
-  )
 }
 
 const IssueDetails = ({ issue }: { issue: Issue }) => {
