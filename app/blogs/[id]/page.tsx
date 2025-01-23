@@ -8,7 +8,7 @@ import { getServerSession } from "next-auth"
 import authOptions from "@/app/auth/authOptions"
 import AssigneeSelect from "./AssigneeSelect"
 import { cache } from "react"
-import LikeAndDislike from "./LikeAndDislike"
+import Wind from "./Wind"
 
 interface Props {
   params: { id: string }

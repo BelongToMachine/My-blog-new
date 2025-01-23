@@ -3,21 +3,16 @@ import matter from "gray-matter"
 import MarkdownIt from "markdown-it"
 import { v4 as uuidv4 } from "uuid"
 
-interface ArticleHeader {
+export interface ArticleHeader {
   title: string
   date: string
   author: string
 }
 
-interface Heading {
+export interface Heading {
   text: string
   level: number
   id: string
-}
-
-interface Props {
-  tocPoisition: React.CSSProperties
-  issue: Issue
 }
 
 const md = new MarkdownIt({

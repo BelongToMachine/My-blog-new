@@ -7,7 +7,7 @@ import {
   useVirtualCursorStore,
 } from "@/app/service/Store"
 
-const LikeAndDislike = () => {
+const Wind = () => {
   const isMagicCursor = useDefaultCursorStore((state) => state.isMagicCursor)
   const setCursorPosition = useVirtualCursorStore(
     (state) => state.updateCursorPosition
@@ -85,4 +85,4 @@ const LikeAndDislike = () => {
   )
 }
 
-export default LikeAndDislike
+export default Wind

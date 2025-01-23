@@ -1,20 +1,12 @@
 "use client"
 
 import { IssueStatusBadge } from "@/app/components"
-import styles from "@/app/blogs/[id]/post.module.css"
 import { Issue } from "@prisma/client"
-import { Box, Button, Card, Flex, Heading, Text } from "@radix-ui/themes"
-import matter from "gray-matter"
-import MarkdownIt from "markdown-it"
-import { v4 as uuidv4 } from "uuid"
+import { Box, Card, Flex, Heading, Text } from "@radix-ui/themes"
 import { useState, useEffect, useRef } from "react"
-import TableOfContent from "../_components/TableOfContent"
-import LikeAndDislike from "./LikeAndDislike"
-import Image from "next/image"
-import fan from "@/public/images/fan.png"
-import { toggleLike } from "@/app/actions/blogAction"
-import HoverWrapper from "../_components/HoverWrapper"
+import styles from "@/app/blogs/[id]/post.module.css"
 import BlogParser from "@/app/service/BlogParser"
+import NavigationBar from "../_components/NavigationBar"
 
 const IssueDetails = ({ issue }: { issue: Issue }) => {
   const parser = new BlogParser(issue.description)
@@ -23,7 +15,6 @@ const IssueDetails = ({ issue }: { issue: Issue }) => {
     display: "none",
     position: "fixed",
   })
-  const [likes, setLikes] = useState<number>(issue.likes)
   const mainContentRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -50,20 +41,6 @@ const IssueDetails = ({ issue }: { issue: Issue }) => {
     window.addEventListener("resize", updateTocPosition)
     return () => window.removeEventListener("resize", updateTocPosition)
   }, [])
-
-  const { data, content } = matter(issue.description)
-
-  const updateLikes = async () => {
-    try {
-      const updatedBlog = await toggleLike({
-        blogId: issue.id,
-        action: "like",
-      })
-      setLikes(updatedBlog!.likes)
-    } catch (e) {
-      console.error("Cannot update like" + e)
-    }
-  }
 
   return (
     <Flex
@@ -93,29 +70,13 @@ const IssueDetails = ({ issue }: { issue: Issue }) => {
         </Card>
       </Box>
 
-      <Box
-        className="w-full max-w-sm rounded-lg mt-6"
-        style={{
-          ...tocPosition,
-          width: "100%",
-          height: "85vh",
-        }}
-      >
-        <TableOfContent headings={headings} />
+      {/* <BlogContent header={header} htmlContent={htmlContent} issue={issue} /> */}
 
-        <Flex className="items-center absolute bottom-0 w-full">
-          <Button style={{ marginRight: "10px" }} onClick={updateLikes}>
-            Likes ({likes})
-          </Button>
-
-          <HoverWrapper>
-            <Button className="absolute right-24">Dislike</Button>
-            <LikeAndDislike />
-          </HoverWrapper>
-
-          <Image src={fan} alt="a fan" height={130} />
-        </Flex>
-      </Box>
+      <NavigationBar
+        headings={headings}
+        tocPoisition={tocPosition}
+        issue={issue}
+      />
     </Flex>
   )
 }
