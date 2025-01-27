@@ -27,7 +27,7 @@ const LikeDislike = ({ issue }: Props) => {
   return (
     <Flex className="items-center absolute bottom-0 w-full">
       <Button style={{ marginRight: "10px" }} onClick={updateLikes}>
-        Likes ({issue.likes})
+        Likes ({userlikes})
       </Button>
 
       <HoverWrapper>
