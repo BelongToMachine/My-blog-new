@@ -1,6 +1,6 @@
 import React from "react"
 import * as ScrollArea from "@radix-ui/react-scroll-area"
-import { Heading } from "../[id]/IssueDetails"
+import { Heading } from "@/app/service/BlogParser"
 
 const TableOfContent = ({ headings }: { headings: Heading[] }) => (
   <ScrollArea.Root
