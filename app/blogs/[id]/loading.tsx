@@ -1,6 +1,6 @@
-import { Box, Flex, Card } from "@radix-ui/themes";
-import React from "react";
-import { Skeleton } from "@/app/components";
+import { Box, Flex, Card } from "@radix-ui/themes"
+import React from "react"
+import { Skeleton } from "@/app/components"
 
 const loading = () => {
   return (
@@ -15,7 +15,7 @@ const loading = () => {
         <Skeleton />
       </Card>
     </Box>
-  );
-};
+  )
+}
 
-export default loading;
+export default loading

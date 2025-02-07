@@ -1,64 +1,16 @@
 "use client"
 
-import { IssueStatusBadge, Link } from "@/app/components"
-import styles from "@/app/blogs/[id]/post.module.css"
+import { IssueStatusBadge } from "@/app/components"
 import { Issue } from "@prisma/client"
 import { Box, Card, Flex, Heading, Text } from "@radix-ui/themes"
-import matter from "gray-matter"
-import MarkdownIt from "markdown-it"
-import { v4 as uuidv4 } from "uuid"
-import { useState, useEffect, useRef, ReactElement } from "react"
-import TableOfContent from "../_components/TableOfContent"
-
-interface ArticleHeader {
-  title: string
-  date: string
-  author: string
-}
-
-export interface Heading {
-  text: string
-  level: number
-  id: string
-}
-
-const md = new MarkdownIt({
-  html: true,
-  linkify: true,
-  typographer: true,
-})
-
-md.renderer.rules.heading_open = function (tokens, idx) {
-  const token = tokens[idx]
-  const level = token.tag.slice(1)
-  const content = tokens[idx + 1].content
-  const id = uuidv4()
-
-  token.attrSet("id", id)
-  return `<h${level} id="${id}">${content}</h${level}>`
-}
-
-const extractHeadings = (htmlContent: string): Heading[] => {
-  const headingRegex = /<h([2])\s*(?:id="([^"]*)")?[^>]*>([^<]+)<\/h\1>/g
-  const headings: Heading[] = []
-  let match
-
-  while ((match = headingRegex.exec(htmlContent)) !== null) {
-    const [, levelStr, existingId, text] = match
-    const level = parseInt(levelStr)
-    const id = existingId || `heading-${headings.length}`
-
-    headings.push({
-      text: text.trim(),
-      level,
-      id,
-    })
-  }
-
-  return headings
-}
+import { useState, useEffect, useRef } from "react"
+import styles from "@/app/blogs/[id]/post.module.css"
+import BlogParser from "@/app/service/BlogParser"
+import NavigationBar from "../_components/NavigationBar"
 
 const IssueDetails = ({ issue }: { issue: Issue }) => {
+  const parser = new BlogParser(issue.description)
+  const { header, htmlContent, headings } = parser.getParserdContent()
   const [tocPosition, setTocPosition] = useState<React.CSSProperties>({
     display: "none",
     position: "fixed",
@@ -73,7 +25,7 @@ const IssueDetails = ({ issue }: { issue: Issue }) => {
         if (window.innerWidth >= 1048) {
           setTocPosition({
             position: "fixed",
-            top: `calc(30px + var(--parent-offset))`,
+            top: `10vh`,
             left: `calc(${mainContentRect.right}px + 20px)`,
           })
         } else {
@@ -89,12 +41,6 @@ const IssueDetails = ({ issue }: { issue: Issue }) => {
     window.addEventListener("resize", updateTocPosition)
     return () => window.removeEventListener("resize", updateTocPosition)
   }, [])
-
-  const { data, content } = matter(issue.description)
-  const header = data as ArticleHeader
-  const htmlContent = md.render(content)
-
-  const headings = extractHeadings(htmlContent)
 
   return (
     <Flex
@@ -124,16 +70,13 @@ const IssueDetails = ({ issue }: { issue: Issue }) => {
         </Card>
       </Box>
 
-      <Box
-        className="w-full max-w-sm rounded-lg p-4"
-        style={{
-          ...tocPosition,
-          width: "100%",
-          maxWidth: "300px",
-        }}
-      >
-        <TableOfContent headings={headings} />
-      </Box>
+      {/* <BlogContent header={header} htmlContent={htmlContent} issue={issue} /> */}
+
+      <NavigationBar
+        headings={headings}
+        tocPoisition={tocPosition}
+        issue={issue}
+      />
     </Flex>
   )
 }

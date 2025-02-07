@@ -1,10 +1,10 @@
-import { LuMoreVertical } from "react-icons/lu";
-import React from "react";
-import { PiGithubLogoFill } from "react-icons/pi";
-import Link from "next/link";
-import { Button, DropdownMenu } from "@radix-ui/themes";
-import { FaBook } from "react-icons/fa6";
-import { FaLinkedin } from "react-icons/fa";
+import { LuMoveVertical } from "react-icons/lu"
+import React from "react"
+import { PiGithubLogoFill } from "react-icons/pi"
+import Link from "next/link"
+import { Button, DropdownMenu } from "@radix-ui/themes"
+import { FaBook } from "react-icons/fa6"
+import { FaLinkedin } from "react-icons/fa"
 
 const MobileNav = () => {
   return (
@@ -16,17 +16,17 @@ const MobileNav = () => {
         <Menu />
       </div>
     </>
-  );
-};
+  )
+}
 
-export default MobileNav;
+export default MobileNav
 
 const Menu = () => {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger>
         <Button variant="soft" size="2">
-          <LuMoreVertical />
+          <LuMoveVertical />
         </Button>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content size="1">
@@ -40,13 +40,13 @@ const Menu = () => {
                 <Icon label={link.label} />
               </DropdownMenu.Item>
             </div>
-          );
+          )
         })}
         <DropdownMenu.Separator />
       </DropdownMenu.Content>
     </DropdownMenu.Root>
-  );
-};
+  )
+}
 
 const mobileLinks = [
   { label: "我的博客", href: "/blogs" },
@@ -54,13 +54,13 @@ const mobileLinks = [
     label: "LinkedIn",
     href: "https://www.linkedin.com/in/jie-liao-070162296/",
   },
-];
+]
 
 const Icon = ({ label }: { label: string }) => {
   switch (label) {
     case "我的博客":
-      return <FaBook />;
+      return <FaBook />
     case "LinkedIn":
-      return <FaLinkedin />;
+      return <FaLinkedin />
   }
-};
+}

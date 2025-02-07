@@ -3,7 +3,14 @@ import * as ScrollArea from "@radix-ui/react-scroll-area"
 import { Heading } from "../[id]/IssueDetails"
 
 const TableOfContent = ({ headings }: { headings: Heading[] }) => (
-  <ScrollArea.Root className="overflow-hidden rounded bg-white shadow-blackA4">
+  <ScrollArea.Root
+    className="overflow-hidden rounded bg-white shadow-blackA4"
+    style={{
+      maxHeight: "60vh",
+      overflow: "auto",
+      maxWidth: "300px",
+    }}
+  >
     <ScrollArea.Viewport className="size-full rounded">
       <div className="px-5 py-[15px]">
         <div className="text-[15px] font-medium leading-[18px] text-violet">
