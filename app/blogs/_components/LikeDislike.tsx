@@ -1,4 +1,4 @@
-import { Flex, Button } from "@radix-ui/themes"
+import { Flex, Button, Box } from "@radix-ui/themes"
 import React, { useEffect, useState } from "react"
 import Wind from "../[id]/Wind"
 import HoverWrapper from "./HoverWrapper"
@@ -9,6 +9,7 @@ import fan from "@/public/images/fan.png"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import useBlogLikes from "@/app/hooks/useBlogLikes"
 import Tooltip from "./Tooltip"
+import { AnimatePresence, motion } from "framer-motion"
 
 const MAX_LIKES_PER_DAY = 3
 
@@ -16,6 +17,7 @@ const LikeDislike = ({ issue }: { issue: Issue }) => {
   const { data: likes } = useBlogLikes(issue)
   const queryClient = useQueryClient()
   const [clientLikes, setClientLikes] = useState<number>(issue.likes)
+  const [exceedDialog, setExceedDialog] = useState<boolean>(false)
   const likeOperationMutation = useMutation({
     mutationFn: () =>
       toggleLikeFromServer({
@@ -99,6 +101,12 @@ const LikeDislike = ({ issue }: { issue: Issue }) => {
     }
   }, [likes])
 
+  useEffect(() => {
+    if (exceedDialog === true) {
+      setTimeout(() => setExceedDialog(false), 3000)
+    }
+  }, [exceedDialog])
+
   const handleUpdateLikes = () => {
     if (localStorage.getItem(`lastLikes${issue.id}`)) {
       const { count } = JSON.parse(
@@ -107,7 +115,7 @@ const LikeDislike = ({ issue }: { issue: Issue }) => {
 
       if (count < MAX_LIKES_PER_DAY) {
         mutate()
-      } else console.error("pass 10")
+      } else setExceedDialog(true)
     } else {
       mutate()
     }
@@ -131,6 +139,20 @@ const LikeDislike = ({ issue }: { issue: Issue }) => {
 
   return (
     <Flex className="items-center absolute bottom-0 w-full">
+      <AnimatePresence>
+        {exceedDialog && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.5 }}
+          >
+            <Tooltip
+              text={`You can like this blog ${MAX_LIKES_PER_DAY} times a day, please come back tomorrow ^^`}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
       <Button
         style={{ marginRight: "10px" }}
         onClick={handleUpdateLikes}
@@ -138,10 +160,6 @@ const LikeDislike = ({ issue }: { issue: Issue }) => {
       >
         {isLoading ? `Liking...` : `Likes (${clientLikes})`}
       </Button>
-
-      <Tooltip
-        text={`You can like this blog ${MAX_LIKES_PER_DAY} times a day, please come back tomorrow ^^`}
-      />
 
       <HoverWrapper>
         <Button className="absolute right-24">Dislike</Button>
