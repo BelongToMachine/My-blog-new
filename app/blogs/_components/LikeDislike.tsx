@@ -8,6 +8,9 @@ import { Issue } from "@prisma/client"
 import fan from "@/public/images/fan.png"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import useBlogLikes from "@/app/hooks/useBlogLikes"
+import Tooltip from "./Tooltip"
+
+const MAX_LIKES_PER_DAY = 3
 
 const LikeDislike = ({ issue }: { issue: Issue }) => {
   const { data: likes } = useBlogLikes(issue)
@@ -73,7 +76,7 @@ const LikeDislike = ({ issue }: { issue: Issue }) => {
         )
       }
 
-      if (prev.count < 10) {
+      if (prev.count < MAX_LIKES_PER_DAY) {
         const updatedData = { ...prev, count: prev.count + 1 }
         localStorage.setItem(
           `lastLikes${issue.id}`,
@@ -102,7 +105,7 @@ const LikeDislike = ({ issue }: { issue: Issue }) => {
         localStorage.getItem(`lastLikes${issue.id}`)!
       )
 
-      if (count < 10) {
+      if (count < MAX_LIKES_PER_DAY) {
         mutate()
       } else console.error("pass 10")
     } else {
@@ -133,8 +136,12 @@ const LikeDislike = ({ issue }: { issue: Issue }) => {
         onClick={handleUpdateLikes}
         disabled={isLoading}
       >
-        Likes ({clientLikes})
+        {isLoading ? `Liking...` : `Likes (${clientLikes})`}
       </Button>
+
+      <Tooltip
+        text={`You can like this blog ${MAX_LIKES_PER_DAY} times a day, please come back tomorrow ^^`}
+      />
 
       <HoverWrapper>
         <Button className="absolute right-24">Dislike</Button>
