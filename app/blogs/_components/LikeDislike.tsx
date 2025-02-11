@@ -3,13 +3,10 @@ import React, { useEffect, useState } from "react"
 import Wind from "../[id]/Wind"
 import HoverWrapper from "./HoverWrapper"
 import Image from "next/image"
-import {
-  toggleLikeFromServer,
-  fetchBlogLikesFromServer,
-} from "@/app/actions/blogAction"
+import { toggleLikeFromServer } from "@/app/actions/blogAction"
 import { Issue } from "@prisma/client"
 import fan from "@/public/images/fan.png"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import useBlogLikes from "@/app/hooks/useBlogLikes"
 
 const LikeDislike = ({ issue }: { issue: Issue }) => {
@@ -51,7 +48,37 @@ const LikeDislike = ({ issue }: { issue: Issue }) => {
       // Rollback UI changes if mutation fails
       if (context?.previousLikes) {
         queryClient.setQueryData(["likes", issue.id], context.previousLikes)
-        setClientLikes(context.previousLikes!)
+        setClientLikes(context.previousLikes)
+      }
+    },
+
+    onSuccess: () => {
+      const now = new Date().getTime()
+
+      if (!localStorage.getItem(`lastLikes${issue.id}`)) {
+        const initalData = {
+          count: 0,
+          initialClickTime: now.toString(),
+        }
+        localStorage.setItem(`lastLikes${issue.id}`, JSON.stringify(initalData))
+      }
+
+      const prev = JSON.parse(localStorage.getItem(`lastLikes${issue.id}`)!)
+
+      if (isUpdateTimeAllowed(now)) {
+        const updatedData = { count: 0, initialClickTime: now.toString() }
+        localStorage.setItem(
+          `lastLikes${issue.id}`,
+          JSON.stringify(updatedData)
+        )
+      }
+
+      if (prev.count < 10) {
+        const updatedData = { ...prev, count: prev.count + 1 }
+        localStorage.setItem(
+          `lastLikes${issue.id}`,
+          JSON.stringify(updatedData)
+        )
       }
     },
 
@@ -69,13 +96,41 @@ const LikeDislike = ({ issue }: { issue: Issue }) => {
     }
   }, [likes])
 
+  const handleUpdateLikes = () => {
+    if (localStorage.getItem(`lastLikes${issue.id}`)) {
+      const { count } = JSON.parse(
+        localStorage.getItem(`lastLikes${issue.id}`)!
+      )
+
+      if (count < 10) {
+        mutate()
+      } else console.error("pass 10")
+    } else {
+      mutate()
+    }
+  }
+
+  const isUpdateTimeAllowed = (time: number) => {
+    if (localStorage.getItem(`lastLikes${issue.id}`)) {
+      const { initialClickTime } = JSON.parse(
+        localStorage.getItem(`lastLikes${issue.id}`)!
+      )
+
+      if (
+        initialClickTime &&
+        time - parseInt(initialClickTime) < 24 * 60 * 60 * 1000
+      )
+        return false
+    }
+
+    return true
+  }
+
   return (
     <Flex className="items-center absolute bottom-0 w-full">
       <Button
         style={{ marginRight: "10px" }}
-        onClick={() => {
-          mutate()
-        }}
+        onClick={handleUpdateLikes}
         disabled={isLoading}
       >
         Likes ({clientLikes})
@@ -90,4 +145,5 @@ const LikeDislike = ({ issue }: { issue: Issue }) => {
     </Flex>
   )
 }
+
 export default LikeDislike
