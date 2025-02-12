@@ -1,4 +1,3 @@
-import { Issue } from "@prisma/client"
 import matter from "gray-matter"
 import MarkdownIt from "markdown-it"
 import { v4 as uuidv4 } from "uuid"
@@ -35,7 +34,7 @@ class BlogParser {
   private htmlContent
   private headings
 
-  constructor(private blog : string) {
+  constructor(private blog: string) {
     const { data, content } = matter(blog)
     this.header = data as ArticleHeader
     this.htmlContent = md.render(content)
@@ -46,7 +45,7 @@ class BlogParser {
     return {
       header: this.header,
       htmlContent: this.htmlContent,
-      headings: this.headings
+      headings: this.headings,
     }
   }
 
@@ -66,7 +65,6 @@ class BlogParser {
         id,
       })
     }
-
     return headings
   }
 }

@@ -1,0 +1,31 @@
+.tooltip {
+  --h: 20px;
+  --w: 40px;
+  --p: 50%;
+
+  width: 200px;
+  font-size: 18px;
+  background: linear-gradient(
+    286deg,
+    rgba(2, 0, 36, 1) 0%,
+    rgba(186, 232, 224, 1) 0%,
+    rgba(49, 207, 207, 1) 53%,
+    rgba(0, 212, 255, 1) 100%
+  );
+  color: #fff;
+  padding: 10px;
+  border-bottom: var(--h) solid #0000;
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    /* [1],[2] */ 100% calc(100% - var(--h)),
+    /* [3] */ calc(var(--p) - var(--w) / 2) calc(100% - var(--h)),
+    /* [4] */ var(--p) 100%,
+    /* [5] */ calc(var(--p) + var(--w) / 2) calc(100% - var(--h)),
+    /* [6] */ 0 calc(100% - var(--h)) /* [7] */
+  );
+}
+
+.tooltip p {
+  font-size: 13px;
+}
