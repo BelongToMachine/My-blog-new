@@ -10,6 +10,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import useBlogLikes from "@/app/hooks/useBlogLikes"
 import Tooltip from "./Tooltip"
 import { AnimatePresence, motion } from "framer-motion"
+import IIIDButton from "@/app/components/IIIDButton"
 
 const MAX_LIKES_PER_DAY = 3
 
@@ -153,16 +154,26 @@ const LikeDislike = ({ issue }: { issue: Issue }) => {
           </motion.div>
         )}
       </AnimatePresence>
-      <Button
-        style={{ marginRight: "10px" }}
+
+      <IIIDButton
+        text={isLoading ? `Liking...` : `Likes (${clientLikes})`}
         onClick={handleUpdateLikes}
         disabled={isLoading}
-      >
-        {isLoading ? `Liking...` : `Likes (${clientLikes})`}
-      </Button>
+        attri={{
+          width: "100px",
+          right: "7px",
+        }}
+      ></IIIDButton>
 
       <HoverWrapper>
-        <Button className="absolute right-24">Dislike</Button>
+        <IIIDButton
+          text="Dislike (0)"
+          attri={{
+            width: "100px",
+            position: "absolute",
+            right: "6rem",
+          }}
+        />
         <Wind />
       </HoverWrapper>
 
