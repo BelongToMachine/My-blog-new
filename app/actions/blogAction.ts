@@ -7,7 +7,7 @@ interface Props {
   action: "like" | "dislike"
 }
 
-export async function toggleLike({ blogId, action }: Props) {
+export async function toggleLikeFromServer({ blogId, action }: Props) {
   const blog = await prisma.issue.findUnique({
     where: { id: blogId },
   })
@@ -43,4 +43,12 @@ export async function toggleLike({ blogId, action }: Props) {
   })
 
   return updatedBlog
+}
+
+export async function fetchBlogLikesFromServer(issueId: number) {
+  const issue = await prisma.issue.findUnique({
+    where: { id: issueId },
+  })
+  if (!issue) throw new Error("Issue not found")
+  return issue.likes
 }

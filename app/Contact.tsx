@@ -1,31 +1,31 @@
-"use client";
-import React, { useRef, FormEvent, useState } from "react";
-import emailjs from "@emailjs/browser";
-import * as Label from "@radix-ui/react-label";
-import { contactSchema, ContactFormErrors } from "./validationSchema";
-import { Box } from "@radix-ui/themes";
-import * as Tooltip from "@radix-ui/react-tooltip";
-import TooltipIcon from "./components/TooltipIcon";
+"use client"
+import React, { useRef, FormEvent, useState } from "react"
+import emailjs from "@emailjs/browser"
+import * as Label from "@radix-ui/react-label"
+import { contactSchema, ContactFormErrors } from "./validationSchema"
+import { Box } from "@radix-ui/themes"
+import * as Tooltip from "@radix-ui/react-tooltip"
+import TooltipIcon from "./components/TooltipIcon"
 
 const Contact: React.FC = () => {
-  const form = useRef<HTMLFormElement>(null);
-  const [formStatus, setFormStatus] = useState<string>("");
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const form = useRef<HTMLFormElement>(null)
+  const [formStatus, setFormStatus] = useState<string>("")
+  const [errors, setErrors] = useState<{ [key: string]: string }>({})
 
   const sendEmail = (e: FormEvent) => {
-    e.preventDefault();
-    const now = new Date().getTime();
+    e.preventDefault()
+    const now = new Date().getTime()
 
     if (isOverLimitation(now)) {
-      setFormStatus("您每天仅可以发送一次邮箱");
-      return;
+      setFormStatus("You can only send one message per day.")
+      return
     }
 
     if (form.current) {
-      const validationErrors = formValidate(form.current);
-      setErrors(validationErrors);
+      const validationErrors = formValidate(form.current)
+      setErrors(validationErrors)
 
-      if (Object.keys(validationErrors).length > 0) return;
+      if (Object.keys(validationErrors).length > 0) return
 
       emailjs
         .sendForm(
@@ -36,17 +36,17 @@ const Contact: React.FC = () => {
         )
         .then(
           () => {
-            setFormStatus("SUCCESS!");
-            form.current!.reset();
-            localStorage.setItem("lastSubmissionTime", now.toString());
+            setFormStatus("SUCCESS!")
+            form.current!.reset()
+            localStorage.setItem("lastSubmissionTime", now.toString())
           },
           (error: any) => {
-            console.log("FAILED...", error.text);
-            setFormStatus("FAILED...");
+            console.log("FAILED...", error.text)
+            setFormStatus("FAILED...")
           }
-        );
+        )
     }
-  };
+  }
 
   return (
     <>
@@ -146,39 +146,39 @@ const Contact: React.FC = () => {
         </form>
       </div>
     </>
-  );
-};
+  )
+}
 
 const formValidate = (form: HTMLFormElement) => {
   const formData = {
     user_name: form.user_name.value,
     user_email: form.user_email.value,
     message: form.message.value,
-  };
+  }
 
-  const validation = contactSchema.safeParse(formData);
-  const validationErrors: ContactFormErrors = {};
+  const validation = contactSchema.safeParse(formData)
+  const validationErrors: ContactFormErrors = {}
 
   if (!validation.success) {
     validation.error.errors.forEach((error) => {
       if (error.path.length > 0) {
-        validationErrors[error.path[0] as string] = error.message;
+        validationErrors[error.path[0] as string] = error.message
       }
-    });
+    })
   }
 
-  return validationErrors;
-};
+  return validationErrors
+}
 
 const isOverLimitation = (time: number) => {
-  const lastSubmissionTime = localStorage.getItem("lastSubmissionTime");
+  const lastSubmissionTime = localStorage.getItem("lastSubmissionTime")
   if (
     lastSubmissionTime &&
     time - parseInt(lastSubmissionTime) < 24 * 60 * 60 * 1000
   )
-    return true;
+    return true
 
-  return false;
-};
+  return false
+}
 
-export default Contact;
+export default Contact

@@ -70,8 +70,6 @@ const IssueDetails = ({ issue }: { issue: Issue }) => {
         </Card>
       </Box>
 
-      {/* <BlogContent header={header} htmlContent={htmlContent} issue={issue} /> */}
-
       <NavigationBar
         headings={headings}
         tocPoisition={tocPosition}
