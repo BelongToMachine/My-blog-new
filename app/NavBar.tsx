@@ -20,7 +20,7 @@ const NavBar = () => {
   }, [updateWindowValue])
 
   return (
-    <nav className="fixed top-0 left-0 z-10 right-0 bg-opacity-90 bg-gradient-to-t from-primary-50 to-[#D1F0FA] text-[#1D3E56] border">
+    <nav className="fixed top-0 left-0 right-0 z-10 bg-opacity-90 bg-gradient-to-t from-white to-transparent border-b">
       {windowWidth > 768 ? <DesktopNav /> : <MobileNav />}
     </nav>
   )
