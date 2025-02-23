@@ -1,4 +1,7 @@
+// Ensure you use .mjs extension if using ESM
+import { withPigment } from "@pigment-css/nextjs-plugin"
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {}
 
-module.exports = nextConfig
+export default withPigment(nextConfig)
