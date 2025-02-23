@@ -2,6 +2,18 @@
 import React, { useCallback, useEffect, useState } from "react"
 import DesktopNav from "./components/navbar/DesktopNav"
 import MobileNav from "./components/navbar/MobileNav"
+import { styled } from "@pigment-css/react"
+
+const StyledNav = styled.nav`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.3);
+  border-bottom: 1px solid;
+  backdrop-filter: blur(10px);
+`
 
 const NavBar = () => {
   const [windowWidth, setWindowWidth] = useState<number>(0)
@@ -20,9 +32,7 @@ const NavBar = () => {
   }, [updateWindowValue])
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-10 bg-opacity-90 bg-gradient-to-t from-white to-transparent border-b">
-      {windowWidth > 768 ? <DesktopNav /> : <MobileNav />}
-    </nav>
+    <StyledNav>{windowWidth > 768 ? <DesktopNav /> : <MobileNav />}</StyledNav>
   )
 }
 

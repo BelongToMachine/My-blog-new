@@ -8,6 +8,7 @@ import AuthProvider from "./auth/Provider"
 import QueryClientProvider from "./QueryClientProvider"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import CursorManager from "./CursorManager"
+import "@pigment-css/react/styles.css"
 
 // const inter = Inter({ subsets: ["latin"] });
 
