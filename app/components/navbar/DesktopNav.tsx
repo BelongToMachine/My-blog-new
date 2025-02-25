@@ -17,41 +17,41 @@ interface Link {
 
 type IdRef = string | null | undefined
 
-const getVarint = (prevIdRef: IdRef, index: number, text: string) => {
-  let variant = {}
+// const getVarint = (prevIdRef: IdRef, index: number, text: string) => {
+//   let variant = {}
 
-  if (!prevIdRef) {
-    variant = {
-      initial: { opacity: 0 },
-      animate: {
-        opacity: 1,
-        transition: { duration: 0.5, delay: index * 0.05 },
-      },
-      exit: {
-        opacity: 0,
-        transition: {
-          duration: 0.5,
-          delay: (text.length - index - 1) * 0.05,
-        },
-      },
-    }
-  }
+//   if (!prevIdRef) {
+//     variant = {
+//       initial: { opacity: 0 },
+//       animate: {
+//         opacity: 1,
+//         transition: { duration: 0.5, delay: index * 0.05 },
+//       },
+//       exit: {
+//         opacity: 0,
+//         transition: {
+//           duration: 0.5,
+//           delay: (text.length - index - 1) * 0.05,
+//         },
+//       },
+//     }
+//   }
 
-  return {
-    initial: { opacity: 0 },
-    animate: {
-      opacity: 1,
-      transition: { duration: 5, delay: index * 0.05 },
-    },
-    exit: {
-      opacity: 0,
-      transition: {
-        duration: 5,
-        delay: (text.length - index - 1) * 0.05,
-      },
-    },
-  }
-}
+//   return {
+//     initial: { opacity: 0 },
+//     animate: {
+//       opacity: 1,
+//       transition: { duration: 0.5, delay: index * 0.05 },
+//     },
+//     exit: {
+//       opacity: 0,
+//       transition: {
+//         duration: 0.5,
+//         delay: (text.length - index - 1) * 0.05,
+//       },
+//     },
+//   }
+// }
 
 const DesktopNav = () => {
   return (
@@ -136,17 +136,30 @@ const NavLinks = () => {
       })
   }, [currentPath])
 
+  const variants = {
+    initial: { opacity: 0 },
+    animate: (custom: { index: number }) => ({
+      opacity: 1,
+      transition: { duration: 0.5, delay: custom.index * 0.05 },
+    }),
+    exit: (custom: { index: number; textLength: number }) => ({
+      opacity: 0,
+      transition: {
+        duration: 0.5,
+        delay: (custom.textLength - custom.index - 1) * 0.05,
+      },
+    }),
+  }
+
   return (
     <ul className="flex space-x-6">
       {links.map((link, index) => {
-        const variant = getVarint(prevIdRef2.current, index, link.label)
-
         return (
-          <AnimatePresence key={index}>
+          <AnimatePresence key={link.href}>
             {index === 1 && metaTitle && (
               <motion.li
                 key={`arrow-${index}`}
-                variants={variant}
+                variants={variants}
                 className={StyledLi(link)}
                 onClick={handleArrowButtonClick}
                 initial="initial"
@@ -155,6 +168,7 @@ const NavLinks = () => {
                 whileHover={{
                   scale: 1.3,
                 }}
+                custom={{ index, textLength: link.label.length }}
               >
                 {" "}
                 &gt;{" "}
@@ -164,7 +178,7 @@ const NavLinks = () => {
               <Link className={StyledLi(link)} href={link.href}>
                 <DisappearingText
                   text={link.label}
-                  variant={variant}
+                  variant={variants}
                   key={`disappearing-text-${index}-${link.href}`}
                 />
               </Link>
