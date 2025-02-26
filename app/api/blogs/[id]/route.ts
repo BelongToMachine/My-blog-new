@@ -4,6 +4,25 @@ import prisma from "@/prisma/client"
 import { AuthOptions, getServerSession } from "next-auth"
 import { NextRequest, NextResponse } from "next/server"
 
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const id = parseInt(params.id)
+
+  if (isNaN(id)) {
+    return NextResponse.json({ error: "Invalid ID" }, { status: 400 })
+  }
+
+  const blog = await prisma.issue.findUnique({ where: { id } })
+
+  if (!blog) {
+    return NextResponse.json({ error: "Blog not found" }, { status: 404 })
+  }
+
+  return NextResponse.json({ title: blog.title })
+}
+
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } }
