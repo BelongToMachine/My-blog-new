@@ -1,8 +1,10 @@
 "use client"
-import React, { useCallback, useEffect, useState } from "react"
+import React, { cache, useCallback, useEffect, useState } from "react"
 import DesktopNav from "./components/navbar/DesktopNav"
 import MobileNav from "./components/navbar/MobileNav"
 import { styled } from "@pigment-css/react"
+import prisma from "@/prisma/client"
+import { useParams, usePathname } from "next/navigation"
 
 const StyledNav = styled.nav`
   position: fixed;
