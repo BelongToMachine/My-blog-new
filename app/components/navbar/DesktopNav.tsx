@@ -15,44 +15,6 @@ interface Link {
   href: string
 }
 
-type IdRef = string | null | undefined
-
-// const getVarint = (prevIdRef: IdRef, index: number, text: string) => {
-//   let variant = {}
-
-//   if (!prevIdRef) {
-//     variant = {
-//       initial: { opacity: 0 },
-//       animate: {
-//         opacity: 1,
-//         transition: { duration: 0.5, delay: index * 0.05 },
-//       },
-//       exit: {
-//         opacity: 0,
-//         transition: {
-//           duration: 0.5,
-//           delay: (text.length - index - 1) * 0.05,
-//         },
-//       },
-//     }
-//   }
-
-//   return {
-//     initial: { opacity: 0 },
-//     animate: {
-//       opacity: 1,
-//       transition: { duration: 0.5, delay: index * 0.05 },
-//     },
-//     exit: {
-//       opacity: 0,
-//       transition: {
-//         duration: 0.5,
-//         delay: (text.length - index - 1) * 0.05,
-//       },
-//     },
-//   }
-// }
-
 const DesktopNav = () => {
   return (
     <div className="flex justify-between items-center">
@@ -72,23 +34,9 @@ const NavLinks = () => {
   const currentPath = usePathname()
   const { id }: { id?: string | null } = useParams()
   const [metaTitle, setMetaTitle] = useState<string>("")
-  const prevIdRef = useRef<IdRef>(null)
-  const prevIdRef2 = useRef<IdRef>(null)
+  const [isCollapse, setIsCollapse] = useState<boolean>(false)
 
   useEffect(() => {
-    console.log("Previous ID:", prevIdRef.current)
-    console.log("Current ID:", id)
-
-    // If `prevIdRef.current` exists (i.e., previous ID is available)
-    if (prevIdRef.current) {
-      console.log("There was a previous ID:", prevIdRef.current)
-    }
-
-    prevIdRef2.current = prevIdRef.current
-
-    // Update `prevIdRef` for next render
-    prevIdRef.current = id
-
     const fetchTitle = async () => {
       try {
         if (id) {
@@ -124,7 +72,7 @@ const NavLinks = () => {
 
   const handleArrowButtonClick = () => {
     if (!id) {
-      setMetaTitle("")
+      setIsCollapse(true)
     }
   }
 
@@ -142,50 +90,67 @@ const NavLinks = () => {
       opacity: 1,
       transition: { duration: 0.5, delay: custom.index * 0.05 },
     }),
-    exit: (custom: { index: number; textLength: number }) => ({
-      opacity: 0,
-      transition: {
-        duration: 0.5,
-        delay: (custom.textLength - custom.index - 1) * 0.05,
-      },
-    }),
+    exit: (custom: {
+      index: number
+      textLength: number
+      isCollapse: boolean
+    }) => {
+      if (custom.isCollapse) {
+        return {
+          opacity: 0,
+          transition: {
+            duration: 0.5,
+            delay: (custom.textLength - custom.index - 1) * 0.05,
+          },
+        }
+      }
+
+      return {}
+    },
   }
 
   return (
     <ul className="flex space-x-6">
-      {links.map((link, index) => {
-        return (
-          <AnimatePresence key={link.href}>
-            {index === 1 && metaTitle && (
-              <motion.li
-                key={`arrow-${index}`}
-                variants={variants}
-                className={StyledLi(link)}
-                onClick={handleArrowButtonClick}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                whileHover={{
-                  scale: 1.3,
-                }}
-                custom={{ index, textLength: link.label.length }}
-              >
-                {" "}
-                &gt;{" "}
-              </motion.li>
-            )}
-            <li key={link.href}>
-              <Link className={StyledLi(link)} href={link.href}>
-                <DisappearingText
-                  text={link.label}
-                  variant={variants}
-                  key={`disappearing-text-${index}-${link.href}`}
-                />
-              </Link>
-            </li>
-          </AnimatePresence>
-        )
-      })}
+      <AnimatePresence>
+        {links.map((link, index) => {
+          return (
+            <React.Fragment key={link.href}>
+              {index === 1 && metaTitle && (
+                <motion.span
+                  variants={variants}
+                  className={StyledLi(link)}
+                  onClick={handleArrowButtonClick}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                  whileHover={{
+                    scale: 1.3,
+                  }}
+                  custom={{ index, textLength: link.label.length, isCollapse }}
+                  onAnimationComplete={() => {
+                    if (isCollapse) {
+                      setMetaTitle("")
+                      setIsCollapse(false)
+                    }
+                  }}
+                >
+                  {" "}
+                  &gt;{" "}
+                </motion.span>
+              )}
+              <li>
+                <Link className={StyledLi(link)} href={link.href}>
+                  <DisappearingText
+                    text={link.label}
+                    variant={variants}
+                    isCollapse={isCollapse}
+                  />
+                </Link>
+              </li>
+            </React.Fragment>
+          )
+        })}
+      </AnimatePresence>
     </ul>
   )
 }

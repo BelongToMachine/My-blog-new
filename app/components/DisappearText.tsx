@@ -3,35 +3,26 @@ import { motion, Variants } from "framer-motion"
 const DisappearingText = ({
   text,
   variant,
+  isCollapse,
 }: {
   text: string
   variant: Variants
+  isCollapse: boolean
 }) => {
-  const variants = {
-    initial: { opacity: 0 },
-    animate: (index: number) => ({
-      opacity: 1,
-      transition: { duration: 0.5, delay: index * 0.05 }, // Letter by letter fade-in
-    }),
-    exit: (index: number) => ({
-      opacity: 0,
-      transition: {
-        duration: 0.5,
-        delay: (text.length - index - 1) * 0.05, // Letter by letter fade-out
-      },
-    }),
-  }
-
   return (
     <span>
       {text.split("").map((char, index) => (
         <motion.span
           key={index}
-          variants={variants}
+          variants={variant}
           initial="initial"
           animate="animate"
           exit="exit"
-          custom={index}
+          custom={{
+            index,
+            textLength: text.length,
+            isCollapse,
+          }}
         >
           {char}
         </motion.span>
