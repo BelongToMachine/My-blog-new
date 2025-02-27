@@ -76,11 +76,13 @@ const NavLinks = () => {
     }
   }
 
-  const StyledLi = useMemo(() => {
-    return (link: Link) =>
+  const styledTag = useMemo(() => {
+    return (link: Link, isArrowExist: boolean = false) =>
+      // prettier-ignore
       classNames({
         "nav-link": true,
         "!text-zinc-950": link.href === currentPath,
+        "arrowCollapsible": isArrowExist,
       })
   }, [currentPath])
 
@@ -113,18 +115,19 @@ const NavLinks = () => {
     <ul className="flex space-x-6">
       <AnimatePresence>
         {links.map((link, index) => {
+          const isArrowExist = Boolean(index === 1 && metaTitle)
           return (
             <React.Fragment key={link.href}>
-              {index === 1 && metaTitle && (
+              {isArrowExist && (
                 <motion.span
                   variants={variants}
-                  className={StyledLi(link)}
+                  className={styledTag(link, isArrowExist)}
                   onClick={handleArrowButtonClick}
                   initial="initial"
                   animate="animate"
                   exit="exit"
                   whileHover={{
-                    scale: 1.3,
+                    scale: 1.5,
                   }}
                   custom={{ index, textLength: link.label.length, isCollapse }}
                   onAnimationComplete={() => {
@@ -139,7 +142,7 @@ const NavLinks = () => {
                 </motion.span>
               )}
               <li>
-                <Link className={StyledLi(link)} href={link.href}>
+                <Link className={styledTag(link)} href={link.href}>
                   <DisappearingText
                     text={link.label}
                     variant={variants}
