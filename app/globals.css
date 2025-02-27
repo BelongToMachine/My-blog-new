@@ -40,3 +40,7 @@ body {
 ul li {
   margin-bottom: 0.5rem;
 }
+
+.arrowCollapsible {
+  cursor: pointer;
+}
