@@ -9,6 +9,8 @@ import axios from "axios"
 import toast from "react-hot-toast"
 import { AnimatePresence, motion } from "framer-motion"
 import DisappearingText from "../DisappearText"
+import { LuSearch } from "react-icons/lu"
+import { PiSunDim } from "react-icons/pi"
 
 interface Link {
   label: string
@@ -24,7 +26,10 @@ const DesktopNav = () => {
         </Link>
         <NavLinks />
       </div>
-      <AuthStatus />
+      <div className="flex space-x-6 items-center pr-6">
+        <LuSearch size={26} />
+        <PiSunDim size={32} />
+      </div>
     </div>
   )
 }
@@ -112,7 +117,7 @@ const NavLinks = () => {
   }
 
   return (
-    <ul className="flex space-x-6">
+    <ul className="flex space-x-6 relative top-1">
       <AnimatePresence>
         {links.map((link, index) => {
           const isArrowExist = Boolean(index === 1 && metaTitle)
