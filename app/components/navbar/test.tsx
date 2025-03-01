@@ -1,5 +1,6 @@
 "use client"
 
+import { useScrollableStore } from "@/app/service/Store"
 import React, { useState, useEffect, useRef } from "react"
 
 // Utility function that clamps a given value to a
@@ -15,13 +16,26 @@ const DynamicBezierCurve = () => {
   const [scrollRatio, setScrollRatio] = useState(0)
   const canvasRef = useRef(null)
   const nodeRef = useRef(null)
+  const isScrollableNeeded = useScrollableStore((state) => state.isScrollableNeeded)
+  const setIsInScrollable = useScrollableStore((state) => state.setIsInScrollable)
+  const SCROLLABLE_HEIGHT_IN_VH = 220
+
 
   const handleScroll = () => {
     if (!nodeRef.current) return
 
     const windowHeight = window.innerHeight
     const pixelsScrolled = Math.abs(window.scrollY)
-    let ratio = 0.4 * (pixelsScrolled / windowHeight)
+    const baseRatio = pixelsScrolled / windowHeight
+    const scrolledInVH = baseRatio * 100
+
+    if (scrolledInVH < SCROLLABLE_HEIGHT_IN_VH) {
+      setIsInScrollable(true)
+    } else {
+      setIsInScrollable(false)
+    }
+
+    let ratio = 0.4 * baseRatio
 
     // We don't care about the negative values when it's
     // below the viewport, or the greater-than-1 values when
@@ -79,6 +93,8 @@ const DynamicBezierCurve = () => {
     L 0,0
   `
 
+  if (!isScrollableNeeded) return null
+
   return (
     <>
       <svg
@@ -96,7 +112,7 @@ const DynamicBezierCurve = () => {
       <div
         ref={canvasRef}
         style={{
-          height: "220vh",
+          height: `${SCROLLABLE_HEIGHT_IN_VH}vh`,
         }}
       ></div>
     </>

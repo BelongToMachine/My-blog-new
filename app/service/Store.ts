@@ -20,6 +20,13 @@ interface VirtualCursorStore {
   setCursorRect: (cursorReact: DOMRect | null) => void
 }
 
+interface ScrollableStore {
+  isScrollableNeeded: boolean,
+  isInScrollable: boolean,
+  setIsScrollableNeeded: (param: boolean) => void
+  setIsInScrollable: (param: boolean) => void
+}
+
 export const useDefaultCursorStore = create<CursorStateStore>((set) => ({
   isMagicCursor: false,
 
@@ -51,4 +58,15 @@ export const useVirtualCursorStore = create<VirtualCursorStore>((set) => ({
       set({ cursorRect: cursorReact })
     } else console.warn("Invalid DOMRect passed to setCursorRect")
   },
+}))
+
+export const useScrollableStore = create<ScrollableStore>(set=> ({
+  isInScrollable: false,
+  isScrollableNeeded: true,
+  setIsScrollableNeeded: (userInputBoolean) => {
+    set({isScrollableNeeded: userInputBoolean})
+  },
+  setIsInScrollable: (userInputBoolean)=> {
+    set({isInScrollable: userInputBoolean})
+  }
 }))

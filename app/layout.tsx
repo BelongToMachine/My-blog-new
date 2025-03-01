@@ -32,14 +32,12 @@ export default function RootLayout({
         <QueryClientProvider>
           <AuthProvider>
             <Theme appearance="light" accentColor="sky" radius="small">
-              <ScrollableProvider>
                 <NavBar />
                 <DynamicBezierCurve />
                 <CursorManager />
                 <main className="pt-16">
                   <Container>{children}</Container>
                 </main>
-              </ScrollableProvider>
             </Theme>
             <ReactQueryDevtools />
           </AuthProvider>
