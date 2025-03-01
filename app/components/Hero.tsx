@@ -4,6 +4,7 @@ import selfie from "@/public/images/selfie.png" // Update the image import
 import Image from "next/image"
 import { TypeAnimation } from "react-type-animation"
 import { motion } from "framer-motion"
+import DynamicBezierCurve from "./navbar/test"
 
 const Hero = () => {
   return (

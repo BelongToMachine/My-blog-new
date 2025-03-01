@@ -1,0 +1,106 @@
+"use client"
+
+import React, { useState, useEffect, useRef } from "react"
+
+// Utility function that clamps a given value to a
+// specific range (inclusive, between min and max).
+const clamp = (val, min, max) => Math.max(min, Math.min(max, val))
+
+// Helper function for interpolation (assuming it was defined elsewhere in the original code)
+const getInterpolatedValue = (curvyValue, flatValue, scrollRatio) => {
+  return curvyValue * (1 - scrollRatio) + flatValue * scrollRatio
+}
+
+const DynamicBezierCurve = () => {
+  const [scrollRatio, setScrollRatio] = useState(0)
+  const canvasRef = useRef(null)
+  const nodeRef = useRef(null)
+
+  const handleScroll = () => {
+    if (!nodeRef.current) return
+
+    const windowHeight = window.innerHeight
+    const pixelsScrolled = Math.abs(window.scrollY)
+    let ratio = 0.4 * (pixelsScrolled / windowHeight)
+
+    // We don't care about the negative values when it's
+    // below the viewport, or the greater-than-1 values when
+    // it's above the viewport.
+    ratio = clamp(ratio, 0, 1)
+
+    // Small optimization, avoid re-rendering when the
+    // SVG isn't in the viewport.
+    if (scrollRatio !== ratio) {
+      setScrollRatio(ratio)
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll)
+
+    // Clean up event listener on component unmount
+    return () => {
+      window.removeEventListener("scroll", handleScroll)
+    }
+  }, [scrollRatio]) // Include scrollRatio in dependencies to ensure handleScroll has the latest value
+
+  // Use our `getInterpolatedValue` function to figure out the values for
+  // the start point and the control points.
+  const startPoint = getInterpolatedValue(
+    95, // curvy value
+    0, // flat value
+    scrollRatio
+  )
+
+  const firstControlPoint = getInterpolatedValue(
+    50, // curvy value
+    0, // flat value
+    scrollRatio
+  )
+
+  const secondControlPoint = getInterpolatedValue(
+    100, // curvy value
+    0, // flat value
+    scrollRatio
+  )
+
+  // Unlike the other 3 points, the `endPoint` is
+  // constant, and doesn't need interpolation.
+  const endPoint = getInterpolatedValue(70, 0, scrollRatio)
+
+  // Create the SVG path instructions, using our
+  // interpolated values.
+  const instructions = `
+    M 0,${startPoint}
+    C 30,${firstControlPoint}
+      50,${secondControlPoint}
+      100,${endPoint}
+    L 100,0
+    L 0,0
+  `
+
+  return (
+    <>
+      <svg
+        ref={nodeRef}
+        viewBox="0 0 100 100"
+        style={{
+          width: "100%",
+          height: "100vh",
+          position: "fixed",
+        }}
+        preserveAspectRatio="none"
+      >
+        <path d={instructions} fill="green" stroke="hotpink" stroke-width="0" />
+      </svg>
+      <div
+        ref={canvasRef}
+        style={{
+          height: "220vh",
+        }}
+      ></div>
+    </>
+  )
+}
+
+export default DynamicBezierCurve
