@@ -9,6 +9,8 @@ import QueryClientProvider from "./QueryClientProvider"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import CursorManager from "./CursorManager"
 import "@pigment-css/react/styles.css"
+import DynamicBezierCurve from "./components/navbar/test"
+import { ScrollableProvider } from "./context/ScrollableContext"
 
 // const inter = Inter({ subsets: ["latin"] });
 
@@ -30,11 +32,14 @@ export default function RootLayout({
         <QueryClientProvider>
           <AuthProvider>
             <Theme appearance="light" accentColor="sky" radius="small">
-              <NavBar />
-              <CursorManager />
-              <main className="p-3 pt-16">
-                <Container>{children}</Container>
-              </main>
+              <ScrollableProvider>
+                <NavBar />
+                <DynamicBezierCurve />
+                <CursorManager />
+                <main className="pt-16">
+                  <Container>{children}</Container>
+                </main>
+              </ScrollableProvider>
             </Theme>
             <ReactQueryDevtools />
           </AuthProvider>
