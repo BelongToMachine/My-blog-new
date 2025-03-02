@@ -1,14 +1,15 @@
 "use client"
 
 import { useScrollableStore } from "@/app/service/Store"
+import { usePathname } from "next/navigation"
 import React, { useState, useEffect, useRef } from "react"
 
 // Utility function that clamps a given value to a
 // specific range (inclusive, between min and max).
-const clamp = (val, min, max) => Math.max(min, Math.min(max, val))
+const clamp = (val: number, min = 0, max = 1) => Math.max(min, Math.min(max, val))
 
 // Helper function for interpolation (assuming it was defined elsewhere in the original code)
-const getInterpolatedValue = (curvyValue, flatValue, scrollRatio) => {
+const getInterpolatedValue = (curvyValue: number, flatValue: number, scrollRatio: number) => {
   return curvyValue * (1 - scrollRatio) + flatValue * scrollRatio
 }
 
@@ -18,7 +19,16 @@ const DynamicBezierCurve = () => {
   const nodeRef = useRef(null)
   const isScrollableNeeded = useScrollableStore((state) => state.isScrollableNeeded)
   const setIsInScrollable = useScrollableStore((state) => state.setIsInScrollable)
+  const setIsScrollableNeed = useScrollableStore((state) => state.setIsScrollableNeeded)
+  const currentPath = usePathname()
   const SCROLLABLE_HEIGHT_IN_VH = 220
+  const ADJUSTED_SCROLL_COEFFICIENT = 0.4
+
+  if (currentPath === "/") {
+    setIsScrollableNeed(true)
+  } else {
+    setIsScrollableNeed(false)
+  }
 
 
   const handleScroll = () => {
@@ -35,12 +45,12 @@ const DynamicBezierCurve = () => {
       setIsInScrollable(false)
     }
 
-    let ratio = 0.4 * baseRatio
+    let ratio = ADJUSTED_SCROLL_COEFFICIENT * baseRatio
 
     // We don't care about the negative values when it's
     // below the viewport, or the greater-than-1 values when
     // it's above the viewport.
-    ratio = clamp(ratio, 0, 1)
+    ratio = clamp(ratio)
 
     // Small optimization, avoid re-rendering when the
     // SVG isn't in the viewport.

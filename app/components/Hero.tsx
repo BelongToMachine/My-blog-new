@@ -8,21 +8,9 @@ import DynamicBezierCurve from "./navbar/test"
 import { useScrollableStore } from "../service/Store"
 
 const Hero = () => {
-  const heroRef = useRef(null)
-  const setIsScrollableNeed = useScrollableStore((state) => state.setIsScrollableNeeded)
-
-  useEffect(()=> {
-    if (heroRef) {
-      setIsScrollableNeed(true)
-    }
-
-    return () => {
-      setIsScrollableNeed(false)
-    }
-  }, [heroRef])
 
   return (
-    <div ref={heroRef} id="about-me-section" className="pb-4">
+    <div id="about-me-section" className="pb-4">
       <div className="grid grid-cols-1 sm:grid-cols-12">
         <motion.div
           initial={{ opacity: 0, scale: 0.5 }}

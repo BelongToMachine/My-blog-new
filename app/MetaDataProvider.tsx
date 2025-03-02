@@ -1,27 +1,26 @@
-"use client"
-import { createContext, useContext, useState, useEffect } from "react"
-import { fetchUser } from "@/lib/api"
+// "use client"
+// import { createContext, useContext, useState, useEffect } from "react"
 
-const MetadataContext = createContext(null)
+// const MetadataContext = createContext(null)
 
-export const MetadataProvider = ({
-  children,
-  issueId,
-}: {
-  children: React.ReactNode
-  issueId: number
-}) => {
-  const [title, setTitle] = useState<string | null>(null)
+// export const MetadataProvider = ({
+//   children,
+//   issueId,
+// }: {
+//   children: React.ReactNode
+//   issueId: number
+// }) => {
+//   const [title, setTitle] = useState<string | null>(null)
 
-  useEffect(() => {
-    fetchUser(issueId).then((data) => setTitle(data?.title))
-  }, [issueId])
+//   useEffect(() => {
+//     fetchUser(issueId).then((data) => setTitle(data?.title))
+//   }, [issueId])
 
-  return (
-    <MetadataContext.Provider value={{ title }}>
-      {children}
-    </MetadataContext.Provider>
-  )
-}
+//   return (
+//     <MetadataContext.Provider value={{ title }}>
+//       {children}
+//     </MetadataContext.Provider>
+//   )
+// }
 
-export const useMetadata = () => useContext(MetadataContext)
+// export const useMetadata = () => useContext(MetadataContext)

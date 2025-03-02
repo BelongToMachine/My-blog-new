@@ -7,6 +7,7 @@ import { useScrollableStore } from "./service/Store"
 const NavBar = () => {
   const [windowWidth, setWindowWidth] = useState<number>(0)
   const isInScrollable = useScrollableStore((state) => state.isInScrollable)
+  const setIsScrollableNeed = useScrollableStore((state) => state.setIsScrollableNeeded)
 
   const updateWindowValue = useCallback(() => {
     setWindowWidth(window.innerWidth)

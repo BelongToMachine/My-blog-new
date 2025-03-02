@@ -40,7 +40,6 @@ const IndexPage = async ({ searchParams }: Props) => {
 
   return (
     <div className="space-y-3 p-5">
-      <Test />
       <IssueActions />
       <BlogTable searchParams={searchParams} issues={issues} />
       <Pagination

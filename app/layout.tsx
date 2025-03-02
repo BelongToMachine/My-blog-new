@@ -33,8 +33,8 @@ export default function RootLayout({
           <AuthProvider>
             <Theme appearance="light" accentColor="sky" radius="small">
                 <NavBar />
-                <DynamicBezierCurve />
                 <CursorManager />
+                <DynamicBezierCurve />
                 <main className="pt-16">
                   <Container>{children}</Container>
                 </main>
