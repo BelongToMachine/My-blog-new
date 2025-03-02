@@ -7,34 +7,35 @@ import { useScrollableStore } from "./service/Store"
 const NavBar = () => {
   const [windowWidth, setWindowWidth] = useState<number>(0)
   const isInScrollable = useScrollableStore((state) => state.isInScrollable)
-  const setIsScrollableNeed = useScrollableStore((state) => state.setIsScrollableNeeded)
 
   const updateWindowValue = useCallback(() => {
     setWindowWidth(window.innerWidth)
   }, [])
 
   useEffect(() => {
-      setWindowWidth(window.innerWidth)
-      window.addEventListener("resize", updateWindowValue)
+    setWindowWidth(window.innerWidth)
+    window.addEventListener("resize", updateWindowValue)
 
-      return () => {
-        window.removeEventListener("resize", updateWindowValue)
+    return () => {
+      window.removeEventListener("resize", updateWindowValue)
     }
   }, [updateWindowValue])
 
   // Don't render anything until windowWidth is measured
 
   return (
-    <nav 
+    <nav
       style={{
-        position: 'fixed',
+        position: "fixed",
         top: 0,
         left: 0,
         right: 0,
         zIndex: 10,
-        background: isInScrollable ? "rgba(255, 255, 255, 1)" : "rgba(255, 255, 255, 0.3)",
+        background: isInScrollable
+          ? "rgba(255, 255, 255, 1)"
+          : "rgba(255, 255, 255, 0.3)",
         backdropFilter: isInScrollable ? "none" : "blur(10px)",
-        transition: "background 0.3s ease-in-out"
+        transition: "background 0.3s ease-in-out",
       }}
     >
       {windowWidth > 768 ? <DesktopNav /> : <MobileNav />}

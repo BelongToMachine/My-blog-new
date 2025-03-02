@@ -1,7 +1,5 @@
 "use client"
-
 import { useScrollableStore } from "@/app/service/Store"
-import { usePathname } from "next/navigation"
 import React, { useState, useEffect, useRef } from "react"
 
 // Utility function that clamps a given value to a
@@ -22,24 +20,11 @@ const DynamicBezierCurve = () => {
   const [scrollRatio, setScrollRatio] = useState(0)
   const canvasRef = useRef(null)
   const nodeRef = useRef(null)
-  const isScrollableNeeded = useScrollableStore(
-    (state) => state.isScrollableNeeded
-  )
   const setIsInScrollable = useScrollableStore(
     (state) => state.setIsInScrollable
   )
-  const setIsScrollableNeed = useScrollableStore(
-    (state) => state.setIsScrollableNeeded
-  )
-  const currentPath = usePathname()
   const SCROLLABLE_HEIGHT_IN_VH = 220
   const ADJUSTED_SCROLL_COEFFICIENT = 0.4
-
-  if (currentPath === "/") {
-    setIsScrollableNeed(true)
-  } else {
-    setIsScrollableNeed(false)
-  }
 
   const handleScroll = () => {
     if (!nodeRef.current) return
@@ -113,8 +98,6 @@ const DynamicBezierCurve = () => {
     L 0,0
   `
 
-  if (!isScrollableNeeded) return null
-
   return (
     <>
       <svg
@@ -127,7 +110,7 @@ const DynamicBezierCurve = () => {
         }}
         preserveAspectRatio="none"
       >
-        <path d={instructions} fill="green" stroke="hotpink" strokewidth="0" />
+        <path d={instructions} fill="green" stroke="hotpink" strokeWidth="0" />
       </svg>
       <div
         ref={canvasRef}

@@ -7,7 +7,8 @@ import BlogTable, { BlogQuery } from "@/app/blogs/BlogTable"
 import Pagination from "../components/Pagination"
 import { columnNames } from "@/app/blogs/BlogTable"
 import { Metadata } from "next"
-import Test from "../components/navbar/test"
+import Test from "../components/navbar/DynamicBezierCurve"
+import { Container } from "@radix-ui/themes"
 
 interface Props {
   searchParams: BlogQuery
@@ -39,15 +40,17 @@ const IndexPage = async ({ searchParams }: Props) => {
   })
 
   return (
-    <div className="space-y-3 p-5">
-      <IssueActions />
-      <BlogTable searchParams={searchParams} issues={issues} />
-      <Pagination
-        pageSize={pageSize}
-        currentPage={page}
-        itemCounts={issueCount}
-      />
-    </div>
+    <Container>
+      <div className="space-y-3 p-5">
+        <IssueActions />
+        <BlogTable searchParams={searchParams} issues={issues} />
+        <Pagination
+          pageSize={pageSize}
+          currentPage={page}
+          itemCounts={issueCount}
+        />
+      </div>
+    </Container>
   )
 }
 

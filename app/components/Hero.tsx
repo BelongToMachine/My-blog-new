@@ -1,14 +1,11 @@
 "use client"
-import React, { useEffect, useRef } from "react"
+import React from "react"
 import selfie from "@/public/images/selfie.png" // Update the image import
 import Image from "next/image"
 import { TypeAnimation } from "react-type-animation"
 import { motion } from "framer-motion"
-import DynamicBezierCurve from "./navbar/test"
-import { useScrollableStore } from "../service/Store"
 
 const Hero = () => {
-
   return (
     <div id="about-me-section" className="pb-4">
       <div className="grid grid-cols-1 sm:grid-cols-12">
