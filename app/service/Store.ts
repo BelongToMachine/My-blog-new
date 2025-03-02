@@ -21,9 +21,7 @@ interface VirtualCursorStore {
 }
 
 interface ScrollableStore {
-  isScrollableNeeded: boolean,
   isInScrollable: boolean,
-  setIsScrollableNeeded: (param: boolean) => void
   setIsInScrollable: (param: boolean) => void
 }
 
@@ -62,10 +60,6 @@ export const useVirtualCursorStore = create<VirtualCursorStore>((set) => ({
 
 export const useScrollableStore = create<ScrollableStore>(set=> ({
   isInScrollable: false,
-  isScrollableNeeded: true,
-  setIsScrollableNeeded: (userInputBoolean) => {
-    set({isScrollableNeeded: userInputBoolean})
-  },
   setIsInScrollable: (userInputBoolean)=> {
     set({isInScrollable: userInputBoolean})
   }

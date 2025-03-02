@@ -3,14 +3,12 @@ import type { Metadata } from "next"
 // import { Inter } from "next/font/google";
 import NavBar from "./NavBar"
 import "@radix-ui/themes/styles.css"
-import { Container, Theme, ThemePanel } from "@radix-ui/themes"
+import { Theme } from "@radix-ui/themes"
 import AuthProvider from "./auth/Provider"
 import QueryClientProvider from "./QueryClientProvider"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import CursorManager from "./CursorManager"
 import "@pigment-css/react/styles.css"
-import DynamicBezierCurve from "./components/navbar/test"
-import { ScrollableProvider } from "./context/ScrollableContext"
 
 // const inter = Inter({ subsets: ["latin"] });
 
@@ -32,12 +30,9 @@ export default function RootLayout({
         <QueryClientProvider>
           <AuthProvider>
             <Theme appearance="light" accentColor="sky" radius="small">
-                <NavBar />
-                <CursorManager />
-                <DynamicBezierCurve />
-                <main className="pt-16">
-                  <Container>{children}</Container>
-                </main>
+              <NavBar />
+              <CursorManager />
+              <main className="pt-16">{children}</main>
             </Theme>
             <ReactQueryDevtools />
           </AuthProvider>
