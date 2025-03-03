@@ -1,6 +1,12 @@
 "use client"
 import { useScrollableStore } from "@/app/service/Store"
-import React, { useState, useEffect, useRef } from "react"
+import React, { useState, useEffect, useRef, ReactNode } from "react"
+import Hero from "../Hero"
+import { Container } from "@radix-ui/themes"
+
+interface Props {
+  children: ReactNode
+}
 
 // Utility function that clamps a given value to a
 // specific range (inclusive, between min and max).
@@ -16,15 +22,15 @@ const getInterpolatedValue = (
   return curvyValue * (1 - scrollRatio) + flatValue * scrollRatio
 }
 
-const DynamicBezierCurve = () => {
+const DynamicBezierCurve = ({ children }: Props) => {
   const [scrollRatio, setScrollRatio] = useState(0)
-  const canvasRef = useRef(null)
   const nodeRef = useRef(null)
   const setIsInScrollable = useScrollableStore(
     (state) => state.setIsInScrollable
   )
-  const SCROLLABLE_HEIGHT_IN_VH = 220
+  const SCROLLABLE_HEIGHT_IN_VH = 280
   const ADJUSTED_SCROLL_COEFFICIENT = 0.4
+  const CONTENT_BACKGROUND = "lightblue"
 
   const handleScroll = () => {
     if (!nodeRef.current) return
@@ -94,12 +100,23 @@ const DynamicBezierCurve = () => {
     C 30,${firstControlPoint}
       50,${secondControlPoint}
       100,${endPoint}
-    L 100,0
-    L 0,0
+    L 100,100
+    L 0,100
   `
 
   return (
     <>
+      <div
+        style={{
+          position: "fixed",
+          backgroundColor: `${CONTENT_BACKGROUND}`,
+          height: "100vh",
+          width: "100%",
+          zIndex: "-2",
+        }}
+      >
+        <Container>{children}</Container>
+      </div>
       <svg
         ref={nodeRef}
         viewBox="0 0 100 100"
@@ -107,13 +124,13 @@ const DynamicBezierCurve = () => {
           width: "100%",
           height: "100vh",
           position: "fixed",
+          zIndex: "-1",
         }}
         preserveAspectRatio="none"
       >
-        <path d={instructions} fill="green" stroke="hotpink" strokeWidth="0" />
+        <path d={instructions} fill="white" stroke="hotpink" strokeWidth="0" />
       </svg>
       <div
-        ref={canvasRef}
         style={{
           height: `${SCROLLABLE_HEIGHT_IN_VH}vh`,
         }}
