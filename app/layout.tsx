@@ -10,6 +10,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import CursorManager from "./CursorManager"
 import "@pigment-css/react/styles.css"
 import { ThemeProvider } from "./context/DarkModeContext"
+import Script from "next/script"
 
 // const inter = Inter({ subsets: ["latin"] });
 
@@ -26,7 +27,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {" "}
+        {/* <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                alert("Hi!");
+              })();
+            `,
+          }}
+        /> */}
         {/* className={inter.className} */}
         <QueryClientProvider>
           <AuthProvider>

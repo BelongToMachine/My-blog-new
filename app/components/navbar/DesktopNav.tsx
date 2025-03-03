@@ -47,6 +47,7 @@ const DesktopNav = () => {
         <NavLinks />
       </div>
       <div className="flex space-x-6 items-center pr-6">
+        {colorMode}
         <LuSearch size={26} />
         <PiSunDim size={32} onClick={handleSunClick} />
       </div>

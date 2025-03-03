@@ -1,8 +1,15 @@
 "use client"
 import { useScrollableStore } from "@/app/service/Store"
-import React, { useState, useEffect, useRef, ReactNode } from "react"
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  ReactNode,
+  useContext,
+} from "react"
 import Hero from "../Hero"
 import { Container } from "@radix-ui/themes"
+import { ThemeContext } from "@/app/context/DarkModeContext"
 
 interface Props {
   children: ReactNode
@@ -28,9 +35,18 @@ const DynamicBezierCurve = ({ children }: Props) => {
   const setIsInScrollable = useScrollableStore(
     (state) => state.setIsInScrollable
   )
+
+  const theme = useContext(ThemeContext)
+
+  if (!theme) {
+    throw new Error("ThemeContext must be used within a ThemeProvider")
+  }
+
+  const { colorMode } = theme
+
   const SCROLLABLE_HEIGHT_IN_VH = 280
   const ADJUSTED_SCROLL_COEFFICIENT = 0.4
-  const CONTENT_BACKGROUND = "lightblue"
+  const CONTENT_BACKGROUND = colorMode === "light" ? "lightblue" : "green"
 
   const handleScroll = () => {
     if (!nodeRef.current) return
