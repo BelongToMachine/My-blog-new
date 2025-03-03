@@ -29,26 +29,22 @@ export default async function Home({ searchParams }: Props) {
 
   return (
     <>
-      <DynamicBezierCurve />
+      <DynamicBezierCurve>
+        <Hero />
+      </DynamicBezierCurve>
       <Container>
-        <div className="container">
-          <Hero />
-          <AboutMe />
-          <Projects />
-          <SummaryHeader />
-          <Grid columns={{ initial: "1", md: "2" }} gap="5" mt="8">
-            <Flex direction="column" gap="5">
-              <BlogSummary
-                open={open}
-                inProgress={inProgress}
-                closed={closed}
-              />
-              <BlogChart open={open} inProgress={inProgress} closed={closed} />
-            </Flex>
-            <LatestBlogs />
-          </Grid>
-          <Contact />
-        </div>
+        <Hero />
+        <AboutMe />
+        <Projects />
+        <SummaryHeader />
+        <Grid columns={{ initial: "1", md: "2" }} gap="5" mt="8">
+          <Flex direction="column" gap="5">
+            <BlogSummary open={open} inProgress={inProgress} closed={closed} />
+            <BlogChart open={open} inProgress={inProgress} closed={closed} />
+          </Flex>
+          <LatestBlogs />
+        </Grid>
+        <Contact />
       </Container>
     </>
   )
