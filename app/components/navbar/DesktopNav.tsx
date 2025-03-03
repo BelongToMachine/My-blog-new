@@ -2,7 +2,14 @@
 import classNames from "classnames"
 import Link from "next/link"
 import { useParams, usePathname } from "next/navigation"
-import React, { useEffect, useMemo, useRef, useState } from "react"
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react"
 import { PiGithubLogoFill } from "react-icons/pi"
 import { AuthStatus } from "./AuthStatus"
 import axios from "axios"
@@ -11,6 +18,7 @@ import { AnimatePresence, motion } from "framer-motion"
 import DisappearingText from "../DisappearText"
 import { LuSearch } from "react-icons/lu"
 import { PiSunDim } from "react-icons/pi"
+import { ThemeContext } from "@/app/context/DarkModeContext"
 
 interface Link {
   label: string
@@ -18,6 +26,18 @@ interface Link {
 }
 
 const DesktopNav = () => {
+  const themeContext = useContext(ThemeContext)
+
+  if (!themeContext) {
+    throw new Error("ThemeToggle must be used within a ThemeProvider")
+  }
+
+  const { colorMode, setColorMode } = themeContext
+
+  const handleSunClick = () => {
+    setColorMode(colorMode === "light" ? "dark" : "light")
+  }
+
   return (
     <div className="flex justify-between items-center">
       <div className="flex space-x-6 py-6 px-5 h-14 items-center">
@@ -28,7 +48,7 @@ const DesktopNav = () => {
       </div>
       <div className="flex space-x-6 items-center pr-6">
         <LuSearch size={26} />
-        <PiSunDim size={32} />
+        <PiSunDim size={32} onClick={handleSunClick} />
       </div>
     </div>
   )

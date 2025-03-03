@@ -9,6 +9,7 @@ import QueryClientProvider from "./QueryClientProvider"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import CursorManager from "./CursorManager"
 import "@pigment-css/react/styles.css"
+import { ThemeProvider } from "./context/DarkModeContext"
 
 // const inter = Inter({ subsets: ["latin"] });
 
@@ -29,12 +30,14 @@ export default function RootLayout({
         {/* className={inter.className} */}
         <QueryClientProvider>
           <AuthProvider>
-            <Theme appearance="light" accentColor="sky" radius="small">
-              <NavBar />
-              <CursorManager />
-              <main className="pt-16">{children}</main>
-            </Theme>
-            <ReactQueryDevtools />
+            <ThemeProvider>
+              <Theme appearance="light" accentColor="sky" radius="small">
+                <NavBar />
+                <CursorManager />
+                <main className="pt-16">{children}</main>
+              </Theme>
+              <ReactQueryDevtools />
+            </ThemeProvider>
           </AuthProvider>
         </QueryClientProvider>
       </body>

@@ -33,7 +33,6 @@ export default async function Home({ searchParams }: Props) {
         <Hero />
       </DynamicBezierCurve>
       <Container>
-        <Hero />
         <AboutMe />
         <Projects />
         <SummaryHeader />
