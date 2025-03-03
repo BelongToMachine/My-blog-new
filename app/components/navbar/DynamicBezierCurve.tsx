@@ -1,8 +1,16 @@
 "use client"
 import { useScrollableStore } from "@/app/service/Store"
-import React, { useState, useEffect, useRef, ReactNode } from "react"
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  ReactNode,
+  useContext,
+} from "react"
 import Hero from "../Hero"
 import { Container } from "@radix-ui/themes"
+import { ThemeContext } from "@/app/context/DarkModeContext"
+import { lightBlue } from "tailwindcss/colors"
 
 interface Props {
   children: ReactNode
@@ -23,6 +31,14 @@ const getInterpolatedValue = (
 }
 
 const DynamicBezierCurve = ({ children }: Props) => {
+  const themeContext = useContext(ThemeContext)
+
+  if (!themeContext) {
+    throw new Error("ThemeToggle must be used within a ThemeProvider")
+  }
+
+  const { colorMode, setColorMode } = themeContext
+
   const [scrollRatio, setScrollRatio] = useState(0)
   const nodeRef = useRef(null)
   const setIsInScrollable = useScrollableStore(
@@ -30,7 +46,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
   )
   const SCROLLABLE_HEIGHT_IN_VH = 280
   const ADJUSTED_SCROLL_COEFFICIENT = 0.4
-  const CONTENT_BACKGROUND = "lightblue"
+  const CONTENT_BACKGROUND = colorMode === "light" ? "lightblue" : "green"
 
   const handleScroll = () => {
     if (!nodeRef.current) return
