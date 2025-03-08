@@ -35,7 +35,7 @@ export default function RootLayout({
               <Theme appearance="light" accentColor="sky" radius="small">
                 <NavBar />
                 <CursorManager />
-                <main className="pt-16">{children}</main>
+                <main className="">{children}</main>
               </Theme>
               <ReactQueryDevtools />
             </ThemeProvider>

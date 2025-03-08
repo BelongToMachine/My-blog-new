@@ -41,11 +41,8 @@ const DynamicBezierCurve = ({ children }: Props) => {
     throw new Error("ThemeContext must be used within a ThemeProvider")
   }
 
-  const { colorMode } = theme
-
   const SCROLLABLE_HEIGHT_IN_VH = 280
-  const ADJUSTED_SCROLL_COEFFICIENT = 0.4
-  const CONTENT_BACKGROUND = colorMode === "light" ? "lightblue" : "green"
+  const ADJUSTED_SCROLL_COEFFICIENT = 0.33
 
   const handleScroll = () => {
     if (!nodeRef.current) return
@@ -124,7 +121,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
       <div
         style={{
           position: "fixed",
-          backgroundColor: `--var(--color-background)`,
+          backgroundColor: "var(--scrollable-background-color)",
           height: "100vh",
           width: "100%",
           zIndex: "-2",
@@ -143,7 +140,12 @@ const DynamicBezierCurve = ({ children }: Props) => {
         }}
         preserveAspectRatio="none"
       >
-        <path d={instructions} fill="white" stroke="hotpink" strokeWidth="0" />
+        <path
+          d={instructions}
+          fill="var(--background-color)"
+          stroke="hotpink"
+          strokeWidth="0"
+        />
       </svg>
       <div
         style={{

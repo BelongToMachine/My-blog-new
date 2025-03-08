@@ -3,17 +3,22 @@ import React, { createContext, ReactNode, useState, useEffect } from "react"
 
 export type colorMode = "light" | "dark"
 
-const COLORS = {
-  light: {
-    primary: "#ffffff",
-    text: "#000000",
-    background: "#ffffff",
-  },
-  dark: {
-    primary: "#000000",
-    text: "#ffffff",
-    background: "#000000",
-  },
+interface ThemeColors {
+  text: string
+  background: string
+  primary: string
+  scrollableBackground: string
+}
+
+interface ThemeObject {
+  light: ThemeColors
+  dark: ThemeColors
+}
+
+declare global {
+  interface Window {
+    COLORS_JIE_BLOG_THEME: ThemeObject
+  }
 }
 
 interface ThemeContextType {
@@ -44,17 +49,25 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
       window.localStorage.setItem("color-mode", value)
     }
 
+    const COLORS = window.COLORS_JIE_BLOG_THEME
+
     root.style.setProperty(
       "--color-text",
       value === "light" ? COLORS.light.text : COLORS.dark.text
     )
     root.style.setProperty(
-      "--color-background",
+      "--background-color",
       value === "light" ? COLORS.light.background : COLORS.dark.background
     )
     root.style.setProperty(
       "--color-primary",
       value === "light" ? COLORS.light.primary : COLORS.dark.primary
+    )
+    root.style.setProperty(
+      "--scrollable-background-color",
+      value === "light"
+        ? COLORS.light.scrollableBackground
+        : COLORS.dark.scrollableBackground
     )
   }
 
