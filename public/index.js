@@ -39,7 +39,7 @@ const getThemeValueBeforeHydration = () => {
 
   const root = document.documentElement
   root.style.setProperty(
-    "--color-text",
+    "--text-color",
     colorMode === "light"
       ? window.COLORS_JIE_BLOG_THEME.light.text
       : window.COLORS_JIE_BLOG_THEME.dark.text
