@@ -59,7 +59,7 @@ export const useVirtualCursorStore = create<VirtualCursorStore>((set) => ({
 }))
 
 export const useScrollableStore = create<ScrollableStore>(set=> ({
-  isInScrollable: false,
+  isInScrollable: true,
   setIsInScrollable: (userInputBoolean)=> {
     set({isInScrollable: userInputBoolean})
   }
