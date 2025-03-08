@@ -52,17 +52,17 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     const COLORS = window.COLORS_JIE_BLOG_THEME
 
     root.style.setProperty(
-      "--color-text",
+      "--text-color",
       value === "light" ? COLORS.light.text : COLORS.dark.text
     )
     root.style.setProperty(
       "--background-color",
       value === "light" ? COLORS.light.background : COLORS.dark.background
     )
-    root.style.setProperty(
-      "--color-primary",
-      value === "light" ? COLORS.light.primary : COLORS.dark.primary
-    )
+    // root.style.setProperty(
+    //   "--color-primary",
+    //   value === "light" ? COLORS.light.primary : COLORS.dark.primary
+    // )
     root.style.setProperty(
       "--scrollable-background-color",
       value === "light"
