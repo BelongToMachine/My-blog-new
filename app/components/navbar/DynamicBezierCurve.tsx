@@ -7,7 +7,6 @@ import React, {
   ReactNode,
   useContext,
 } from "react"
-import Hero from "../Hero"
 import { Container } from "@radix-ui/themes"
 import { ThemeContext } from "@/app/context/DarkModeContext"
 
@@ -125,7 +124,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
       <div
         style={{
           position: "fixed",
-          backgroundColor: `${CONTENT_BACKGROUND}`,
+          backgroundColor: `--var(--color-background)`,
           height: "100vh",
           width: "100%",
           zIndex: "-2",

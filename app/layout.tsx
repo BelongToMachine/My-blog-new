@@ -27,15 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {/* <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                alert("Hi!");
-              })();
-            `,
-          }}
-        /> */}
+        <Script id="my-script" src="./index.js" strategy="beforeInteractive" />
         {/* className={inter.className} */}
         <QueryClientProvider>
           <AuthProvider>
