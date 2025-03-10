@@ -8,6 +8,10 @@ interface ThemeColors {
   background: string
   primary: string
   scrollableBackground: string
+  border: string
+  cardBackground: string
+  chartText: string
+  link: string
 }
 
 interface ThemeObject {
@@ -68,6 +72,28 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
       value === "light"
         ? COLORS.light.scrollableBackground
         : COLORS.dark.scrollableBackground
+    )
+    root.style.setProperty(
+      "--border-color",
+      value === "light" ? COLORS.light.border : COLORS.dark.border
+    )
+    root.style.setProperty(
+      "--card-background-color",
+      value === "light"
+        ? window.COLORS_JIE_BLOG_THEME.light.cardBackground
+        : window.COLORS_JIE_BLOG_THEME.dark.cardBackground
+    )
+    root.style.setProperty(
+      "--chart-text-color",
+      value === "light"
+        ? window.COLORS_JIE_BLOG_THEME.light.chartText
+        : window.COLORS_JIE_BLOG_THEME.dark.chartText
+    )
+    root.style.setProperty(
+      "--chart-link-color",
+      value === "light"
+        ? window.COLORS_JIE_BLOG_THEME.light.link
+        : window.COLORS_JIE_BLOG_THEME.dark.link
     )
   }
 

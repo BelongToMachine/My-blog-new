@@ -5,12 +5,20 @@ window.COLORS_JIE_BLOG_THEME = {
     text: "#000000",
     background: "#ffffff",
     scrollableBackground: "#C5EAFC",
+    border: "#DDDFE6",
+    cardBackground: "#ffffff",
+    chartText: "#666666",
+    link: "#00749E",
   },
   dark: {
-    primary: "#000000",
+    primary: "#182939",
     text: "#ffffff",
     background: "#0D0F12",
     scrollableBackground: "#182939",
+    border: "#ffffff",
+    cardBackground: "#182939",
+    chartText: "#ffffff",
+    link: "#5FC4E3",
   },
 }
 
@@ -61,6 +69,30 @@ const getThemeValueBeforeHydration = () => {
     colorMode === "light"
       ? window.COLORS_JIE_BLOG_THEME.light.primary
       : window.COLORS_JIE_BLOG_THEME.dark.primary
+  )
+  root.style.setProperty(
+    "--border-color",
+    colorMode === "light"
+      ? window.COLORS_JIE_BLOG_THEME.light.border
+      : window.COLORS_JIE_BLOG_THEME.dark.border
+  )
+  root.style.setProperty(
+    "--card-background-color",
+    colorMode === "light"
+      ? window.COLORS_JIE_BLOG_THEME.light.cardBackground
+      : window.COLORS_JIE_BLOG_THEME.dark.cardBackground
+  )
+  root.style.setProperty(
+    "--chart-text-color",
+    colorMode === "light"
+      ? window.COLORS_JIE_BLOG_THEME.light.chartText
+      : window.COLORS_JIE_BLOG_THEME.dark.chartText
+  )
+  root.style.setProperty(
+    "--chart-link-color",
+    colorMode === "light"
+      ? window.COLORS_JIE_BLOG_THEME.light.link
+      : window.COLORS_JIE_BLOG_THEME.dark.link
   )
   root.style.setProperty("--initial-color-mode", colorMode)
 }
