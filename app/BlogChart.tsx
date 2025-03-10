@@ -2,16 +2,15 @@
 import { Card } from "@radix-ui/themes"
 import React, { CSSProperties } from "react"
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
-import { PostCssProperties } from "./PostSummary"
+import style from "./service/ThemeCssProperties"
 
 interface Props {
   open: number
   inProgress: number
   closed: number
-  style: PostCssProperties
 }
 
-const BlogChart = ({ open, inProgress, closed, style }: Props) => {
+const BlogChart = ({ open, inProgress, closed }: Props) => {
   const data = [
     { label: "Web开发", value: open },
     { label: "科技类", value: inProgress },
@@ -19,7 +18,7 @@ const BlogChart = ({ open, inProgress, closed, style }: Props) => {
   ]
 
   return (
-    <Card style={style}>
+    <Card style={{ ...style, background: style.cardBackground }}>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={data}>
           <XAxis dataKey="label" tick={{ fill: style.chartText }} />

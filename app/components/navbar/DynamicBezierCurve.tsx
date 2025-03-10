@@ -9,6 +9,7 @@ import React, {
 } from "react"
 import { Container } from "@radix-ui/themes"
 import { ThemeContext } from "@/app/context/DarkModeContext"
+import style from "@/app/service/ThemeCssProperties"
 
 interface Props {
   children: ReactNode
@@ -34,6 +35,8 @@ const DynamicBezierCurve = ({ children }: Props) => {
   const setIsInScrollable = useScrollableStore(
     (state) => state.setIsInScrollable
   )
+  const BACKGROUND_COLOR = style.background
+  const SCROLLABLE_COLOR = style.scrollable
 
   const theme = useContext(ThemeContext)
 
@@ -121,7 +124,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
       <div
         style={{
           position: "fixed",
-          backgroundColor: "var(--scrollable-background-color)",
+          backgroundColor: SCROLLABLE_COLOR,
           height: "100vh",
           width: "100%",
           zIndex: "-2",
@@ -142,7 +145,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
       >
         <path
           d={instructions}
-          fill="var(--background-color)"
+          fill={BACKGROUND_COLOR as string}
           stroke="hotpink"
           strokeWidth="0"
         />

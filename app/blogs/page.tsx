@@ -40,7 +40,12 @@ const IndexPage = async ({ searchParams }: Props) => {
   })
 
   return (
-    <Container>
+    <Container
+      style={{
+        background: "black",
+        height: "120vh",
+      }}
+    >
       <div className="space-y-3 p-5">
         <IssueActions />
         <BlogTable searchParams={searchParams} issues={issues} />
