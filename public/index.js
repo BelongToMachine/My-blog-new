@@ -22,6 +22,22 @@ window.COLORS_JIE_BLOG_THEME = {
   },
 }
 
+window.GET_JIE_BLOG_CSS_PROPERTIES = function (colorMode) {
+  const theme = window.COLORS_JIE_BLOG_THEME[colorMode]
+
+  return {
+    "--text-color": theme.text,
+    "--scrollable-background-color": theme.scrollableBackground,
+    "--background-color": theme.background,
+    "--color-primary": theme.primary,
+    "--border-color": theme.border,
+    "--card-background-color": theme.cardBackground,
+    "--chart-text-color": theme.chartText,
+    "--chart-link-color": theme.link,
+    "--initial-color-mode": colorMode,
+  }
+}
+
 const getThemeValueBeforeHydration = () => {
   function getInitialColorMode() {
     const persistedColorPreference = window.localStorage.getItem("color-mode")
@@ -45,56 +61,13 @@ const getThemeValueBeforeHydration = () => {
   }
   const colorMode = getInitialColorMode()
 
+  const properties = window.GET_JIE_BLOG_CSS_PROPERTIES(colorMode)
+
   const root = document.documentElement
-  root.style.setProperty(
-    "--text-color",
-    colorMode === "light"
-      ? window.COLORS_JIE_BLOG_THEME.light.text
-      : window.COLORS_JIE_BLOG_THEME.dark.text
-  )
-  root.style.setProperty(
-    "--scrollable-background-color",
-    colorMode === "light"
-      ? window.COLORS_JIE_BLOG_THEME.light.scrollableBackground
-      : window.COLORS_JIE_BLOG_THEME.dark.scrollableBackground
-  )
-  root.style.setProperty(
-    "--background-color",
-    colorMode === "light"
-      ? window.COLORS_JIE_BLOG_THEME.light.background
-      : window.COLORS_JIE_BLOG_THEME.dark.background
-  )
-  root.style.setProperty(
-    "--color-primary",
-    colorMode === "light"
-      ? window.COLORS_JIE_BLOG_THEME.light.primary
-      : window.COLORS_JIE_BLOG_THEME.dark.primary
-  )
-  root.style.setProperty(
-    "--border-color",
-    colorMode === "light"
-      ? window.COLORS_JIE_BLOG_THEME.light.border
-      : window.COLORS_JIE_BLOG_THEME.dark.border
-  )
-  root.style.setProperty(
-    "--card-background-color",
-    colorMode === "light"
-      ? window.COLORS_JIE_BLOG_THEME.light.cardBackground
-      : window.COLORS_JIE_BLOG_THEME.dark.cardBackground
-  )
-  root.style.setProperty(
-    "--chart-text-color",
-    colorMode === "light"
-      ? window.COLORS_JIE_BLOG_THEME.light.chartText
-      : window.COLORS_JIE_BLOG_THEME.dark.chartText
-  )
-  root.style.setProperty(
-    "--chart-link-color",
-    colorMode === "light"
-      ? window.COLORS_JIE_BLOG_THEME.light.link
-      : window.COLORS_JIE_BLOG_THEME.dark.link
-  )
-  root.style.setProperty("--initial-color-mode", colorMode)
+
+  Object.entries(properties).forEach(([key, value]) => {
+    root.style.setProperty(key, value)
+  })
 }
 
 getThemeValueBeforeHydration()
