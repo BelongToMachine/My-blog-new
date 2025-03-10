@@ -3,9 +3,9 @@ import { Avatar, Card, Flex, Heading, Table } from "@radix-ui/themes"
 import { create } from "domain"
 import React, { CSSProperties } from "react"
 import { IssueStatusBadge, Link } from "./components"
-import { PostCssProperties } from "./PostSummary"
+import style from "./service/ThemeCssProperties"
 
-const LatestBlogs = async ({ style }: { style: PostCssProperties }) => {
+const LatestBlogs = async () => {
   const blogs = await prisma.issue.findMany({
     orderBy: { createdAt: "desc" },
     take: 5,
@@ -15,7 +15,12 @@ const LatestBlogs = async ({ style }: { style: PostCssProperties }) => {
   })
 
   return (
-    <Card style={style}>
+    <Card
+      style={{
+        ...style,
+        background: style.cardBackground,
+      }}
+    >
       <Heading size="4" mb="4">
         最近的博客
       </Heading>
@@ -29,9 +34,7 @@ const LatestBlogs = async ({ style }: { style: PostCssProperties }) => {
                 }}
               >
                 <Flex direction="column" align="start" gap="2">
-                  <Link href={`/blogs/${blog.id}`} style={style}>
-                    {blog.title}
-                  </Link>
+                  <Link href={`/blogs/${blog.id}`}>{blog.title}</Link>
                   <IssueStatusBadge status={blog.status} />
                 </Flex>
                 {blog.assignedToUser && (
