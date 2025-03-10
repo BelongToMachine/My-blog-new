@@ -42,7 +42,11 @@ const DesktopNav = () => {
     <div className="flex justify-between items-center">
       <div className="flex space-x-6 py-6 px-5 h-14 items-center">
         <Link href="http://github.com/JieLuis">
-          <PiGithubLogoFill />
+          <PiGithubLogoFill
+            style={{
+              color: "var(--text-color)",
+            }}
+          />
         </Link>
         <NavLinks colorMode={colorMode} />
       </div>
