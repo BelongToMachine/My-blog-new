@@ -22,6 +22,7 @@ interface ThemeObject {
 declare global {
   interface Window {
     COLORS_JIE_BLOG_THEME: ThemeObject
+    GET_JIE_BLOG_CSS_PROPERTIES: (value: colorMode) => any
   }
 }
 
@@ -46,55 +47,21 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   }, [])
 
   const setColorMode = (value: colorMode, ifInitialLoad = true) => {
-    const root = window.document.documentElement
     rawSetColorMode(value)
 
     if (ifInitialLoad) {
       window.localStorage.setItem("color-mode", value)
     }
 
-    const COLORS = window.COLORS_JIE_BLOG_THEME
+    const properties = window.GET_JIE_BLOG_CSS_PROPERTIES(value)
 
-    root.style.setProperty(
-      "--text-color",
-      value === "light" ? COLORS.light.text : COLORS.dark.text
-    )
-    root.style.setProperty(
-      "--background-color",
-      value === "light" ? COLORS.light.background : COLORS.dark.background
-    )
-    // root.style.setProperty(
-    //   "--color-primary",
-    //   value === "light" ? COLORS.light.primary : COLORS.dark.primary
-    // )
-    root.style.setProperty(
-      "--scrollable-background-color",
-      value === "light"
-        ? COLORS.light.scrollableBackground
-        : COLORS.dark.scrollableBackground
-    )
-    root.style.setProperty(
-      "--border-color",
-      value === "light" ? COLORS.light.border : COLORS.dark.border
-    )
-    root.style.setProperty(
-      "--card-background-color",
-      value === "light"
-        ? window.COLORS_JIE_BLOG_THEME.light.cardBackground
-        : window.COLORS_JIE_BLOG_THEME.dark.cardBackground
-    )
-    root.style.setProperty(
-      "--chart-text-color",
-      value === "light"
-        ? window.COLORS_JIE_BLOG_THEME.light.chartText
-        : window.COLORS_JIE_BLOG_THEME.dark.chartText
-    )
-    root.style.setProperty(
-      "--chart-link-color",
-      value === "light"
-        ? window.COLORS_JIE_BLOG_THEME.light.link
-        : window.COLORS_JIE_BLOG_THEME.dark.link
-    )
+    delete properties["--initial-color-mode"]
+
+    const root = document.documentElement
+
+    Object.entries(properties).forEach(([key, value]) => {
+      root.style.setProperty(key, value as string)
+    })
   }
 
   return (
