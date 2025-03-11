@@ -1,22 +1,12 @@
 "use client"
 import React, { createContext, ReactNode, useState, useEffect } from "react"
+import { PostCssProperties } from "../service/ThemeCssProperties"
 
 export type colorMode = "light" | "dark"
 
-interface ThemeColors {
-  text: string
-  background: string
-  primary: string
-  scrollableBackground: string
-  border: string
-  cardBackground: string
-  chartText: string
-  link: string
-}
-
 interface ThemeObject {
-  light: ThemeColors
-  dark: ThemeColors
+  light: PostCssProperties
+  dark: PostCssProperties
 }
 
 declare global {

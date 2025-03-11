@@ -5,6 +5,8 @@ export interface PostCssProperties extends CSSProperties {
     chartText: string
     link: string
     scrollable: string
+    tableHeader: string
+    tableGeneral: string
   }
   
 
@@ -15,7 +17,9 @@ const style : PostCssProperties = {
     chartText: "var(--chart-text-color)",
     link: "var(--chart-link-color)",
     scrollable: "var(--scrollable-background-color)",
-    background: "var(--background-color)"
+    background: "var(--background-color)",
+    tableHeader: "var(--table-header-color)",
+    tableGeneral: "var(--table-general-color)"
   }
 
 export default style

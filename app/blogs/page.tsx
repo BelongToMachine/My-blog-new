@@ -9,6 +9,7 @@ import { columnNames } from "@/app/blogs/BlogTable"
 import { Metadata } from "next"
 import Test from "../components/navbar/DynamicBezierCurve"
 import { Container } from "@radix-ui/themes"
+import style from "../service/ThemeCssProperties"
 
 interface Props {
   searchParams: BlogQuery
@@ -42,7 +43,7 @@ const IndexPage = async ({ searchParams }: Props) => {
   return (
     <Container
       style={{
-        background: "black",
+        background: style.background,
         height: "120vh",
       }}
     >

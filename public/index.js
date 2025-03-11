@@ -9,16 +9,20 @@ window.COLORS_JIE_BLOG_THEME = {
     cardBackground: "#ffffff",
     chartText: "#666666",
     link: "#00749E",
+    tableHeader: "",
+    tableGeneral: "",
   },
   dark: {
     primary: "#182939",
     text: "#ffffff",
-    background: "#0D0F12",
-    scrollableBackground: "#182939",
+    background: "#1A5D78",
+    scrollableBackground: "#2580A2",
     border: "#ffffff",
     cardBackground: "#182939",
     chartText: "#ffffff",
     link: "#5FC4E3",
+    tableHeader: "#3B4C59",
+    tableGeneral: "",
   },
 }
 
@@ -26,6 +30,7 @@ window.GET_JIE_BLOG_CSS_PROPERTIES = function (colorMode) {
   const theme = window.COLORS_JIE_BLOG_THEME[colorMode]
 
   return {
+    "--initial-color-mode": colorMode,
     "--text-color": theme.text,
     "--scrollable-background-color": theme.scrollableBackground,
     "--background-color": theme.background,
@@ -34,7 +39,8 @@ window.GET_JIE_BLOG_CSS_PROPERTIES = function (colorMode) {
     "--card-background-color": theme.cardBackground,
     "--chart-text-color": theme.chartText,
     "--chart-link-color": theme.link,
-    "--initial-color-mode": colorMode,
+    "--table-header-color": theme.tableHeader,
+    "--table-general-color": theme.tableGeneral,
   }
 }
 
@@ -71,3 +77,5 @@ const getThemeValueBeforeHydration = () => {
 }
 
 getThemeValueBeforeHydration()
+
+window.version = "1.0.0"
