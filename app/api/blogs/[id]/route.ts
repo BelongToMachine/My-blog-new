@@ -6,7 +6,7 @@ import authOptions from "@/app/auth/authOptions"
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
 
   const { id } = await params
@@ -28,7 +28,7 @@ export async function GET(
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const session = getServerSession(authOptions)
   if (!session) return NextResponse.json({}, { status: 401 })
@@ -49,8 +49,10 @@ export async function PATCH(
       return NextResponse.json({ error: "Invalid User" }, { status: 400 })
   }
 
+  const {id} = await params
+
   const issue = await prisma.issue.findUnique({
-    where: { id: parseInt(params.id) },
+    where: { id: parseInt(id) },
   })
 
   if (!issue)
@@ -62,7 +64,7 @@ export async function PATCH(
     )
 
   const updatedIssue = await prisma.issue.update({
-    where: { id: parseInt(params.id) },
+    where: { id: parseInt(id) },
     data: {
       title,
       description,
@@ -75,13 +77,15 @@ export async function PATCH(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await getServerSession(authOptions)
   if (!session) return NextResponse.json({}, { status: 401 })
 
+  const { id } = await params
+
   const issue = await prisma.issue.findUnique({
-    where: { id: parseInt(params.id) },
+    where: { id: parseInt(id) },
   })
   if (!issue)
     return NextResponse.json(

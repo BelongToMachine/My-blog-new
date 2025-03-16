@@ -13,7 +13,7 @@ export interface BlogQuery {
 }
 
 interface Props {
-  searchParams: BlogQuery
+  searchParams: Promise<BlogQuery>
   issues: Issue[]
 }
 

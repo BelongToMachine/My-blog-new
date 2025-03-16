@@ -10,7 +10,7 @@ import { Container } from "@radix-ui/themes"
 import style from "../service/ThemeCssProperties"
 
 interface Props {
-  searchParams: BlogQuery
+  searchParams: Promise<BlogQuery>
 }
 
 const IndexPage = async ({ searchParams }: Props) => {
@@ -28,7 +28,7 @@ const IndexPage = async ({ searchParams }: Props) => {
     ? { [orderByValue]: "asc" }
     : undefined
 
-  const page = parseInt(pageValue)
+  const page = parseInt(pageValue) || 1
   const pageSize = 10
   const where = { status }
 
