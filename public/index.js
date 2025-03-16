@@ -1,5 +1,4 @@
-// Note that this colors vairable should be manually sync with variable in "ThemeProvider"
-window.COLORS_JIE_BLOG_THEME = {
+const COLORS_JIE_BLOG_THEME = {
   light: {
     primary: "#ffffff",
     text: "#000000",
@@ -26,8 +25,8 @@ window.COLORS_JIE_BLOG_THEME = {
   },
 }
 
-window.GET_JIE_BLOG_CSS_PROPERTIES = function (colorMode) {
-  const theme = window.COLORS_JIE_BLOG_THEME[colorMode]
+const GET_JIE_BLOG_CSS_PROPERTIES = function (colorMode) {
+  const theme = COLORS_JIE_BLOG_THEME[colorMode]
 
   return {
     "--initial-color-mode": colorMode,
@@ -65,9 +64,10 @@ const getThemeValueBeforeHydration = () => {
     // color themes, let's default to 'light'.
     return "light"
   }
+
   const colorMode = getInitialColorMode()
 
-  const properties = window.GET_JIE_BLOG_CSS_PROPERTIES(colorMode)
+  const properties = GET_JIE_BLOG_CSS_PROPERTIES(colorMode)
 
   const root = document.documentElement
 
@@ -77,5 +77,3 @@ const getThemeValueBeforeHydration = () => {
 }
 
 getThemeValueBeforeHydration()
-
-window.version = "1.0.0"
