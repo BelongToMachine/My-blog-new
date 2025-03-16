@@ -14,7 +14,7 @@ import DynamicBezierCurve from "./components/navbar/DynamicBezierCurve"
 import PostSummary from "./PostSummary"
 
 interface Props {
-  searchParams: { tags: Tag }
+  searchParams: Promise<{ tags: Tag }>
 }
 
 export default async function Home({ searchParams }: Props) {

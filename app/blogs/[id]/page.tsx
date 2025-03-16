@@ -11,7 +11,7 @@ import { cache } from "react"
 import Wind from "./Wind"
 
 interface Props {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 const fetchUser = cache((issueId: number) =>
