@@ -17,7 +17,11 @@ interface Props {
   issues: Issue[]
 }
 
-const BlogTable = ({ searchParams, issues }: Props) => {
+const BlogTable = async ({ searchParams: params, issues }: Props) => {
+  const searchParams = (await params) ?? {}
+
+  const orderBy = searchParams.orderBy ?? undefined
+
   return (
     <Table.Root variant="surface">
       <Table.Header
@@ -43,9 +47,7 @@ const BlogTable = ({ searchParams, issues }: Props) => {
               >
                 {column.label}
               </Link>
-              {column.value === searchParams.orderBy && (
-                <ArrowUpIcon className="inline " />
-              )}
+              {column.value === orderBy && <ArrowUpIcon className="inline" />}
             </Table.ColumnHeaderCell>
           ))}
         </Table.Row>
