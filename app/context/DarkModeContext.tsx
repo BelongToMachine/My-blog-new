@@ -33,7 +33,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     const initialColorValue = root.style.getPropertyValue(
       "--initial-color-mode"
     )
-    setColorMode(initialColorValue as colorMode, false)
+    rawSetColorMode(initialColorValue as colorMode)
   }, [])
 
   const setColorMode = (value: colorMode, ifInitialLoad = true) => {
@@ -43,7 +43,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
       window.localStorage.setItem("color-mode", value)
     }
 
-    const properties = window.GET_JIE_BLOG_CSS_PROPERTIES(value)
+    const properties = GET_JIE_BLOG_CSS_PROPERTIES(value)
 
     delete properties["--initial-color-mode"]
 
