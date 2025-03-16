@@ -1,13 +1,11 @@
 import React from "react"
 import prisma from "@/prisma/client"
-import delay from "delay"
 import IssueActions from "./IssueActions"
 import { Status } from "@prisma/client"
 import BlogTable, { BlogQuery } from "@/app/blogs/BlogTable"
 import Pagination from "../components/Pagination"
 import { columnNames } from "@/app/blogs/BlogTable"
 import { Metadata } from "next"
-import Test from "../components/navbar/DynamicBezierCurve"
 import { Container } from "@radix-ui/themes"
 import style from "../service/ThemeCssProperties"
 
@@ -17,15 +15,20 @@ interface Props {
 
 const IndexPage = async ({ searchParams }: Props) => {
   const statuses = Object.values(Status)
-  const status = statuses.includes(searchParams.status)
-    ? searchParams.status
+
+  let {
+    status: statusValue,
+    orderBy: orderByValue,
+    page: pageValue,
+  } = await searchParams
+
+  const status = statuses.includes(statusValue) ? statusValue : undefined
+
+  const orderBy = columnNames.includes(orderByValue)
+    ? { [orderByValue]: "asc" }
     : undefined
 
-  const orderBy = columnNames.includes(searchParams.orderBy)
-    ? { [searchParams.orderBy]: "asc" }
-    : undefined
-
-  const page = parseInt(searchParams.page) || 1
+  const page = parseInt(pageValue)
   const pageSize = 10
   const where = { status }
 
@@ -66,4 +69,5 @@ export const metadata: Metadata = {
   title: "Blogs List",
   description: "View all of my blogs",
 }
+
 export default IndexPage

@@ -1,20 +1,23 @@
-import authOptions from "@/app/auth/authOptions"
 import { patchIssueSchema } from "@/app/validationSchema"
 import prisma from "@/prisma/client"
 import { AuthOptions, getServerSession } from "next-auth"
 import { NextRequest, NextResponse } from "next/server"
+import authOptions from "@/app/auth/authOptions"
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const id = parseInt(params.id)
 
-  if (isNaN(id)) {
+  const { id } = await params
+
+  const parsedId = parseInt(id)
+
+  if (isNaN(parsedId)) {
     return NextResponse.json({ error: "Invalid ID" }, { status: 400 })
   }
 
-  const blog = await prisma.issue.findUnique({ where: { id } })
+  const blog = await prisma.issue.findUnique({ where: { id: parsedId } })
 
   if (!blog) {
     return NextResponse.json({ error: "Blog not found" }, { status: 404 })
