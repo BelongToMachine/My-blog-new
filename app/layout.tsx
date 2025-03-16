@@ -28,7 +28,7 @@ export default function RootLayout({
     <html lang="en">
       <head>
         {/* eslint-disable-next-line @next/next/no-sync-scripts */}
-        <script id="my-script" src="./index.js" />
+        <script id="my-script" src="/index.js" />
       </head>
       <body>
         {/* className={inter.className} */}
