@@ -26,8 +26,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
+        <script id="my-script" src="./index.js" />
+      </head>
       <body>
-        <Script id="my-script" src="./index.js" strategy="beforeInteractive" />
         {/* className={inter.className} */}
         <QueryClientProvider>
           <AuthProvider>
