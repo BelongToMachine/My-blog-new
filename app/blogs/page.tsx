@@ -47,7 +47,6 @@ const IndexPage = async ({ searchParams }: Props) => {
     <Container
       style={{
         background: style.background,
-        height: "120vh",
       }}
     >
       <div className="space-y-3 p-5">
