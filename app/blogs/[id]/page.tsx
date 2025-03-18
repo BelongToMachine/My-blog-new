@@ -9,6 +9,7 @@ import authOptions from "@/app/auth/authOptions"
 import AssigneeSelect from "./AssigneeSelect"
 import { cache } from "react"
 import Wind from "./Wind"
+import style from "@/app/service/ThemeCssProperties"
 
 interface Props {
   params: Promise<{ id: string }>
@@ -28,7 +29,11 @@ const IssueDetailPage = async ({ params }: Props) => {
   if (!issue) notFound()
 
   return (
-    <Container>
+    <Container
+      style={{
+        background: style.background,
+      }}
+    >
       <Grid columns={{ initial: "1", sm: "5" }} gap="5">
         <Box className="md:col-span-5">
           <IssueDetails issue={issue} />
