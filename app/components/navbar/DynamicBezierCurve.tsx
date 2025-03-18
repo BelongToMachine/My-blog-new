@@ -35,6 +35,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
   const setIsInScrollable = useScrollableStore(
     (state) => state.setIsInScrollable
   )
+  const isInScrollable = useScrollableStore((state) => state.isInScrollable)
   const BACKGROUND_COLOR = style.background
   const SCROLLABLE_COLOR = style.scrollable
 
@@ -44,38 +45,66 @@ const DynamicBezierCurve = ({ children }: Props) => {
     throw new Error("ThemeContext must be used within a ThemeProvider")
   }
 
-  const SCROLLABLE_HEIGHT_IN_VH = 280
-  const ADJUSTED_SCROLL_COEFFICIENT = 0.33
-
-  const handleScroll = () => {
-    if (!nodeRef.current) return
-
-    const windowHeight = window.innerHeight
-    const pixelsScrolled = Math.abs(window.scrollY)
-    const baseRatio = pixelsScrolled / windowHeight
-    const scrolledInVH = baseRatio * 100
-
-    if (scrolledInVH < SCROLLABLE_HEIGHT_IN_VH) {
-      setIsInScrollable(true)
-    } else {
-      setIsInScrollable(false)
-    }
-
-    let ratio = ADJUSTED_SCROLL_COEFFICIENT * baseRatio
-
-    // We don't care about the negative values when it's
-    // below the viewport, or the greater-than-1 values when
-    // it's above the viewport.
-    ratio = clamp(ratio)
-
-    // Small optimization, avoid re-rendering when the
-    // SVG isn't in the viewport.
-    if (scrollRatio !== ratio) {
-      setScrollRatio(ratio)
-    }
+  const SCROLLABLE_HEIGHT_IN_VH = 110
+  {
+    /* 
+  ADJUSTED_SCROLL_COEFFICIENT: assoicate with the curve flaten speed, affect this by
+  affect the state "scrollRatio"
+  */
   }
+  const ADJUSTED_SCROLL_COEFFICIENT = 1
+  {
+    /* 
+    SLOWER: affect user scroll speed  
+  */
+  }
+  const SLOWER = 0.35
 
   useEffect(() => {
+    const handleScroll = (event: WheelEvent) => {
+      // Only slow down scrolling in specific conditions
+      event.preventDefault()
+      window.scrollBy({
+        top: event.deltaY * SLOWER,
+        behavior: "auto", // Avoid smooth scrolling on every event
+      })
+    }
+
+    if (isInScrollable) {
+      window.addEventListener("wheel", handleScroll, { passive: false })
+      return () => window.removeEventListener("wheel", handleScroll)
+    }
+  }, [isInScrollable])
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!nodeRef.current) return
+
+      const windowHeight = window.innerHeight
+      const pixelsScrolled = Math.abs(window.scrollY)
+      const baseRatio = pixelsScrolled / windowHeight
+      const scrolledInVH = baseRatio * 100
+
+      if (scrolledInVH < SCROLLABLE_HEIGHT_IN_VH) {
+        setIsInScrollable(true)
+      } else {
+        setIsInScrollable(false)
+      }
+
+      let ratio = ADJUSTED_SCROLL_COEFFICIENT * baseRatio
+
+      // We don't care about the negative values when it's
+      // below the viewport, or the greater-than-1 values when
+      // it's above the viewport.
+      ratio = clamp(ratio)
+
+      // Small optimization, avoid re-rendering when the
+      // SVG isn't in the viewport.
+      if (scrollRatio !== ratio) {
+        setScrollRatio(ratio)
+      }
+    }
+
     window.addEventListener("scroll", handleScroll)
 
     // Clean up event listener on component unmount
