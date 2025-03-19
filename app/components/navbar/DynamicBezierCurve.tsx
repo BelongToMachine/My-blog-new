@@ -10,6 +10,7 @@ import React, {
 import { Container } from "@radix-ui/themes"
 import { ThemeContext } from "@/app/context/DarkModeContext"
 import style from "@/app/service/ThemeCssProperties"
+import useIsInScrollable from "@/app/hooks/useIsInScrollable"
 
 interface Props {
   children: ReactNode
@@ -31,6 +32,7 @@ const getInterpolatedValue = (
 
 const DynamicBezierCurve = ({ children }: Props) => {
   const [scrollRatio, setScrollRatio] = useState(0)
+  const [scrolledInVH, setScrolledInVh] = useState(0)
   const nodeRef = useRef(null)
   const setIsInScrollable = useScrollableStore(
     (state) => state.setIsInScrollable
@@ -60,6 +62,8 @@ const DynamicBezierCurve = ({ children }: Props) => {
   }
   const SLOWER = 0.35
 
+  useIsInScrollable(scrolledInVH, SCROLLABLE_HEIGHT_IN_VH)
+
   useEffect(() => {
     const handleScroll = (event: WheelEvent) => {
       // Only slow down scrolling in specific conditions
@@ -83,13 +87,8 @@ const DynamicBezierCurve = ({ children }: Props) => {
       const windowHeight = window.innerHeight
       const pixelsScrolled = Math.abs(window.scrollY)
       const baseRatio = pixelsScrolled / windowHeight
-      const scrolledInVH = baseRatio * 100
 
-      if (scrolledInVH < SCROLLABLE_HEIGHT_IN_VH) {
-        setIsInScrollable(true)
-      } else {
-        setIsInScrollable(false)
-      }
+      setScrolledInVh(baseRatio * 100)
 
       let ratio = ADJUSTED_SCROLL_COEFFICIENT * baseRatio
 
