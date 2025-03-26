@@ -1,30 +1,37 @@
-import { Status } from "@prisma/client";
-import { Card, Flex, Text } from "@radix-ui/themes";
-import classNames from "classnames";
-import Link from "next/link";
-import React from "react";
+import { Status } from "@prisma/client"
+import { Card, Flex, Text } from "@radix-ui/themes"
+import classNames from "classnames"
+import Link from "next/link"
+import React, { CSSProperties } from "react"
+import style from "./service/ThemeCssProperties"
 
 interface Props {
-  open: number;
-  inProgress: number;
-  closed: number;
+  open: number
+  inProgress: number
+  closed: number
 }
 
 const BlogSummary = ({ open, inProgress, closed }: Props) => {
   const categoryData: {
-    label: string;
-    value: number;
-    status: Status;
+    label: string
+    value: number
+    status: Status
   }[] = [
     { label: "Web开发", value: open, status: "FINISHED" },
     { label: "科技类", value: inProgress, status: "IN_PROGRESS" },
     { label: "非技术类", value: closed, status: "CLOSED" },
-  ];
+  ]
 
   return (
     <Flex gap="4">
       {categoryData.map((container) => (
-        <Card key={container.label}>
+        <Card
+          key={container.label}
+          style={{
+            ...style,
+            background: style.cardBackground,
+          }}
+        >
           <Flex direction="column" gap="1">
             <Link
               className="text-sm font-medium"
@@ -39,7 +46,7 @@ const BlogSummary = ({ open, inProgress, closed }: Props) => {
         </Card>
       ))}
     </Flex>
-  );
-};
+  )
+}
 
-export default BlogSummary;
+export default BlogSummary

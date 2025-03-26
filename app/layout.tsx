@@ -10,6 +10,8 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import CursorManager from "./CursorManager"
 import "@pigment-css/react/styles.css"
 import { ThemeProvider } from "./context/DarkModeContext"
+import Script from "next/script"
+import style from "./service/ThemeCssProperties"
 
 // const inter = Inter({ subsets: ["latin"] });
 
@@ -25,8 +27,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        {" "}
+      <head>
+        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
+        <script id="my-script" src="/index.js" />
+      </head>
+      <body
+        style={{
+          background: style.background,
+        }}
+      >
         {/* className={inter.className} */}
         <QueryClientProvider>
           <AuthProvider>
@@ -34,7 +43,7 @@ export default function RootLayout({
               <Theme appearance="light" accentColor="sky" radius="small">
                 <NavBar />
                 <CursorManager />
-                <main className="pt-16">{children}</main>
+                <main className="pt-14">{children}</main>
               </Theme>
               <ReactQueryDevtools />
             </ThemeProvider>

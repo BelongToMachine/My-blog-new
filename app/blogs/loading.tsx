@@ -2,11 +2,17 @@ import { Container, Table } from "@radix-ui/themes"
 import React from "react"
 import { Skeleton } from "@/app/components"
 import IssueActions from "./IssueActions"
+import style from "../service/ThemeCssProperties"
 
 const loading = () => {
   const issues = [1, 2, 3, 4, 5]
   return (
-    <Container>
+    <Container
+      style={{
+        background: style.background,
+        minHeight: "120vh",
+      }}
+    >
       <div className="space-y-3 p-5">
         <IssueActions />
         <Table.Root variant="surface">

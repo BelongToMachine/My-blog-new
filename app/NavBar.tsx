@@ -32,9 +32,9 @@ const NavBar = () => {
         right: 0,
         zIndex: 10,
         background: isInScrollable
-          ? "rgba(255, 255, 255, 1)"
-          : "rgba(255, 255, 255, 0.3)",
-        backdropFilter: isInScrollable ? "none" : "blur(10px)",
+          ? "var(--scrollable-background-color)"
+          : "var(--background-color)",
+        backdropFilter: "blur(10px)",
         transition: "background 0.3s ease-in-out",
       }}
     >
