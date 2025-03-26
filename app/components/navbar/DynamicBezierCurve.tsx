@@ -40,6 +40,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
   const { colorMode, setColorMode } = themeContext
 
   const [scrollRatio, setScrollRatio] = useState(0)
+  const [scrolledInVH, setScrolledInVh] = useState(0)
   const nodeRef = useRef(null)
   const setIsInScrollable = useScrollableStore(
     (state) => state.setIsInScrollable
@@ -51,32 +52,26 @@ const DynamicBezierCurve = ({ children }: Props) => {
   const handleScroll = () => {
     if (!nodeRef.current) return
 
-    const windowHeight = window.innerHeight
-    const pixelsScrolled = Math.abs(window.scrollY)
-    const baseRatio = pixelsScrolled / windowHeight
-    const scrolledInVH = baseRatio * 100
+      const windowHeight = window.innerHeight
+      const pixelsScrolled = Math.abs(window.scrollY)
+      const baseRatio = pixelsScrolled / windowHeight
 
-    if (scrolledInVH < SCROLLABLE_HEIGHT_IN_VH) {
-      setIsInScrollable(true)
-    } else {
-      setIsInScrollable(false)
+      setScrolledInVh(baseRatio * 100)
+
+      let ratio = ADJUSTED_SCROLL_COEFFICIENT * baseRatio
+
+      // We don't care about the negative values when it's
+      // below the viewport, or the greater-than-1 values when
+      // it's above the viewport.
+      ratio = clamp(ratio)
+
+      // Small optimization, avoid re-rendering when the
+      // SVG isn't in the viewport.
+      if (scrollRatio !== ratio) {
+        setScrollRatio(ratio)
+      }
     }
 
-    let ratio = ADJUSTED_SCROLL_COEFFICIENT * baseRatio
-
-    // We don't care about the negative values when it's
-    // below the viewport, or the greater-than-1 values when
-    // it's above the viewport.
-    ratio = clamp(ratio)
-
-    // Small optimization, avoid re-rendering when the
-    // SVG isn't in the viewport.
-    if (scrollRatio !== ratio) {
-      setScrollRatio(ratio)
-    }
-  }
-
-  useEffect(() => {
     window.addEventListener("scroll", handleScroll)
 
     // Clean up event listener on component unmount
@@ -125,10 +120,10 @@ const DynamicBezierCurve = ({ children }: Props) => {
       <div
         style={{
           position: "fixed",
-          backgroundColor: `${CONTENT_BACKGROUND}`,
+          backgroundColor: SCROLLABLE_COLOR,
           height: "100vh",
           width: "100%",
-          zIndex: "-2",
+          zIndex: -1,
         }}
       >
         <Container>{children}</Container>
@@ -140,11 +135,16 @@ const DynamicBezierCurve = ({ children }: Props) => {
           width: "100%",
           height: "100vh",
           position: "fixed",
-          zIndex: "-1",
+          zIndex: -1,
         }}
         preserveAspectRatio="none"
       >
-        <path d={instructions} fill="white" stroke="hotpink" strokeWidth="0" />
+        <path
+          d={instructions}
+          fill={BACKGROUND_COLOR as string}
+          stroke="hotpink"
+          strokeWidth="0"
+        />
       </svg>
       <div
         style={{

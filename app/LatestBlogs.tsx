@@ -1,8 +1,9 @@
-import prisma from "@/prisma/client";
-import { Avatar, Card, Flex, Heading, Table } from "@radix-ui/themes";
-import { create } from "domain";
-import React from "react";
-import { IssueStatusBadge, Link } from "./components";
+import prisma from "@/prisma/client"
+import { Avatar, Card, Flex, Heading, Table } from "@radix-ui/themes"
+import { create } from "domain"
+import React, { CSSProperties } from "react"
+import { IssueStatusBadge, Link } from "./components"
+import style from "./service/ThemeCssProperties"
 
 const LatestBlogs = async () => {
   const blogs = await prisma.issue.findMany({
@@ -11,10 +12,15 @@ const LatestBlogs = async () => {
     include: {
       assignedToUser: true,
     },
-  });
+  })
 
   return (
-    <Card>
+    <Card
+      style={{
+        ...style,
+        background: style.cardBackground,
+      }}
+    >
       <Heading size="4" mb="4">
         最近的博客
       </Heading>
@@ -22,7 +28,11 @@ const LatestBlogs = async () => {
         <Table.Body>
           {blogs.map((blog) => (
             <Table.Row key={blog.id}>
-              <Table.Cell>
+              <Table.Cell
+                style={{
+                  borderBottom: `0.5px solid ${style.borderColor}`,
+                }}
+              >
                 <Flex direction="column" align="start" gap="2">
                   <Link href={`/blogs/${blog.id}`}>{blog.title}</Link>
                   <IssueStatusBadge status={blog.status} />
@@ -41,7 +51,7 @@ const LatestBlogs = async () => {
         </Table.Body>
       </Table.Root>
     </Card>
-  );
-};
+  )
+}
 
-export default LatestBlogs;
+export default LatestBlogs

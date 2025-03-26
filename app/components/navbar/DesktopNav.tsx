@@ -10,7 +10,7 @@ import { AnimatePresence, motion } from "framer-motion"
 import DisappearingText from "../DisappearText"
 import { LuSearch } from "react-icons/lu"
 import { PiSunDim } from "react-icons/pi"
-import { ThemeContext } from "@/app/context/DarkModeContext"
+import { colorMode, ThemeContext } from "@/app/context/DarkModeContext"
 
 interface Link {
   label: string
@@ -34,21 +34,36 @@ const DesktopNav = () => {
     <div className="flex justify-between items-center">
       <div className="flex space-x-6 py-6 px-5 h-14 items-center">
         <Link href="http://github.com/JieLuis">
-          <PiGithubLogoFill />
+          <PiGithubLogoFill
+            style={{
+              color: "var(--text-color)",
+            }}
+          />
         </Link>
-        <NavLinks />
+        <NavLinks colorMode={colorMode} />
       </div>
       <div className="flex space-x-6 items-center pr-6">
         {colorMode}
-        <LuSearch size={26} />
-        <PiSunDim size={32} onClick={handleSunClick} />
+        <LuSearch
+          size={26}
+          style={{
+            color: "var(--text-color)",
+          }}
+        />
+        <PiSunDim
+          size={32}
+          onClick={handleSunClick}
+          style={{
+            color: "var(--text-color)",
+          }}
+        />
       </div>
     </div>
   )
 }
 export default DesktopNav
 
-const NavLinks = () => {
+const NavLinks = ({ colorMode }: { colorMode: colorMode }) => {
   const currentPath = usePathname()
   const { id }: { id?: string | null } = useParams()
   const [metaTitle, setMetaTitle] = useState<string>("")
@@ -99,10 +114,12 @@ const NavLinks = () => {
       // prettier-ignore
       classNames({
         "nav-link": true,
-        "!text-zinc-950": link.href === currentPath,
+        "nav-link-dark": colorMode === "dark",
+        "!text-zinc-950": link.href === currentPath && colorMode === "light",
+        "!text-white": link.href === currentPath && colorMode === "dark",
         "arrowCollapsible": isArrowExist,
       })
-  }, [currentPath])
+  }, [currentPath, colorMode])
 
   const variants = {
     initial: { opacity: 0 },

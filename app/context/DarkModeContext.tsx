@@ -1,35 +1,24 @@
 "use client"
-
-import React, { createContext, ReactNode, useState } from "react"
+import React, { createContext, ReactNode, useState, useEffect } from "react"
+import { PostCssProperties } from "../service/ThemeCssProperties"
 
 export type colorMode = "light" | "dark"
 
-interface ThemeContextType {
-  colorMode: "light" | "dark"
-  setColorMode: (value: colorMode) => void
+interface ThemeObject {
+  light: PostCssProperties
+  dark: PostCssProperties
 }
 
-const getInitialColorMode = (): colorMode => {
-  const persistedColorPreference = window.localStorage.getItem("color-mode")
-  const hasPersistedPreference = typeof persistedColorPreference === "string"
-
-  // If the user has explicitly chosen light or dark,
-  // let's use it. Otherwise, this value will be null.
-  if (hasPersistedPreference) {
-    return persistedColorPreference as colorMode
+declare global {
+  interface Window {
+    COLORS_JIE_BLOG_THEME: ThemeObject
+    GET_JIE_BLOG_CSS_PROPERTIES: (value: colorMode) => any
   }
+}
 
-  // If they haven't been explicit, let's check the media query
-  const mql = window.matchMedia("(prefers-color-scheme: dark)")
-  const hasMediaQueryPreference = typeof mql.matches === "boolean"
-
-  if (hasMediaQueryPreference) {
-    return mql.matches ? "dark" : "light"
-  }
-
-  // If they are using a browser/OS that doesn't support
-  // color themes, let's default to 'light'.
-  return "light"
+interface ThemeContextType {
+  colorMode: colorMode
+  setColorMode: (value: colorMode) => void
 }
 
 export const ThemeContext = createContext<ThemeContextType | undefined>(
@@ -37,12 +26,34 @@ export const ThemeContext = createContext<ThemeContextType | undefined>(
 )
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  const [colorMode, rawSetColorMode] = useState<colorMode>(getInitialColorMode)
-  const setColorMode = (value: colorMode) => {
+  const [colorMode, rawSetColorMode] = useState<colorMode>("dark")
+
+  useEffect(() => {
+    const root = window.document.documentElement
+    const initialColorValue = root.style.getPropertyValue(
+      "--initial-color-mode"
+    )
+    rawSetColorMode(initialColorValue as colorMode)
+  }, [])
+
+  const setColorMode = (value: colorMode, ifInitialLoad = true) => {
     rawSetColorMode(value)
-    // Persist it on update
-    window.localStorage.setItem("color-mode", value)
+
+    if (ifInitialLoad) {
+      window.localStorage.setItem("color-mode", value)
+    }
+
+    const properties = GET_JIE_BLOG_CSS_PROPERTIES(value)
+
+    delete properties["--initial-color-mode"]
+
+    const root = document.documentElement
+
+    Object.entries(properties).forEach(([key, value]) => {
+      root.style.setProperty(key, value as string)
+    })
   }
+
   return (
     <ThemeContext.Provider value={{ colorMode, setColorMode }}>
       {children}
