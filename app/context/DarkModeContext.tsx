@@ -26,7 +26,7 @@ export const ThemeContext = createContext<ThemeContextType | undefined>(
 )
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  const [colorMode, rawSetColorMode] = useState<colorMode>("light")
+  const [colorMode, rawSetColorMode] = useState<colorMode>("dark")
 
   useEffect(() => {
     const root = window.document.documentElement
