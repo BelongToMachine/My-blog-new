@@ -1,11 +1,36 @@
 "use client"
-import React from "react"
-import selfie from "@/public/images/selfie.png" // Update the image import
+import React, { useContext, useState } from "react"
+import selfie from "@/public/images/me2.png" // Update the image import
 import Image from "next/image"
 import { TypeAnimation } from "react-type-animation"
 import { motion } from "framer-motion"
+import { ServerComponent, ClientComponent } from "shiki-components"
+import { useStore } from "zustand"
+import { ThemeContext } from "../context/DarkModeContext"
+import CodeBlocker from "./CodeBlocker"
 
 const Hero = () => {
+  const themeContext = useContext(ThemeContext)
+  const [isHovered, setIsHovered] = useState(false)
+
+  if (!themeContext) {
+    throw new Error("ThemeToggle must be used within a ThemeProvider")
+  }
+
+  const { colorMode } = themeContext
+
+  const code = `
+    const coder = {
+      name: "Jie",
+      role: ["Front-end developer"]
+      skill: ["React", "Next.js"]
+      location: "Hangzhou, China",
+      problemSolver: true,
+      welcomeMessage: () => {
+        return "Happy to meet you!"
+      }
+    }
+  `
   return (
     <div id="about-me-section" className="pb-4">
       <div className="grid grid-cols-1 sm:grid-cols-12">
@@ -13,12 +38,14 @@ const Hero = () => {
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
-          className="col-span-7 place-self-center text-center sm:text-left"
+          className="col-span-7 col-start-1 flex items-center justify-start relative sm:left-48"
         >
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-4 text-yellow-500">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-600">
-              {`Heya I'm `}
-            </span>
+            <div className="mb-2">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-600">
+                {`Heya I'm `}
+              </span>
+            </div>
             <TypeAnimation
               sequence={[
                 // Same substring at the start will only be typed out once, initially
@@ -34,23 +61,6 @@ const Hero = () => {
               repeat={Infinity}
             />
           </h1>
-          <p className="mb-6">
-            {`I'm a developer based in Hangzhou,`}
-            <br />
-            {`来自中国(UTC+08:00)的开发者，热爱新技术，喜欢用技术提高工作效率。`}
-          </p>
-          <div>
-            <button className="px-6 py-3 rounded-full mr-4 hover:bg-slate-200 text-white w-full sm:w-fit bg-gradient-to-br from-primary-500 to-secondary-500">
-              <a href="#contact-me">联系我</a>
-            </button>
-            <button className="px-1 py-1 rounded-full  hover:bg-slate-200  mt-3 w-full sm:w-fit bg-gradient-to-br  from-primary-500 to-secondary-500 ">
-              <span className="block text-[#1D3E56] bg-[#F1FAFD] hover:bg-slate:800 rounded-full px-5 py-2">
-                <a href="/resume/resume.pdf" download="resume">
-                  下载我的简历
-                </a>
-              </span>
-            </button>
-          </div>
         </motion.div>
         <motion.div
           initial={{ opacity: 0, scale: 0.5 }}
@@ -58,15 +68,29 @@ const Hero = () => {
           transition={{ duration: 0.5 }}
           className="col-span-5 place-self-center mt-4 lg:mt-0"
         >
-          <div className="rounded-full bg-white w-[250px] h-[250px] lg:w-[400px] lg:h-[400px] relative">
+          {/* <div className=" w-[250px] h-[250px] lg:w-[400px] lg:h-[400px] relative"> */}
+          {!isHovered && (
             <Image
               src={selfie}
               alt="My selfie image"
               width={300}
               height={300}
-              className="absolute inset-0 rounded-full object-cover"
+              style={{
+                zIndex: 100,
+                position: "relative",
+                cursor: "pointer",
+              }}
+              onMouseEnter={() => setIsHovered(true)}
             />
-          </div>
+          )}
+          {isHovered && (
+            <CodeBlocker
+              onMouseEnter={() => setIsHovered(false)}
+              code={code}
+              colorMode={colorMode}
+            />
+          )}
+          {/* </div> */}
         </motion.div>
       </div>
     </div>

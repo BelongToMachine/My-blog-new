@@ -34,9 +34,6 @@ const DynamicBezierCurve = ({ children }: Props) => {
   const [scrollRatio, setScrollRatio] = useState(0)
   const [scrolledInVH, setScrolledInVh] = useState(0)
   const nodeRef = useRef(null)
-  const setIsInScrollable = useScrollableStore(
-    (state) => state.setIsInScrollable
-  )
   const isInScrollable = useScrollableStore((state) => state.isInScrollable)
   const BACKGROUND_COLOR = style.background
   const SCROLLABLE_COLOR = style.scrollable
@@ -155,7 +152,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
           backgroundColor: SCROLLABLE_COLOR,
           height: "100vh",
           width: "100%",
-          zIndex: "-2",
+          zIndex: -1,
         }}
       >
         <Container>{children}</Container>
@@ -167,7 +164,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
           width: "100%",
           height: "100vh",
           position: "fixed",
-          zIndex: "-1",
+          zIndex: -1,
         }}
         preserveAspectRatio="none"
       >
