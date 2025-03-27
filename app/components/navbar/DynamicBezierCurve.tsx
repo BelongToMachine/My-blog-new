@@ -152,7 +152,6 @@ const DynamicBezierCurve = ({ children }: Props) => {
           backgroundColor: SCROLLABLE_COLOR,
           height: "100vh",
           width: "100%",
-          zIndex: -1,
         }}
       >
         <Container>{children}</Container>
@@ -164,7 +163,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
           width: "100%",
           height: "100vh",
           position: "fixed",
-          zIndex: -1,
+          pointerEvents: "none",
         }}
         preserveAspectRatio="none"
       >
@@ -176,8 +175,10 @@ const DynamicBezierCurve = ({ children }: Props) => {
         />
       </svg>
       <div
+        id="placeHolder"
         style={{
           height: `${SCROLLABLE_HEIGHT_IN_VH}vh`,
+          zIndex: -1,
         }}
       ></div>
     </>
