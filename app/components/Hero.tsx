@@ -1,5 +1,5 @@
 "use client"
-import React, { useContext, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import selfie from "@/public/images/me2.png" // Update the image import
 import Image from "next/image"
 import { TypeAnimation } from "react-type-animation"
@@ -8,10 +8,12 @@ import { ServerComponent, ClientComponent } from "shiki-components"
 import { useStore } from "zustand"
 import { ThemeContext } from "../context/DarkModeContext"
 import CodeBlocker from "./CodeBlocker"
+import classNames from "classnames"
 
 const Hero = () => {
   const themeContext = useContext(ThemeContext)
   const [isHovered, setIsHovered] = useState(false)
+  let timeoutId: NodeJS.Timeout | null = null
 
   if (!themeContext) {
     throw new Error("ThemeToggle must be used within a ThemeProvider")
@@ -38,14 +40,12 @@ const Hero = () => {
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
-          className="col-span-7 col-start-1 flex items-center justify-start relative sm:left-48"
+          className="col-span-7 col-start-1 flex items-center justify-start relative sm:left-40"
         >
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-4 text-yellow-500">
-            <div className="mb-2">
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-600">
-                {`Heya I'm `}
-              </span>
-            </div>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-600">
+              {`Heya I'm `}
+            </span>
             <TypeAnimation
               sequence={[
                 // Same substring at the start will only be typed out once, initially
@@ -68,29 +68,25 @@ const Hero = () => {
           transition={{ duration: 0.5 }}
           className="col-span-5 place-self-center mt-4 lg:mt-0"
         >
-          {/* <div className=" w-[250px] h-[250px] lg:w-[400px] lg:h-[400px] relative"> */}
-          {!isHovered && (
+          <div
+            style={{
+              height: "500px",
+              width: "500px",
+            }}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+          >
             <Image
               src={selfie}
-              alt="My selfie image"
+              alt="Jie is standing firm"
               width={300}
               height={300}
-              style={{
-                zIndex: 100,
-                position: "relative",
-                cursor: "pointer",
-              }}
-              onMouseEnter={() => setIsHovered(true)}
+              className={classNames({
+                hidden: isHovered,
+              })}
             />
-          )}
-          {isHovered && (
-            <CodeBlocker
-              onMouseEnter={() => setIsHovered(false)}
-              code={code}
-              colorMode={colorMode}
-            />
-          )}
-          {/* </div> */}
+            {isHovered && <CodeBlocker code={code} colorMode={colorMode} />}
+          </div>
         </motion.div>
       </div>
     </div>
