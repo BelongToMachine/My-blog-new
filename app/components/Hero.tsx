@@ -36,7 +36,7 @@ const Hero = () => {
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
-          className="sm:col-start-2 sm:col-end-7 flex items-start relative"
+          className="sm:col-start-2 sm:col-end-7 flex items-start relative top-[5rem]"
         >
           <div>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-4 text-yellow-500">
@@ -69,7 +69,7 @@ const Hero = () => {
           transition={{ duration: 0.5 }}
           className="sm:col-start-8"
         >
-          <div className="w-[500px] relative bottom-[60px]">
+          <div className="w-[500px] relative bottom-[2rem]">
             <Image
               src={selfie}
               alt="Jie is standing firm"
