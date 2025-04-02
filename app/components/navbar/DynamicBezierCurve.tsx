@@ -118,7 +118,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
   )
 
   const firstControlPoint = getInterpolatedValue(
-    50, // curvy value
+    60, // curvy value
     0, // flat value
     scrollRatio
   )
@@ -131,7 +131,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
 
   // Unlike the other 3 points, the `endPoint` is
   // constant, and doesn't need interpolation.
-  const endPoint = getInterpolatedValue(70, 0, scrollRatio)
+  const endPoint = getInterpolatedValue(80, 0, scrollRatio)
 
   // Create the SVG path instructions, using our
   // interpolated values.
