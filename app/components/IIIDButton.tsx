@@ -1,6 +1,5 @@
 import React from "react"
 import styles from "@/app/components/IIIDButton.module.css"
-import { Button } from "@radix-ui/themes"
 
 interface Props {
   text: string
