@@ -2,16 +2,8 @@
 import classNames from "classnames"
 import Link from "next/link"
 import { useParams, usePathname } from "next/navigation"
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react"
+import React, { useContext, useEffect, useMemo, useState } from "react"
 import { PiGithubLogoFill } from "react-icons/pi"
-import { AuthStatus } from "./AuthStatus"
 import axios from "axios"
 import toast from "react-hot-toast"
 import { AnimatePresence, motion } from "framer-motion"
