@@ -112,7 +112,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
   // Use our `getInterpolatedValue` function to figure out the values for
   // the start point and the control points.
   const startPoint = getInterpolatedValue(
-    95, // curvy value
+    90, // curvy value
     0, // flat value
     scrollRatio
   )
