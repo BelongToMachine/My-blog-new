@@ -7,10 +7,10 @@ import React, {
   ReactNode,
   useContext,
 } from "react"
-import Hero from "../Hero"
 import { Container } from "@radix-ui/themes"
 import { ThemeContext } from "@/app/context/DarkModeContext"
-import { lightBlue } from "tailwindcss/colors"
+import style from "@/app/service/ThemeCssProperties"
+import useIsInScrollable from "@/app/hooks/useIsInScrollable"
 
 interface Props {
   children: ReactNode
@@ -31,26 +31,55 @@ const getInterpolatedValue = (
 }
 
 const DynamicBezierCurve = ({ children }: Props) => {
-  const themeContext = useContext(ThemeContext)
-
-  if (!themeContext) {
-    throw new Error("ThemeToggle must be used within a ThemeProvider")
-  }
-
-  const { colorMode, setColorMode } = themeContext
-
   const [scrollRatio, setScrollRatio] = useState(0)
   const [scrolledInVH, setScrolledInVh] = useState(0)
   const nodeRef = useRef(null)
-  const setIsInScrollable = useScrollableStore(
-    (state) => state.setIsInScrollable
-  )
-  const SCROLLABLE_HEIGHT_IN_VH = 280
-  const ADJUSTED_SCROLL_COEFFICIENT = 0.4
-  const CONTENT_BACKGROUND = colorMode === "light" ? "lightblue" : "green"
+  const isInScrollable = useScrollableStore((state) => state.isInScrollable)
+  const BACKGROUND_COLOR = style.background
+  const SCROLLABLE_COLOR = style.scrollable
 
-  const handleScroll = () => {
-    if (!nodeRef.current) return
+  const theme = useContext(ThemeContext)
+
+  if (!theme) {
+    throw new Error("ThemeContext must be used within a ThemeProvider")
+  }
+
+  const SCROLLABLE_HEIGHT_IN_VH = 110
+  {
+    /* 
+  ADJUSTED_SCROLL_COEFFICIENT: assoicate with the curve flaten speed, affect this by
+  affect the state "scrollRatio"
+  */
+  }
+  const ADJUSTED_SCROLL_COEFFICIENT = 1
+  {
+    /* 
+    SLOWER: affect user scroll speed  
+  */
+  }
+  const SLOWER = 0.35
+
+  useIsInScrollable(scrolledInVH, SCROLLABLE_HEIGHT_IN_VH)
+
+  useEffect(() => {
+    const handleScroll = (event: WheelEvent) => {
+      // Only slow down scrolling in specific conditions
+      event.preventDefault()
+      window.scrollBy({
+        top: event.deltaY * SLOWER,
+        behavior: "auto", // Avoid smooth scrolling on every event
+      })
+    }
+
+    if (isInScrollable) {
+      window.addEventListener("wheel", handleScroll, { passive: false })
+      return () => window.removeEventListener("wheel", handleScroll)
+    }
+  }, [isInScrollable])
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!nodeRef.current) return
 
       const windowHeight = window.innerHeight
       const pixelsScrolled = Math.abs(window.scrollY)

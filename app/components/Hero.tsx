@@ -5,7 +5,7 @@ import Image from "next/image"
 import { TypeAnimation } from "react-type-animation"
 import { motion } from "framer-motion"
 import { ThemeContext } from "../context/DarkModeContext"
-import { CodeBlocker } from "shiki-test"
+import { CodeBlocker } from "../packages/index"
 
 const Hero = () => {
   const themeContext = useContext(ThemeContext)
@@ -36,7 +36,7 @@ const Hero = () => {
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
-          className="sm:col-start-2 sm:col-end-7 flex items-start relative top-[5rem]"
+          className="sm:col-start-2 sm:col-end-7 flex items-start relative top-[3rem]"
         >
           <div>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-4 text-yellow-500">
