@@ -7,7 +7,7 @@ import Pagination from "../components/Pagination"
 import { columnNames } from "@/app/blogs/BlogTable"
 import { Metadata } from "next"
 import { Container } from "@radix-ui/themes"
-import style from "../service/ThemeCssProperties"
+import { xTheme } from "../service/ThemeService"
 
 interface Props {
   searchParams: Promise<BlogQuery>
@@ -44,11 +44,7 @@ const IndexPage = async ({ searchParams }: Props) => {
   })
 
   return (
-    <Container
-      style={{
-        background: style.background,
-      }}
-    >
+    <Container style={xTheme.blogBackground}>
       <div className="space-y-3 p-5">
         <IssueActions />
         <BlogTable searchParams={searchParams} issues={issues} />

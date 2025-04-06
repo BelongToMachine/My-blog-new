@@ -4,8 +4,7 @@ import Link from "next/link"
 import React from "react"
 import { IssueStatusBadge } from "../components"
 import { Issue, Status } from "@prisma/client"
-import style from "../service/ThemeCssProperties"
-
+import { xTheme } from "../service/ThemeService"
 export interface BlogQuery {
   status: Status
   orderBy: keyof Issue
@@ -29,12 +28,7 @@ const BlogTable = async ({ searchParams: params, issues }: Props) => {
           background: "",
         }}
       >
-        <Table.Row
-          style={{
-            background: style.tableHeader,
-            color: style.color,
-          }}
-        >
+        <Table.Row style={xTheme.blogTableHeader}>
           {columns.map((column) => (
             <Table.ColumnHeaderCell
               key={column.value}
@@ -54,10 +48,7 @@ const BlogTable = async ({ searchParams: params, issues }: Props) => {
       </Table.Header>
       <Table.Body>
         {issues.map((issue) => (
-          <Table.Row
-            key={issue.id}
-            style={{ background: style.tableGeneral, color: style.color }}
-          >
+          <Table.Row key={issue.id} style={xTheme.blogTableBody}>
             <Table.Cell>
               <Link href={`/blogs/${issue.id}`}>{issue.title}</Link>
               <div className="block md:hidden">

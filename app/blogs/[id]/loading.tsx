@@ -1,7 +1,7 @@
 import { Box, Flex, Card, Container } from "@radix-ui/themes"
 import React from "react"
 import { Skeleton } from "@/app/components"
-import style from "@/app/service/ThemeCssProperties"
+import style from "@/app/service/ThemeService"
 
 const loading = () => {
   return (

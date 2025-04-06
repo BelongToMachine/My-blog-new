@@ -9,7 +9,7 @@ import authOptions from "@/app/auth/authOptions"
 import AssigneeSelect from "./AssigneeSelect"
 import { cache } from "react"
 import Wind from "./Wind"
-import style from "@/app/service/ThemeCssProperties"
+import style from "@/app/service/ThemeService"
 
 interface Props {
   params: Promise<{ id: string }>
