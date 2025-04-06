@@ -9,6 +9,7 @@ const COLORS_JIE_BLOG_THEME = {
     chartText: "#666666",
     link: "#00749E",
     tableHeader: "",
+    tableText: "",
     tableGeneral: "",
   },
   dark: {
@@ -20,8 +21,9 @@ const COLORS_JIE_BLOG_THEME = {
     cardBackground: "#182939",
     chartText: "#ffffff",
     link: "#5FC4E3",
-    tableHeader: "#3B4C59",
-    tableGeneral: "",
+    tableHeader: "#0d2d3a",
+    tableText: "#d0ecf2",
+    tableGeneral: "#123847",
   },
 }
 
@@ -40,6 +42,7 @@ const GET_JIE_BLOG_CSS_PROPERTIES = function (colorMode) {
     "--chart-link-color": theme.link,
     "--table-header-color": theme.tableHeader,
     "--table-general-color": theme.tableGeneral,
+    "--table-text-color": theme.tableText,
   }
 }
 
