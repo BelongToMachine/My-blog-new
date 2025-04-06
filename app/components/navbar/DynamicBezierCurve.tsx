@@ -9,7 +9,7 @@ import React, {
 } from "react"
 import { Container } from "@radix-ui/themes"
 import { ThemeContext } from "@/app/context/DarkModeContext"
-import style from "@/app/service/ThemeCssProperties"
+import style from "@/app/service/ThemeService"
 import useIsInScrollable from "@/app/hooks/useIsInScrollable"
 
 interface Props {

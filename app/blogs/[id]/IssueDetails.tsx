@@ -48,6 +48,9 @@ const IssueDetails = ({ issue }: { issue: Issue }) => {
       style={{ gap: "1rem" }}
       direction={{ initial: "column", md: "row" }}
     >
+      {/* 
+       Flex: Here to control the title and TOC text color with "color" 
+      */}
       <Box
         ref={mainContentRef}
         className="flex-grow max-w-3xl bg-white rounded-lg shadow-lg p-6"

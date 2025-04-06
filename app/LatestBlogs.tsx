@@ -3,7 +3,7 @@ import { Avatar, Card, Flex, Heading, Table } from "@radix-ui/themes"
 import { create } from "domain"
 import React, { CSSProperties } from "react"
 import { IssueStatusBadge, Link } from "./components"
-import style from "./service/ThemeCssProperties"
+import { xTheme } from "./service/ThemeService"
 
 const LatestBlogs = async () => {
   const blogs = await prisma.issue.findMany({
@@ -15,12 +15,7 @@ const LatestBlogs = async () => {
   })
 
   return (
-    <Card
-      style={{
-        ...style,
-        background: style.cardBackground,
-      }}
-    >
+    <Card style={xTheme.card}>
       <Heading size="4" mb="4">
         最近的博客
       </Heading>
@@ -28,11 +23,7 @@ const LatestBlogs = async () => {
         <Table.Body>
           {blogs.map((blog) => (
             <Table.Row key={blog.id}>
-              <Table.Cell
-                style={{
-                  borderBottom: `0.5px solid ${style.borderColor}`,
-                }}
-              >
+              <Table.Cell style={xTheme.innerCellBorder}>
                 <Flex direction="column" align="start" gap="2">
                   <Link href={`/blogs/${blog.id}`}>{blog.title}</Link>
                   <IssueStatusBadge status={blog.status} />

@@ -1,6 +1,6 @@
 "use client"
 import React, { createContext, ReactNode, useState, useEffect } from "react"
-import { PostCssProperties } from "../service/ThemeCssProperties"
+import { PostCssProperties } from "../service/ThemeService"
 
 export type colorMode = "light" | "dark"
 

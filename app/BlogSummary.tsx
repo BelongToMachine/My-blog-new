@@ -3,7 +3,7 @@ import { Card, Flex, Text } from "@radix-ui/themes"
 import classNames from "classnames"
 import Link from "next/link"
 import React, { CSSProperties } from "react"
-import style from "./service/ThemeCssProperties"
+import style, { xTheme } from "./service/ThemeService"
 
 interface Props {
   open: number
@@ -25,13 +25,7 @@ const BlogSummary = ({ open, inProgress, closed }: Props) => {
   return (
     <Flex gap="4">
       {categoryData.map((container) => (
-        <Card
-          key={container.label}
-          style={{
-            ...style,
-            background: style.cardBackground,
-          }}
-        >
+        <Card key={container.label} style={xTheme.card}>
           <Flex direction="column" gap="1">
             <Link
               className="text-sm font-medium"

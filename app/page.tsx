@@ -34,8 +34,6 @@ export default async function Home({ searchParams }: Props) {
         <Hero />
       </DynamicBezierCurve>
       <Container>
-        <AboutMe />
-        <Projects />
         <SummaryHeader />
         <PostSummary web={open} tech={inProgress} nonTech={closed} />
         <Contact />

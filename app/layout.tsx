@@ -11,7 +11,7 @@ import CursorManager from "./CursorManager"
 import "@pigment-css/react/styles.css"
 import { ThemeProvider } from "./context/DarkModeContext"
 import Script from "next/script"
-import style from "./service/ThemeCssProperties"
+import { xTheme } from "./service/ThemeService"
 
 // const inter = Inter({ subsets: ["latin"] });
 
@@ -31,11 +31,7 @@ export default function RootLayout({
         {/* eslint-disable-next-line @next/next/no-sync-scripts */}
         <script id="my-script" src="/index.js" />
       </head>
-      <body
-        style={{
-          background: style.background,
-        }}
-      >
+      <body style={xTheme.layoutBackground}>
         {/* className={inter.className} */}
         <QueryClientProvider>
           <AuthProvider>
