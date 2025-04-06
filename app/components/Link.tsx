@@ -7,13 +7,12 @@ import { CSSProperties } from "styled-components"
 interface Props {
   href: string
   children: string
-  overrideStyle?: CSSProperties
 }
 
-const Link = ({ href, children, overrideStyle }: Props) => {
+const Link = ({ href, children }: Props) => {
   return (
     <NextLink href={href} passHref legacyBehavior>
-      <RadixLink style={overrideStyle}>{children}</RadixLink>
+      <RadixLink>{children}</RadixLink>
     </NextLink>
   )
 }
