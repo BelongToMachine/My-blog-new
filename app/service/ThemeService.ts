@@ -7,6 +7,7 @@ export interface PostCssProperties extends CSSProperties {
   scrollable: string
   tableHeader: string
   tableGeneral: string
+  tableText: string
 }
 
 const style: PostCssProperties = {
@@ -19,6 +20,7 @@ const style: PostCssProperties = {
   background: "var(--background-color)",
   tableHeader: "var(--table-header-color)",
   tableGeneral: "var(--table-general-color)",
+  tableText: "var(--table-text-color)",
 }
 
 export const xTheme: Record<string, CSSProperties> = {
@@ -26,6 +28,8 @@ export const xTheme: Record<string, CSSProperties> = {
   layoutBackground: {
     background: style.background,
   },
+  /*---------------------navbar----------------------*/
+  iconColor: { color: style.color },
   /*-----------------------/-------------------------*/
   /* latest blogs inner cell border */
   innerCellBorder: {
@@ -43,11 +47,11 @@ export const xTheme: Record<string, CSSProperties> = {
   },
   /* table header */
   blogTableHeader: {
-    background: "#2D2D2D",
+    background: style.tableHeader,
     color: style.color,
   },
   /* table body */
-  blogTableBody: { background: style.tableGeneral, color: style.color },
+  blogTableBody: { background: style.tableGeneral, color: style.tableText },
   /*--------------------/blogs/:id-------------------*/
 }
 

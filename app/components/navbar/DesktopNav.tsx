@@ -12,6 +12,7 @@ import { LuSearch } from "react-icons/lu"
 import { PiSunDim } from "react-icons/pi"
 import { GoMoon } from "react-icons/go"
 import { colorMode, ThemeContext } from "@/app/context/DarkModeContext"
+import { xTheme } from "@/app/service/ThemeService"
 
 interface Link {
   label: string
@@ -35,11 +36,7 @@ const DesktopNav = () => {
     <div className="flex justify-between items-center">
       <div className="flex space-x-6 py-6 px-5 h-14 items-center">
         <Link href="http://github.com/JieLuis">
-          <PiGithubLogoFill
-            style={{
-              color: "var(--text-color)",
-            }}
-          />
+          <PiGithubLogoFill style={xTheme.iconColor} />
         </Link>
         <NavLinks colorMode={colorMode} />
       </div>
@@ -54,17 +51,13 @@ const DesktopNav = () => {
           <PiSunDim
             size={32}
             onClick={handleSunClick}
-            style={{
-              color: "var(--text-color)",
-            }}
+            style={{ ...xTheme.iconColor, cursor: "pointer" }}
           />
         ) : (
           <GoMoon
             size={26}
             onClick={handleSunClick}
-            style={{
-              color: "var(--text-color)",
-            }}
+            style={{ ...xTheme.iconColor, cursor: "pointer" }}
           />
         )}
       </div>
