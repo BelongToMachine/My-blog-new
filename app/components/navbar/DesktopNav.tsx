@@ -13,6 +13,7 @@ import { PiSunDim } from "react-icons/pi"
 import { GoMoon } from "react-icons/go"
 import { colorMode, ThemeContext } from "@/app/context/DarkModeContext"
 import { xTheme } from "@/app/service/ThemeService"
+import { useTheme } from "@/app/hooks/useTheme"
 
 interface Link {
   label: string
@@ -20,13 +21,7 @@ interface Link {
 }
 
 const DesktopNav = () => {
-  const themeContext = useContext(ThemeContext)
-
-  if (!themeContext) {
-    throw new Error("ThemeToggle must be used within a ThemeProvider")
-  }
-
-  const { colorMode, setColorMode } = themeContext
+  const { colorMode, setColorMode } = useTheme()
 
   const handleSunClick = () => {
     setColorMode(colorMode === "light" ? "dark" : "light")

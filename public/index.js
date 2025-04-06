@@ -11,6 +11,7 @@ const COLORS_JIE_BLOG_THEME = {
     tableHeader: "",
     tableText: "",
     tableGeneral: "",
+    buttonHover: "#f2f2f2",
   },
   dark: {
     primary: "#182939",
@@ -24,8 +25,11 @@ const COLORS_JIE_BLOG_THEME = {
     tableHeader: "#0d2d3a",
     tableText: "#d0ecf2",
     tableGeneral: "#123847",
+    buttonHover: "rgba(255,255,255,0.1)",
   },
 }
+
+const GoldenRatio = 1.6180339887
 
 const GET_JIE_BLOG_CSS_PROPERTIES = function (colorMode) {
   const theme = COLORS_JIE_BLOG_THEME[colorMode]
@@ -43,6 +47,7 @@ const GET_JIE_BLOG_CSS_PROPERTIES = function (colorMode) {
     "--table-header-color": theme.tableHeader,
     "--table-general-color": theme.tableGeneral,
     "--table-text-color": theme.tableText,
+    "--button-hover-color": theme.buttonHover,
   }
 }
 
