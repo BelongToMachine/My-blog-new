@@ -3,11 +3,14 @@ import type { Metadata } from "next"
 // import { Inter } from "next/font/google";
 import NavBar from "./NavBar"
 import "@radix-ui/themes/styles.css"
-import { Container, Theme, ThemePanel } from "@radix-ui/themes"
+import { Theme } from "@radix-ui/themes"
 import AuthProvider from "./auth/Provider"
 import QueryClientProvider from "./QueryClientProvider"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import CursorManager from "./CursorManager"
+import "@pigment-css/react/styles.css"
+import { ThemeProvider } from "./context/DarkModeContext"
+import { xTheme } from "./service/ThemeService"
 
 // const inter = Inter({ subsets: ["latin"] });
 
@@ -23,19 +26,22 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        {" "}
+      <head>
+        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
+        <script id="my-script" src="/index.js" />
+      </head>
+      <body style={xTheme.layoutBackground}>
         {/* className={inter.className} */}
         <QueryClientProvider>
           <AuthProvider>
-            <Theme appearance="light" accentColor="sky" radius="small">
-              <NavBar />
-              <CursorManager />
-              <main className="p-3 bg-teal-50 pt-16">
-                <Container>{children}</Container>
-              </main>
-            </Theme>
-            <ReactQueryDevtools />
+            <ThemeProvider>
+              <Theme appearance="light" accentColor="sky" radius="small">
+                <NavBar />
+                <CursorManager />
+                <main className="pt-14">{children}</main>
+              </Theme>
+              <ReactQueryDevtools />
+            </ThemeProvider>
           </AuthProvider>
         </QueryClientProvider>
       </body>

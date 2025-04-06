@@ -1,0 +1,39 @@
+import { xTheme } from "@/app/service/ThemeService"
+import React from "react"
+
+interface Props {
+  children: React.ReactNode
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void
+  disabled?: boolean
+  attri?: React.CSSProperties
+}
+
+const JButton = ({ children, onClick, disabled, attri }: Props) => {
+  return (
+    <button
+      style={{
+        padding: "0.5rem 1.6rem",
+        borderRadius: "12px",
+        backgroundColor: "transparent",
+        fontSize: "0.8rem",
+        transition: "background-color 0.2s",
+        ...xTheme.likeButton,
+        ...attri,
+      }}
+      disabled={disabled}
+      onClick={onClick}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.backgroundColor = xTheme.likeButtonHover[
+          "background"
+        ] as string
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.backgroundColor = "transparent"
+      }}
+    >
+      {children}
+    </button>
+  )
+}
+
+export default JButton
