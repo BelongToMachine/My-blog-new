@@ -10,6 +10,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import useBlogLikes from "@/app/hooks/useBlogLikes"
 import Tooltip from "./Tooltip"
 import { AnimatePresence, motion } from "framer-motion"
+import JButton from "./JButton"
 
 const MAX_LIKES_PER_DAY = 3
 
@@ -153,16 +154,29 @@ const LikeDislike = ({ issue }: { issue: Issue }) => {
           </motion.div>
         )}
       </AnimatePresence>
-      <Button
-        style={{ marginRight: "10px" }}
+
+      <JButton
         onClick={handleUpdateLikes}
         disabled={isLoading}
+        attri={{
+          width: "100px",
+          position: "relative",
+          right: "0.5rem",
+        }}
       >
         {isLoading ? `Liking...` : `Likes (${clientLikes})`}
-      </Button>
+      </JButton>
 
       <HoverWrapper>
-        <Button className="absolute right-24">Dislike</Button>
+        <JButton
+          attri={{
+            width: "120px",
+            position: "absolute",
+            right: "7.5rem",
+          }}
+        >
+          {`Dislikes(0)`}
+        </JButton>
         <Wind />
       </HoverWrapper>
 

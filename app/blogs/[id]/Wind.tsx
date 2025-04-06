@@ -1,6 +1,6 @@
 "use client"
 
-import { Box, Button, Flex } from "@radix-ui/themes"
+import { Flex } from "@radix-ui/themes"
 import React, { useEffect, useRef, useState } from "react"
 import {
   useDefaultCursorStore,
@@ -47,7 +47,14 @@ const Wind = () => {
       if (!prevTime) {
         prevTime = currTime
       }
-      const timeDelta = Math.min(20, Math.max(10, currTime - prevTime))
+
+      const TIME_DELTA_FOR_FRESH_60 = 16.67
+
+      const timeDelta = Math.min(
+        TIME_DELTA_FOR_FRESH_60,
+        Math.max(10, currTime - prevTime)
+      )
+
       prevTime = currTime
 
       setWindOffsetX((prev) => prev - 0.6 * timeDelta)
@@ -70,10 +77,6 @@ const Wind = () => {
       }
     }
   })
-
-  useEffect(() => {
-    console.log(isOverlapping)
-  }, [isOverlapping])
 
   return (
     <Flex

@@ -1,26 +1,34 @@
-import { ArrowUpIcon } from "@radix-ui/react-icons";
-import { Table } from "@radix-ui/themes";
-import Link from "next/link";
-import React from "react";
-import { IssueStatusBadge } from "../components";
-import { Issue, Status } from "@prisma/client";
-
+import { ArrowUpIcon } from "@radix-ui/react-icons"
+import { Table } from "@radix-ui/themes"
+import Link from "next/link"
+import React from "react"
+import { IssueStatusBadge } from "../components"
+import { Issue, Status } from "@prisma/client"
+import { xTheme } from "../service/ThemeService"
 export interface BlogQuery {
-  status: Status;
-  orderBy: keyof Issue;
-  page: string;
+  status: Status
+  orderBy: keyof Issue
+  page: string
 }
 
 interface Props {
-  searchParams: BlogQuery;
-  issues: Issue[];
+  searchParams: Promise<BlogQuery>
+  issues: Issue[]
 }
 
-const BlogTable = ({ searchParams, issues }: Props) => {
+const BlogTable = async ({ searchParams: params, issues }: Props) => {
+  const searchParams = (await params) ?? {}
+
+  const orderBy = searchParams.orderBy ?? undefined
+
   return (
     <Table.Root variant="surface">
-      <Table.Header>
-        <Table.Row>
+      <Table.Header
+        style={{
+          background: "",
+        }}
+      >
+        <Table.Row style={xTheme.blogTableHeader}>
           {columns.map((column) => (
             <Table.ColumnHeaderCell
               key={column.value}
@@ -33,16 +41,14 @@ const BlogTable = ({ searchParams, issues }: Props) => {
               >
                 {column.label}
               </Link>
-              {column.value === searchParams.orderBy && (
-                <ArrowUpIcon className="inline " />
-              )}
+              {column.value === orderBy && <ArrowUpIcon className="inline" />}
             </Table.ColumnHeaderCell>
           ))}
         </Table.Row>
       </Table.Header>
       <Table.Body>
         {issues.map((issue) => (
-          <Table.Row key={issue.id}>
+          <Table.Row key={issue.id} style={xTheme.blogTableBody}>
             <Table.Cell>
               <Link href={`/blogs/${issue.id}`}>{issue.title}</Link>
               <div className="block md:hidden">
@@ -59,15 +65,15 @@ const BlogTable = ({ searchParams, issues }: Props) => {
         ))}
       </Table.Body>
     </Table.Root>
-  );
-};
+  )
+}
 
 const columns: { label: string; value: keyof Issue; className?: string }[] = [
   { label: "标题", value: "title" },
   { label: "博客类型", value: "status", className: "hidden md:table-cell" },
   { label: "创建于", value: "createdAt", className: "hidden md:table-cell" },
-];
+]
 
-export const columnNames = columns.map((column) => column.value);
+export const columnNames = columns.map((column) => column.value)
 
-export default BlogTable;
+export default BlogTable

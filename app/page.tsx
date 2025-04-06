@@ -2,7 +2,7 @@ import prisma from "@/prisma/client"
 import BlogSummary from "./BlogSummary"
 import LatestBlogs from "./LatestBlogs"
 import BlogChart from "./BlogChart"
-import { Flex, Grid } from "@radix-ui/themes"
+import { Container, Flex, Grid } from "@radix-ui/themes"
 import { Metadata } from "next"
 import AboutMe from "./components/AboutMe"
 import Hero from "./components/Hero"
@@ -10,9 +10,11 @@ import Projects from "./projects"
 import { Tag } from "@prisma/client"
 import SummaryHeader from "./SummaryHeader"
 import Contact from "./Contact"
+import DynamicBezierCurve from "./components/navbar/DynamicBezierCurve"
+import PostSummary from "./PostSummary"
 
 interface Props {
-  searchParams: { tags: Tag }
+  searchParams: Promise<{ tags: Tag }>
 }
 
 export default async function Home({ searchParams }: Props) {
@@ -27,20 +29,16 @@ export default async function Home({ searchParams }: Props) {
   })
 
   return (
-    <main className="container">
-      <Hero />
-      <AboutMe />
-      <Projects />
-      <SummaryHeader />
-      <Grid columns={{ initial: "1", md: "2" }} gap="5" mt="8">
-        <Flex direction="column" gap="5">
-          <BlogSummary open={open} inProgress={inProgress} closed={closed} />
-          <BlogChart open={open} inProgress={inProgress} closed={closed} />
-        </Flex>
-        <LatestBlogs />
-      </Grid>
-      <Contact />
-    </main>
+    <>
+      <DynamicBezierCurve>
+        <Hero />
+      </DynamicBezierCurve>
+      <Container>
+        <SummaryHeader />
+        <PostSummary web={open} tech={inProgress} nonTech={closed} />
+        <Contact />
+      </Container>
+    </>
   )
 }
 

@@ -2,9 +2,11 @@
 import React, { useCallback, useEffect, useState } from "react"
 import DesktopNav from "./components/navbar/DesktopNav"
 import MobileNav from "./components/navbar/MobileNav"
+import { useScrollableStore } from "./service/Store"
 
 const NavBar = () => {
   const [windowWidth, setWindowWidth] = useState<number>(0)
+  const isInScrollable = useScrollableStore((state) => state.isInScrollable)
 
   const updateWindowValue = useCallback(() => {
     setWindowWidth(window.innerWidth)
@@ -19,8 +21,23 @@ const NavBar = () => {
     }
   }, [updateWindowValue])
 
+  // Don't render anything until windowWidth is measured
+
   return (
-    <nav className="fixed top-0 left-0 z-10 right-0 bg-opacity-90 bg-gradient-to-t from-primary-50 to-[#D1F0FA] text-[#1D3E56] border">
+    <nav
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 10,
+        background: isInScrollable
+          ? "var(--scrollable-background-color)"
+          : "var(--background-color)",
+        backdropFilter: "blur(10px)",
+        transition: "background 0.3s ease-in-out",
+      }}
+    >
       {windowWidth > 768 ? <DesktopNav /> : <MobileNav />}
     </nav>
   )
