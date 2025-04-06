@@ -2,8 +2,9 @@ import prisma from "@/prisma/client"
 import { Avatar, Card, Flex, Heading, Table } from "@radix-ui/themes"
 import { create } from "domain"
 import React, { CSSProperties } from "react"
-import { IssueStatusBadge, Link } from "./components"
+import { IssueStatusBadge } from "./components"
 import { xTheme } from "./service/ThemeService"
+import Link from "next/link"
 
 const LatestBlogs = async () => {
   const blogs = await prisma.issue.findMany({
@@ -26,7 +27,8 @@ const LatestBlogs = async () => {
               <Table.Cell style={xTheme.innerCellBorder}>
                 <Flex direction="column" align="start" gap="2">
                   <Link
-                    overrideStyle={xTheme.latestBlog_table_text}
+                    className="hover:underline"
+                    style={xTheme.latestBlog_table_text}
                     href={`/blogs/${blog.id}`}
                   >
                     {blog.title}
