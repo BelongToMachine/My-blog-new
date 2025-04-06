@@ -40,7 +40,7 @@ const Hero = () => {
         >
           <div>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-4 text-yellow-500">
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-600">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-600 flicker">
                 {`Heya I'm `}
               </span>
               <TypeAnimation

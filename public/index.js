@@ -20,7 +20,7 @@ const COLORS_JIE_BLOG_THEME = {
     border: "#ffffff",
     cardBackground: "#182939",
     chartText: "#ffffff",
-    link: "#5FC4E3",
+    link: "#d0ecf2",
     tableHeader: "#0d2d3a",
     tableText: "#d0ecf2",
     tableGeneral: "#123847",
