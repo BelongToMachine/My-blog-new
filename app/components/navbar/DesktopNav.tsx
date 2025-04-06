@@ -10,6 +10,7 @@ import { AnimatePresence, motion } from "framer-motion"
 import DisappearingText from "../DisappearText"
 import { LuSearch } from "react-icons/lu"
 import { PiSunDim } from "react-icons/pi"
+import { GoMoon } from "react-icons/go"
 import { colorMode, ThemeContext } from "@/app/context/DarkModeContext"
 
 interface Link {
@@ -43,20 +44,29 @@ const DesktopNav = () => {
         <NavLinks colorMode={colorMode} />
       </div>
       <div className="flex space-x-6 items-center pr-6">
-        {colorMode}
-        <LuSearch
+        {/* <LuSearch
           size={26}
           style={{
             color: "var(--text-color)",
           }}
-        />
-        <PiSunDim
-          size={32}
-          onClick={handleSunClick}
-          style={{
-            color: "var(--text-color)",
-          }}
-        />
+        /> */}
+        {colorMode === "light" ? (
+          <PiSunDim
+            size={32}
+            onClick={handleSunClick}
+            style={{
+              color: "var(--text-color)",
+            }}
+          />
+        ) : (
+          <GoMoon
+            size={26}
+            onClick={handleSunClick}
+            style={{
+              color: "var(--text-color)",
+            }}
+          />
+        )}
       </div>
     </div>
   )
