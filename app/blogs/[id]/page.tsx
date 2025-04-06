@@ -29,11 +29,7 @@ const IssueDetailPage = async ({ params }: Props) => {
   if (!issue) notFound()
 
   return (
-    <Container
-      style={{
-        background: style.background,
-      }}
-    >
+    <Container>
       <Grid columns={{ initial: "1", sm: "5" }} gap="5">
         <Box className="md:col-span-5">
           <IssueDetails issue={issue} />

@@ -8,6 +8,7 @@ export interface PostCssProperties extends CSSProperties {
   tableHeader: string
   tableGeneral: string
   tableText: string
+  buttonHover: string
 }
 
 const style: PostCssProperties = {
@@ -21,6 +22,7 @@ const style: PostCssProperties = {
   tableHeader: "var(--table-header-color)",
   tableGeneral: "var(--table-general-color)",
   tableText: "var(--table-text-color)",
+  buttonHover: "var(--button-hover-color)",
 }
 
 export const xTheme: Record<string, CSSProperties> = {
@@ -61,6 +63,14 @@ export const xTheme: Record<string, CSSProperties> = {
   /* table body */
   blogTableBody: { background: style.tableGeneral, color: style.tableText },
   /*--------------------/blogs/:id-------------------*/
+  /* like button */
+  likeButton: {
+    border: `1px solid ${style.borderColor}`,
+    color: style.color,
+  },
+  likeButtonHover: {
+    background: style.buttonHover,
+  },
 }
 
 export default style

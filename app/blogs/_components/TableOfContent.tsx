@@ -4,7 +4,7 @@ import { Heading } from "@/app/service/BlogParser"
 
 const TableOfContent = ({ headings }: { headings: Heading[] }) => (
   <ScrollArea.Root
-    className="overflow-hidden rounded bg-white shadow-blackA4"
+    className="overflow-hidden rounded bg-white shadow-blackA4 border"
     style={{
       maxHeight: "60vh",
       overflow: "auto",
