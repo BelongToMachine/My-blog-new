@@ -2,6 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'flickering';
+  src: url('/fonts/allura/allura-regular-webfont.woff2') format('woff2'),
+       url('/fonts/allura/allura-regular-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* @font-face {
+  font-family: 'test';
+  src: url('/fonts/YourFont.woff2') format('woff2'),
+       url('/fonts/YourFont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+} */
+
+body {
+  font-family: 'MyCustomFont', sans-serif;
+}
+
 :root {
   --foreground-rgb: 0, 0, 0;
 }
@@ -46,4 +68,8 @@ ul li {
 
 .arrowCollapsible {
   cursor: pointer;
+}
+
+.flicker {
+  font-family: 'flickering', sans-serif;
 }

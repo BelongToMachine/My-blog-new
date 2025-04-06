@@ -10,7 +10,6 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import CursorManager from "./CursorManager"
 import "@pigment-css/react/styles.css"
 import { ThemeProvider } from "./context/DarkModeContext"
-import Script from "next/script"
 import { xTheme } from "./service/ThemeService"
 
 // const inter = Inter({ subsets: ["latin"] });

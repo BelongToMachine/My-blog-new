@@ -1,23 +1,19 @@
 import React from "react"
 import NextLink from "next/link"
 import { Link as RadixLink } from "@radix-ui/themes"
-import style from "../service/ThemeService"
+import style, { xTheme } from "../service/ThemeService"
+import { CSSProperties } from "styled-components"
 
 interface Props {
   href: string
   children: string
+  overrideStyle?: CSSProperties
 }
 
-const Link = ({ href, children }: Props) => {
+const Link = ({ href, children, overrideStyle }: Props) => {
   return (
     <NextLink href={href} passHref legacyBehavior>
-      <RadixLink
-        style={{
-          color: style.link,
-        }}
-      >
-        {children}
-      </RadixLink>
+      <RadixLink style={overrideStyle}>{children}</RadixLink>
     </NextLink>
   )
 }

@@ -25,7 +25,12 @@ const LatestBlogs = async () => {
             <Table.Row key={blog.id}>
               <Table.Cell style={xTheme.innerCellBorder}>
                 <Flex direction="column" align="start" gap="2">
-                  <Link href={`/blogs/${blog.id}`}>{blog.title}</Link>
+                  <Link
+                    overrideStyle={xTheme.latestBlog_table_text}
+                    href={`/blogs/${blog.id}`}
+                  >
+                    {blog.title}
+                  </Link>
                   <IssueStatusBadge status={blog.status} />
                 </Flex>
                 {blog.assignedToUser && (

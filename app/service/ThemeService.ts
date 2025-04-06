@@ -28,6 +28,10 @@ export const xTheme: Record<string, CSSProperties> = {
   layoutBackground: {
     background: style.background,
   },
+  /* link element */
+  linkColor: {
+    color: style.link,
+  },
   /*---------------------navbar----------------------*/
   iconColor: { color: style.color },
   /*-----------------------/-------------------------*/
@@ -39,6 +43,10 @@ export const xTheme: Record<string, CSSProperties> = {
   card: {
     ...style,
     background: style.cardBackground,
+  },
+  /* latest blogs table inner text color */
+  latestBlog_table_text: {
+    color: style.tableText,
   },
   /*---------------------/blogs----------------------*/
   /* homepage background */
