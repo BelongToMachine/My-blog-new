@@ -7,6 +7,9 @@ import {
   useVirtualCursorStore,
 } from "@/app/service/Store"
 
+const WIND_SPEED = 7
+const CURSOR_FLOW_SPEED = 10
+
 const Wind = () => {
   const isMagicCursor = useDefaultCursorStore((state) => state.isMagicCursor)
   const setCursorPosition = useVirtualCursorStore(
@@ -40,48 +43,25 @@ const Wind = () => {
   }, [])
 
   useEffect(() => {
-    let animationFrameId: number
-    let prevTime: number | undefined
-
-    const animationFrameStep = (currTime: number) => {
-      if (!prevTime) {
-        prevTime = currTime
-      }
-
-      const TIME_DELTA_FOR_FRESH_60 = 16.67
-
-      const timeDelta = Math.min(
-        TIME_DELTA_FOR_FRESH_60,
-        Math.max(10, currTime - prevTime)
-      )
-
-      prevTime = currTime
-
-      setWindOffsetX((prev) => prev - 0.6 * timeDelta)
+    const intervalId = setInterval(() => {
+      setWindOffsetX((prev) => prev - 0.6 * WIND_SPEED)
 
       if (isMagicCursor && isOverlapping) {
         setCursorPosition((prev) => ({
-          x: Math.max(0, prev.x - 0.6 * timeDelta),
+          x: Math.max(0, prev.x - 0.6 * CURSOR_FLOW_SPEED),
           y: prev.y,
         }))
       }
+    }, 16.67)
 
-      animationFrameId = window.requestAnimationFrame(animationFrameStep)
-    }
-
-    animationFrameId = window.requestAnimationFrame(animationFrameStep)
-
-    return () => {
-      if (animationFrameId) {
-        window.cancelAnimationFrame(animationFrameId)
-      }
-    }
-  })
+    // Cleanup interval on unmount
+    return () => clearInterval(intervalId)
+  }, [isMagicCursor, isOverlapping, setCursorPosition])
 
   return (
     <Flex
       ref={windRef}
-      className="space-x-4 wind w-full max-w-sm rounded-lg p-4 mt-6"
+      className="wind w-[90%] max-w-sm mt-6"
       align="center"
       style={{ backgroundPositionX: `${windOffsetX}px` }}
     ></Flex>
