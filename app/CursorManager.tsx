@@ -48,7 +48,7 @@ const CursorManager = () => {
 
   return (
     <Box ref={cursorRef} style={virtualCursorStyles}>
-      {" "}
+      {""}
     </Box>
   )
 }

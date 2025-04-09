@@ -10,29 +10,35 @@ interface Props {
 
 const JButton = ({ children, onClick, disabled, attri }: Props) => {
   return (
-    <button
+    <div
       style={{
         padding: "0.5rem 1.6rem",
         borderRadius: "12px",
         backgroundColor: "transparent",
         fontSize: "0.8rem",
         transition: "background-color 0.2s",
+        cursor: "pointer",
         ...xTheme.likeButton,
         ...attri,
       }}
-      disabled={disabled}
-      onClick={onClick}
+      onClick={(e) => {
+        if (!disabled && onClick) {
+          onClick(e as unknown as React.MouseEvent<HTMLButtonElement>)
+        }
+      }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.backgroundColor = xTheme.likeButtonHover[
-          "background"
-        ] as string
+        if (!disabled) {
+          e.currentTarget.style.backgroundColor = xTheme.likeButtonHover[
+            "background"
+          ] as string
+        }
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.backgroundColor = "transparent"
       }}
     >
       {children}
-    </button>
+    </div>
   )
 }
 
