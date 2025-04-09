@@ -175,7 +175,7 @@ const LikeDislike = ({ issue }: { issue: Issue }) => {
             right: "7.5rem",
           }}
         >
-          {`Dislikes(0)`}
+          Dislikes(0)
         </JButton>
         <Wind />
       </HoverWrapper>
