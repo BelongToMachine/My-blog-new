@@ -58,6 +58,7 @@ const HoverWrapper = ({ children }: { children: React.ReactNode }) => {
         alignItems: "center",
         justifyContent: "center",
         flexGrow: "1",
+        paddingTop: "1rem",
       }}
     >
       {children}

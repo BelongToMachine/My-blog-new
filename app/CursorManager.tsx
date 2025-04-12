@@ -14,11 +14,11 @@ const CursorManager = () => {
   const cursorRef = useRef<HTMLDivElement>(null)
 
   const virtualCursorStyles: React.CSSProperties = {
+    backgroundImage: `url('/images/cursor.png')`,
     position: "fixed",
     zIndex: 100,
-    width: "23px",
-    height: "23px",
-    backgroundColor: "red",
+    width: "32px",
+    height: "32px",
     borderRadius: "50%",
     backgroundSize: "contain",
     willChange: "transform",
