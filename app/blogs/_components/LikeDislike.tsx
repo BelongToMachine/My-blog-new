@@ -155,19 +155,19 @@ const LikeDislike = ({ issue }: { issue: Issue }) => {
         )}
       </AnimatePresence>
 
-      <JButton
-        onClick={handleUpdateLikes}
-        disabled={isLoading}
-        attri={{
-          width: "100px",
-          position: "relative",
-          right: "0.5rem",
-        }}
-      >
-        {isLoading ? `Liking...` : `Likes (${clientLikes})`}
-      </JButton>
-
       <HoverWrapper>
+        <JButton
+          onClick={handleUpdateLikes}
+          disabled={isLoading}
+          attri={{
+            width: "100px",
+            position: "relative",
+            right: "0.5rem",
+          }}
+        >
+          {isLoading ? `Liking...` : `Likes (${clientLikes})`}
+        </JButton>
+
         <JButton
           attri={{
             width: "120px",
@@ -178,9 +178,8 @@ const LikeDislike = ({ issue }: { issue: Issue }) => {
           Dislikes(0)
         </JButton>
         <Wind />
+        <Image src={fan} alt="a fan" height={130} />
       </HoverWrapper>
-
-      <Image src={fan} alt="a fan" height={130} />
     </Flex>
   )
 }

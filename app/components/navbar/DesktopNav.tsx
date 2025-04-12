@@ -134,7 +134,7 @@ const NavLinks = ({ colorMode }: { colorMode: colorMode }) => {
         return {
           opacity: 0,
           transition: {
-            duration: 0.5,
+            duration: 0.15,
             delay: (custom.textLength - custom.index - 1) * 0.05,
           },
         }

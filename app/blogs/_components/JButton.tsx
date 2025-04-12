@@ -17,7 +17,7 @@ const JButton = ({ children, onClick, disabled, attri }: Props) => {
         backgroundColor: "transparent",
         fontSize: "0.8rem",
         transition: "background-color 0.2s",
-        cursor: "pointer",
+        cursor: "none",
         ...xTheme.likeButton,
         ...attri,
       }}

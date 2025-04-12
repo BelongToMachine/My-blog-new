@@ -11,6 +11,7 @@ import { Container } from "@radix-ui/themes"
 import { ThemeContext } from "@/app/context/DarkModeContext"
 import style from "@/app/service/ThemeService"
 import useIsInScrollable from "@/app/hooks/useIsInScrollable"
+import { useTheme } from "@/app/hooks/useTheme"
 
 interface Props {
   children: ReactNode
@@ -38,13 +39,9 @@ const DynamicBezierCurve = ({ children }: Props) => {
   const BACKGROUND_COLOR = style.background
   const SCROLLABLE_COLOR = style.scrollable
 
-  const theme = useContext(ThemeContext)
+  const theme = useTheme()
 
-  if (!theme) {
-    throw new Error("ThemeContext must be used within a ThemeProvider")
-  }
-
-  const SCROLLABLE_HEIGHT_IN_VH = 110
+  const SCROLLABLE_HEIGHT_IN_VH = 100
   {
     /* 
   ADJUSTED_SCROLL_COEFFICIENT: assoicate with the curve flaten speed, affect this by
