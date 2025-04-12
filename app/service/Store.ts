@@ -14,12 +14,16 @@ interface VirtualCursorStore {
     | undefined
   cursorRect: DOMRect | null
   isOverlapping: boolean
+  isOverlappingMinusOffset: boolean
   updateCursorPosition: (
     updateFn: (prev: { x: number; y: number }) => { x: number; y: number }
   ) => void
   setCursorPosition: (userInputPosition: { x: number; y: number }) => void
   setCursorRect: (cursorReact: DOMRect | null) => void
-  setIsOverlapping: (value: boolean) => void
+  setIsOverlapping: (
+    isOverlapping: boolean,
+    isOverlappingMinusOffset: boolean
+  ) => void
 }
 
 interface ScrollableStore {
@@ -42,6 +46,8 @@ export const useVirtualCursorStore = create<VirtualCursorStore>((set) => ({
 
   isOverlapping: false,
 
+  isOverlappingMinusOffset: false,
+
   updateCursorPosition: (updateFn) => {
     set((state) => {
       const currentPosition = state.position ?? { x: 0, y: 0 }
@@ -61,7 +67,11 @@ export const useVirtualCursorStore = create<VirtualCursorStore>((set) => ({
     } else console.warn("Invalid DOMRect passed to setCursorRect")
   },
 
-  setIsOverlapping: (value: boolean) => set({ isOverlapping: value }),
+  setIsOverlapping: (isOverlapping, isOverlappingMinusOffset) =>
+    set({
+      isOverlapping,
+      isOverlappingMinusOffset,
+    }),
 }))
 
 export const useScrollableStore = create<ScrollableStore>((set) => ({

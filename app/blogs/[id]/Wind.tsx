@@ -19,7 +19,9 @@ const Wind = () => {
   const updateCursorPosition = useVirtualCursorStore(
     (state) => state.updateCursorPosition
   )
-  const isOverlapping = useVirtualCursorStore((state) => state.isOverlapping)
+  const isOverlappingMinusOffset = useVirtualCursorStore(
+    (state) => state.isOverlappingMinusOffset
+  )
   const setIsOverlapping = useVirtualCursorStore(
     (state) => state.setIsOverlapping
   )
@@ -32,13 +34,19 @@ const Wind = () => {
     if (windRef.current && cursorRect) {
       const windRect = windRef.current.getBoundingClientRect()
 
-      const isOverlapping =
-        windRect.left + WIND_BOUNDARY_X_OFFSET < cursorRect.right &&
+      const baseOverlapping =
         windRect.right > cursorRect.left &&
         windRect.top < cursorRect.bottom &&
         windRect.bottom > cursorRect.top
 
-      setIsOverlapping(isOverlapping)
+      const minusOffsetOverlapping =
+        windRect.left + WIND_BOUNDARY_X_OFFSET < cursorRect.right &&
+        baseOverlapping
+
+      const generalOverlapping =
+        windRect.left < cursorRect.right && baseOverlapping
+
+      setIsOverlapping(generalOverlapping, minusOffsetOverlapping)
     }
   }
 
@@ -50,7 +58,7 @@ const Wind = () => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       setWindOffsetX((prev) => prev - 0.6 * WIND_SPEED)
-      if (isMagicCursor && isOverlapping) {
+      if (isMagicCursor && isOverlappingMinusOffset) {
         updateCursorPosition((prev) => ({
           x: Math.max(0, prev.x - 0.6 * CURSOR_FLOW_SPEED),
           y: prev.y,
@@ -59,7 +67,7 @@ const Wind = () => {
     }, REFRERSH_RATO)
 
     return () => clearInterval(intervalId)
-  }, [isMagicCursor, isOverlapping, updateCursorPosition])
+  }, [isMagicCursor, isOverlappingMinusOffset, updateCursorPosition])
 
   return (
     <Flex
