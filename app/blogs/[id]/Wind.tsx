@@ -70,12 +70,15 @@ const Wind = () => {
   }, [isMagicCursor, isOverlappingMinusOffset, updateCursorPosition])
 
   return (
-    <Flex
+    <div
       ref={windRef}
-      className="wind w-[90%] max-w-sm mt-6"
-      align="center"
-      style={{ backgroundPositionX: `${windOffsetX}px` }}
-    ></Flex>
+      className="wind flex-grow-1 flex-1 w-full mt-6"
+      style={{
+        backgroundPositionX: `${windOffsetX}px`,
+        position: "relative",
+        height: "100%",
+      }}
+    ></div>
   )
 }
 

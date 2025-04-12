@@ -17,17 +17,16 @@ const NavigationBar = ({
   headings,
 }: Props) => {
   return (
-    <Box
-      className="w-full max-w-sm rounded-lg mt-6"
+    <div
+      className="w-full max-w-sm mt-6"
       style={{
         ...tocPosition,
-        width: "100%",
         height: "85vh",
       }}
     >
       <TableOfContent headings={headings} />
       <LikeDislike issue={issue} />
-    </Box>
+    </div>
   )
 }
 
