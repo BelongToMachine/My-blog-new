@@ -12,12 +12,17 @@ const JButton = ({ children, onClick, disabled, attri }: Props) => {
   return (
     <div
       style={{
-        padding: "0.5rem 1.6rem",
+        padding: "0.5rem 0.5rem",
         borderRadius: "12px",
         backgroundColor: "transparent",
         fontSize: "0.8rem",
         transition: "background-color 0.2s",
         cursor: "none",
+        textAlign: "center",
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        width: "100px",
         ...xTheme.likeButton,
         ...attri,
       }}

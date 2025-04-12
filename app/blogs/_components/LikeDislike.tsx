@@ -139,7 +139,7 @@ const LikeDislike = ({ issue }: { issue: Issue }) => {
   }
 
   return (
-    <Flex className="items-center absolute bottom-0 w-full">
+    <div className="absolute bottom-0 w-full flex">
       <AnimatePresence>
         {exceedDialog && (
           <motion.div
@@ -160,7 +160,7 @@ const LikeDislike = ({ issue }: { issue: Issue }) => {
           onClick={handleUpdateLikes}
           disabled={isLoading}
           attri={{
-            width: "100px",
+            width: "7.5rem",
             position: "relative",
             right: "0.5rem",
           }}
@@ -170,7 +170,7 @@ const LikeDislike = ({ issue }: { issue: Issue }) => {
 
         <JButton
           attri={{
-            width: "120px",
+            width: "7.5rem",
             position: "absolute",
             right: "7.5rem",
           }}
@@ -180,7 +180,7 @@ const LikeDislike = ({ issue }: { issue: Issue }) => {
         <Wind />
         <Image src={fan} alt="a fan" height={130} />
       </HoverWrapper>
-    </Flex>
+    </div>
   )
 }
 
