@@ -1,15 +1,15 @@
-import { JSX, useEffect, useRef, useState } from "react"
+import { JSX, useEffect, useState } from "react"
 import { highlight, ShikiProp } from "./shared"
-import React from "react"
 
 export const ClientComponent = ({
   children,
   lang,
-  initialTheme = "github-dark",
-  colorMode = "dark",
+  initialTheme,
+  colorMode,
 }: ShikiProp & { initialTheme?: string; colorMode: string }) => {
   const [nodes, setNodes] = useState<JSX.Element>()
-  const [theme, setTheme] = useState(initialTheme)
+  const [theme, setTheme] = useState("")
+  const [isThemeSet, setIsThemeSet] = useState(false)
 
   useEffect(() => {
     if (colorMode === "dark") {
@@ -17,11 +17,14 @@ export const ClientComponent = ({
     } else {
       setTheme("vitesse-light")
     }
+    setIsThemeSet(true)
   }, [colorMode])
 
   useEffect(() => {
-    void highlight({ children, lang, theme }).then(setNodes)
-  }, [theme])
+    if (isThemeSet) {
+      void highlight({ children, lang, theme }).then(setNodes)
+    }
+  }, [children, lang, theme, isThemeSet])
 
   return nodes
 }
