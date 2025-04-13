@@ -4,11 +4,11 @@ import { highlight, ShikiProp } from "./shared"
 export const ClientComponent = ({
   children,
   lang,
-  initialTheme,
+  initialTheme = "vitesse-light",
   colorMode,
 }: ShikiProp & { initialTheme?: string; colorMode: string }) => {
   const [nodes, setNodes] = useState<JSX.Element>()
-  const [theme, setTheme] = useState("")
+  const [theme, setTheme] = useState(initialTheme)
   const [isThemeSet, setIsThemeSet] = useState(false)
 
   useEffect(() => {

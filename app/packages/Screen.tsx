@@ -1,17 +1,16 @@
-import React from "react";
-import { ClientComponent } from "./ClientComponent";
-import styled from "styled-components";
+import React from "react"
+import { ClientComponent } from "./ClientComponent"
+import styled from "styled-components"
 
 interface Props {
-  colorMode: string;
-  code: string;
-  onMouseEnter?: () => void;
+  colorMode: string
+  code: string
 }
 
 const Container = styled.div`
   overflow: auto;
   border-radius: 16px;
-`;
+`
 
 const MacOSTaskbar = styled.div<{ colorMode: string }>`
   display: flex;
@@ -20,7 +19,7 @@ const MacOSTaskbar = styled.div<{ colorMode: string }>`
   padding: 8px 12px;
   background: ${(props) =>
     props.colorMode === "dark" ? "#2d2d2d" : "#f0f0f0"};
-`;
+`
 
 const Dot = styled.div<{ color: string }>`
   width: 12px;
@@ -28,11 +27,11 @@ const Dot = styled.div<{ color: string }>`
   margin-right: 8px;
   background: ${(props) => props.color};
   border-radius: 50%;
-`;
+`
 
-export const CodeBlocker = ({ colorMode, code, onMouseEnter }: Props) => {
+export const CodeBlocker = ({ colorMode, code }: Props) => {
   return (
-    <Container onMouseEnter={onMouseEnter}>
+    <Container>
       <MacOSTaskbar colorMode={colorMode}>
         <Dot color="#ff5f57" />
         <Dot color="#ffbd2e" />
@@ -42,5 +41,5 @@ export const CodeBlocker = ({ colorMode, code, onMouseEnter }: Props) => {
         {code}
       </ClientComponent>
     </Container>
-  );
-};
+  )
+}
