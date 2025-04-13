@@ -1,8 +1,11 @@
 "use client"
-import { Card } from "@radix-ui/themes"
-import React, { CSSProperties } from "react"
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
-import style from "./service/ThemeService"
+import dynamic from "next/dynamic"
+import React from "react"
+
+// 动态导入图表组件（SSR 禁用）
+const Chart = dynamic(() => import("@/app/components/ChartInner"), {
+  ssr: false,
+})
 
 interface Props {
   open: number
@@ -10,28 +13,8 @@ interface Props {
   closed: number
 }
 
-const BlogChart = ({ open, inProgress, closed }: Props) => {
-  const data = [
-    { label: "Web开发", value: open },
-    { label: "科技类", value: inProgress },
-    { label: "非技术类", value: closed },
-  ]
-
-  return (
-    <Card style={{ ...style, background: style.cardBackground }}>
-      <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={data}>
-          <XAxis dataKey="label" tick={{ fill: style.chartText }} />
-          <YAxis tick={{ fill: style.chartText }} />
-          <Bar
-            dataKey="value"
-            barSize={60}
-            style={{ fill: "var(--accent-9)" }}
-          />
-        </BarChart>
-      </ResponsiveContainer>
-    </Card>
-  )
+const BlogChart = (props: Props) => {
+  return <Chart {...props} />
 }
 
 export default BlogChart
