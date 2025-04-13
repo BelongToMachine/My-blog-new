@@ -20,13 +20,23 @@ const BlogChart = ({ open, inProgress, closed }: Props) => {
   return (
     <Card style={{ ...style, background: style.cardBackground }}>
       <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={data}>
-          <XAxis dataKey="label" tick={{ fill: style.chartText }} />
-          <YAxis tick={{ fill: style.chartText }} />
+        <BarChart
+          data={data}
+          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+        >
+          <XAxis
+            dataKey="label"
+            tick={{ fill: style.chartText || "#666" }}
+            axisLine={{ stroke: "#666" }}
+          />
+          <YAxis
+            tick={{ fill: style.chartText || "#666" }}
+            axisLine={{ stroke: "#666" }}
+          />
           <Bar
             dataKey="value"
             barSize={60}
-            style={{ fill: "var(--accent-9)" }}
+            fill={style.accentColor || "#3b82f6"}
           />
         </BarChart>
       </ResponsiveContainer>
