@@ -1,6 +1,6 @@
 "use client"
 import { Card } from "@radix-ui/themes"
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
 import style from "@/app/service/ThemeService"
 
@@ -11,11 +11,21 @@ interface Props {
 }
 
 const BlogChart = ({ open, inProgress, closed }: Props) => {
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
   const data = [
     { label: "Web开发", value: open },
     { label: "科技类", value: inProgress },
     { label: "非技术类", value: closed },
   ]
+
+  if (!isMounted) {
+    return null
+  }
 
   return (
     <Card style={{ ...style, background: style.cardBackground }}>
