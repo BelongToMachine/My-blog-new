@@ -9,6 +9,7 @@ export interface PostCssProperties extends CSSProperties {
   tableGeneral: string
   tableText: string
   buttonHover: string
+  accentColor: string
 }
 
 const style: PostCssProperties = {
@@ -23,6 +24,7 @@ const style: PostCssProperties = {
   tableGeneral: "var(--table-general-color)",
   tableText: "var(--table-text-color)",
   buttonHover: "var(--button-hover-color)",
+  accentColor: "var(--accent-9)",
 }
 
 export const xTheme: Record<string, CSSProperties> = {
