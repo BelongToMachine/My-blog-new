@@ -73,6 +73,13 @@ export const xTheme: Record<string, CSSProperties> = {
   likeButtonHover: {
     background: style.buttonHover,
   },
+  /*----------------------chatbot---------------------*/
+  chatbotText: {
+    color: style.color,
+  },
+  chatbotBackground: {
+    background: style.scrollable,
+  },
 }
 
 export default style

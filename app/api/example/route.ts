@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import OpenAI from "openai"
+import prisma from "@/prisma/client"
 
 const openai = new OpenAI({
   apiKey: process.env.NEXT_PUBLIC_AI_KEY!,
@@ -25,7 +26,19 @@ export async function POST(request: Request) {
       ],
     })
 
-    return NextResponse.json(response.choices[0].message.content)
+    const dialogContent = response.choices[0]?.message?.content
+
+    if (dialogContent) {
+      // Save the dialog to the database
+      await prisma.dialog.create({
+        data: {
+          title: "Generated Dialog", // You can customize the title
+          content: dialogContent,
+        },
+      })
+    }
+
+    return NextResponse.json(dialogContent ?? "No content generated")
   } catch (error) {
     console.error(error)
     return NextResponse.json(
