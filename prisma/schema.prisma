@@ -97,4 +97,5 @@ model Dialog {
   updatedAt DateTime @updatedAt
   title     String   @db.VarChar(255)
   content   String   @db.Text
+  favorite  Boolean  @default(false)
 }

@@ -11,13 +11,19 @@ const Examples = () => {
   const handleSubmit = async () => {
     try {
       setIsLoading(true)
-      const response = await fetch("/api/example", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ content: inputCode }),
-      })
+      // const response = await fetch("/api/example", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify({ content: inputCode }),
+      // })
+
+      const base64 = btoa(JSON.stringify({ content: inputCode }))
+
+      const response = await fetch(
+        `/api/example?q=${encodeURIComponent(base64)}`
+      )
 
       if (response.ok) {
         const data = await response.json()
