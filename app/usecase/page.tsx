@@ -8,6 +8,8 @@ const ImageUploadPage = () => {
   const [prompt, setPrompt] = useState("")
   const [response, setResponse] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [password, setPassword] = useState("")
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -52,32 +54,62 @@ const ImageUploadPage = () => {
   return (
     <div style={{ padding: "2rem" }}>
       <h1>Upload Image + Prompt</h1>
-      <form
-        onSubmit={handleSubmit}
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "1rem",
-          maxWidth: "400px",
-        }}
-      >
-        <input type="file" accept="image/*" onChange={handleFileChange} />
-        <input
-          type="text"
-          value={prompt}
-          onChange={handlePromptChange}
-          placeholder="Enter your prompt"
-          style={{ padding: "0.5rem" }}
-        />
-        <button
-          type="submit"
-          style={{ padding: "0.5rem" }}
-          disabled={isLoading}
+      {!isAuthenticated ? (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "1rem",
+            maxWidth: "400px",
+          }}
         >
-          {isLoading ? "Loading..." : "Submit"}
-        </button>
-      </form>
-
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Enter secret password"
+            style={{ padding: "0.5rem" }}
+          />
+          <button
+            onClick={() => {
+              if (password === process.env.NEXT_PUBLIC_DEV_SECRET_TOKEN) {
+                setIsAuthenticated(true)
+              } else {
+                alert("Invalid password")
+              }
+            }}
+            style={{ padding: "0.5rem" }}
+          >
+            Authenticate
+          </button>
+        </div>
+      ) : (
+        <form
+          onSubmit={handleSubmit}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "1rem",
+            maxWidth: "400px",
+          }}
+        >
+          <input type="file" accept="image/*" onChange={handleFileChange} />
+          <input
+            type="text"
+            value={prompt}
+            onChange={handlePromptChange}
+            placeholder="Enter your prompt"
+            style={{ padding: "0.5rem" }}
+          />
+          <button
+            type="submit"
+            style={{ padding: "0.5rem" }}
+            disabled={isLoading}
+          >
+            {isLoading ? "Loading..." : "Submit"}
+          </button>
+        </form>
+      )}
       <ChatBot input={response} />
     </div>
   )
