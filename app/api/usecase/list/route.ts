@@ -1,7 +1,15 @@
 import { NextResponse } from "next/server"
 import prisma from "@/prisma/client"
 
+const DEV_SECRET_TOKEN = process.env.DEV_SECRET_TOKEN
+
 export async function GET(request: Request) {
+  const authHeader = request.headers.get("authorization")
+
+  if (!authHeader || authHeader !== `Bearer ${DEV_SECRET_TOKEN}`) {
+    return NextResponse.json({ error: "not cotent" }, { status: 400 })
+  }
+
   const { searchParams } = new URL(request.url)
   const page = searchParams.get("page")
 
