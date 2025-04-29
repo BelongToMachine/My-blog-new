@@ -28,6 +28,7 @@ enum Status {
   IN_PROGRESS
   CLOSED
 }
+
 model Account {
   id                String  @id @default(cuid())
   userId            String
@@ -88,4 +89,12 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Dialog {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  title     String   @db.VarChar(255)
+  content   String   @db.Text
 }
