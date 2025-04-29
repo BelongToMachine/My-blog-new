@@ -4,7 +4,9 @@ import prisma from "@/prisma/client"
 const DEV_SECRET_TOKEN = process.env.NEXT_PUBLIC_DEV_SECRET_TOKEN
 
 export async function GET(request: Request) {
-  const authHeader = request.headers.get("authorization")
+  const authHeader =
+    request.headers.get("authorization") ||
+    request.headers.get("x-forwarded-authorization")
 
   if (!authHeader || authHeader !== `Bearer ${DEV_SECRET_TOKEN}`) {
     return NextResponse.json({ error: "not cotent" }, { status: 400 })
