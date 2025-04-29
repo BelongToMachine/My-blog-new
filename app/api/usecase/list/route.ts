@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import prisma from "@/prisma/client"
 
-const DEV_SECRET_TOKEN = process.env.DEV_SECRET_TOKEN
+const DEV_SECRET_TOKEN = process.env.NEXT_PUBLIC_DEV_SECRET_TOKEN
 
 export async function GET(request: Request) {
   const authHeader = request.headers.get("authorization")
