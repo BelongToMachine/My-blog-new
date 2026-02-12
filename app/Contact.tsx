@@ -6,6 +6,10 @@ import { contactSchema, ContactFormErrors } from "./validationSchema"
 import { Box } from "@radix-ui/themes"
 import * as Tooltip from "@radix-ui/react-tooltip"
 import TooltipIcon from "./components/TooltipIcon"
+import { Button } from "./components/ui/button"
+import { Input } from "./components/ui/input"
+import { Textarea } from "./components/ui/textarea"
+import { Card, CardContent } from "./components/ui/card"
 
 const Contact: React.FC = () => {
   const form = useRef<HTMLFormElement>(null)
@@ -60,91 +64,93 @@ const Contact: React.FC = () => {
         <TooltipIcon />
       </Box>
 
-      <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md mt-5">
-        {formStatus && (
-          <div
-            className={`p-4 mb-4 text-sm ${
-              formStatus === "SUCCESS!"
+      <Card className="max-w-lg mx-auto mt-5 shadow-md">
+        <CardContent className="p-6">
+          {formStatus && (
+            <div
+              className={`p-4 mb-4 text-sm ${formStatus === "SUCCESS!"
                 ? "text-green-700 bg-green-100"
                 : "text-red-700 bg-red-100"
-            } rounded-lg`}
-          >
-            {formStatus === "SUCCESS!" ? "您的邮件已送达!" : formStatus}
-          </div>
-        )}
-
-        <form ref={form} onSubmit={sendEmail} className="space-y-6">
-          <div className="space-y-2">
-            <Label.Root
-              htmlFor="name"
-              className="block text-sm font-medium text-gray-700"
+                } rounded-lg`}
             >
-              您的名字
-            </Label.Root>
-            <input
-              type="text"
-              name="user_name"
-              id="name"
-              required
-              className={`block w-full p-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
-                errors.user_name ? "border-red-500" : "border-gray-300"
-              }`}
-            />
-            {errors.user_name && (
-              <p className="text-red-500 text-sm">{errors.user_name}</p>
-            )}
-          </div>
+              {formStatus === "SUCCESS!" ? "您的邮件已送达!" : formStatus}
+            </div>
+          )}
 
-          <div className="space-y-2">
-            <Label.Root
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
-            >
-              您的邮箱
-            </Label.Root>
-            <input
-              type="email"
-              name="user_email"
-              id="email"
-              required
-              className={`block w-full p-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
-                errors.user_email ? "border-red-500" : "border-gray-300"
-              }`}
-            />
-            {errors.user_email && (
-              <p className="text-red-500 text-sm">{errors.user_email}</p>
-            )}
-          </div>
+          <form ref={form} onSubmit={sendEmail} className="space-y-6">
+            <div className="space-y-2">
+              <Label.Root
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700"
+              >
+                您的名字
+              </Label.Root>
+              <Input
+                type="text"
+                name="user_name"
+                id="name"
+                required
+                className={
+                  errors.user_name ? "border-red-500" : "border-gray-300"
+                }
+              />
+              {errors.user_name && (
+                <p className="text-red-500 text-sm">{errors.user_name}</p>
+              )}
+            </div>
 
-          <div className="space-y-2">
-            <Label.Root
-              htmlFor="message"
-              className="block text-sm font-medium text-gray-700"
-            >
-              消息
-            </Label.Root>
-            <textarea
-              name="message"
-              id="message"
-              required
-              className={`block w-full p-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
-                errors.message ? "border-red-500" : "border-gray-300"
-              }`}
-            />
-            {errors.message && (
-              <p className="text-red-500 text-sm">{errors.message}</p>
-            )}
-          </div>
+            <div className="space-y-2">
+              <Label.Root
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
+                您的邮箱
+              </Label.Root>
+              <Input
+                type="email"
+                name="user_email"
+                id="email"
+                required
+                className={
+                  errors.user_email ? "border-red-500" : "border-gray-300"
+                }
+              />
+              {errors.user_email && (
+                <p className="text-red-500 text-sm">{errors.user_email}</p>
+              )}
+            </div>
 
-          <div>
-            <input
-              type="submit"
-              value="Send"
-              className="w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer"
-            />
-          </div>
-        </form>
-      </div>
+            <div className="space-y-2">
+              <Label.Root
+                htmlFor="message"
+                className="block text-sm font-medium text-gray-700"
+              >
+                消息
+              </Label.Root>
+              <Textarea
+                name="message"
+                id="message"
+                required
+                className={
+                  errors.message ? "border-red-500" : "border-gray-300"
+                }
+              />
+              {errors.message && (
+                <p className="text-red-500 text-sm">{errors.message}</p>
+              )}
+            </div>
+
+            <div>
+              <Button
+                type="submit"
+                className="w-full"
+              >
+                Send
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
     </>
   )
 }
