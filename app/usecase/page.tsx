@@ -2,6 +2,9 @@
 
 import React, { useState } from "react"
 import ChatBot from "../components/Chatbot"
+import { Button } from "@/app/components/ui/button"
+import { Input } from "@/app/components/ui/input"
+import { Card, CardContent, CardHeader, CardTitle } from "@/app/components/ui/card"
 
 const ImageUploadPage = () => {
   const [file, setFile] = useState<File | null>(null)
@@ -52,65 +55,57 @@ const ImageUploadPage = () => {
   }
 
   return (
-    <div style={{ padding: "2rem" }}>
-      <h1>Upload Image + Prompt</h1>
-      {!isAuthenticated ? (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "1rem",
-            maxWidth: "400px",
-          }}
-        >
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter secret password"
-            style={{ padding: "0.5rem" }}
-          />
-          <button
-            onClick={() => {
-              if (password === process.env.NEXT_PUBLIC_DEV_SECRET_TOKEN) {
-                setIsAuthenticated(true)
-              } else {
-                alert("Invalid password")
-              }
-            }}
-            style={{ padding: "0.5rem" }}
-          >
-            Authenticate
-          </button>
-        </div>
-      ) : (
-        <form
-          onSubmit={handleSubmit}
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "1rem",
-            maxWidth: "400px",
-          }}
-        >
-          <input type="file" accept="image/*" onChange={handleFileChange} />
-          <input
-            type="text"
-            value={prompt}
-            onChange={handlePromptChange}
-            placeholder="Enter your prompt"
-            style={{ padding: "0.5rem" }}
-          />
-          <button
-            type="submit"
-            style={{ padding: "0.5rem" }}
-            disabled={isLoading}
-          >
-            {isLoading ? "Loading..." : "Submit"}
-          </button>
-        </form>
-      )}
-      <ChatBot input={response} />
+    <div className="container py-8 max-w-2xl">
+      <Card>
+        <CardHeader>
+          <CardTitle>Upload Image + Prompt</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {!isAuthenticated ? (
+            <div className="flex flex-col gap-4 max-w-sm mx-auto">
+              <Input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter secret password"
+              />
+              <Button
+                onClick={() => {
+                  if (password === process.env.NEXT_PUBLIC_DEV_SECRET_TOKEN) {
+                    setIsAuthenticated(true)
+                  } else {
+                    alert("Invalid password")
+                  }
+                }}
+              >
+                Authenticate
+              </Button>
+            </div>
+          ) : (
+            <form
+              onSubmit={handleSubmit}
+              className="flex flex-col gap-4"
+            >
+              <Input type="file" accept="image/*" onChange={handleFileChange} />
+              <Input
+                type="text"
+                value={prompt}
+                onChange={handlePromptChange}
+                placeholder="Enter your prompt"
+              />
+              <Button
+                type="submit"
+                disabled={isLoading}
+              >
+                {isLoading ? "Loading..." : "Submit"}
+              </Button>
+            </form>
+          )}
+        </CardContent>
+      </Card>
+      <div className="mt-8">
+        <ChatBot input={response} />
+      </div>
     </div>
   )
 }

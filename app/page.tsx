@@ -12,6 +12,7 @@ import SummaryHeader from "./SummaryHeader"
 import Contact from "./Contact"
 import DynamicBezierCurve from "./components/navbar/DynamicBezierCurve"
 import PostSummary from "./PostSummary"
+import { getBlogPostList } from "./service/getBlogPostList"
 
 interface Props {
   searchParams: Promise<{ tags: Tag }>
@@ -27,6 +28,8 @@ export default async function Home({ searchParams }: Props) {
   const closed = await prisma.issue.count({
     where: { status: "CLOSED" },
   })
+
+  getBlogPostList()
 
   return (
     <>
