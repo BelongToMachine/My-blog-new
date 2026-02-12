@@ -20,24 +20,78 @@
   font-display: swap;
 } */
 
-body {
-  font-family: 'MyCustomFont', sans-serif;
-}
-
-:root {
-  --foreground-rgb: 0, 0, 0;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
+
+    --primary: 200 100% 31%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 200 88% 88%;
+    --secondary-foreground: 200 100% 31%;
+
+    --muted: 0 0% 95%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 200 88% 88%;
+    --accent-foreground: 200 100% 31%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 200 100% 31%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 197 64% 29%;
+    --foreground: 0 0% 100%;
+
+    --card: 209 41% 16%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 209 41% 16%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 191 58% 88%;
+    --primary-foreground: 209 41% 16%;
+
+    --secondary: 196 63% 39%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 209 41% 16%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 191 58% 88%;
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'MyCustomFont', sans-serif;
+  }
 }
 
 .wind {
