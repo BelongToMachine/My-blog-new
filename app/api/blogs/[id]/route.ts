@@ -1,4 +1,4 @@
-import { patchIssueSchema } from "@/app/validationSchema"
+import { patchBlogSchema } from "@/app/validationSchema"
 import prisma from "@/prisma/client"
 import { AuthOptions, getServerSession } from "next-auth"
 import { NextRequest, NextResponse } from "next/server"
@@ -34,7 +34,7 @@ export async function PATCH(
   if (!session) return NextResponse.json({}, { status: 401 })
 
   const body = await request.json()
-  const validation = patchIssueSchema.safeParse(body)
+  const validation = patchBlogSchema.safeParse(body)
 
   if (!validation.success)
     return NextResponse.json(validation.error.format, { status: 400 })
@@ -49,7 +49,7 @@ export async function PATCH(
       return NextResponse.json({ error: "Invalid User" }, { status: 400 })
   }
 
-  const {id} = await params
+  const { id } = await params
 
   const issue = await prisma.issue.findUnique({
     where: { id: parseInt(id) },
@@ -63,7 +63,7 @@ export async function PATCH(
       { status: 404 }
     )
 
-  const updatedIssue = await prisma.issue.update({
+  const updatedBlog = await prisma.issue.update({
     where: { id: parseInt(id) },
     data: {
       title,
@@ -72,7 +72,7 @@ export async function PATCH(
     },
   })
 
-  return NextResponse.json(updatedIssue)
+  return NextResponse.json(updatedBlog)
 }
 
 export async function DELETE(
@@ -84,19 +84,19 @@ export async function DELETE(
 
   const { id } = await params
 
-  const issue = await prisma.issue.findUnique({
+  const blog = await prisma.issue.findUnique({
     where: { id: parseInt(id) },
   })
-  if (!issue)
+  if (!blog)
     return NextResponse.json(
       {
-        error: "Invalid issue",
+        error: "Blog not found",
       },
       { status: 404 }
     )
 
   await prisma.issue.delete({
-    where: { id: issue.id },
+    where: { id: blog.id },
   })
 
   return NextResponse.json({})

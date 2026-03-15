@@ -1,6 +1,6 @@
 "use client";
 import { Status } from "@prisma/client";
-import { Select } from "@radix-ui/themes";
+import { Select, Theme } from "@radix-ui/themes";
 import React, { use } from "react";
 import {
   ReadonlyURLSearchParams,
@@ -21,23 +21,25 @@ const BlogStatusFilter = () => {
   const searchParams = useSearchParams();
 
   return (
-    <Select.Root
-      defaultValue={searchParams.get("status") || ""}
-      onValueChange={(status) => {
-        initailizeStatus(status);
-        const query: string = buildQuery(status, searchParams);
-        router.push("/blogs" + query);
-      }}
-    >
-      <Select.Trigger placeholder="按博客类型分类" />
-      <Select.Content>
-        {statuses.map((status, index) => (
-          <Select.Item key={index} value={status.value || "unSelected"}>
-            {status.label}
-          </Select.Item>
-        ))}
-      </Select.Content>
-    </Select.Root>
+    <Theme>
+      <Select.Root
+        defaultValue={searchParams.get("status") || ""}
+        onValueChange={(status) => {
+          initailizeStatus(status);
+          const query: string = buildQuery(status, searchParams);
+          router.push("/blogs" + query);
+        }}
+      >
+        <Select.Trigger placeholder="按博客类型分类" />
+        <Select.Content>
+          {statuses.map((status, index) => (
+            <Select.Item key={index} value={status.value || "unSelected"}>
+              {status.label}
+            </Select.Item>
+          ))}
+        </Select.Content>
+      </Select.Root>
+    </Theme>
   );
 };
 

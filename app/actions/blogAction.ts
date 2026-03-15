@@ -45,10 +45,10 @@ export async function toggleLikeFromServer({ blogId, action }: Props) {
   return updatedBlog
 }
 
-export async function fetchBlogLikesFromServer(issueId: number) {
-  const issue = await prisma.issue.findUnique({
-    where: { id: issueId },
+export async function fetchBlogLikesFromServer(blogId: number) {
+  const blog = await prisma.issue.findUnique({
+    where: { id: blogId },
   })
-  if (!issue) throw new Error("Issue not found")
-  return issue.likes
+  if (!blog) throw new Error("Blog not found")
+  return blog.likes
 }
