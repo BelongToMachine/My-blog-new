@@ -8,14 +8,12 @@ interface Props {
 
 export const CodeBlocker = ({ colorMode, code }: Props) => {
   const taskbarBackground =
-    colorMode === "dark"
-      ? "color-mix(in srgb, var(--card-background-color) 88%, black)"
-      : "color-mix(in srgb, var(--card-background-color) 92%, var(--background-color))"
+    colorMode === "dark" ? "#2d2d2d" : "#f0f0f0"
 
   return (
-    <div className="overflow-auto rounded-2xl border" style={{ borderColor: "var(--border-color)" }}>
+    <div className="overflow-auto rounded-2xl">
       <div
-        className="flex h-10 items-center px-4"
+        className="flex h-10 items-center px-3 py-2"
         style={{ background: taskbarBackground }}
       >
         <span
