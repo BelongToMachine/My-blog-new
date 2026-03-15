@@ -1,10 +1,33 @@
 {
   "nav": {
+    "ai": "AI Lab",
     "blogs": "Articles",
     "aboutMe": "About Me",
     "myBlog": "My Blog",
     "linkedin": "LinkedIn",
     "language": "中文"
+  },
+  "ai": {
+    "eyebrow": "AI Playground",
+    "title": "Prompt the portfolio assistant with code or screenshots",
+    "description": "Ask for implementation help, debugging suggestions, or code generated from UI screenshots. This turns the existing AI tooling into a real product surface.",
+    "textMode": "Text prompt",
+    "textModeDescription": "Ask for code generation, refactors, or debugging help directly from a typed prompt.",
+    "imageMode": "Image prompt",
+    "imageModeDescription": "Upload a screenshot and ask the assistant to generate tests, code ideas, or implementation notes from the visual input.",
+    "promptLabel": "Prompt",
+    "textPromptPlaceholder": "Describe the feature, bug, or implementation you want help with...",
+    "imagePromptPlaceholder": "Explain what the screenshot shows and what you want the assistant to generate...",
+    "imageLabel": "Reference image",
+    "imageHelp": "Use a UI screenshot, design fragment, or bug capture.",
+    "textHint": "Text mode uses the assistant directly.",
+    "imageHint": "Image mode combines your screenshot with the prompt.",
+    "submit": "Generate",
+    "loading": "Thinking...",
+    "resultEyebrow": "Assistant output",
+    "resultTitle": "Response",
+    "empty": "Your generated answer will appear here. Start with a concrete request for the best result.",
+    "errorGeneric": "Something went wrong while contacting the assistant."
   },
   "hero": {
     "greeting": "Heya I'm",
@@ -92,6 +115,8 @@
   "meta": {
     "homeTitle": "Jie Liao — Front-End Developer & AI Prompt Engineer",
     "homeDescription": "Portfolio of Jie Liao — a front-end developer specializing in React, Next.js, TypeScript, and AI.",
+    "aiTitle": "AI Lab",
+    "aiDescription": "Interactive AI playground for prompt engineering, code generation, and image-assisted implementation.",
     "blogsTitle": "Blogs List",
     "blogsDescription": "View all of my blogs"
   }

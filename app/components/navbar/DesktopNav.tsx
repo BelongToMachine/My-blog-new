@@ -49,13 +49,18 @@ const NavLinks = ({ colorMode }: { colorMode: colorMode }) => {
   const { id }: { id?: string | null } = useParams()
   const [metaTitle, setMetaTitle] = useState<string>("")
   const [isCollapse, setIsCollapse] = useState<boolean>(false)
+  const isBlogDetailPage = Boolean(
+    id && /^\/blogs\/\d+$/.test(currentPath)
+  )
 
   useEffect(() => {
     const fetchTitle = async () => {
       try {
-        if (id) {
+        if (isBlogDetailPage && id) {
           const res = await axios.get(`/api/blogs/${parseInt(id)}?locale=${locale}`)
           setMetaTitle(res.data.title)
+        } else {
+          setMetaTitle("")
         }
       } catch (error) {
         toast.error(`Error fetching MetaTitle`)
@@ -63,26 +68,24 @@ const NavLinks = ({ colorMode }: { colorMode: colorMode }) => {
     }
 
     fetchTitle()
-  }, [id])
+  }, [id, isBlogDetailPage, locale])
 
   const links = useMemo(() => {
     const baseLinks = [
+      { label: t("ai"), href: "/ai" },
       { label: t("blogs"), href: "/blogs" },
       { label: t("aboutMe"), href: "/" },
     ]
 
-    if (metaTitle) {
-      const insertIndex = 1
-      const metaLabel = {
+    if (isBlogDetailPage && metaTitle) {
+      baseLinks.splice(2, 0, {
         label: metaTitle,
         href: `/blogs/${parseInt(id as string)}`,
-      }
-      baseLinks.splice(insertIndex, 0, metaLabel)
-      return baseLinks
+      })
     }
 
     return baseLinks
-  }, [metaTitle, t, id])
+  }, [isBlogDetailPage, metaTitle, t, id])
 
   const handleArrowButtonClick = () => {
     if (!id) {
@@ -131,7 +134,7 @@ const NavLinks = ({ colorMode }: { colorMode: colorMode }) => {
     <ul className="flex space-x-6 relative top-1">
       <AnimatePresence>
         {links.map((link, index) => {
-          const isArrowExist = Boolean(index === 1 && metaTitle)
+          const isArrowExist = Boolean(index === 2 && isBlogDetailPage && metaTitle)
           return (
             <React.Fragment key={link.href}>
               {isArrowExist && (

@@ -52,7 +52,7 @@ const IssueDetails = ({ issue }: { issue: Issue }) => {
       {/* 
        Flex: Here to control the title and TOC text color with "color" 
       */}
-      <Card className="flex-grow max-w-3xl p-6">
+      <Card ref={mainContentRef} className="flex-grow max-w-3xl p-6">
         <Heading className="text-2xl font-bold">{issue.title}</Heading>
         <Flex className="space-x-4 mt-2 text-gray-600 text-sm" align="center">
           <IssueStatusBadge status={issue?.status} />

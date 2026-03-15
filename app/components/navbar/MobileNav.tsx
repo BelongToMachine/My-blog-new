@@ -32,6 +32,7 @@ export default MobileNav
 const Menu = () => {
   const t = useTranslations("nav")
   const mobileLinks = [
+    { label: t("ai"), href: "/ai", type: "ai" as const },
     { label: t("myBlog"), href: "/blogs", type: "blogs" as const },
     {
       label: t("linkedin"),
@@ -69,8 +70,10 @@ const Menu = () => {
   )
 }
 
-const Icon = ({ type }: { type: "blogs" | "linkedin" }) => {
+const Icon = ({ type }: { type: "ai" | "blogs" | "linkedin" }) => {
   switch (type) {
+    case "ai":
+      return <span className="text-xs font-bold">AI</span>
     case "blogs":
       return <FaBook />
     case "linkedin":

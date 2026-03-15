@@ -9,8 +9,6 @@ const openai = new OpenAI({
 
 export async function POST(request: Request) {
   try {
-    debugger
-
     const contentType = request.headers.get("content-type")
 
     if (contentType?.startsWith("multipart/form-data")) {
@@ -70,7 +68,7 @@ export async function POST(request: Request) {
           {
             role: "system",
             content:
-              "You are a code generator, you will generate code based on the user's request",
+              "You are a practical AI coding assistant. Give clear implementation help, explain tradeoffs briefly, and use fenced code blocks when code is useful.",
           },
           {
             role: "user",
@@ -119,7 +117,7 @@ export async function GET(request: Request) {
         {
           role: "system",
           content:
-            "You are a code generator, you will generate code based on the user's request",
+            "You are a practical AI coding assistant. Give clear implementation help, explain tradeoffs briefly, and use fenced code blocks when code is useful.",
         },
         {
           role: "user",

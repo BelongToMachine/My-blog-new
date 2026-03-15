@@ -1,10 +1,33 @@
 {
   "nav": {
+    "ai": "AI 实验室",
     "blogs": "文章",
     "aboutMe": "关于我",
     "myBlog": "我的博客",
     "linkedin": "LinkedIn",
     "language": "EN"
+  },
+  "ai": {
+    "eyebrow": "AI Playground",
+    "title": "用文字或截图直接调用我的 AI 助手",
+    "description": "你可以输入实现需求、调试问题，或上传界面截图，让这个原本隐藏的 AI 能力真正成为可体验的作品页面。",
+    "textMode": "文本模式",
+    "textModeDescription": "直接输入需求，获取代码生成、重构建议或调试思路。",
+    "imageMode": "图片模式",
+    "imageModeDescription": "上传截图并补充说明，让助手基于视觉内容生成代码、测试或实现建议。",
+    "promptLabel": "提示词",
+    "textPromptPlaceholder": "描述你想实现的功能、遇到的 bug，或者需要生成的代码...",
+    "imagePromptPlaceholder": "说明截图里是什么，以及你希望助手基于它生成什么内容...",
+    "imageLabel": "参考图片",
+    "imageHelp": "可以上传界面截图、设计稿片段或 bug 截图。",
+    "textHint": "文本模式适合直接提需求。",
+    "imageHint": "图片模式会把截图与提示词一起发送。",
+    "submit": "生成内容",
+    "loading": "思考中...",
+    "resultEyebrow": "助手输出",
+    "resultTitle": "响应结果",
+    "empty": "生成结果会显示在这里。尽量描述具体目标，得到的回答会更好。",
+    "errorGeneric": "连接 AI 助手时发生错误。"
   },
   "hero": {
     "greeting": "Heya I'm",
@@ -92,6 +115,8 @@
   "meta": {
     "homeTitle": "廖永杰 — 前端开发工程师 & AI 提示词工程师",
     "homeDescription": "廖永杰（Jie Liao）的作品集，专注于 React、Next.js、TypeScript 和 AI 集成。",
+    "aiTitle": "AI 实验室",
+    "aiDescription": "可真实体验的 AI 页面，支持提示词工程、代码生成与图片辅助输入。",
     "blogsTitle": "博客列表",
     "blogsDescription": "查看我所有的博客文章"
   }
