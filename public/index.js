@@ -1,31 +1,31 @@
 const COLORS_JIE_BLOG_THEME = {
   light: {
     primary: "#ffffff",
-    text: "#000000",
+    text: "#16202b",
     background: "#ffffff",
-    scrollableBackground: "#C5EAFC",
-    border: "#DDDFE6",
+    scrollableBackground: "#eef8fb",
+    border: "#d6e3ea",
     cardBackground: "#ffffff",
-    chartText: "#666666",
-    link: "#00749E",
-    tableHeader: "",
-    tableText: "",
-    tableGeneral: "",
-    buttonHover: "#f2f2f2",
+    chartText: "#587286",
+    link: "#0d7495",
+    tableHeader: "#eef6fa",
+    tableText: "#243746",
+    tableGeneral: "#fbfdfe",
+    buttonHover: "#edf4f7",
   },
   dark: {
-    primary: "#182939",
-    text: "#ffffff",
-    background: "#1A5D78",
-    scrollableBackground: "#2580A2",
-    border: "#ffffff",
-    cardBackground: "#182939",
-    chartText: "#ffffff",
-    link: "#d0ecf2",
-    tableHeader: "#0d2d3a",
-    tableText: "#d0ecf2",
-    tableGeneral: "#123847",
-    buttonHover: "rgba(255,255,255,0.1)",
+    primary: "#0f1722",
+    text: "#e7eef5",
+    background: "#0b1220",
+    scrollableBackground: "#101a2b",
+    border: "#283548",
+    cardBackground: "#111c2d",
+    chartText: "#b5c7d8",
+    link: "#78d3ea",
+    tableHeader: "#142237",
+    tableText: "#d5e3ef",
+    tableGeneral: "#101a2a",
+    buttonHover: "rgba(120, 211, 234, 0.12)",
   },
 }
 
@@ -88,5 +88,8 @@ const initializeTheme = () => {
   const colorMode = getInitialColorMode()
   applyTheme(colorMode)
 }
+
+window.COLORS_JIE_BLOG_THEME = COLORS_JIE_BLOG_THEME
+window.GET_JIE_BLOG_CSS_PROPERTIES = GET_JIE_BLOG_CSS_PROPERTIES
 
 initializeTheme()

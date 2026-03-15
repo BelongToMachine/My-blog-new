@@ -39,4 +39,11 @@ next-env.d.ts
 /public/db/
 
 yarn.lock
+pnpm-lock.yaml
 
+# local agent and research notes
+AGENTS.md
+CLAUDE.md
+agent.md
+doc/
+research/

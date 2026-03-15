@@ -1,29 +1,23 @@
 "use client"
 
-import { IconButton } from "@radix-ui/themes"
 import { PiSunDim } from "react-icons/pi"
 import { GoMoon } from "react-icons/go"
 import { useTheme } from "@/app/hooks/useTheme"
+import classNames from "classnames"
 
-interface ThemeToggleProps {
-  size?: "1" | "2" | "3" | "4"
-}
-
-const ThemeToggle = ({ size = "2" }: ThemeToggleProps) => {
+const ThemeToggle = () => {
   const { colorMode, setColorMode } = useTheme()
   const nextMode = colorMode === "light" ? "dark" : "light"
 
   return (
-    <IconButton
-      variant="ghost"
-      size={size}
-      color="gray"
-      radius="full"
+    <button
+      className={classNames("nav-control", "nav-control-icon")}
       aria-label={`Switch to ${nextMode} mode`}
       onClick={() => setColorMode(nextMode)}
+      type="button"
     >
-      {colorMode === "light" ? <PiSunDim size={20} /> : <GoMoon size={18} />}
-    </IconButton>
+      {colorMode === "light" ? <PiSunDim size={18} /> : <GoMoon size={18} />}
+    </button>
   )
 }
 

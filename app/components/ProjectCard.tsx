@@ -1,47 +1,48 @@
-import { Project } from "@prisma/client";
-import { Card, Flex, Heading, Badge, Text } from "@radix-ui/themes";
-import Link from "next/link";
-import React from "react";
-import projectImage from "@/public/images/project.jpg";
-import { CodeBracketIcon, EyeIcon } from "@heroicons/react/24/outline";
+import { Project } from "@prisma/client"
+import { Text } from "@radix-ui/themes"
+import Link from "next/link"
+import React from "react"
+import projectImage from "@/public/images/project.jpg"
+import { CodeBracketIcon, EyeIcon } from "@heroicons/react/24/outline"
 
 interface Props {
-  project: Project;
+  project: Project
 }
 
 const ProjectCard = ({ project }: Props) => {
   return (
-    <div>
+    <div className="space-y-3">
       <div
-        className="h-52 md:h-72 rounded-xl relative group border-teal-500 border-2"
+        className="group relative h-52 overflow-hidden rounded-2xl border border-[var(--border-color)] bg-[var(--card-background-color)] md:h-72"
         style={{
           backgroundImage: `url(${projectImage.src})`,
           backgroundSize: "cover",
+          backgroundPosition: "center",
         }}
       >
-        <div className="broder rounded-xl overlay items-center justify-center absolute top-0 left-0 w-full h-full bg-[#181818] bg-opacity-0 hidden group-hover:flex group-hover:bg-opacity-80 transition-all duration-500 ">
+        <div className="absolute inset-0 hidden items-center justify-center rounded-2xl bg-[rgba(11,18,32,0.78)] opacity-0 transition-all duration-300 group-hover:flex group-hover:opacity-100 dark:bg-[rgba(7,12,20,0.82)]">
           <Link
             href={"/"}
-            className="h-14 w-14 mr-2 border-2 relative rounded-full border-[#ADB7BE] hover:border-white group/link"
+            className="group/link relative mr-3 flex h-14 w-14 items-center justify-center rounded-full border border-white/25 bg-white/10 text-slate-100 transition-colors hover:border-[var(--chart-link-color)] hover:bg-white/15"
           >
-            <CodeBracketIcon className="h-10 w-10 text-[#ADB7BE] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2  cursor-pointer group-hover/link:text-white" />
+            <CodeBracketIcon className="h-7 w-7 transition-colors group-hover/link:text-[var(--chart-link-color)]" />
           </Link>
           <Link
             href={"/"}
-            className="h-14 w-14 border-2 relative rounded-full border-[#ADB7BE] hover:border-white group/link"
+            className="group/link relative flex h-14 w-14 items-center justify-center rounded-full border border-white/25 bg-white/10 text-slate-100 transition-colors hover:border-[var(--chart-link-color)] hover:bg-white/15"
           >
-            <EyeIcon className="h-10 w-10 text-[#ADB7BE] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2  cursor-pointer group-hover/link:text-white" />
+            <EyeIcon className="h-7 w-7 transition-colors group-hover/link:text-[var(--chart-link-color)]" />
           </Link>
         </div>
       </div>
       <Link href={project.link || ""}>
-        <h5 className="text-xl font-semibold mb-2 text-cyan-600 text-center">
+        <h5 className="mb-2 text-center text-xl font-semibold text-[var(--chart-link-color)] transition-opacity hover:opacity-80">
           {project.title}
         </h5>
       </Link>
-      <Text>{project.content}</Text>
+      <Text className="text-[color:var(--text-color)]/80">{project.content}</Text>
     </div>
-  );
-};
+  )
+}
 
-export default ProjectCard;
+export default ProjectCard

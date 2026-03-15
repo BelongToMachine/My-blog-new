@@ -1,9 +1,27 @@
 "use client"
-import React, { createContext, ReactNode, useState, useEffect } from "react"
+import React, {
+  createContext,
+  ReactNode,
+  useState,
+  useEffect,
+  useRef,
+} from "react"
 import { PostCssProperties } from "../service/ThemeService"
 
 export type colorMode = "light" | "dark"
 const THEME_STORAGE_KEY = "color-mode"
+const THEME_TRANSITION_CLASS = "theme-transition"
+const THEME_TRANSITION_DURATION_MS = 420
+
+const getCssProperties = (value: colorMode) => {
+  if (typeof window.GET_JIE_BLOG_CSS_PROPERTIES === "function") {
+    return window.GET_JIE_BLOG_CSS_PROPERTIES(value)
+  }
+
+  return {
+    "--initial-color-mode": value,
+  }
+}
 
 interface ThemeObject {
   light: PostCssProperties
@@ -27,6 +45,8 @@ export const ThemeContext = createContext<ThemeContextType | undefined>(
 )
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
+  const transitionTimeoutRef = useRef<number | null>(null)
+
   const readColorModeFromDom = (): colorMode => {
     const root = window.document.documentElement
     const datasetValue = root.dataset.colorMode
@@ -44,7 +64,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const applyColorMode = (value: colorMode) => {
-    const properties = window.GET_JIE_BLOG_CSS_PROPERTIES(value)
+    const properties = getCssProperties(value)
     const root = document.documentElement
 
     root.classList.toggle("dark", value === "dark")
@@ -66,12 +86,30 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     rawSetColorMode(readColorModeFromDom())
+
+    return () => {
+      if (transitionTimeoutRef.current !== null) {
+        window.clearTimeout(transitionTimeoutRef.current)
+      }
+    }
   }, [])
 
   const setColorMode = (value: colorMode) => {
+    const root = window.document.documentElement
+
+    if (transitionTimeoutRef.current !== null) {
+      window.clearTimeout(transitionTimeoutRef.current)
+    }
+
+    root.classList.add(THEME_TRANSITION_CLASS)
     rawSetColorMode(value)
     window.localStorage.setItem(THEME_STORAGE_KEY, value)
     applyColorMode(value)
+
+    transitionTimeoutRef.current = window.setTimeout(() => {
+      root.classList.remove(THEME_TRANSITION_CLASS)
+      transitionTimeoutRef.current = null
+    }, THEME_TRANSITION_DURATION_MS)
   }
 
   return (
