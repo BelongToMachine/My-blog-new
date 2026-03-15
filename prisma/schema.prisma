@@ -15,6 +15,7 @@ model Issue {
   id               Int      @id @default(autoincrement())
   title            String   @db.VarChar(255)
   description      String   @db.Text
+  language         String   @default("zh") @db.VarChar(5)
   status           Status   @default(IN_PROGRESS)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt

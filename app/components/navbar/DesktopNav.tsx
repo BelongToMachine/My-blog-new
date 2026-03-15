@@ -1,19 +1,22 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+"use client"
 import classNames from "classnames"
-import Link from "next/link"
-import { useParams, usePathname } from "next/navigation"
+import { useParams } from "next/navigation"
+import NextLink from "next/link"
 import React, { useContext, useEffect, useMemo, useState } from "react"
 import { PiGithubLogoFill } from "react-icons/pi"
 import axios from "axios"
 import toast from "react-hot-toast"
 import { AnimatePresence, motion } from "framer-motion"
 import DisappearingText from "../DisappearText"
-import { LuSearch } from "react-icons/lu"
 import { PiSunDim } from "react-icons/pi"
 import { GoMoon } from "react-icons/go"
-import { colorMode, ThemeContext } from "@/app/context/DarkModeContext"
+import { colorMode } from "@/app/context/DarkModeContext"
 import { xTheme } from "@/app/service/ThemeService"
 import { useTheme } from "@/app/hooks/useTheme"
+import { Link, usePathname } from "@/app/i18n/navigation"
+import { useLocale, useTranslations } from "next-intl"
+import LanguageToggle from "./LanguageToggle"
 
 interface Link {
   label: string
@@ -30,12 +33,13 @@ const DesktopNav = () => {
   return (
     <div className="flex justify-between items-center">
       <div className="flex space-x-6 py-6 px-5 h-14 items-center">
-        <Link href="http://github.com/JieLuis">
+        <NextLink href="http://github.com/JieLuis">
           <PiGithubLogoFill style={xTheme.iconColor} />
-        </Link>
+        </NextLink>
         <NavLinks colorMode={colorMode} />
       </div>
       <div className="flex space-x-6 items-center pr-6">
+        <LanguageToggle />
         {/* <LuSearch
           size={26}
           style={{
@@ -62,6 +66,8 @@ const DesktopNav = () => {
 export default DesktopNav
 
 const NavLinks = ({ colorMode }: { colorMode: colorMode }) => {
+  const t = useTranslations("nav")
+  const locale = useLocale()
   const currentPath = usePathname()
   const { id }: { id?: string | null } = useParams()
   const [metaTitle, setMetaTitle] = useState<string>("")
@@ -71,7 +77,7 @@ const NavLinks = ({ colorMode }: { colorMode: colorMode }) => {
     const fetchTitle = async () => {
       try {
         if (id) {
-          const res = await axios.get(`/api/blogs/${parseInt(id)}`)
+          const res = await axios.get(`/api/blogs/${parseInt(id)}?locale=${locale}`)
           setMetaTitle(res.data.title)
         }
       } catch (error) {
@@ -84,8 +90,8 @@ const NavLinks = ({ colorMode }: { colorMode: colorMode }) => {
 
   const links = useMemo(() => {
     const baseLinks = [
-      { label: "文章", href: "/blogs" },
-      { label: "关于我", href: "/" },
+      { label: t("blogs"), href: "/blogs" },
+      { label: t("aboutMe"), href: "/" },
     ]
 
     if (metaTitle) {
@@ -99,7 +105,7 @@ const NavLinks = ({ colorMode }: { colorMode: colorMode }) => {
     }
 
     return baseLinks
-  }, [metaTitle])
+  }, [metaTitle, t, id])
 
   const handleArrowButtonClick = () => {
     if (!id) {

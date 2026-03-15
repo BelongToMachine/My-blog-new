@@ -3,10 +3,12 @@
 import { Spinner } from "@/app/components";
 import { AlertDialog, Button, Flex } from "@radix-ui/themes";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import React, { useState } from "react";
+import { useRouter } from "@/app/i18n/navigation";
 
 const DeleteIssueButton = ({ issueId }: { issueId: number }) => {
+  const t = useTranslations("blogs");
   const router = useRouter();
   const [error, setError] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -26,20 +28,20 @@ const DeleteIssueButton = ({ issueId }: { issueId: number }) => {
       <AlertDialog.Root>
         <AlertDialog.Trigger>
           <Button disabled={isDeleting} color="red">
-            Delete
+            {t("delete")}
             {isDeleting && <Spinner />}
           </Button>
         </AlertDialog.Trigger>
         <AlertDialog.Content>
-          <AlertDialog.Title>Confirm?</AlertDialog.Title>
+          <AlertDialog.Title>{t("deleteConfirm")}</AlertDialog.Title>
           <AlertDialog.Description></AlertDialog.Description>
           <Flex mt="4" gap="3">
             <AlertDialog.Cancel>
-              <Button variant="soft">Cancel</Button>
+              <Button variant="soft">{t("deleteCancel")}</Button>
             </AlertDialog.Cancel>
             <AlertDialog.Action>
               <Button color="red" onClick={deleteIssue}>
-                Confirm
+                {t("deleteAction")}
               </Button>
             </AlertDialog.Action>
           </Flex>
@@ -47,9 +49,9 @@ const DeleteIssueButton = ({ issueId }: { issueId: number }) => {
       </AlertDialog.Root>
       <AlertDialog.Root open={error}>
         <AlertDialog.Content>
-          <AlertDialog.Title>Error</AlertDialog.Title>
+          <AlertDialog.Title>{t("deleteErrorTitle")}</AlertDialog.Title>
           <AlertDialog.Description>
-            Could not delete this
+            {t("deleteErrorDescription")}
           </AlertDialog.Description>
           <Button
             color="gray"

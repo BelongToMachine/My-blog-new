@@ -2,7 +2,6 @@ import React from "react"
 import NextLink from "next/link"
 import { Link as RadixLink } from "@radix-ui/themes"
 import style, { xTheme } from "../service/ThemeService"
-import { CSSProperties } from "styled-components"
 
 interface Props {
   href: string

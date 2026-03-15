@@ -1,15 +1,17 @@
 import { Badge, Box, Card, Flex, Heading } from "@radix-ui/themes";
 import React from "react";
 import { Color, colors } from "./color";
+import { useTranslations } from "next-intl";
 
 const AboutMePage = () => {
+  const t = useTranslations("skills");
   return (
     <div className="container mx-auto py-2">
       <Box className="flex flex-col space-y-4 mb-4">
         <Card>
           <Flex className="flex flex-wrap items-center" gap="3">
             <Heading className="shrink-0" color="sky">
-              Skill
+              {t("heading")}
             </Heading>
             {skills.map((skill) => (
               <Badge key={skill} color={generateRandomColor()}>
@@ -20,7 +22,7 @@ const AboutMePage = () => {
         </Card>
         <Card>
           <Flex className="flex flex-wrap items-center" gap="3">
-            <Heading color="sky">Toolkits</Heading>
+            <Heading color="sky">{t("toolkits")}</Heading>
             {toolkits.map((toolkit) => (
               <Badge key={toolkit} color={generateRandomColor()}>
                 {toolkit}
@@ -30,7 +32,7 @@ const AboutMePage = () => {
         </Card>
         <Card>
           <Flex className="flex flex-wrap items-center" gap="3">
-            <Heading color="sky">Education</Heading>
+            <Heading color="sky">{t("education")}</Heading>
             <Badge color="ruby">GuangZhou University</Badge>
             <Badge color="ruby">广州大学</Badge>
           </Flex>

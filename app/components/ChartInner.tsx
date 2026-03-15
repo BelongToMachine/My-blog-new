@@ -3,6 +3,7 @@ import { Card } from "@radix-ui/themes"
 import React, { useEffect, useState } from "react"
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
 import style from "@/app/service/ThemeService"
+import { useTranslations } from "next-intl"
 
 interface Props {
   open: number
@@ -11,6 +12,7 @@ interface Props {
 }
 
 const BlogChart = ({ open, inProgress, closed }: Props) => {
+  const t = useTranslations("home")
   const [isMounted, setIsMounted] = useState(false)
 
   useEffect(() => {
@@ -18,9 +20,9 @@ const BlogChart = ({ open, inProgress, closed }: Props) => {
   }, [])
 
   const data = [
-    { label: "Web开发", value: open },
-    { label: "科技类", value: inProgress },
-    { label: "非技术类", value: closed },
+    { label: t("webDev"), value: open },
+    { label: t("tech"), value: inProgress },
+    { label: t("nonTech"), value: closed },
   ]
 
   if (!isMounted) {

@@ -3,6 +3,7 @@ import dynamic from "next/dynamic"
 import React, { Suspense } from "react"
 import { Card } from "@radix-ui/themes"
 import style from "@/app/service/ThemeService"
+import { useTranslations } from "next-intl"
 
 // 动态导入图表组件（SSR 禁用）
 const Chart = dynamic(() => import("@/app/components/ChartInner"), {
@@ -30,6 +31,8 @@ interface Props {
 }
 
 const BlogChart = (props: Props) => {
+  const t = useTranslations("home")
+
   return (
     <Suspense
       fallback={
@@ -42,7 +45,7 @@ const BlogChart = (props: Props) => {
               justifyContent: "center",
             }}
           >
-            Loading chart...
+            {t("loadingMore")}
           </div>
         </Card>
       }

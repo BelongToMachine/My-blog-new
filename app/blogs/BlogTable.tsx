@@ -1,10 +1,11 @@
 import { ArrowUpIcon } from "@radix-ui/react-icons"
 import { Table } from "@radix-ui/themes"
-import Link from "next/link"
 import React from "react"
 import { IssueStatusBadge } from "../components"
 import { Issue, Status } from "@prisma/client"
 import { xTheme } from "../service/ThemeService"
+import { Link } from "@/app/i18n/navigation"
+import { getTranslations } from "next-intl/server"
 export interface BlogQuery {
   status: Status
   orderBy: keyof Issue
@@ -17,6 +18,7 @@ interface Props {
 }
 
 const BlogTable = async ({ searchParams: params, issues }: Props) => {
+  const t = await getTranslations("blogs")
   const searchParams = (await params) ?? {}
 
   const orderBy = searchParams.orderBy ?? undefined
@@ -29,13 +31,14 @@ const BlogTable = async ({ searchParams: params, issues }: Props) => {
         }}
       >
         <Table.Row style={xTheme.blogTableHeader}>
-          {columns.map((column) => (
+          {columns(t).map((column) => (
             <Table.ColumnHeaderCell
               key={column.value}
               className={column.className}
             >
               <Link
                 href={{
+                  pathname: "/blogs",
                   query: { ...searchParams, orderBy: column.value },
                 }}
               >
@@ -68,12 +71,20 @@ const BlogTable = async ({ searchParams: params, issues }: Props) => {
   )
 }
 
-const columns: { label: string; value: keyof Issue; className?: string }[] = [
-  { label: "标题", value: "title" },
-  { label: "博客类型", value: "status", className: "hidden md:table-cell" },
-  { label: "创建于", value: "createdAt", className: "hidden md:table-cell" },
+const columns = (t: Awaited<ReturnType<typeof getTranslations>>) => [
+  { label: t("title"), value: "title" as const },
+  {
+    label: t("type"),
+    value: "status" as const,
+    className: "hidden md:table-cell",
+  },
+  {
+    label: t("createdAt"),
+    value: "createdAt" as const,
+    className: "hidden md:table-cell",
+  },
 ]
 
-export const columnNames = columns.map((column) => column.value)
+export const columnNames: (keyof Issue)[] = ["title", "status", "createdAt"]
 
 export default BlogTable

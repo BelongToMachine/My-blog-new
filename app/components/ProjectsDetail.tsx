@@ -12,8 +12,10 @@ import useProjects, {
 } from "../api/projects/useProjects";
 import { useSearchParams } from "next/navigation";
 import Dialog from "./Dialog";
+import { useTranslations } from "next-intl";
 
 const ProjectsDetail = () => {
+  const t = useTranslations("projects");
   const searchParams = useSearchParams();
   const params = searchParams.get("tag");
   const ref = useRef<HTMLDialogElement>(null);
@@ -39,7 +41,7 @@ const ProjectsDetail = () => {
 
   return (
     <>
-      <Dialog ref={ref} message="该项目的github链接/上线网址不存在..." />
+      <Dialog ref={ref} message={t("noLink")} />
       <section className="mb-16">
         <ul className="grid lg:grid-cols-2 gap-8 md:gap-12">
           {projects?.map((project, index) => (

@@ -4,10 +4,17 @@ import { create } from "domain"
 import React, { CSSProperties } from "react"
 import { IssueStatusBadge } from "./components"
 import { xTheme } from "./service/ThemeService"
-import Link from "next/link"
+import { Link } from "@/app/i18n/navigation"
+import { getLocale, getTranslations } from "next-intl/server"
 
 const LatestBlogs = async () => {
+  const locale = await getLocale()
+  const t = await getTranslations("home")
+  const localizedCount = await prisma.issue.count({
+    where: { language: locale },
+  })
   const blogs = await prisma.issue.findMany({
+    where: localizedCount > 0 ? { language: locale } : undefined,
     orderBy: { createdAt: "desc" },
     take: 5,
     include: {
@@ -18,7 +25,7 @@ const LatestBlogs = async () => {
   return (
     <Card style={xTheme.card}>
       <Heading size="4" mb="4">
-        最近的博客
+        {t("latestBlogs")}
       </Heading>
       <Table.Root>
         <Table.Body>

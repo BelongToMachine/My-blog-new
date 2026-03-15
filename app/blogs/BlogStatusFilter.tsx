@@ -1,24 +1,25 @@
 "use client";
 import { Status } from "@prisma/client";
 import { Select, Theme } from "@radix-ui/themes";
-import React, { use } from "react";
+import React from "react";
 import {
   ReadonlyURLSearchParams,
-  useRouter,
   useSearchParams,
 } from "next/navigation";
-
-const statuses: { label: String; value?: Status }[] = [
-  { label: "全部" },
-  { label: "Web开发", value: "FINISHED" },
-  { label: "科技类", value: "IN_PROGRESS" },
-  { label: "非技术类", value: "CLOSED" },
-];
+import { useTranslations } from "next-intl";
+import { useRouter } from "@/app/i18n/navigation";
 
 const BlogStatusFilter = () => {
+  const t = useTranslations("blogs");
   const router = useRouter();
 
   const searchParams = useSearchParams();
+  const statuses: { label: string; value?: Status }[] = [
+    { label: t("filterAll") },
+    { label: t("webDev"), value: "FINISHED" },
+    { label: t("tech"), value: "IN_PROGRESS" },
+    { label: t("nonTech"), value: "CLOSED" },
+  ];
 
   return (
     <Theme>
@@ -27,10 +28,10 @@ const BlogStatusFilter = () => {
         onValueChange={(status) => {
           initailizeStatus(status);
           const query: string = buildQuery(status, searchParams);
-          router.push("/blogs" + query);
+          router.push(`/blogs${query}`);
         }}
       >
-        <Select.Trigger placeholder="按博客类型分类" />
+        <Select.Trigger placeholder={t("filterPlaceholder")} />
         <Select.Content>
           {statuses.map((status, index) => (
             <Select.Item key={index} value={status.value || "unSelected"}>

@@ -7,8 +7,10 @@ import {
   DoubleArrowRightIcon,
 } from "@radix-ui/react-icons";
 import { Button, Flex, Text } from "@radix-ui/themes";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import React from "react";
+import { useTranslations } from "next-intl";
+import { useRouter } from "@/app/i18n/navigation";
 
 interface Props {
   itemCounts: number;
@@ -17,6 +19,7 @@ interface Props {
 }
 
 const Pagination = ({ itemCounts, pageSize, currentPage }: Props) => {
+  const t = useTranslations("blogs");
   const pageCount = Math.ceil(itemCounts / pageSize);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -32,7 +35,7 @@ const Pagination = ({ itemCounts, pageSize, currentPage }: Props) => {
   return (
     <Flex align="center" gap="2">
       <Text>
-        Page {currentPage} of {pageCount}
+        {t("page", { current: currentPage, total: pageCount })}
       </Text>
       <Button
         color="gray"

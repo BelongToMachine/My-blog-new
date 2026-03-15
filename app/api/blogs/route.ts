@@ -15,12 +15,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(validation.error.format(), { status: 400 });
 
   const newBlog = await prisma.issue.create({
-    data: { title: body.title, description: body.description },
+    data: {
+      title: body.title,
+      description: body.description,
+      language: body.language ?? "zh",
+    },
   });
 
   return NextResponse.json(newBlog, { status: 201 });
-}
-
-function getSererSession(authOptions: any) {
-  throw new Error("Function not implemented.");
 }

@@ -1,7 +1,10 @@
 import React from "react"
+import { useTranslations } from "next-intl"
 
 const SummaryHeader = () => {
-  return <h1 className="home-page-heading">我的博客总结</h1>
+  const t = useTranslations("home")
+
+  return <h1 className="home-page-heading">{t("blogSummary")}</h1>
 }
 
 export default SummaryHeader

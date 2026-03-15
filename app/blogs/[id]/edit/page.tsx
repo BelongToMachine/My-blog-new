@@ -1,24 +1,10 @@
-import prisma from "@/prisma/client"
-import { notFound } from "next/navigation"
-import React from "react"
-import IssueForm from "../../_components/IssueForm"
-import { MODE } from "@/app/envConfig"
+import { redirect } from "next/navigation"
+
 interface Props {
   params: Promise<{ id: string }>
 }
 
-const EditIssuePage = async ({ params }: Props) => {
-  if (MODE !== "dev") return
-
+export default async function LegacyEditBlogPage({ params }: Props) {
   const { id } = await params
-
-  const issue = await prisma.issue.findUnique({
-    where: { id: parseInt(id) },
-  })
-
-  if (!issue) notFound()
-
-  return <IssueForm issue={issue} />
+  redirect(`/zh/blogs/${id}/edit`)
 }
-
-export default EditIssuePage
