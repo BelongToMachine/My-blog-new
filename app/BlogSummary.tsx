@@ -1,7 +1,5 @@
 import { Status } from "@prisma/client"
-import { Card, Flex, Text } from "@radix-ui/themes"
 import React from "react"
-import { xTheme } from "./service/ThemeService"
 import { useTranslations } from "next-intl"
 import { Link as LocaleLink } from "@/app/i18n/navigation"
 
@@ -24,23 +22,30 @@ const BlogSummary = ({ open, inProgress, closed }: Props) => {
   ]
 
   return (
-    <Flex gap="4">
-      {categoryData.map((container) => (
-        <Card key={container.label} style={xTheme.card}>
-          <Flex direction="column" gap="1">
-            <LocaleLink
-              className="text-sm font-medium"
-              href={`/blogs?status=${container.status}`}
-            >
-              {container.label}
-            </LocaleLink>
-          </Flex>
-          <Text size="5" className="font-bold">
-            {container.value}
-          </Text>
-        </Card>
+    <div className="grid gap-4 sm:grid-cols-3">
+      {categoryData.map((item, index) => (
+        <LocaleLink
+          key={item.label}
+          href={`/blogs?status=${item.status}`}
+          className="group section-shell p-5 transition-transform duration-300 hover:-translate-y-1"
+        >
+          <div className="mb-6 flex items-start justify-between gap-4">
+            <div>
+              <p className="section-kicker mb-2">{`0${index + 1}`}</p>
+              <p className="text-sm font-medium text-muted-foreground transition-colors group-hover:text-foreground">
+                {item.label}
+              </p>
+            </div>
+            <span className="rounded-full border border-border/70 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+              {`${item.value}`.padStart(2, "0")}
+            </span>
+          </div>
+          <p className="text-4xl font-black tracking-[-0.06em] text-foreground sm:text-5xl">
+            {item.value}
+          </p>
+        </LocaleLink>
       ))}
-    </Flex>
+    </div>
   )
 }
 

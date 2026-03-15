@@ -4,7 +4,13 @@ import { useTranslations } from "next-intl"
 const SummaryHeader = () => {
   const t = useTranslations("home")
 
-  return <h1 className="home-page-heading">{t("blogSummary")}</h1>
+  return (
+    <div className="mb-8 flex flex-col gap-3">
+      <p className="section-kicker">{t("blogSummaryEyebrow")}</p>
+      <h2 className="home-page-heading max-w-3xl">{t("blogSummary")}</h2>
+      <p className="section-copy">{t("blogSummaryDescription")}</p>
+    </div>
+  )
 }
 
 export default SummaryHeader
