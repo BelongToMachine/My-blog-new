@@ -1,45 +1,36 @@
 import React from "react"
 import { ClientComponent } from "./ClientComponent"
-import styled from "styled-components"
 
 interface Props {
   colorMode: string
   code: string
 }
 
-const Container = styled.div`
-  overflow: auto;
-  border-radius: 16px;
-`
-
-const MacOSTaskbar = styled.div<{ colorMode: string }>`
-  display: flex;
-  align-items: center;
-  height: 24px;
-  padding: 8px 12px;
-  background: ${(props) =>
-    props.colorMode === "dark" ? "#2d2d2d" : "#f0f0f0"};
-`
-
-const Dot = styled.div<{ color: string }>`
-  width: 12px;
-  height: 12px;
-  margin-right: 8px;
-  background: ${(props) => props.color};
-  border-radius: 50%;
-`
-
 export const CodeBlocker = ({ colorMode, code }: Props) => {
+  const taskbarBackground =
+    colorMode === "dark"
+      ? "color-mix(in srgb, var(--card-background-color) 88%, black)"
+      : "color-mix(in srgb, var(--card-background-color) 92%, var(--background-color))"
+
   return (
-    <Container>
-      <MacOSTaskbar colorMode={colorMode}>
-        <Dot color="#ff5f57" />
-        <Dot color="#ffbd2e" />
-        <Dot color="#28c840" />
-      </MacOSTaskbar>
+    <div className="overflow-auto rounded-2xl border" style={{ borderColor: "var(--border-color)" }}>
+      <div
+        className="flex h-10 items-center px-4"
+        style={{ background: taskbarBackground }}
+      >
+        <span
+          className="mr-2 h-3 w-3 rounded-full"
+          style={{ background: "#ff5f57" }}
+        />
+        <span
+          className="mr-2 h-3 w-3 rounded-full"
+          style={{ background: "#ffbd2e" }}
+        />
+        <span className="h-3 w-3 rounded-full" style={{ background: "#28c840" }} />
+      </div>
       <ClientComponent lang="ts" colorMode={colorMode}>
         {code}
       </ClientComponent>
-    </Container>
+    </div>
   )
 }

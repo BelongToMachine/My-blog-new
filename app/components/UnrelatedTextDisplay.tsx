@@ -10,13 +10,12 @@ const UnrelatedTextDisplay: React.FC<UnrelatedTextDisplayProps> = ({
 }) => {
   return (
     <div
-      className="w-full p-2 mt-4 border rounded-md dark:border-gray-700"
+      className="mt-4 w-full rounded-md border p-3"
       style={{
-        backgroundColor: "transparent",
-        border: "none",
+        backgroundColor: "color-mix(in srgb, var(--card-background-color) 72%, transparent)",
         overflow: "auto",
-        resize: "none",
         ...xTheme.chatbotText,
+        ...xTheme.innerCellBorder,
       }}
     >
       {text}

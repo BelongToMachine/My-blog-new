@@ -1,5 +1,4 @@
 import type { Metadata } from "next"
-import { Theme } from "@radix-ui/themes"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { hasLocale, NextIntlClientProvider } from "next-intl"
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server"
@@ -9,6 +8,7 @@ import AuthProvider from "../auth/Provider"
 import QueryClientProvider from "../QueryClientProvider"
 import CursorManager from "../CursorManager"
 import { ThemeProvider } from "../context/DarkModeContext"
+import RadixThemeProvider from "../context/RadixThemeProvider"
 import { xTheme } from "../service/ThemeService"
 import { locales } from "../i18n/routing"
 
@@ -58,11 +58,11 @@ export default async function LocaleLayout({
         <QueryClientProvider>
           <AuthProvider>
             <ThemeProvider>
-              <Theme appearance="light" accentColor="sky" radius="small">
+              <RadixThemeProvider>
                 <NavBar />
                 <CursorManager />
                 <main className="pt-14">{children}</main>
-              </Theme>
+              </RadixThemeProvider>
               <ReactQueryDevtools />
             </ThemeProvider>
           </AuthProvider>
