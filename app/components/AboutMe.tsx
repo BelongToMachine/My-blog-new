@@ -30,7 +30,7 @@ const AboutMePage = () => {
         </Card>
         <Card>
           <Flex className="flex flex-wrap items-center" gap="3">
-            <Heading color="sky">Eduction</Heading>
+            <Heading color="sky">Education</Heading>
             <Badge color="ruby">GuangZhou University</Badge>
             <Badge color="ruby">广州大学</Badge>
           </Flex>

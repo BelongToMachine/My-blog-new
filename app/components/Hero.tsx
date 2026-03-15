@@ -20,14 +20,14 @@ const Hero = () => {
   const code = `
   const coder = {
     name: "Jie",
-    role: ["Front-end developer"]
-    skill: ["React", "Next.js"]
+    role: ["Front-end developer"],
+    skill: ["React", "Next.js"],
     location: "Hangzhou, China",
     problemSolver: true,
     welcomeMessage: () => {
       return "Happy to meet you!"
     }
-  }Í
+  }
   `
   return (
     <div id="about-me-section" className="pb-4">

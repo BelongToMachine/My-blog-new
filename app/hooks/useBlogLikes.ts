@@ -2,13 +2,13 @@ import { useQuery } from "@tanstack/react-query"
 import { fetchBlogLikesFromServer } from "../actions/blogAction"
 import { Issue } from "@prisma/client"
 
-const useBlogLikes = (issue: Issue) =>
+const useBlogLikes = (blog: Issue) =>
   useQuery<number, Error>({
-    queryKey: ["likes", issue.id],
-    queryFn: () => fetchBlogLikesFromServer(issue.id),
-    initialData: issue.likes,
+    queryKey: ["likes", blog.id],
+    queryFn: () => fetchBlogLikesFromServer(blog.id),
+    initialData: blog.likes,
     onError: (error) => {
-      console.error("Error fetching issue:", error)
+      console.error("Error fetching blog likes:", error)
     },
   })
 

@@ -34,7 +34,7 @@ const Contact: React.FC = () => {
       emailjs
         .sendForm(
           process.env.NEXT_PUBLIC_SERVICE_ID!,
-          "template_02pba33", // template_id
+          process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!, // template_id
           form.current,
           process.env.NEXT_PUBLIC_PUBLIC_KEY
         )
