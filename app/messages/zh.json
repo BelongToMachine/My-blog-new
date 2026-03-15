@@ -7,7 +7,7 @@
     "language": "EN"
   },
   "hero": {
-    "greeting": "你好，我是",
+    "greeting": "Heya I'm",
     "name": "廖永杰",
     "imageAlt": "Jie 站在这里",
     "typeSequence": ["Jie", "前端开发者", "廖永杰"],
