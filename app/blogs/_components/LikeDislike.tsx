@@ -1,4 +1,3 @@
-import { Flex, Button, Box } from "@radix-ui/themes"
 import React, { useEffect, useState } from "react"
 import Wind from "../[id]/Wind"
 import HoverWrapper from "./HoverWrapper"
@@ -139,7 +138,7 @@ const LikeDislike = ({ issue }: { issue: Issue }) => {
   }
 
   return (
-    <div className="absolute bottom-0 w-full flex">
+    <div className="absolute bottom-0 flex w-full rounded-[1.5rem] border border-border/70 bg-background/80 p-3 shadow-[0_18px_40px_rgba(15,23,42,0.08)] backdrop-blur-sm dark:bg-slate-950/60 dark:shadow-[0_18px_40px_rgba(2,6,23,0.35)]">
       <AnimatePresence>
         {exceedDialog && (
           <motion.div
@@ -178,7 +177,7 @@ const LikeDislike = ({ issue }: { issue: Issue }) => {
           Dislikes(0)
         </JButton>
         <Wind />
-        <Image src={fan} alt="a fan" height={130} />
+        <Image src={fan} alt="a fan" height={130} className="shrink-0" />
       </HoverWrapper>
     </div>
   )

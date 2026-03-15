@@ -2,7 +2,7 @@ import { Box } from "@radix-ui/themes"
 import React from "react"
 import { Issue } from "@prisma/client"
 import TableOfContent from "./TableOfContent"
-import BlogParser, { Heading } from "@/app/service/BlogParser"
+import { Heading } from "@/app/service/BlogParser"
 import LikeDislike from "./LikeDislike"
 
 interface Props {
@@ -18,7 +18,7 @@ const NavigationBar = ({
 }: Props) => {
   return (
     <div
-      className="w-full max-w-sm mt-6"
+      className="relative mt-6 w-full max-w-sm"
       style={{
         ...tocPosition,
         height: "85vh",

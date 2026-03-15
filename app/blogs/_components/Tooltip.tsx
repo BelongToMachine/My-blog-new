@@ -4,7 +4,7 @@ import styles from "./tooltip.module.css" // Import the CSS Module
 const Tooltip = ({ text }: { text: string }) => {
   return (
     <div
-      className="absolute bottom-full transform -translate-x-1/2 w-64 z-10"
+      className="absolute bottom-full z-10 w-64 -translate-x-1/2 transform"
       style={{
         left: "90%",
       }}
