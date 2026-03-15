@@ -3,20 +3,19 @@
 import classNames from "classnames"
 import { useParams } from "next/navigation"
 import NextLink from "next/link"
-import React, { useContext, useEffect, useMemo, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { PiGithubLogoFill } from "react-icons/pi"
 import axios from "axios"
 import toast from "react-hot-toast"
 import { AnimatePresence, motion } from "framer-motion"
 import DisappearingText from "../DisappearText"
-import { PiSunDim } from "react-icons/pi"
-import { GoMoon } from "react-icons/go"
 import { colorMode } from "@/app/context/DarkModeContext"
 import { xTheme } from "@/app/service/ThemeService"
 import { useTheme } from "@/app/hooks/useTheme"
 import { Link, usePathname } from "@/app/i18n/navigation"
 import { useLocale, useTranslations } from "next-intl"
 import LanguageToggle from "./LanguageToggle"
+import ThemeToggle from "./ThemeToggle"
 
 interface Link {
   label: string
@@ -24,11 +23,7 @@ interface Link {
 }
 
 const DesktopNav = () => {
-  const { colorMode, setColorMode } = useTheme()
-
-  const handleSunClick = () => {
-    setColorMode(colorMode === "light" ? "dark" : "light")
-  }
+  const { colorMode } = useTheme()
 
   return (
     <div className="flex justify-between items-center">
@@ -40,25 +35,7 @@ const DesktopNav = () => {
       </div>
       <div className="flex space-x-6 items-center pr-6">
         <LanguageToggle />
-        {/* <LuSearch
-          size={26}
-          style={{
-            color: "var(--text-color)",
-          }}
-        /> */}
-        {colorMode === "light" ? (
-          <PiSunDim
-            size={32}
-            onClick={handleSunClick}
-            style={{ ...xTheme.iconColor, cursor: "pointer" }}
-          />
-        ) : (
-          <GoMoon
-            size={26}
-            onClick={handleSunClick}
-            style={{ ...xTheme.iconColor, cursor: "pointer" }}
-          />
-        )}
+        <ThemeToggle size="3" />
       </div>
     </div>
   )

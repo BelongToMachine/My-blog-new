@@ -9,6 +9,7 @@ import { FaLinkedin } from "react-icons/fa"
 import { useTranslations } from "next-intl"
 import { Link } from "@/app/i18n/navigation"
 import LanguageToggle from "./LanguageToggle"
+import ThemeToggle from "./ThemeToggle"
 
 const MobileNav = () => {
   return (
@@ -17,7 +18,10 @@ const MobileNav = () => {
         <NextLink href="http://github.com/JieLuis">
           <PiGithubLogoFill />
         </NextLink>
-        <Menu />
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <Menu />
+        </div>
       </div>
     </>
   )
