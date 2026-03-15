@@ -160,15 +160,25 @@ const NavLinks = ({ colorMode }: { colorMode: colorMode }) => {
                   &gt;{" "}
                 </motion.span>
               )}
-              <li>
+              <motion.li
+                whileHover={{ y: -2 }}
+                transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              >
                 <Link className={styledTag(link)} href={link.href}>
                   <DisappearingText
                     text={link.label}
                     variant={variants}
                     isCollapse={isCollapse}
                   />
+                  <motion.span
+                    aria-hidden="true"
+                    className="absolute inset-x-3 bottom-1 h-px origin-left bg-current"
+                    initial={{ scaleX: 0, opacity: 0.45 }}
+                    whileHover={{ scaleX: 1, opacity: 0.9 }}
+                    transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                  />
                 </Link>
-              </li>
+              </motion.li>
             </React.Fragment>
           )
         })}
