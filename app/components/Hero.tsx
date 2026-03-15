@@ -21,16 +21,16 @@ const Hero = () => {
   const typeSequence = t.raw("typeSequence") as string[]
   const code = t.raw("code") as string
   return (
-    <div id="about-me-section" className="pb-4">
-      <div className="grid grid-cols-1 gap-8 sm:grid-cols-12">
+    <div id="about-me-section" className="pb-4 pt-0">
+      <div className="grid grid-cols-1 items-start gap-6 sm:grid-cols-12 sm:gap-8">
         <motion.div
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
-          className="relative flex items-start sm:col-start-2 sm:col-end-7 sm:top-[3rem]"
+          className="relative z-10 flex items-start sm:col-start-2 sm:col-end-7"
         >
-          <div>
-            <h1 className="mb-4 text-4xl font-extrabold text-foreground sm:text-5xl lg:text-6xl">
+          <div className="w-full max-w-[560px] min-w-0">
+            <h1 className="mb-2 min-h-[5.75rem] text-4xl font-extrabold text-yellow-500 sm:min-h-[7rem] sm:text-5xl lg:min-h-[8rem] lg:text-6xl">
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-600 flicker">
                 {`${t("greeting")} `}
               </span>
@@ -39,10 +39,10 @@ const Hero = () => {
                 wrapper="div"
                 speed={50}
                 repeat={Infinity}
-                className="mt-3" /** To offset image top space */
+                className="mt-2 block min-h-[1.1em] whitespace-nowrap" /** Keeps the hero width stable while text changes */
               />
             </h1>
-            <div className="w-full max-w-[500px]">
+            <div className="w-full max-w-[520px] min-w-0">
               <CodeBlocker code={code} colorMode={colorMode} />
             </div>
           </div>
@@ -51,15 +51,16 @@ const Hero = () => {
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
-          className="sm:col-start-8"
+          className="flex justify-center sm:col-start-8 sm:col-end-12 sm:justify-end"
         >
-          <div className="relative mx-auto w-full max-w-[500px] sm:bottom-[2rem]">
+          <div className="relative w-full max-w-[380px] sm:-translate-y-8">
             <Image
               src={selfie}
               alt={t("imageAlt")}
               width={350}
               height={300}
-              className="h-auto w-full max-w-[350px]"
+              className="ml-auto h-auto w-full"
+              priority
             />
           </div>
         </motion.div>

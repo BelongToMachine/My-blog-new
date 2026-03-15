@@ -21,7 +21,13 @@ const NavBar = () => {
     }
   }, [updateWindowValue])
 
-  // Don't render anything until windowWidth is measured
+  if (windowWidth === 0) {
+    return null
+  }
+
+  const backgroundColor = isInScrollable
+    ? "var(--scrollable-background-color)"
+    : "color-mix(in srgb, var(--background-color) 88%, transparent)"
 
   return (
     <nav
@@ -31,11 +37,9 @@ const NavBar = () => {
         left: 0,
         right: 0,
         zIndex: 10,
-        background: isInScrollable
-          ? "var(--scrollable-background-color)"
-          : "var(--background-color)",
+        backgroundColor,
         backdropFilter: "blur(10px)",
-        transition: "background 0.3s ease-in-out",
+        borderBottom: "1px solid color-mix(in srgb, var(--border-color) 72%, transparent)",
       }}
     >
       {windowWidth > 768 ? <DesktopNav /> : <MobileNav />}

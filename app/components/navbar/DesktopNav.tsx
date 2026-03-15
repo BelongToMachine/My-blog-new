@@ -35,7 +35,7 @@ const DesktopNav = () => {
       </div>
       <div className="flex space-x-6 items-center pr-6">
         <LanguageToggle />
-        <ThemeToggle size="3" />
+        <ThemeToggle />
       </div>
     </div>
   )

@@ -73,9 +73,9 @@ const Contact: React.FC = () => {
         <CardContent className="p-6">
           {formStatus && (
             <div
-              className={`p-4 mb-4 text-sm ${formStatus === "SUCCESS!"
-                ? "text-green-700 bg-green-100"
-                : "text-red-700 bg-red-100"
+              className={`mb-4 rounded-lg border p-4 text-sm ${formStatus === "SUCCESS!"
+                ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
+                : "border-red-500/30 bg-red-500/10 text-red-700 dark:text-red-300"
                 } rounded-lg`}
             >
               {formStatus === "SUCCESS!" ? t("successMsg") : formStatus}
@@ -86,7 +86,7 @@ const Contact: React.FC = () => {
             <div className="space-y-2">
               <Label.Root
                 htmlFor="name"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-foreground/80"
               >
                 {t("yourName")}
               </Label.Root>
@@ -107,7 +107,7 @@ const Contact: React.FC = () => {
             <div className="space-y-2">
               <Label.Root
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-foreground/80"
               >
                 {t("yourEmail")}
               </Label.Root>
@@ -128,7 +128,7 @@ const Contact: React.FC = () => {
             <div className="space-y-2">
               <Label.Root
                 htmlFor="message"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-foreground/80"
               >
                 {t("message")}
               </Label.Root>
