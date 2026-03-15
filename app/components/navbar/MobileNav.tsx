@@ -13,17 +13,18 @@ import ThemeToggle from "./ThemeToggle"
 
 const MobileNav = () => {
   return (
-    <>
-      <div className="flex justify-between items-center px-4 py-4">
-        <NextLink href="http://github.com/JieLuis">
-          <PiGithubLogoFill />
-        </NextLink>
-        <div className="flex items-center gap-2">
-          <ThemeToggle />
-          <Menu />
-        </div>
+    <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+      <NextLink
+        href="http://github.com/JieLuis"
+        className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border/70 bg-background/70 shadow-[0_10px_24px_rgba(15,23,42,0.06)]"
+      >
+        <PiGithubLogoFill />
+      </NextLink>
+      <div className="flex items-center gap-2">
+        <ThemeToggle />
+        <Menu />
       </div>
-    </>
+    </div>
   )
 }
 
@@ -43,11 +44,15 @@ const Menu = () => {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger>
-        <Button variant="soft" size="2">
+        <Button
+          variant="soft"
+          size="2"
+          className="rounded-full border border-border/70 bg-background/75 shadow-[0_10px_24px_rgba(15,23,42,0.06)]"
+        >
           <LuMoveVertical />
         </Button>
       </DropdownMenu.Trigger>
-      <DropdownMenu.Content size="1">
+      <DropdownMenu.Content size="1" className="min-w-[12rem]">
         {mobileLinks.map((link, index) => {
           return (
             <div key={index}>

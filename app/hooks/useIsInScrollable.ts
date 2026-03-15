@@ -1,16 +1,26 @@
-import { useEffect } from "react";
-import { useScrollableStore } from "../service/Store";
+import { useEffect } from "react"
+import { useScrollableStore } from "../service/Store"
 
-const useIsInScrollable = (scrolledInVH: number, SCROLLABLE_HEIGHT_IN_VH: number) => {
-const setIsInScrollable = useScrollableStore((state) => state.setIsInScrollable)
+const useIsInScrollable = (
+  scrolledInVH: number,
+  scrollableHeightInVh: number
+) => {
+  const isInScrollable = useScrollableStore((state) => state.isInScrollable)
+  const setIsInScrollable = useScrollableStore((state) => state.setIsInScrollable)
 
   useEffect(() => {
-    setIsInScrollable(scrolledInVH < SCROLLABLE_HEIGHT_IN_VH);
+    const nextValue = scrolledInVH < scrollableHeightInVh
 
-    return () => {
-        setIsInScrollable(false)
+    if (isInScrollable !== nextValue) {
+      setIsInScrollable(nextValue)
     }
-  }, [scrolledInVH]);
+  }, [isInScrollable, scrolledInVH, scrollableHeightInVh, setIsInScrollable])
+
+  useEffect(() => {
+    return () => {
+      setIsInScrollable(false)
+    }
+  }, [setIsInScrollable])
 }
 
-export default useIsInScrollable;
+export default useIsInScrollable

@@ -26,14 +26,17 @@ const DesktopNav = () => {
   const { colorMode } = useTheme()
 
   return (
-    <div className="flex justify-between items-center">
-      <div className="flex space-x-6 py-6 px-5 h-14 items-center">
-        <NextLink href="http://github.com/JieLuis">
+    <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="flex items-center gap-6">
+        <NextLink
+          href="http://github.com/JieLuis"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border/70 bg-background/70 text-[color:var(--text-color)] shadow-[0_10px_24px_rgba(15,23,42,0.06)] transition-transform duration-300 hover:-translate-y-0.5"
+        >
           <PiGithubLogoFill style={xTheme.iconColor} />
         </NextLink>
         <NavLinks colorMode={colorMode} />
       </div>
-      <div className="flex space-x-6 items-center pr-6">
+      <div className="flex items-center gap-3">
         <LanguageToggle />
         <ThemeToggle />
       </div>
@@ -128,7 +131,7 @@ const NavLinks = ({ colorMode }: { colorMode: colorMode }) => {
   }
 
   return (
-    <ul className="flex space-x-6 relative top-1">
+    <ul className="relative top-1 flex space-x-6">
       <AnimatePresence>
         {links.map((link, index) => {
           const isArrowExist = Boolean(index === 1 && metaTitle)

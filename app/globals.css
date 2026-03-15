@@ -89,9 +89,22 @@
     @apply border-border;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
     font-family: 'MyCustomFont', sans-serif;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(circle at top left, hsl(var(--secondary) / 0.55), transparent 32%),
+      radial-gradient(circle at 85% 18%, hsl(var(--primary) / 0.16), transparent 24%),
+      linear-gradient(180deg, hsl(var(--background)), color-mix(in srgb, hsl(var(--background)) 90%, hsl(var(--muted))));
+  }
+
+  ::selection {
+    background: hsl(var(--primary) / 0.18);
   }
 
   html.theme-transition,
@@ -125,13 +138,13 @@
 
 @layer utilities {
   .nav-link {
-    @apply text-zinc-500 transition-colors hover:text-zinc-800;
+    @apply text-zinc-600 transition-all duration-300 hover:text-zinc-900;
   }
   .nav-link-dark {
-    @apply text-slate-400 transition-colors hover:text-slate-100;
+    @apply text-slate-400 transition-all duration-300 hover:text-slate-50;
   }
   .nav-control {
-    @apply inline-flex items-center justify-center rounded-full border border-transparent text-zinc-500 transition-colors duration-200 hover:bg-zinc-100 hover:text-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100;
+    @apply inline-flex items-center justify-center rounded-full border border-zinc-200/80 bg-white/70 text-zinc-600 shadow-[0_12px_30px_rgba(15,23,42,0.06)] backdrop-blur transition-all duration-300 hover:-translate-y-0.5 hover:border-zinc-300 hover:bg-white hover:text-zinc-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:border-slate-700/80 dark:bg-slate-900/65 dark:text-slate-300 dark:shadow-[0_14px_36px_rgba(2,6,23,0.35)] dark:hover:border-slate-600 dark:hover:bg-slate-900 dark:hover:text-slate-50;
   }
   .nav-control-icon {
     @apply h-9 w-9;
@@ -140,7 +153,21 @@
     @apply min-h-9 px-3 text-sm font-medium;
   }
   .home-page-heading {
-    @apply text-center text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-600 lg:text-6xl leading-normal lg:leading-relaxed;
+    @apply text-4xl font-black tracking-[-0.05em] text-foreground sm:text-5xl lg:text-6xl;
+    line-height: 0.96;
+  }
+  .section-shell {
+    @apply relative overflow-hidden rounded-[2rem] border border-border/70 bg-background/80 shadow-[0_28px_80px_rgba(15,23,42,0.08)] backdrop-blur-sm dark:shadow-[0_28px_100px_rgba(2,6,23,0.4)];
+  }
+  .section-kicker {
+    @apply text-xs font-semibold uppercase tracking-[0.34em] text-primary;
+  }
+  .section-copy {
+    @apply max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base;
+  }
+  .surface-divider {
+    background: linear-gradient(90deg, transparent, hsl(var(--border)), transparent);
+    height: 1px;
   }
 }
 

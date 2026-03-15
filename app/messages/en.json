@@ -7,20 +7,33 @@
     "language": "中文"
   },
   "hero": {
+    "eyebrow": "Front-end developer · AI-focused builder",
     "greeting": "Heya I'm",
     "name": "Jie",
     "imageAlt": "Jie is standing firm",
     "typeSequence": ["Jie", "a web developer", "廖永杰"],
+    "summary": "I build polished React and Next.js products with strong interaction detail, maintainable architecture, and practical AI integration for real users.",
+    "highlightOne": "Remote-ready product execution",
+    "highlightTwo": "Recruiter-facing portfolio quality",
+    "highlightThree": "Bilingual UX and AI workflows",
+    "availabilityLabel": "Current focus",
+    "availability": "Open to front-end and product-focused opportunities",
+    "cta": "Start a conversation",
+    "portraitLabel": "Profile",
+    "locationLabel": "Hangzhou",
     "code": "const coder = {\n  name: \"Jie\",\n  role: [\"Front-end developer\"],\n  skill: [\"React\", \"Next.js\"],\n  location: \"Hangzhou, China\",\n  problemSolver: true,\n  welcomeMessage: () => {\n    return \"Happy to meet you!\"\n  }\n}"
   },
   "home": {
     "blogSummary": "My Blog Summary",
+    "blogSummaryEyebrow": "Writing and shipping",
+    "blogSummaryDescription": "A quick snapshot of what I have been building, documenting, and publishing across technical and non-technical topics.",
     "myProjects": "My Projects",
     "contactMe": "Contact Me",
     "webDev": "Web Development",
     "tech": "Tech",
     "nonTech": "Non-Tech",
     "latestBlogs": "Latest Blogs",
+    "latestBlogsEyebrow": "Fresh notes",
     "loadingMore": "Loading..."
   },
   "blogs": {
@@ -52,6 +65,10 @@
   },
   "contact": {
     "heading": "Contact Me",
+    "eyebrow": "Let’s build something credible",
+    "intro": "If you are hiring, collaborating, or reviewing strong front-end work, send a note. I care about product quality, clean implementation, and dependable remote communication.",
+    "availabilityTitle": "Working style",
+    "availabilityBody": "Strong on UI implementation, component systems, and end-to-end ownership for portfolio-grade and production-facing interfaces.",
     "yourName": "Your Name",
     "yourEmail": "Your Email",
     "message": "Message",

@@ -1,137 +1,78 @@
 "use client"
-import { useScrollableStore } from "@/app/service/Store"
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  ReactNode,
-  useContext,
-} from "react"
+import React, { ReactNode, useEffect, useRef, useState } from "react"
 import { Container } from "@radix-ui/themes"
-import { ThemeContext } from "@/app/context/DarkModeContext"
 import style from "@/app/service/ThemeService"
 import useIsInScrollable from "@/app/hooks/useIsInScrollable"
-import { useTheme } from "@/app/hooks/useTheme"
 
 interface Props {
   children: ReactNode
 }
 
-// Utility function that clamps a given value to a
-// specific range (inclusive, between min and max).
-const clamp = (val: number, min = 0, max = 1) =>
-  Math.max(min, Math.min(max, val))
+const SCROLLABLE_HEIGHT_IN_VH = 100
 
-// Helper function for interpolation (assuming it was defined elsewhere in the original code)
-const getInterpolatedValue = (
-  curvyValue: number,
-  flatValue: number,
-  scrollRatio: number
-) => {
-  return curvyValue * (1 - scrollRatio) + flatValue * scrollRatio
-}
+const clamp = (value: number, min = 0, max = 1) =>
+  Math.max(min, Math.min(max, value))
+
+const interpolate = (curvyValue: number, flatValue: number, scrollRatio: number) =>
+  curvyValue * (1 - scrollRatio) + flatValue * scrollRatio
 
 const DynamicBezierCurve = ({ children }: Props) => {
   const [scrollRatio, setScrollRatio] = useState(0)
   const [scrolledInVH, setScrolledInVh] = useState(0)
-  const nodeRef = useRef(null)
-  const isInScrollable = useScrollableStore((state) => state.isInScrollable)
-  const BACKGROUND_COLOR = style.background
-  const SCROLLABLE_COLOR = style.scrollable
-
-  const theme = useTheme()
-
-  const SCROLLABLE_HEIGHT_IN_VH = 100
-  {
-    /* 
-  ADJUSTED_SCROLL_COEFFICIENT: assoicate with the curve flaten speed, affect this by
-  affect the state "scrollRatio"
-  */
-  }
-  const ADJUSTED_SCROLL_COEFFICIENT = 1
-  {
-    /* 
-    SLOWER: affect user scroll speed  
-  */
-  }
-  const SLOWER = 0.35
+  const animationFrameRef = useRef<number | null>(null)
+  const latestRatioRef = useRef(0)
+  const latestScrolledInVhRef = useRef(0)
+  const backgroundColor = style.background
+  const scrollableColor = style.scrollable
 
   useIsInScrollable(scrolledInVH, SCROLLABLE_HEIGHT_IN_VH)
 
   useEffect(() => {
-    const handleScroll = (event: WheelEvent) => {
-      // Only slow down scrolling in specific conditions
-      event.preventDefault()
-      window.scrollBy({
-        top: event.deltaY * SLOWER,
-        behavior: "auto", // Avoid smooth scrolling on every event
-      })
-    }
+    const updateScrollState = () => {
+      animationFrameRef.current = null
 
-    if (isInScrollable) {
-      window.addEventListener("wheel", handleScroll, { passive: false })
-      return () => window.removeEventListener("wheel", handleScroll)
-    }
-  }, [isInScrollable])
+      const viewportHeight = window.innerHeight || 1
+      const currentScrollRatio = clamp(window.scrollY / viewportHeight)
+      const currentScrolledInVh = (window.scrollY / viewportHeight) * 100
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!nodeRef.current) return
+      if (latestRatioRef.current !== currentScrollRatio) {
+        latestRatioRef.current = currentScrollRatio
+        setScrollRatio(currentScrollRatio)
+      }
 
-      const windowHeight = window.innerHeight
-      const pixelsScrolled = Math.abs(window.scrollY)
-      const baseRatio = pixelsScrolled / windowHeight
-
-      setScrolledInVh(baseRatio * 100)
-
-      let ratio = ADJUSTED_SCROLL_COEFFICIENT * baseRatio
-
-      // We don't care about the negative values when it's
-      // below the viewport, or the greater-than-1 values when
-      // it's above the viewport.
-      ratio = clamp(ratio)
-
-      // Small optimization, avoid re-rendering when the
-      // SVG isn't in the viewport.
-      if (scrollRatio !== ratio) {
-        setScrollRatio(ratio)
+      if (latestScrolledInVhRef.current !== currentScrolledInVh) {
+        latestScrolledInVhRef.current = currentScrolledInVh
+        setScrolledInVh(currentScrolledInVh)
       }
     }
 
-    window.addEventListener("scroll", handleScroll)
+    const handleScroll = () => {
+      if (animationFrameRef.current !== null) {
+        return
+      }
 
-    // Clean up event listener on component unmount
+      animationFrameRef.current = window.requestAnimationFrame(updateScrollState)
+    }
+
+    updateScrollState()
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    window.addEventListener("resize", handleScroll, { passive: true })
+
     return () => {
       window.removeEventListener("scroll", handleScroll)
+      window.removeEventListener("resize", handleScroll)
+
+      if (animationFrameRef.current !== null) {
+        window.cancelAnimationFrame(animationFrameRef.current)
+      }
     }
-  }, [scrollRatio]) // Include scrollRatio in dependencies to ensure handleScroll has the latest value
+  }, [])
 
-  // Use our `getInterpolatedValue` function to figure out the values for
-  // the start point and the control points.
-  const startPoint = getInterpolatedValue(
-    90, // curvy value
-    0, // flat value
-    scrollRatio
-  )
+  const startPoint = interpolate(90, 0, scrollRatio)
+  const firstControlPoint = interpolate(60, 0, scrollRatio)
+  const secondControlPoint = interpolate(100, 0, scrollRatio)
+  const endPoint = interpolate(80, 0, scrollRatio)
 
-  const firstControlPoint = getInterpolatedValue(
-    60, // curvy value
-    0, // flat value
-    scrollRatio
-  )
-
-  const secondControlPoint = getInterpolatedValue(
-    100, // curvy value
-    0, // flat value
-    scrollRatio
-  )
-
-  // Unlike the other 3 points, the `endPoint` is
-  // constant, and doesn't need interpolation.
-  const endPoint = getInterpolatedValue(80, 0, scrollRatio)
-
-  // Create the SVG path instructions, using our
-  // interpolated values.
   const instructions = `
     M 0,${startPoint}
     C 30,${firstControlPoint}
@@ -146,7 +87,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
       <div
         style={{
           position: "fixed",
-          backgroundColor: SCROLLABLE_COLOR,
+          backgroundColor: scrollableColor,
           height: "100vh",
           width: "100%",
         }}
@@ -154,7 +95,6 @@ const DynamicBezierCurve = ({ children }: Props) => {
         <Container>{children}</Container>
       </div>
       <svg
-        ref={nodeRef}
         viewBox="0 0 100 100"
         style={{
           width: "100%",
@@ -166,8 +106,8 @@ const DynamicBezierCurve = ({ children }: Props) => {
       >
         <path
           d={instructions}
-          fill={BACKGROUND_COLOR as string}
-          stroke="hotpink"
+          fill={backgroundColor as string}
+          stroke="transparent"
           strokeWidth="0"
         />
       </svg>
@@ -177,7 +117,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
           height: `${SCROLLABLE_HEIGHT_IN_VH}vh`,
           zIndex: -1,
         }}
-      ></div>
+      />
     </>
   )
 }

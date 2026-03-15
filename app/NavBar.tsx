@@ -41,6 +41,7 @@ const NavBar = () => {
         backdropFilter: "blur(10px)",
         borderBottom: "1px solid color-mix(in srgb, var(--border-color) 72%, transparent)",
       }}
+      className="supports-[backdrop-filter]:bg-background/70"
     >
       {windowWidth > 768 ? <DesktopNav /> : <MobileNav />}
     </nav>

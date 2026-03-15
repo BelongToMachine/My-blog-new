@@ -7,20 +7,33 @@
     "language": "EN"
   },
   "hero": {
+    "eyebrow": "前端开发者 · AI 产品实践者",
     "greeting": "你好，我是",
     "name": "廖永杰",
     "imageAlt": "Jie 站在这里",
     "typeSequence": ["Jie", "前端开发者", "廖永杰"],
+    "summary": "我专注于打造有完成度的 React / Next.js 产品体验，重视交互细节、工程可维护性，以及真正能落地的 AI 集成。",
+    "highlightOne": "可独立完成远程协作交付",
+    "highlightTwo": "面向招聘场景的作品质量",
+    "highlightThree": "中英双语体验与 AI 工作流",
+    "availabilityLabel": "当前状态",
+    "availability": "正在寻找前端与产品体验相关机会",
+    "cta": "开始交流",
+    "portraitLabel": "档案",
+    "locationLabel": "杭州",
     "code": "const coder = {\n  name: \"廖永杰\",\n  role: [\"前端开发工程师\"],\n  skill: [\"React\", \"Next.js\"],\n  location: \"中国杭州\",\n  problemSolver: true,\n  welcomeMessage: () => {\n    return \"很高兴认识你！\"\n  }\n}"
   },
   "home": {
     "blogSummary": "我的博客总结",
+    "blogSummaryEyebrow": "写作与交付",
+    "blogSummaryDescription": "这里集中展示我近期在技术、项目实践与非技术内容上的输出，帮助快速了解我的思考方式与执行节奏。",
     "myProjects": "我的项目",
     "contactMe": "联系我",
     "webDev": "Web开发",
     "tech": "科技类",
     "nonTech": "非技术类",
     "latestBlogs": "最近的博客",
+    "latestBlogsEyebrow": "最新记录",
     "loadingMore": "加载中..."
   },
   "blogs": {
@@ -52,6 +65,10 @@
   },
   "contact": {
     "heading": "联系我",
+    "eyebrow": "一起做点靠谱的产品",
+    "intro": "如果你正在招聘、寻找合作，或想进一步了解我的前端能力，可以直接联系我。我重视产品质量、实现细节，以及稳定高效的远程协作。",
+    "availabilityTitle": "工作方式",
+    "availabilityBody": "擅长 UI 实现、组件体系、体验打磨，以及把想法从需求推进到可交付结果。",
     "yourName": "您的名字",
     "yourEmail": "您的邮箱",
     "message": "消息",

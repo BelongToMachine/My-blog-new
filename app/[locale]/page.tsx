@@ -1,5 +1,4 @@
 import prisma from "@/prisma/client"
-import { Container } from "@radix-ui/themes"
 import { getTranslations } from "next-intl/server"
 import { Tag } from "@prisma/client"
 import Hero from "../components/Hero"
@@ -54,11 +53,14 @@ export default async function Home({ params }: Props) {
       <DynamicBezierCurve>
         <Hero />
       </DynamicBezierCurve>
-      <Container>
-        <SummaryHeader />
-        <PostSummary web={open} tech={inProgress} nonTech={closed} />
-        <Contact />
-      </Container>
+      <section className="mx-auto max-w-6xl px-4 py-4 sm:px-6 lg:px-8">
+        <div className="section-shell px-5 py-8 sm:px-8 sm:py-10">
+          <SummaryHeader />
+          <div className="surface-divider mb-8" />
+          <PostSummary web={open} tech={inProgress} nonTech={closed} />
+        </div>
+      </section>
+      <Contact />
     </>
   )
 }
