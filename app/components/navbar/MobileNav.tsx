@@ -1,18 +1,22 @@
+"use client"
 import { LuMoveVertical } from "react-icons/lu"
 import React from "react"
 import { PiGithubLogoFill } from "react-icons/pi"
-import Link from "next/link"
+import NextLink from "next/link"
 import { Button, DropdownMenu } from "@radix-ui/themes"
 import { FaBook } from "react-icons/fa6"
 import { FaLinkedin } from "react-icons/fa"
+import { useTranslations } from "next-intl"
+import { Link } from "@/app/i18n/navigation"
+import LanguageToggle from "./LanguageToggle"
 
 const MobileNav = () => {
   return (
     <>
       <div className="flex justify-between items-center px-4 py-4">
-        <Link href="http://github.com/JieLuis">
+        <NextLink href="http://github.com/JieLuis">
           <PiGithubLogoFill />
-        </Link>
+        </NextLink>
         <Menu />
       </div>
     </>
@@ -22,6 +26,16 @@ const MobileNav = () => {
 export default MobileNav
 
 const Menu = () => {
+  const t = useTranslations("nav")
+  const mobileLinks = [
+    { label: t("myBlog"), href: "/blogs", type: "blogs" as const },
+    {
+      label: t("linkedin"),
+      href: "https://www.linkedin.com/in/jie-liao-070162296/",
+      type: "linkedin" as const,
+    },
+  ]
+
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger>
@@ -37,30 +51,25 @@ const Menu = () => {
                 <Link key={link.href} href={link.href} className="pr-3">
                   {link.label}
                 </Link>
-                <Icon label={link.label} />
+                <Icon type={link.type} />
               </DropdownMenu.Item>
             </div>
           )
         })}
         <DropdownMenu.Separator />
+        <DropdownMenu.Item>
+          <LanguageToggle />
+        </DropdownMenu.Item>
       </DropdownMenu.Content>
     </DropdownMenu.Root>
   )
 }
 
-const mobileLinks = [
-  { label: "我的博客", href: "/blogs" },
-  {
-    label: "LinkedIn",
-    href: "https://www.linkedin.com/in/jie-liao-070162296/",
-  },
-]
-
-const Icon = ({ label }: { label: string }) => {
-  switch (label) {
-    case "我的博客":
+const Icon = ({ type }: { type: "blogs" | "linkedin" }) => {
+  switch (type) {
+    case "blogs":
       return <FaBook />
-    case "LinkedIn":
+    case "linkedin":
       return <FaLinkedin />
   }
 }

@@ -2,16 +2,17 @@
 import React, { useRef, FormEvent, useState } from "react"
 import emailjs from "@emailjs/browser"
 import * as Label from "@radix-ui/react-label"
-import { contactSchema, ContactFormErrors } from "./validationSchema"
+import { ContactFormErrors, createContactSchema } from "./validationSchema"
 import { Box } from "@radix-ui/themes"
-import * as Tooltip from "@radix-ui/react-tooltip"
 import TooltipIcon from "./components/TooltipIcon"
 import { Button } from "./components/ui/button"
 import { Input } from "./components/ui/input"
 import { Textarea } from "./components/ui/textarea"
 import { Card, CardContent } from "./components/ui/card"
+import { useTranslations } from "next-intl"
 
 const Contact: React.FC = () => {
+  const t = useTranslations("contact")
   const form = useRef<HTMLFormElement>(null)
   const [formStatus, setFormStatus] = useState<string>("")
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
@@ -21,12 +22,16 @@ const Contact: React.FC = () => {
     const now = new Date().getTime()
 
     if (isOverLimitation(now)) {
-      setFormStatus("您每天仅可以发送一次邮箱")
+      setFormStatus(t("limitMsg"))
       return
     }
 
     if (form.current) {
-      const validationErrors = formValidate(form.current)
+      const validationErrors = formValidate(form.current, {
+        nameMin: t("validation.nameMin"),
+        emailInvalid: t("validation.emailInvalid"),
+        messageMin: t("validation.messageMin"),
+      })
       setErrors(validationErrors)
 
       if (Object.keys(validationErrors).length > 0) return
@@ -46,7 +51,7 @@ const Contact: React.FC = () => {
           },
           (error: any) => {
             console.log("FAILED...", error.text)
-            setFormStatus("FAILED...")
+            setFormStatus(t("failureMsg"))
           }
         )
     }
@@ -59,7 +64,7 @@ const Contact: React.FC = () => {
         className="flex mb-3 mt-10 justify-center items-center"
       >
         <h1 id="contact-me" className="home-page-heading">
-          联系我
+          {t("heading")}
         </h1>
         <TooltipIcon />
       </Box>
@@ -73,7 +78,7 @@ const Contact: React.FC = () => {
                 : "text-red-700 bg-red-100"
                 } rounded-lg`}
             >
-              {formStatus === "SUCCESS!" ? "您的邮件已送达!" : formStatus}
+              {formStatus === "SUCCESS!" ? t("successMsg") : formStatus}
             </div>
           )}
 
@@ -83,7 +88,7 @@ const Contact: React.FC = () => {
                 htmlFor="name"
                 className="block text-sm font-medium text-gray-700"
               >
-                您的名字
+                {t("yourName")}
               </Label.Root>
               <Input
                 type="text"
@@ -104,7 +109,7 @@ const Contact: React.FC = () => {
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700"
               >
-                您的邮箱
+                {t("yourEmail")}
               </Label.Root>
               <Input
                 type="email"
@@ -125,7 +130,7 @@ const Contact: React.FC = () => {
                 htmlFor="message"
                 className="block text-sm font-medium text-gray-700"
               >
-                消息
+                {t("message")}
               </Label.Root>
               <Textarea
                 name="message"
@@ -145,7 +150,7 @@ const Contact: React.FC = () => {
                 type="submit"
                 className="w-full"
               >
-                Send
+                {t("send")}
               </Button>
             </div>
           </form>
@@ -155,14 +160,21 @@ const Contact: React.FC = () => {
   )
 }
 
-const formValidate = (form: HTMLFormElement) => {
+const formValidate = (
+  form: HTMLFormElement,
+  messages: {
+    nameMin: string
+    emailInvalid: string
+    messageMin: string
+  }
+) => {
   const formData = {
     user_name: form.user_name.value,
     user_email: form.user_email.value,
     message: form.message.value,
   }
 
-  const validation = contactSchema.safeParse(formData)
+  const validation = createContactSchema((key) => messages[key as keyof typeof messages]).safeParse(formData)
   const validationErrors: ContactFormErrors = {}
 
   if (!validation.success) {

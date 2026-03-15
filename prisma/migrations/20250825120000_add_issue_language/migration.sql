@@ -1,0 +1,2 @@
+ALTER TABLE "Issue"
+ADD COLUMN "language" VARCHAR(5) NOT NULL DEFAULT 'zh';

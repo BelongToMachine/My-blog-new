@@ -1,0 +1,98 @@
+{
+  "nav": {
+    "blogs": "文章",
+    "aboutMe": "关于我",
+    "myBlog": "我的博客",
+    "linkedin": "LinkedIn",
+    "language": "EN"
+  },
+  "hero": {
+    "greeting": "你好，我是",
+    "name": "廖永杰",
+    "imageAlt": "Jie 站在这里",
+    "typeSequence": ["Jie", "前端开发者", "廖永杰"],
+    "code": "const coder = {\n  name: \"廖永杰\",\n  role: [\"前端开发工程师\"],\n  skill: [\"React\", \"Next.js\"],\n  location: \"中国杭州\",\n  problemSolver: true,\n  welcomeMessage: () => {\n    return \"很高兴认识你！\"\n  }\n}"
+  },
+  "home": {
+    "blogSummary": "我的博客总结",
+    "myProjects": "我的项目",
+    "contactMe": "联系我",
+    "webDev": "Web开发",
+    "tech": "科技类",
+    "nonTech": "非技术类",
+    "latestBlogs": "最近的博客",
+    "loadingMore": "加载中..."
+  },
+  "blogs": {
+    "title": "标题",
+    "type": "博客类型",
+    "createdAt": "创建于",
+    "filterAll": "全部",
+    "webDev": "Web开发",
+    "tech": "科技类",
+    "nonTech": "非技术类",
+    "filterPlaceholder": "按博客类型分类",
+    "newBlog": "新建博客",
+    "listTitle": "博客列表",
+    "listDescription": "查看我所有的博客文章",
+    "page": "第 {current} 页，共 {total} 页",
+    "edit": "编辑博客",
+    "delete": "删除",
+    "deleteConfirm": "确认删除？",
+    "deleteCancel": "取消",
+    "deleteAction": "确认",
+    "deleteErrorTitle": "错误",
+    "deleteErrorDescription": "无法删除这篇博客。",
+    "assigneePlaceholder": "分配给...",
+    "assigneeSuggestions": "建议",
+    "assigneeUnassigned": "未分配",
+    "assignSaveError": "保存失败",
+    "newDisabled": "当前环境不允许此功能",
+    "detailDescription": "博客 {id} 的详情"
+  },
+  "contact": {
+    "heading": "联系我",
+    "yourName": "您的名字",
+    "yourEmail": "您的邮箱",
+    "message": "消息",
+    "send": "发送",
+    "successMsg": "您的邮件已送达！",
+    "limitMsg": "您每天仅可以发送一次邮箱",
+    "failureMsg": "消息发送失败。",
+    "validation": {
+      "nameMin": "姓名至少需要 2 个字符",
+      "emailInvalid": "邮箱地址格式无效",
+      "messageMin": "消息至少需要 15 个字符"
+    }
+  },
+  "blogForm": {
+    "titlePlaceholder": "标题",
+    "descriptionPlaceholder": "描述",
+    "submitNew": "提交新博客",
+    "update": "更新博客",
+    "errorMsg": "发生了未知错误",
+    "validation": {
+      "titleRequired": "标题不能为空",
+      "descriptionRequired": "描述不能为空"
+    }
+  },
+  "projects": {
+    "noLink": "该项目的 GitHub 链接或上线网址不存在..."
+  },
+  "skills": {
+    "heading": "技能",
+    "toolkits": "工具集",
+    "education": "教育经历"
+  },
+  "status": {
+    "FINISHED": "Web开发",
+    "IN_PROGRESS": "科技类",
+    "CLOSED": "非技术类"
+  },
+  "meta": {
+    "homeTitle": "廖永杰 — 前端开发工程师 & AI 提示词工程师",
+    "homeDescription": "廖永杰（Jie Liao）的作品集，专注于 React、Next.js、TypeScript 和 AI 集成。",
+    "blogsTitle": "博客列表",
+    "blogsDescription": "查看我所有的博客文章"
+  }
+}

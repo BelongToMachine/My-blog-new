@@ -6,8 +6,10 @@ import { TypeAnimation } from "react-type-animation"
 import { motion } from "framer-motion"
 import { ThemeContext } from "../context/DarkModeContext"
 import { CodeBlocker } from "../packages/index"
+import { useTranslations } from "next-intl"
 
 const Hero = () => {
+  const t = useTranslations("hero")
   const themeContext = useContext(ThemeContext)
   let timeoutId: NodeJS.Timeout | null = null
 
@@ -17,18 +19,8 @@ const Hero = () => {
 
   const { colorMode } = themeContext
 
-  const code = `
-  const coder = {
-    name: "Jie",
-    role: ["Front-end developer"],
-    skill: ["React", "Next.js"],
-    location: "Hangzhou, China",
-    problemSolver: true,
-    welcomeMessage: () => {
-      return "Happy to meet you!"
-    }
-  }
-  `
+  const typeSequence = t.raw("typeSequence") as string[]
+  const code = t.raw("code") as string
   return (
     <div id="about-me-section" className="pb-4">
       <div className="grid grid-cols-1 sm:grid-cols-12">
@@ -41,17 +33,10 @@ const Hero = () => {
           <div>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-4 text-yellow-500">
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-600 flicker">
-                {`Heya I'm `}
+                {`${t("greeting")} `}
               </span>
               <TypeAnimation
-                sequence={[
-                  "Jie",
-                  1500,
-                  "a web developer",
-                  1500,
-                  "廖永杰",
-                  1500,
-                ]}
+                sequence={typeSequence.flatMap((value) => [value, 1500])}
                 wrapper="div"
                 speed={50}
                 repeat={Infinity}
@@ -72,7 +57,7 @@ const Hero = () => {
           <div className="w-[500px] relative bottom-[2rem]">
             <Image
               src={selfie}
-              alt="Jie is standing firm"
+              alt={t("imageAlt")}
               width={350}
               height={300}
             />

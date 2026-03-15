@@ -1,0 +1,98 @@
+{
+  "nav": {
+    "blogs": "Articles",
+    "aboutMe": "About Me",
+    "myBlog": "My Blog",
+    "linkedin": "LinkedIn",
+    "language": "中文"
+  },
+  "hero": {
+    "greeting": "Heya I'm",
+    "name": "Jie",
+    "imageAlt": "Jie is standing firm",
+    "typeSequence": ["Jie", "a web developer", "廖永杰"],
+    "code": "const coder = {\n  name: \"Jie\",\n  role: [\"Front-end developer\"],\n  skill: [\"React\", \"Next.js\"],\n  location: \"Hangzhou, China\",\n  problemSolver: true,\n  welcomeMessage: () => {\n    return \"Happy to meet you!\"\n  }\n}"
+  },
+  "home": {
+    "blogSummary": "My Blog Summary",
+    "myProjects": "My Projects",
+    "contactMe": "Contact Me",
+    "webDev": "Web Development",
+    "tech": "Tech",
+    "nonTech": "Non-Tech",
+    "latestBlogs": "Latest Blogs",
+    "loadingMore": "Loading..."
+  },
+  "blogs": {
+    "title": "Blog Title",
+    "type": "Blog Type",
+    "createdAt": "Created At",
+    "filterAll": "All",
+    "webDev": "Web Development",
+    "tech": "Tech",
+    "nonTech": "Non-Tech",
+    "filterPlaceholder": "Filter by Type",
+    "newBlog": "New Blog",
+    "listTitle": "Blogs",
+    "listDescription": "View all of my blogs",
+    "page": "Page {current} of {total}",
+    "edit": "Edit Blog",
+    "delete": "Delete",
+    "deleteConfirm": "Confirm?",
+    "deleteCancel": "Cancel",
+    "deleteAction": "Confirm",
+    "deleteErrorTitle": "Error",
+    "deleteErrorDescription": "Could not delete this blog.",
+    "assigneePlaceholder": "Assign...",
+    "assigneeSuggestions": "Suggestions",
+    "assigneeUnassigned": "Unassigned",
+    "assignSaveError": "Changes could not be saved",
+    "newDisabled": "This functionality is currently not allowed",
+    "detailDescription": "Details of blog {id}"
+  },
+  "contact": {
+    "heading": "Contact Me",
+    "yourName": "Your Name",
+    "yourEmail": "Your Email",
+    "message": "Message",
+    "send": "Send",
+    "successMsg": "Your email has been sent!",
+    "limitMsg": "You can only send once per day",
+    "failureMsg": "Failed to send your message.",
+    "validation": {
+      "nameMin": "Name must be at least 2 characters long",
+      "emailInvalid": "Invalid email address",
+      "messageMin": "Message must be at least 15 characters long"
+    }
+  },
+  "blogForm": {
+    "titlePlaceholder": "Title",
+    "descriptionPlaceholder": "Description",
+    "submitNew": "Submit New Blog",
+    "update": "Update Blog",
+    "errorMsg": "An unexpected error occurred.",
+    "validation": {
+      "titleRequired": "Title is required",
+      "descriptionRequired": "Description is required"
+    }
+  },
+  "projects": {
+    "noLink": "This project's GitHub or live URL does not exist..."
+  },
+  "skills": {
+    "heading": "Skill",
+    "toolkits": "Toolkits",
+    "education": "Education"
+  },
+  "status": {
+    "FINISHED": "Web Development",
+    "IN_PROGRESS": "Tech",
+    "CLOSED": "Non-Tech"
+  },
+  "meta": {
+    "homeTitle": "Jie Liao — Front-End Developer & AI Prompt Engineer",
+    "homeDescription": "Portfolio of Jie Liao — a front-end developer specializing in React, Next.js, TypeScript, and AI.",
+    "blogsTitle": "Blogs List",
+    "blogsDescription": "View all of my blogs"
+  }
+}

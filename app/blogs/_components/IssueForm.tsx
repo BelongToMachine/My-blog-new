@@ -3,20 +3,23 @@ import { Button, Callout, TextField } from "@radix-ui/themes";
 import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
 import "easymde/dist/easymde.min.css";
-import { useRouter } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { issueSchema } from "@/app/validationSchema";
+import { createBlogSchema } from "@/app/validationSchema";
 import { z } from "zod";
 import ErrorMessage from "@/app/components/ErrorMessage";
 import Spinner from "@/app/components/Spinner";
 import { Issue } from "@prisma/client";
 import SimpleMDE from "react-simplemde-editor";
+import { useRouter } from "@/app/i18n/navigation";
 
 
-type IssueFormData = z.infer<typeof issueSchema>;
+type IssueFormData = z.infer<ReturnType<typeof createBlogSchema>>;
 
 const IssueForm = ({ issue }: { issue?: Issue }) => {
+  const locale = useLocale();
+  const t = useTranslations("blogForm");
   const router = useRouter();
   const {
     register,
@@ -24,7 +27,16 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
     handleSubmit,
     formState: { errors },
   } = useForm<IssueFormData>({
-    resolver: zodResolver(issueSchema),
+    resolver: zodResolver(
+      createBlogSchema((key) => {
+        if (key === "titleRequired") return t("validation.titleRequired")
+        if (key === "descriptionRequired") {
+          return t("validation.descriptionRequired")
+        }
+
+        return key
+      })
+    ),
   });
   const [error, setError] = useState("");
   const [isSubmitting, setSubmitting] = useState(false);
@@ -33,12 +45,12 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
     try {
       setSubmitting(true);
       if (issue) await axios.patch("/api/blogs/" + issue.id, data);
-      else await axios.post("/api/blogs", data);
+      else await axios.post("/api/blogs", { ...data, language: locale });
       router.push("/blogs");
       router.refresh();
     } catch (error) {
       setSubmitting(false);
-      setError("An unexpected error occurred.");
+      setError(t("errorMsg"));
     }
   });
 
@@ -53,7 +65,7 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
         <TextField.Root>
           <TextField.Input
             defaultValue={issue?.title}
-            placeholder="Title"
+            placeholder={t("titlePlaceholder")}
             {...register("title")}
           />
         </TextField.Root>
@@ -63,12 +75,12 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
           control={control}
           defaultValue={issue?.description}
           render={({ field }) => (
-            <SimpleMDE placeholder="Description" {...field} />
+            <SimpleMDE placeholder={t("descriptionPlaceholder")} {...field} />
           )}
         />
         <ErrorMessage>{errors.description?.message}</ErrorMessage>
         <Button disabled={isSubmitting}>
-          {issue ? "Update Issue" : "Submit New Issue"}{" "}
+          {issue ? t("update") : t("submitNew")}{" "}
           {isSubmitting && <Spinner />}
         </Button>
       </form>

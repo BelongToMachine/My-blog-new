@@ -4,8 +4,10 @@ import ProjectTags from "./components/ProjectTags";
 import ProjectsDetail from "./components/ProjectsDetail";
 import { motion, useInView } from "framer-motion";
 import { Box } from "@radix-ui/themes";
+import { useTranslations } from "next-intl";
 
 const Projects = () => {
+  const t = useTranslations("home");
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
   const cardVariants = {
@@ -16,7 +18,7 @@ const Projects = () => {
   return (
     <>
       <Box id="projects" className="text-center mb-3 ">
-        <h1 className="home-page-heading">我的项目</h1>
+        <h1 className="home-page-heading">{t("myProjects")}</h1>
       </Box>
       <div ref={ref}>
         <motion.div
@@ -26,7 +28,7 @@ const Projects = () => {
           transition={{ duration: 1.5, delay: 0.3 }}
         >
           <ProjectTags />
-          <Suspense fallback={<>加载中...</>}>
+          <Suspense fallback={<>{t("loadingMore")}</>}>
             <ProjectsDetail />
           </Suspense>
         </motion.div>

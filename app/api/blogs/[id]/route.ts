@@ -1,6 +1,6 @@
 import { patchBlogSchema } from "@/app/validationSchema"
 import prisma from "@/prisma/client"
-import { AuthOptions, getServerSession } from "next-auth"
+import { getServerSession } from "next-auth"
 import { NextRequest, NextResponse } from "next/server"
 import authOptions from "@/app/auth/authOptions"
 
@@ -8,8 +8,8 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-
   const { id } = await params
+  const locale = request.nextUrl.searchParams.get("locale")
 
   const parsedId = parseInt(id)
 
@@ -17,7 +17,9 @@ export async function GET(
     return NextResponse.json({ error: "Invalid ID" }, { status: 400 })
   }
 
-  const blog = await prisma.issue.findUnique({ where: { id: parsedId } })
+  const blog = await prisma.issue.findFirst({
+    where: { id: parsedId, ...(locale ? { language: locale } : {}) },
+  })
 
   if (!blog) {
     return NextResponse.json({ error: "Blog not found" }, { status: 404 })
@@ -30,16 +32,16 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = getServerSession(authOptions)
+  const session = await getServerSession(authOptions)
   if (!session) return NextResponse.json({}, { status: 401 })
 
   const body = await request.json()
   const validation = patchBlogSchema.safeParse(body)
 
   if (!validation.success)
-    return NextResponse.json(validation.error.format, { status: 400 })
+    return NextResponse.json(validation.error.format(), { status: 400 })
 
-  const { assignedToUserId, title, description } = body
+  const { assignedToUserId, title, description, language } = body
   if (assignedToUserId) {
     const user = await prisma.user.findUnique({
       where: { id: assignedToUserId },
@@ -69,6 +71,7 @@ export async function PATCH(
       title,
       description,
       assignedToUserId,
+      language,
     },
   })
 
@@ -100,7 +103,4 @@ export async function DELETE(
   })
 
   return NextResponse.json({})
-}
-function getSereverSession(authOptions: AuthOptions) {
-  throw new Error("Function not implemented.")
 }
