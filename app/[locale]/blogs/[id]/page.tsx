@@ -1,4 +1,5 @@
 import prisma from "@/prisma/client"
+import { withPrismaFallback } from "@/prisma/safe"
 import { Box, Container, Flex, Grid } from "@radix-ui/themes"
 import { notFound } from "next/navigation"
 import { getServerSession } from "next-auth"
@@ -15,15 +16,24 @@ interface Props {
 }
 
 const fetchIssue = cache((issueId: number, locale: string) =>
-  prisma.issue
-    .findFirst({ where: { id: issueId, language: locale } })
-    .then((issue) =>
-      issue ?? prisma.issue.findUnique({ where: { id: issueId } })
-    )
+  withPrismaFallback(
+    () =>
+      prisma.issue
+        .findFirst({ where: { id: issueId, language: locale } })
+        .then((issue) =>
+          issue ?? prisma.issue.findUnique({ where: { id: issueId } })
+        ),
+    null,
+    `Falling back to a missing blog detail for issue ${issueId}.`
+  )
 )
 
 export default async function BlogDetailPage({ params }: Props) {
-  const session = await getServerSession(authOptions)
+  const session = await withPrismaFallback(
+    () => getServerSession(authOptions),
+    null,
+    "Disabling authenticated blog detail controls because the database is unavailable."
+  )
   const issue = await fetchIssue(parseInt(params.id), params.locale)
 
   if (!issue) {
