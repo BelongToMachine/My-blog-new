@@ -10,16 +10,20 @@ interface StringStore {
 
 const parseTextIntoComponents = (input: string): StringStore[] => {
   const store: StringStore[] = []
+  const sanitizedInput = input
+    .replace(/<think>[\s\S]*?<\/think>/gi, "")
+    .replace(/^\s*<\/?think>\s*$/gim, "")
+    .trim()
   const regex = /```(?:\w*\n)?([\s\S]*?)```/g
   let lastIndex = 0
   let match
 
-  while ((match = regex.exec(input)) !== null) {
+  while ((match = regex.exec(sanitizedInput)) !== null) {
     const index = match.index
 
     // Push the text before this code block (if any)
     if (index > lastIndex) {
-      const textChunk = input.slice(lastIndex, index)
+      const textChunk = sanitizedInput.slice(lastIndex, index)
       store.push({
         content: textChunk.trim(),
         isCode: false,
@@ -37,8 +41,8 @@ const parseTextIntoComponents = (input: string): StringStore[] => {
   }
 
   // Push the remaining text after the last code block
-  if (lastIndex < input.length) {
-    const remainingText = input.slice(lastIndex)
+  if (lastIndex < sanitizedInput.length) {
+    const remainingText = sanitizedInput.slice(lastIndex)
     store.push({
       content: remainingText.trim(),
       isCode: false,

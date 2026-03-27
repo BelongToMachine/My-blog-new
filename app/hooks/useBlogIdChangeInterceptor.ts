@@ -1,26 +1,23 @@
 "use client"
-import { useState, useEffect } from "react"
-import { usePathname, useSearchParams } from "next/navigation"
+import { useEffect, useRef, useState } from "react"
+import { usePathname } from "next/navigation"
 
 const useBlogIdChangeInterceptor = () => {
   const pathname = usePathname()
-  const searchParams = useSearchParams()
   const [hasIdChanged, setHasIdChanged] = useState(false)
-  const [previousId, setPreviousId] = useState<string | null>(null)
+  const previousIdRef = useRef<string | null>(null)
 
   useEffect(() => {
-    // Extract current ID from pathname
     const currentId = pathname.split("/")[2] // Assuming the URL is in the pattern "/blogs/[id]"
+    const previousId = previousIdRef.current
 
-    // Check if the 'id' has changed
     if (previousId !== null && currentId !== previousId) {
       setHasIdChanged(true)
     } else {
       setHasIdChanged(false)
     }
 
-    // Update previous ID
-    setPreviousId(currentId)
+    previousIdRef.current = currentId
   }, [pathname])
 
   return hasIdChanged

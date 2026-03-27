@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useCallback, useEffect, useRef } from "react"
 import {
   useDefaultCursorStore,
   useVirtualCursorStore,
@@ -29,18 +29,18 @@ const CursorManager = () => {
     display: isMagicCursor ? `block` : `none`,
   }
 
-  const updateCursorRect = () => {
+  const updateCursorRect = useCallback(() => {
     if (cursorRef.current) {
       const rect = cursorRef.current.getBoundingClientRect()
       setCursorRect(rect)
     }
-  }
+  }, [setCursorRect])
 
   useEffect(() => {
     const interval = setInterval(updateCursorRect, 100)
 
     return () => clearInterval(interval)
-  }, [])
+  }, [updateCursorRect])
 
   useEffect(() => {
     document.body.style.cursor = isMagicCursor ? "none" : "auto"

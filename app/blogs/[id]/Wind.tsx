@@ -1,7 +1,7 @@
 "use client"
 
 import { Flex } from "@radix-ui/themes"
-import React, { useEffect, useRef, useState } from "react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 import {
   useDefaultCursorStore,
   useVirtualCursorStore,
@@ -29,7 +29,7 @@ const Wind = () => {
   const [windOffsetX, setWindOffsetX] = useState(0)
   const windRef = useRef<HTMLDivElement>(null)
 
-  const checkOverlap = () => {
+  const checkOverlap = useCallback(() => {
     const cursorRect = getState().cursorRect
     if (windRef.current && cursorRect) {
       const windRect = windRef.current.getBoundingClientRect()
@@ -48,12 +48,12 @@ const Wind = () => {
 
       setIsOverlapping(generalOverlapping, minusOffsetOverlapping)
     }
-  }
+  }, [getState, setIsOverlapping])
 
   useEffect(() => {
     const interval = setInterval(checkOverlap, 10)
     return () => clearInterval(interval)
-  }, [])
+  }, [checkOverlap])
 
   useEffect(() => {
     const intervalId = setInterval(() => {

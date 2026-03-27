@@ -1,4 +1,5 @@
 import prisma from "@/prisma/client"
+import { withPrismaFallback } from "@/prisma/safe"
 import { Avatar, Card, Flex, Heading, Table } from "@radix-ui/themes"
 import { create } from "domain"
 import React, { CSSProperties } from "react"
@@ -10,17 +11,24 @@ import { getLocale, getTranslations } from "next-intl/server"
 const LatestBlogs = async () => {
   const locale = await getLocale()
   const t = await getTranslations("home")
-  const localizedCount = await prisma.issue.count({
-    where: { language: locale },
-  })
-  const blogs = await prisma.issue.findMany({
-    where: localizedCount > 0 ? { language: locale } : undefined,
-    orderBy: { createdAt: "desc" },
-    take: 5,
-    include: {
-      assignedToUser: true,
+  const blogs = await withPrismaFallback(
+    async () => {
+      const localizedCount = await prisma.issue.count({
+        where: { language: locale },
+      })
+
+      return prisma.issue.findMany({
+        where: localizedCount > 0 ? { language: locale } : undefined,
+        orderBy: { createdAt: "desc" },
+        take: 5,
+        include: {
+          assignedToUser: true,
+        },
+      })
     },
-  })
+    [],
+    "Falling back to an empty latest blogs list because the database is unavailable.",
+  )
 
   return (
     <Card style={xTheme.card}>
