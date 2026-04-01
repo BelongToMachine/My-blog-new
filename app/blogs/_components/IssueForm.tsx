@@ -1,5 +1,5 @@
 "use client";
-import { Button, Callout, TextField } from "@radix-ui/themes";
+import { Button, Callout, TextField, Theme } from "@radix-ui/themes";
 import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
 import "easymde/dist/easymde.min.css";
@@ -57,18 +57,20 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
   return (
     <div>
       {error && (
-        <Callout.Root color="red" className="mb-5">
+        <Callout.Root color="red" className="mb-5 rounded-[0.55rem]">
           <Callout.Text>{error}</Callout.Text>
         </Callout.Root>
       )}
       <form className="space-y-3" onSubmit={onSubmit}>
-        <TextField.Root>
+        <Theme radius="none">
+        <TextField.Root className="rounded-[0.45rem]">
           <TextField.Input
             defaultValue={issue?.title}
             placeholder={t("titlePlaceholder")}
             {...register("title")}
           />
         </TextField.Root>
+        </Theme>
         <ErrorMessage>{errors.title?.message}</ErrorMessage>
         <Controller
           name="description"
@@ -79,7 +81,7 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
           )}
         />
         <ErrorMessage>{errors.description?.message}</ErrorMessage>
-        <Button disabled={isSubmitting}>
+        <Button disabled={isSubmitting} className="rounded-[0.45rem]">
           {issue ? t("update") : t("submitNew")}{" "}
           {isSubmitting && <Spinner />}
         </Button>

@@ -27,13 +27,16 @@ const AssigneeSelect = ({ issue }: { issue: Issue }) => {
 
   return (
     <>
-      <Theme>
+      <Theme radius="none">
         <Select.Root
           defaultValue={issue.assignedToUserId || ""}
           onValueChange={assignIssue}
         >
-          <Select.Trigger placeholder={t("assigneePlaceholder")} />
-          <Select.Content>
+          <Select.Trigger
+            placeholder={t("assigneePlaceholder")}
+            className="!rounded-[0.45rem] !border-border/70 !bg-background/85"
+          />
+          <Select.Content className="!rounded-[0.45rem] !border-border/70">
             <Select.Group>
               <Select.Label>{t("assigneeSuggestions")}</Select.Label>
               <Select.Item value="unassigned">{t("assigneeUnassigned")}</Select.Item>
@@ -52,7 +55,7 @@ const AssigneeSelect = ({ issue }: { issue: Issue }) => {
       </Theme>
       <Toaster />
     </>
-  );
+  )
 };
 
 const useUsers = () =>

@@ -2,7 +2,7 @@
 .article {
   max-width: 800px;
   margin: 0 auto; /* Center the article on the page */
-  padding: 20px;
+  padding: 24px;
   font-family: inherit;
   line-height: 1.6; /* Better text readability */
   color: var(--text-color);
@@ -10,18 +10,26 @@
 
 /* Title styling */
 .article h1 {
-  font-size: 2.5rem;
+  font-size: clamp(2rem, 4vw, 3.4rem);
   color: var(--text-color);
   margin-bottom: 1rem; /* Space below the title */
-  text-align: center; /* Center the title */
+  text-align: left;
+  line-height: 0.95;
+  letter-spacing: -0.05em;
 }
 
 .article h2 {
-  font-size: 2rem;
+  margin-top: 2.4rem;
+  margin-bottom: 0.9rem;
+  font-size: clamp(1.55rem, 2vw, 2.15rem);
+  letter-spacing: -0.04em;
 }
 
 .article h3 {
-  font-size: 1.5rem;
+  margin-top: 1.8rem;
+  margin-bottom: 0.8rem;
+  font-size: clamp(1.18rem, 1.5vw, 1.45rem);
+  letter-spacing: -0.03em;
 }
 
 /* Paragraph styling */
@@ -31,7 +39,22 @@
   margin-bottom: 1.5rem; /* Space below paragraphs */
 }
 
-.artcile li {
+.articleFlow {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.articleSection {
+  display: grid;
+}
+
+.article ul,
+.article ol {
+  margin: 0 0 1.4rem;
+  padding-left: 1.4rem;
+}
+
+.article li {
   margin-bottom: 0.5rem;
 }
 
@@ -57,36 +80,66 @@
 .article div img {
   max-width: 100%;
   height: auto;
-  border-radius: 4px; /* Rounded corners for images */
+  border-radius: 18px;
   margin: 1rem 0; /* Add spacing around images */
+  border: 1px solid color-mix(in srgb, var(--border-color) 70%, transparent);
+  box-shadow: 0 20px 45px rgba(12, 18, 35, 0.12);
 }
 
 /* Blockquote styling inside markdown */
 .article div blockquote {
   margin: 1rem 0;
-  padding: 1rem;
+  padding: 1.1rem 1.2rem;
   background-color: color-mix(in srgb, var(--card-background-color) 82%, transparent);
   border-left: 4px solid var(--chart-link-color);
   color: color-mix(in srgb, var(--text-color) 82%, transparent);
+  border-radius: 0 18px 18px 0;
   font-style: italic;
 }
 
 /* Code block styling inside markdown */
 .article div pre {
-  background-color: color-mix(in srgb, var(--card-background-color) 92%, black);
-  color: var(--text-color);
-  padding: 1rem;
-  border-radius: 6px;
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(9, 14, 29, 0.98), rgba(14, 21, 39, 0.96)),
+    linear-gradient(135deg, rgba(67, 104, 214, 0.18), transparent 42%);
+  color: oklch(0.94 0.02 255);
+  padding: 1.15rem 1.2rem;
+  border-radius: 20px;
   overflow-x: auto; /* Horizontal scroll for long lines */
   font-family: "Courier New", Courier, monospace;
-  border: 1px solid var(--border-color);
+  border: 1px solid rgba(88, 120, 214, 0.18);
+  box-shadow:
+    0 22px 48px rgba(14, 20, 39, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.article div pre::before {
+  content: "";
+  position: absolute;
+  top: 0.9rem;
+  left: 1rem;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 999px;
+  background: rgba(248, 119, 102, 0.92);
+  box-shadow:
+    1.1rem 0 0 rgba(242, 191, 87, 0.92),
+    2.2rem 0 0 rgba(86, 207, 142, 0.92);
+}
+
+.article div pre code {
+  display: block;
+  padding-top: 0.8rem;
+  background: transparent;
+  color: inherit;
 }
 
 .article div code {
   font-family: "Courier New", Courier, monospace;
   background-color: color-mix(in srgb, var(--card-background-color) 86%, transparent);
   padding: 2px 6px;
-  border-radius: 4px;
+  border-radius: 8px;
   color: var(--chart-link-color);
 }
 

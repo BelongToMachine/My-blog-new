@@ -50,6 +50,12 @@
     "title": "标题",
     "type": "博客类型",
     "createdAt": "创建于",
+    "dbTab": "数据库博客",
+    "mdxTab": "MDX 实验",
+    "mdxEyebrow": "POC 功能",
+    "mdxBadge": "MDX 文章",
+    "mdxListTitle": "MDX 文章实验区",
+    "mdxListDescription": "这里是一个与现有数据库博客并行存在的文件式文章实验区。",
     "filterAll": "全部",
     "webDev": "Web开发",
     "tech": "科技类",
@@ -118,6 +124,8 @@
     "aiTitle": "问我 AI 助手",
     "aiDescription": "围绕廖永杰本人、作品集、前端能力与项目决策的 AI 助手。",
     "blogsTitle": "博客列表",
-    "blogsDescription": "查看我所有的博客文章"
+    "blogsDescription": "查看我所有的博客文章",
+    "mdxArticlesTitle": "MDX 文章实验区",
+    "mdxArticlesDescription": "与当前博客系统并行存在的文件式文章实验。"
   }
 }

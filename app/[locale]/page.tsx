@@ -8,7 +8,6 @@ import SummaryHeader from "../SummaryHeader"
 import Contact from "../Contact"
 import DynamicBezierCurve from "../components/navbar/DynamicBezierCurve"
 import PostSummary from "../PostSummary"
-import AIPlayground from "./ai/AIPlayground"
 
 interface Props {
   params: { locale: string }
@@ -72,7 +71,6 @@ export default async function Home({ params }: Props) {
           tech={summary.inProgress}
           nonTech={summary.closed}
         />
-        <AIPlayground />
         <Contact />
       </Container>
     </>

@@ -138,7 +138,7 @@ const LikeDislike = ({ issue }: { issue: Issue }) => {
   }
 
   return (
-    <div className="absolute bottom-0 flex w-full rounded-[1.5rem] border border-border/70 bg-background/80 p-3 shadow-[0_18px_40px_rgba(15,23,42,0.08)] backdrop-blur-sm dark:bg-slate-950/60 dark:shadow-[0_18px_40px_rgba(2,6,23,0.35)]">
+    <div className="absolute bottom-0 flex w-full rounded-[0.55rem] border border-border/70 bg-background/80 p-3 shadow-[0_18px_40px_rgba(15,23,42,0.08)] backdrop-blur-sm dark:bg-slate-950/60 dark:shadow-[0_18px_40px_rgba(2,6,23,0.35)]">
       <AnimatePresence>
         {exceedDialog && (
           <motion.div

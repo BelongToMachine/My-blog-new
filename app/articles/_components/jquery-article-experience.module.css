@@ -1,0 +1,400 @@
+.panel {
+  --paper: oklch(0.975 0.01 95);
+  --paper-strong: oklch(0.93 0.018 92);
+  --ink: oklch(0.29 0.03 255);
+  --ink-soft: oklch(0.46 0.025 250);
+  --accent: oklch(0.58 0.19 250);
+  --accent-soft: oklch(0.91 0.05 250);
+  --signal: oklch(0.67 0.17 42);
+  position: relative;
+  overflow: hidden;
+  border-radius: 2rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 20%, white);
+  background:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--accent) 14%, transparent), transparent 36%),
+    linear-gradient(180deg, var(--paper), color-mix(in srgb, var(--paper-strong) 90%, white));
+  box-shadow:
+    0 24px 80px rgba(24, 42, 93, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  color: var(--ink);
+}
+
+.panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.3),
+    transparent 22%,
+    transparent 78%,
+    rgba(39, 68, 138, 0.04)
+  );
+}
+
+.header {
+  position: relative;
+  display: grid;
+  gap: 1rem;
+  padding: clamp(1.5rem, 2vw, 2rem);
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 12%, white);
+}
+
+.eyebrow {
+  font-size: 0.72rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--accent) 70%, var(--ink-soft));
+}
+
+.headline {
+  max-width: 34rem;
+  font-size: clamp(1.7rem, 3vw, 2.7rem);
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.subline {
+  max-width: 40rem;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--ink-soft);
+}
+
+.tabRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent) 14%, white);
+  background: rgba(255, 255, 255, 0.72);
+  padding: 0.72rem 1rem;
+  color: var(--ink-soft);
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease;
+}
+
+.tab:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--accent) 30%, white);
+  color: var(--ink);
+}
+
+.tabActive {
+  border-color: color-mix(in srgb, var(--accent) 55%, white);
+  background: color-mix(in srgb, var(--accent-soft) 86%, white);
+  color: var(--ink);
+  box-shadow: 0 14px 32px rgba(47, 91, 211, 0.12);
+}
+
+.tabIndex {
+  display: inline-flex;
+  min-width: 1.8rem;
+  height: 1.8rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 12%, white);
+  color: color-mix(in srgb, var(--accent) 82%, black);
+  font-size: 0.77rem;
+  font-weight: 700;
+}
+
+.body {
+  position: relative;
+  display: grid;
+  gap: 1.5rem;
+  padding: clamp(1.25rem, 2vw, 1.75rem);
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.95fr);
+}
+
+.frame {
+  border-radius: 1.6rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 14%, white);
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow:
+    0 20px 50px rgba(25, 42, 88, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+.codeFrame {
+  overflow: hidden;
+}
+
+.frameBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 12%, white);
+  background: color-mix(in srgb, var(--paper) 88%, white);
+}
+
+.frameDots {
+  display: flex;
+  gap: 0.45rem;
+}
+
+.frameDots span {
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--signal) 22%, white);
+}
+
+.frameDots span:nth-child(2) {
+  background: color-mix(in srgb, var(--accent) 22%, white);
+}
+
+.frameDots span:nth-child(3) {
+  background: color-mix(in srgb, var(--ink) 22%, white);
+}
+
+.frameLabel {
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.codeWrap {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 1rem;
+  padding: 1.15rem 1.15rem 1.25rem;
+  background:
+    linear-gradient(180deg, rgba(12, 18, 36, 0.98), rgba(16, 24, 42, 0.96)),
+    linear-gradient(135deg, rgba(28, 46, 98, 0.14), transparent 50%);
+  color: oklch(0.94 0.02 255);
+}
+
+.lineNumbers {
+  display: grid;
+  gap: 0.5rem;
+  padding-top: 0.2rem;
+  color: rgba(228, 234, 255, 0.35);
+  font-size: 0.84rem;
+  text-align: right;
+  user-select: none;
+}
+
+.codeBlock {
+  margin: 0;
+  white-space: pre-wrap;
+  font-size: 0.93rem;
+  line-height: 1.9;
+  font-family: "SFMono-Regular", "Menlo", "Monaco", monospace;
+}
+
+.tokenComment {
+  color: rgba(197, 211, 255, 0.45);
+}
+
+.tokenSelector {
+  color: oklch(0.78 0.16 250);
+}
+
+.tokenMethod {
+  color: oklch(0.83 0.11 165);
+}
+
+.tokenString {
+  color: oklch(0.83 0.15 70);
+}
+
+.tokenSignal {
+  color: oklch(0.79 0.18 32);
+}
+
+.tokenKeyword {
+  color: oklch(0.79 0.12 315);
+}
+
+.copy {
+  padding: 1rem 1.15rem 1.2rem;
+  border-top: 1px solid color-mix(in srgb, var(--accent) 10%, white);
+  font-size: 0.98rem;
+  line-height: 1.8;
+  color: var(--ink-soft);
+}
+
+.stage {
+  display: grid;
+  gap: 1rem;
+}
+
+.domFrame {
+  padding: 1rem;
+}
+
+.domViewport {
+  border-radius: 1.2rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(244, 247, 255, 0.92)),
+    radial-gradient(circle at top right, rgba(61, 111, 255, 0.08), transparent 42%);
+  padding: 1.2rem;
+  min-height: 19rem;
+}
+
+.domTitle {
+  margin-bottom: 1rem;
+  font-size: 0.76rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.demoSurface {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.demoHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-radius: 1.2rem;
+  background: rgba(255, 255, 255, 0.86);
+  padding: 1rem 1rem 1rem 1.1rem;
+  box-shadow: 0 10px 30px rgba(30, 45, 95, 0.06);
+}
+
+.demoHeading strong {
+  font-size: 1.25rem;
+  letter-spacing: -0.03em;
+}
+
+.chip {
+  border-radius: 999px;
+  padding: 0.38rem 0.75rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  background: color-mix(in srgb, var(--accent) 14%, white);
+  color: color-mix(in srgb, var(--accent) 76%, black);
+}
+
+.domCard {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.4rem;
+  border: 1px solid rgba(58, 88, 171, 0.08);
+  background: rgba(255, 255, 255, 0.94);
+  padding: 1rem;
+}
+
+.domCard::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 3px;
+  background: linear-gradient(90deg, rgba(57, 109, 251, 0.8), rgba(242, 132, 40, 0.8));
+  opacity: 0.34;
+}
+
+.domList {
+  display: grid;
+  gap: 0.65rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.domList li {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  border-radius: 1rem;
+  padding: 0.7rem 0.8rem;
+  background: color-mix(in srgb, var(--paper) 68%, white);
+  color: var(--ink);
+}
+
+.domList li::before {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 60%, white);
+}
+
+.activeItem {
+  background: color-mix(in srgb, var(--accent-soft) 70%, white);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 25%, white);
+}
+
+.signalText {
+  color: color-mix(in srgb, var(--signal) 78%, black);
+}
+
+.stageFooter {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.note {
+  border-radius: 1.2rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 12%, white);
+  background: rgba(255, 255, 255, 0.72);
+  padding: 1rem 1rem 1.05rem;
+}
+
+.noteLabel {
+  margin-bottom: 0.45rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.note p {
+  margin: 0;
+  color: var(--ink);
+  line-height: 1.75;
+}
+
+@media (max-width: 960px) {
+  .body {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .header,
+  .body {
+    padding: 1rem;
+  }
+
+  .tabRow {
+    display: grid;
+  }
+
+  .tab {
+    justify-content: flex-start;
+  }
+
+  .codeWrap {
+    gap: 0.7rem;
+    padding: 1rem;
+  }
+
+  .codeBlock {
+    font-size: 0.84rem;
+  }
+
+  .domViewport {
+    min-height: auto;
+  }
+}

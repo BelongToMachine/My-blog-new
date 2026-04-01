@@ -20,14 +20,12 @@ const md = new MarkdownIt({
   typographer: true,
 })
 
-md.renderer.rules.heading_open = (tokens, idx) => {
+md.renderer.rules.heading_open = (tokens, idx, options, _env, self) => {
   const token = tokens[idx]
-  const level = token.tag.slice(1)
-  const content = tokens[idx + 1].content
   const id = uuidv4()
 
   token.attrSet("id", id)
-  return `<h${level} id="${id}">${content}</h${level}>`
+  return self.renderToken(tokens, idx, options)
 }
 class BlogParser {
   private header
