@@ -40,6 +40,7 @@ const Pagination = ({ itemCounts, pageSize, currentPage }: Props) => {
       <Button
         color="gray"
         variant="soft"
+        className="rounded-[0.45rem]"
         disabled={currentPage === 1}
         onClick={() => changePage(1)}
       >
@@ -48,6 +49,7 @@ const Pagination = ({ itemCounts, pageSize, currentPage }: Props) => {
       <Button
         color="gray"
         variant="soft"
+        className="rounded-[0.45rem]"
         disabled={currentPage === 1}
         onClick={() => changePage(currentPage - 1)}
       >
@@ -56,6 +58,7 @@ const Pagination = ({ itemCounts, pageSize, currentPage }: Props) => {
       <Button
         color="gray"
         variant="soft"
+        className="rounded-[0.45rem]"
         disabled={currentPage === pageCount}
         onClick={() => changePage(currentPage + 1)}
       >
@@ -64,6 +67,7 @@ const Pagination = ({ itemCounts, pageSize, currentPage }: Props) => {
       <Button
         color="gray"
         variant="soft"
+        className="rounded-[0.45rem]"
         disabled={currentPage === pageCount}
         onClick={() => changePage(pageCount)}
       >

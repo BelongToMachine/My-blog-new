@@ -9,7 +9,7 @@ const EditIssueButton = ({ issueId }: { issueId: number }) => {
   const t = useTranslations("blogs");
 
   return (
-    <Button>
+    <Button className="rounded-[0.45rem] border border-border/70">
       <Pencil2Icon />
       <Link href={`/blogs/${issueId}/edit`}>{t("edit")}</Link>
     </Button>

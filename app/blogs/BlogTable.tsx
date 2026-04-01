@@ -24,7 +24,8 @@ const BlogTable = async ({ searchParams: params, issues }: Props) => {
   const orderBy = searchParams.orderBy ?? undefined
 
   return (
-    <Table.Root variant="surface">
+    <div className="overflow-hidden rounded-[0.55rem] border border-border/70 bg-background/75 shadow-sm">
+      <Table.Root variant="surface">
       <Table.Header
         style={{
           background: "",
@@ -67,7 +68,8 @@ const BlogTable = async ({ searchParams: params, issues }: Props) => {
           </Table.Row>
         ))}
       </Table.Body>
-    </Table.Root>
+      </Table.Root>
+    </div>
   )
 }
 

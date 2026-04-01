@@ -50,6 +50,12 @@
     "title": "Blog Title",
     "type": "Blog Type",
     "createdAt": "Created At",
+    "dbTab": "Database Blogs",
+    "mdxTab": "MDX Lab",
+    "mdxEyebrow": "POC Feature",
+    "mdxBadge": "MDX Article",
+    "mdxListTitle": "MDX Articles",
+    "mdxListDescription": "A file-based article experiment that lives beside the existing database-backed blog.",
     "filterAll": "All",
     "webDev": "Web Development",
     "tech": "Tech",
@@ -118,6 +124,8 @@
     "aiTitle": "Ask Jie AI",
     "aiDescription": "AI assistant focused on Jie's portfolio, front-end work, and project decisions.",
     "blogsTitle": "Blogs List",
-    "blogsDescription": "View all of my blogs"
+    "blogsDescription": "View all of my blogs",
+    "mdxArticlesTitle": "MDX Articles",
+    "mdxArticlesDescription": "File-based MDX article experiments running beside the current blog system."
   }
 }

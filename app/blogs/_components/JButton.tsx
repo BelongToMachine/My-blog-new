@@ -13,7 +13,7 @@ const JButton = ({ children, onClick, disabled, attri }: Props) => {
     <div
       style={{
         padding: "0.65rem 0.75rem",
-        borderRadius: "12px",
+        borderRadius: "7px",
         backgroundColor: "color-mix(in srgb, var(--card-background-color) 76%, transparent)",
         fontSize: "0.8rem",
         transition: "background-color 0.2s, transform 0.2s, border-color 0.2s",

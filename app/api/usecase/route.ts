@@ -142,7 +142,7 @@ export async function POST(request: Request) {
     console.error(error)
     return NextResponse.json(
       { error: "Internal Server Error" },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }
@@ -193,10 +193,9 @@ export async function GET(request: Request) {
     console.error(error)
     return NextResponse.json(
       {
-        error:
-          error instanceof Error ? error.message : "Internal Server Error",
+        error: error instanceof Error ? error.message : "Internal Server Error",
       },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }
