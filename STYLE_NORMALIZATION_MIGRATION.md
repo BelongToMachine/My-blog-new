@@ -41,7 +41,7 @@ These are the main styling drift sources that should be normalized over time:
 3. Repeated one-off card, button, tooltip, and overlay styling outside `app/components/ui/*`.
 4. Inline shell styles for nav, backgrounds, and component surfaces.
 5. Global utility classes in `app/globals.css` that should either become tokens or reusable components.
-6. Duplicate project-card styling in more than one component.
+6. Legacy migration plans still mention removed project/contact surfaces that should no longer drive new normalization work.
 
 ## Files That Define The Migration Backbone
 
@@ -64,7 +64,7 @@ Actions:
 
 1. Treat this as a styling-only migration unless a visual bug cannot be fixed without a tiny structural change.
 2. Do not mix normalization work with Prisma, auth, API, or localization refactors.
-3. Create a simple tracking checklist for each migrated area: tokens, primitives, shell, home, projects, contact, blogs, articles, AI playground.
+3. Create a simple tracking checklist for each migrated area: tokens, primitives, shell, home, blogs, articles, AI playground.
    - Baseline tracker: `doc/normalize/migration-tracker.md`
 4. Use before/after screenshots for high-visibility pages in both light and dark mode.
    - Screenshot baseline and storage rules: `doc/normalize/screenshots/README.md`
@@ -207,7 +207,6 @@ Target files:
 - `app/components/Hero.tsx`
 - `app/SummaryHeader.tsx`
 - `app/PostSummary.tsx`
-- `app/Contact.tsx`
 - `app/components/AboutMe.tsx`
 
 Actions:
@@ -215,37 +214,35 @@ Actions:
 1. Normalize hero typography, spacing rhythm, and token usage without removing its identity or motion.
 2. Replace hard-coded accent styling with semantic tokens.
 3. Extract repeated section spacing and heading patterns if the home page reveals clear duplication.
-4. Bring summary, post preview, and contact surfaces onto the same card/input/message conventions as the primitive layer.
+4. Bring summary and post preview surfaces onto the same card/message conventions as the primitive layer.
 5. Keep the hero distinctive. Do not flatten it into a generic layout.
 
 Exit criteria:
 
-- home feels visually coherent from hero to contact
+- home feels visually coherent from hero through its remaining shared sections
 - no hard-coded colors remain where tokens should be used
 - motion still feels intentional and portfolio-quality
 
-## Phase 6: Normalize Projects And Shared Showcase Cards
+## Phase 6: Remove Deprecated Projects And Contact Surfaces
 
-Purpose: unify a high-credibility portfolio surface and remove repeated custom card logic.
+Purpose: keep the normalization plan aligned with the actual product by removing deprecated project/contact references and leftovers instead of refining them further.
 
 Target files:
 
-- `app/components/ProjectCard.tsx`
-- `app/components/ProjectsDetail.tsx`
-- `app/components/ProjectTags.tsx`
+- residual project/contact assets, docs, and unused implementation paths
 
 Actions:
 
-1. Consolidate duplicated project-card styling into one shared implementation path.
-2. Replace `var(--card-background-color)`, `var(--border-color)`, and `var(--chart-link-color)` usage with semantic-token-backed classes.
-3. Standardize overlay controls, hover states, and tag treatments.
-4. If a dedicated showcase-card primitive is justified, create it in `app/components/ui/*` or as a shared site-level composed component.
+1. Delete unused project-related assets, helper files, and dead implementation paths.
+2. Delete contact-form-specific files if they still exist.
+3. Remove migration-plan references that treat project or contact as active product surfaces.
+4. Keep deletion scoped so it does not alter remaining blog, article, shell, or AI behavior.
 
 Exit criteria:
 
-- projects use one visual system
-- duplicate hover overlay patterns are eliminated
-- recruiter-facing card quality is preserved or improved
+- no active migration phase treats projects or contact as a future UI target
+- deprecated project/contact files are removed from the repo where safe
+- the remaining normalization roadmap matches the actual product surface
 
 ## Phase 7: Normalize Blog List And Issue Flows
 
@@ -432,8 +429,8 @@ If this plan is executed through tickets, the safest initial sequence is:
 2. Convert `ThemeService` into a temporary alias-only compatibility layer.
 3. Migrate the shell (`app/[locale]/layout.tsx`, `app/NavBar.tsx`, navbar components).
 4. Strengthen shared button/card/input patterns.
-5. Migrate home hero, summary, and contact.
-6. Consolidate project cards and project showcase styling.
+5. Migrate home hero and summary.
+6. Remove deprecated project/contact implementation leftovers.
 7. Normalize blogs/issues.
 8. Normalize articles.
 9. Normalize AI playground.

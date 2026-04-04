@@ -13,11 +13,11 @@
 
 ## Execution Rules
 
-- [ ] 始终坚持最小改动原则
-- [ ] 样式重构不改业务逻辑
-- [ ] 每次任务先确认影响范围，再动手
+- [x] 始终坚持最小改动原则
+- [x] 样式重构不改业务逻辑
+- [x] 每次任务先确认影响范围，再动手
 - [ ] 每次任务完成后都检查深色模式、移动端和交互状态
-- [ ] 不把 normalize 任务和无关功能开发混在同一个改动里
+- [x] 不把 normalize 任务和无关功能开发混在同一个改动里
 
 ---
 
@@ -25,8 +25,8 @@
 
 每次执行样式规范化任务，按下面的顺序选择技能：
 
-- [ ] 先用 `normalize` 对齐 token、spacing、variant、component pattern
-- [ ] 如果需要更好的视觉方案或版式判断，再用 `frontend-design`
+- [x] 先用 `normalize` 对齐 token、spacing、variant、component pattern
+- [x] 如果需要更好的视觉方案或版式判断，再用 `frontend-design`
 - [ ] 如果出现重复模式，需要抽公共层时，用 `extract`
 - [ ] 如果涉及响应式、断点、触控体验，用 `adapt`
 - [ ] 如果涉及表单、溢出、空状态、错误态，用 `harden`
@@ -34,10 +34,10 @@
 
 ### 单次任务标准流程
 
-- [ ] 明确当前任务属于哪个 phase
-- [ ] 明确这次只改哪些页面或组件
-- [ ] 先对照规范，再改实现
-- [ ] 改完后做最小必要验证
+- [x] 明确当前任务属于哪个 phase
+- [x] 明确这次只改哪些页面或组件
+- [x] 先对照规范，再改实现
+- [x] 改完后做最小必要验证
 - [ ] 通过后再进入下一个 checklist 项
 
 ---
@@ -47,11 +47,11 @@
 - [ ] 新增 UI 优先基于 `app/components/ui/*`
 - [ ] 新增站点级视觉模式优先进入 `app/components/system/*`
 - [ ] 新增业务组合组件优先进入 `app/components/features/*`
-- [ ] 新代码不再新增旧 token 命名，例如 `--text-color`、`--border-color`
+- [x] 新代码不再新增旧 token 命名，例如 `--text-color`、`--border-color`
 - [ ] 新代码尽量不用裸 `style={{ ... }}`，除非必须依赖运行时值
 - [ ] 不再继续扩大 `@radix-ui/themes` 的视觉职责，保留它的必要行为能力即可
 - [ ] 能复用 variant 就不新写一套 class 组合
-- [ ] 能复用 token 就不写硬编码颜色
+- [x] 能复用 token 就不写硬编码颜色
 - [ ] 能留在 feature-local 的组件不要为了整齐强行上提
 
 ---
@@ -64,24 +64,24 @@
 
 ### 本阶段要完成的事
 
-- [ ] 确认采用的整体方案是：
+- [x] 确认采用的整体方案是：
   - `shadcn/ui` 作为底层组件基础
   - `Radix primitives` 作为交互/无障碍能力来源
   - `system components` 作为本站统一视觉层
 - [ ] 确认 `suggestion.md` 作为设计重构方向文档
-- [ ] 确认本文件作为执行型 checklist
-- [ ] 确认后续所有 normalize 工作默认记录到 `doc/normalize/`
+- [x] 确认本文件作为执行型 checklist
+- [x] 确认后续所有 normalize 工作默认记录到 `doc/normalize/`
 
 ### 本阶段不要做的事
 
-- [ ] 不引入新的大型组件库，例如 MUI、Ant Design、Mantine
-- [ ] 不先重做首页视觉
-- [ ] 不先全站大范围改 class
+- [x] 不引入新的大型组件库，例如 MUI、Ant Design、Mantine
+- [x] 不先重做首页视觉
+- [x] 不先全站大范围改 class
 
 ### 完成标准
 
-- [ ] 团队后续能用一句话描述当前方案
-- [ ] 后续新增任务都能挂到某个 phase 下
+- [x] 团队后续能用一句话描述当前方案
+- [x] 后续新增任务都能挂到某个 phase 下
 
 ---
 
@@ -97,29 +97,29 @@
 
 ### Step 1.1 Token Inventory
 
-- [ ] 盘点现有 token 来源
-- [ ] 列出 `globals.css` 中已经存在的语义 token
-- [ ] 列出旧变量体系：
+- [x] 盘点现有 token 来源
+- [x] 列出 `globals.css` 中已经存在的语义 token
+- [x] 列出旧变量体系：
   - `--text-color`
   - `--border-color`
   - `--card-background-color`
   - `--background-color`
   - `--chart-link-color`
-- [ ] 整理一份旧变量 -> 新语义 token 的映射表
-- [ ] 标记哪些旧 token 需要兼容保留，哪些可以后续删除
-- [ ] 标记项目里硬编码颜色最密集的文件，作为后续优先治理对象
+- [x] 整理一份旧变量 -> 新语义 token 的映射表
+- [x] 标记哪些旧 token 需要兼容保留，哪些可以后续删除
+- [x] 标记项目里硬编码颜色最密集的文件，作为后续优先治理对象
 
 ### Step 1.2 Freeze Token Standard
 
-- [ ] 确定全站主 token 体系以 `app/globals.css` 语义 token 为准
-- [ ] 明确保留的 token 分类：
+- [x] 确定全站主 token 体系以 `app/globals.css` 语义 token 为准
+- [x] 明确保留的 token 分类：
   - surface
   - text
   - brand
   - feedback
   - structure
   - shape
-- [ ] 确定 `--chart-link-color` 的最终语义归属
+- [x] 确定 `--chart-link-color` 的最终语义归属
 - [ ] 确定是否补充 `success` / `warning` token
 
 ### Step 1.3 Freeze Styling Rules
@@ -143,12 +143,12 @@
 
 ### Step 1.4 Tailwind and Theme Cleanup
 
-- [ ] 检查 `tailwind.config.js`
+- [x] 检查 `tailwind.config.js`
 - [ ] 决定是否缩减 `colors.blue`、`colors.green` 直接暴露给业务的范围
 - [ ] 明确允许使用的品牌色阶
 - [ ] 检查 `globals.css` 中全局 utility 是否过多承担业务视觉职责
-- [ ] 盘点动画时长、阴影、radius 是否已经形成可复用 token
-- [ ] 补齐缺失但高频的基础 token：
+- [x] 盘点动画时长、阴影、radius 是否已经形成可复用 token
+- [x] 补齐缺失但高频的基础 token：
   - shadow
   - motion duration
   - z-index
@@ -157,7 +157,7 @@
 ### 完成标准
 
 - [ ] 项目里有一份明确的样式规则文档
-- [ ] 新旧 token 的迁移映射已经固定
+- [x] 新旧 token 的迁移映射已经固定
 - [ ] 新增样式代码时可以清楚判断“该放哪一层”
 
 ---
@@ -234,41 +234,40 @@
 
 ### 首个试点区域
 
-`Projects`
+`Navigation + Home shared shell`
 
 ### 为什么从这里开始
 
 - 曝光高，直接影响第一印象
-- 重复实现明显
-- 结构相对独立，风险比 Blog 和 AI Playground 小
-- 最适合作为 card system 的样板
+- 仍然是真实存在的产品表层
+- 复用率高，适合验证 token 和 system component 是否成立
+- 风险比内容页深层结构改动更可控
 
-### Step 3.1 Normalize Project Components
+### Step 3.1 Normalize Shared Shell Components
 
-- [ ] 合并 `ProjectCard.tsx` 和 `ProjectsDetail.tsx` 的重复视觉实现
-- [ ] 保留一份权威 `ProjectCard`
-- [ ] 让列表组件只负责数据和排版，不负责卡片视觉本体
-- [ ] 把 overlay action 按钮迁移到 `ActionIconButton`
+- [ ] 统一导航与首页共享壳层的基础视觉实现
+- [ ] 让共享组件只承接视觉与交互，不混入额外业务逻辑
+- [ ] 把高频图标操作入口迁移到 `ActionIconButton`
 
-### Step 3.2 Normalize Project Section Language
+### Step 3.2 Normalize Shared Section Language
 
-- [ ] 统一 Projects 区域标题样式
-- [ ] 统一项目标题、描述、标签层级
+- [ ] 统一首页公共区块标题样式
+- [ ] 统一共享 section 的标题、说明、辅助动作层级
 - [ ] 统一 hover / focus / overlay 行为
-- [ ] 清理项目区域里的旧 token 使用
+- [ ] 清理共享壳层里的旧 token 使用
 
 ### Step 3.3 Validate the Pilot
 
 - [ ] 对比迁移前后，确认视觉一致性提升
 - [ ] 确认深色模式没有被破坏
 - [ ] 确认移动端布局正常
-- [ ] 把 Projects 的经验补充回规范文档
+- [ ] 把共享壳层的经验补充回规范文档
 - [ ] 记录哪些抽象是成功的，哪些不应该继续推广
 
 ### 完成标准
 
-- [ ] 项目区块成为全站卡片类组件的样板
-- [ ] 后续其它卡片类 UI 可以直接参考这套实现
+- [ ] 共享壳层成为后续页面复用的样板
+- [ ] 后续其它页面可以直接参考这套实现
 
 ---
 
@@ -281,8 +280,8 @@
 ### 顺序
 
 1. Navigation
-2. Contact
-3. Home shared sections
+2. Home shared sections
+3. Content shared sections
 
 ### Step 4.1 Navigation
 
@@ -294,15 +293,7 @@
 - [ ] 减少导航中的 inline style 和旧 token 依赖
 - [ ] 统一 nav item、icon trigger、theme toggle、language toggle 的交互等级
 
-### Step 4.2 Contact
-
-- [ ] 用 `SectionHeading` 替换散落的 section title 写法
-- [ ] 用 `SurfaceCard` 承接 Contact 容器
-- [ ] 用 `FormMessage` / `StatusMessage` 替换手写状态条
-- [ ] 给 `Input` / `Textarea` 引入统一 error state
-- [ ] 移除 `border-gray-300`、`text-red-500` 这一类硬编码
-
-### Step 4.3 Home Shared Rhythm
+### Step 4.2 Home Shared Rhythm
 
 - [ ] 检查首页各 section 的间距节奏
 - [ ] 抽通用 `Section` 或 `PageContainer`
@@ -313,7 +304,7 @@
 ### 完成标准
 
 - [ ] 首页公共区域已经开始使用 system components
-- [ ] 导航和表单拥有统一的交互语言
+- [ ] 导航和首页共享壳层拥有统一的交互语言
 - [ ] 用户最常看到的页面已经进入统一风格轨道
 
 ---
@@ -356,7 +347,7 @@
 
 ### 完成标准
 
-- [ ] 内容页与首页/项目页属于同一产品
+- [ ] 内容页与首页/AI 页属于同一产品
 - [ ] 文章的个性保留，但基础系统一致
 
 ---

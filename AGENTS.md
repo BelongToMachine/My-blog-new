@@ -164,11 +164,9 @@ When old variables still exist, prefer mapping and gradual migration instead of 
 ### Product Areas To Protect While Normalizing
 
 - Hero: identity, motion, and technical first impression
-- Projects: card quality, tags, hover treatment, showcase credibility
 - Blogs/issues: readability, filters, pagination, and technical content presentation
 - Articles: MDX content quality and reading experience
 - AI playground: experimental feel, code block quality, chat clarity
-- Contact: validation, feedback, and trustworthy finish
 - Theme and responsive UX: light/dark coherence and mobile quality
 
 Normalization should improve consistency without erasing domain character.
@@ -187,8 +185,6 @@ Suggested migration priority:
 
 - home
 - navigation
-- projects
-- contact
 - blog list/detail
 - articles
 - AI playground and other experimental surfaces
