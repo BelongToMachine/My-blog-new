@@ -11,6 +11,18 @@
 
 这个项目本身是你的招聘作品，所以重构方向应该优先服务于“专业、稳定、有设计判断”的观感，而不是追求炫技式的重做。
 
+另外，现在已经明确一件事：
+
+- 不再需要 `Projects` 模块作为主要内容区块
+- `Contact` 表单也不再作为站点保留模块
+
+这意味着后续的样式规范化不应该再围绕 project card system 展开，而应该把重心放到仍然保留并真正影响体验的区域：
+
+- 导航与全局壳层
+- Home 的核心内容节奏
+- Blog / Articles 内容系统
+- AI Playground 的实验型界面
+
 ## 我对当前项目的观察
 
 从现有代码看，样式混乱不是单一点问题，而是几个层面叠加出来的：
@@ -24,10 +36,10 @@
 
 这导致同一个组件可能同时依赖两种命名体系，例如：
 
-- `app/components/ProjectCard.tsx`
-- `app/components/ProjectsDetail.tsx`
 - `app/NavBar.tsx`
 - `app/components/TooltipIcon.tsx`
+- `app/components/Dialog.tsx`
+- `app/[locale]/layout.tsx`
 
 长期看，这会让你很难回答“这个颜色/边框/卡片到底应该改哪一层”。
 
@@ -42,11 +54,11 @@
 
 但大量页面和业务组件仍然直接手写视觉实现，尤其是：
 
-- project card
 - nav control
 - status/message alert
 - section heading
-- overlay action button
+- overlay / floating panel
+- form feedback
 
 结果就是基础组件存在，但没有成为真正的“唯一入口”。
 
@@ -54,9 +66,9 @@
 
 比较明显的重复点：
 
-- `app/components/ProjectCard.tsx` 和 `app/components/ProjectsDetail.tsx` 几乎是同一套卡片结构
 - 页面标题依赖 `.home-page-heading`，但其它地方又各自写了一套 heading class
 - 导航在 `DesktopNav`、`MobileNav` 中分别使用了不同组件体系和不同交互语气
+- 状态提示在 AI 区域、局部提示层里各写各的
 
 这类重复很容易让后续微调变成“改一处漏三处”。
 
@@ -121,6 +133,17 @@
 ### 原则 4：重构必须可阶段验收
 
 每个阶段都要能单独完成并立即获益，而不是必须全站改完才有价值。
+
+### 原则 5：不再围绕已下线模块建立系统
+
+既然 `Projects` 模块已经不再需要，就不要继续把它当成设计系统试点、通用卡片模板来源或页面优先级核心。
+
+后续的系统抽象应该来自仍然活跃的场景，比如：
+
+- 导航控件
+- 内容页壳层
+- section heading
+- 浮层与提示
 
 ## 推荐的渐进式路线图
 
@@ -208,7 +231,7 @@
 适用场景：
 
 - Home 各 section 标题
-- Blog / Projects / Contact 的一级区块标题
+- Blog / Articles 的一级区块标题
 
 建议支持：
 
@@ -224,14 +247,13 @@
 
 适用场景：
 
-- Contact card
 - blog summary surface
 - AI panel surface
 - tooltip / floating panel 的基础壳层
 
 ### 3. ActionIconButton
 
-用于统一 project overlay、nav icon、tooltip trigger 这类图标按钮
+用于统一 nav icon、tooltip trigger、浮层操作按钮这类图标按钮
 
 统一内容：
 
@@ -244,16 +266,17 @@
 
 用于统一成功、失败、警告、校验提示
 
-当前 `app/Contact.tsx` 和 `app/[locale]/ai/AIPlayground.tsx` 都已经有这类需求，值得抽出公共模式。
+当前 `app/[locale]/ai/AIPlayground.tsx` 和局部提示类 UI 都已经有这类需求，值得抽出公共模式。
 
-### 5. ProjectCard 只保留一份权威实现
+### 5. Page Shell Helpers
 
-现在 `ProjectCard.tsx` 和 `ProjectsDetail.tsx` 结构重复度很高，建议：
+这里不再建议围绕 `ProjectCard` 做抽象，而是优先补齐更通用的页面骨架能力，例如：
 
-- 保留一个真正的 `ProjectCard`
-- `ProjectsDetail` 只负责列表和数据过滤
+- `PageContainer`
+- `Section`
+- `SectionIntro`
 
-这一步会立刻降低未来项目区块的维护成本。
+这类组件的复用面更广，也更符合当前站点已经去掉 `Projects` 模块后的结构。
 
 ## Phase 3：建立页面级布局节奏
 
@@ -276,19 +299,17 @@
 统一后可以让：
 
 - Hero 之后的内容节奏更稳
-- Blog、Projects、Articles、AI 页面更像同一个产品
+- Blog、Articles、AI 页面更像同一个产品
 - 响应式下不再每个页面单独调 padding
 
 ## Phase 4：按页面优先级逐步替换
 
 建议优先顺序如下：
 
-### 第一批：高曝光页面
+### 第一批：高曝光公共区域
 
 - 首页
 - 导航
-- Projects
-- Contact
 
 原因：这些页面最直接影响招聘者第一印象，而且组件复用率高。
 
@@ -319,6 +340,7 @@
 - 清理 demo 式 class 组合
 - 合并相近的 utility class
 - 为设计系统页补充“推荐用法”和“禁用写法”
+- 清理已经失去产品价值的 `Projects` 与 `Contact` 相关视觉实现、资源与冗余组件
 
 ## 建议优先解决的几个具体问题
 
@@ -342,53 +364,31 @@
 - 减少对旧主题变量的直接依赖
 - desktop 和 mobile 共享同一套交互 token
 
-### 2. Project 区域重复实现最明显
+### 2. AI 与通用输入状态样式可以系统化
 
 相关文件：
 
-- `app/components/ProjectCard.tsx`
-- `app/components/ProjectsDetail.tsx`
-- `app/components/ProjectTags.tsx`
-
-问题：
-
-- 同一模式重复写两遍
-- overlay action 按钮风格散落
-- 项目标题、描述、标签没有统一层级定义
-
-建议：
-
-- 先把 Project 区域作为重构试点
-- 统一成完整的 project card system
-- 让它成为后面其它卡片类组件的参考模板
-
-### 3. 表单状态样式可以系统化
-
-相关文件：
-
-- `app/Contact.tsx`
+- `app/[locale]/ai/AIPlayground.tsx`
 - `app/components/ui/input.tsx`
 - `app/components/ui/textarea.tsx`
 
 问题：
 
-- 错误边框直接写 `border-red-500`
-- 默认边框写 `border-gray-300`
-- success / error message 各自手写
+- 输入类状态仍然缺乏统一的错误/安静/辅助层级
+- success / error message 仍然可能在局部各写各的
 
 建议：
 
 - 给输入类组件补 `error`、`success`、`quiet` variant
 - 状态文本统一走 `FormMessage`
-- 后续 AI 表单、联系表单都能共享
+- 先服务 AI 和后续仍保留的交互区域，不再围绕 contact form 建模
 
-### 4. 首页 heading 体系需要统一
+### 3. 首页 heading 体系需要统一
 
 相关文件：
 
 - `app/globals.css`
 - `app/components/Hero.tsx`
-- `app/Contact.tsx`
 - 以及其它 section heading
 
 问题：
@@ -402,6 +402,27 @@
 - 定义 display heading / section heading / body lead 三层排版
 - 只在极少数关键位置保留特殊强调写法
 - 不要让每个 section 自己发明标题风格
+
+### 4. 内容页与实验页的 surface language 需要收敛
+
+相关文件：
+
+- `app/[locale]/blogs/page.tsx`
+- `app/[locale]/blogs/[id]/page.tsx`
+- `app/[locale]/articles/page.tsx`
+- `app/[locale]/ai/AIPlayground.tsx`
+
+问题：
+
+- 内容容器、提示层、表单反馈和辅助面板还没有共享同一套 surface 语言
+- 局部仍依赖旧 token 或一次性样式写法
+- AI 区域与内容页之间的基础容器语言不够统一
+
+建议：
+
+- 先统一容器、提示、辅助面板的基础壳层
+- 再逐页清理旧 token 使用
+- 保留内容页和 AI 页的个性，但让它们建立在同一套基础系统上
 
 ## 推荐的代码规范
 
@@ -444,7 +465,7 @@
 ### 视觉一致性
 
 - 同类按钮是否共享同一套 hover / focus / radius
-- 同类卡片是否共享同一套 surface 语言
+- 同类卡片或面板是否共享同一套 surface 语言
 - 同类标题是否共享同一套层级
 
 ### 代码一致性
@@ -465,25 +486,28 @@
 
 1. 先整理 token 命名和 design system 页面
 2. 抽 `SectionHeading`、`SurfaceCard`、`ActionIconButton`、`FormMessage`
-3. 把 Projects 区域当作第一块试点完成迁移
-4. 再迁移 Contact 和导航
-5. 最后再处理 Blog / Articles / AI Playground 这类复杂页面
+3. 先迁移导航和 Home 公共壳层
+4. 再迁移 Blog / Articles 的公共壳层
+5. 最后处理 AI Playground 这类实验型页面
+6. 清理不再需要的 `Projects` 与 `Contact` 相关组件、资源和样式残留
 
 这条路线的好处是：
 
 - 风险低
 - 每一步都有明显收益
 - 不会中途因为改动范围太大而放弃
+- 更符合当前站点真实保留的内容结构
 
 ## 结论
 
 你的项目不是“没有风格”，而是已经有多套不错的风格雏形混在一起了。真正需要做的不是推翻，而是把这些雏形收敛成一套清晰、可复用、可扩展的系统。
+
+既然 `Projects` 模块和 `Contact` 表单都已经不再是产品的一部分，后续的 normalize 重点也应该同步调整：不要再把项目卡片或联系表单当成核心模板，而是把系统建设重心放到导航、内容页和 AI 界面这些仍然真实存在的用户触点上。
 
 如果后续继续做这个重构，我建议把第一阶段直接定成：
 
 - 统一 token 命名
 - 补 design system 规范页
 - 抽出 3 到 4 个站点级通用组件
-- 先重构 Projects 区域作为样板
 
-这样最容易快速看到成果，也最适合作为后续全站统一风格的起点。
+这样最容易快速看到成果，也更符合现在这个站点的真实结构和优先级。
