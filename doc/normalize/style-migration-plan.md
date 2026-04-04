@@ -137,16 +137,16 @@
 
 ### Step 1.1 Token Inventory
 
-- [ ] 盘点现有 token 来源
-- [ ] 列出 `globals.css` 中已经存在的语义 token
-- [ ] 列出旧变量体系：
+- [x] 盘点现有 token 来源
+- [x] 列出 `globals.css` 中已经存在的语义 token
+- [x] 列出旧变量体系：
   - `--text-color`
   - `--border-color`
   - `--card-background-color`
   - `--background-color`
   - `--chart-link-color`
-- [ ] 整理一份旧变量 -> 新语义 token 的映射表
-- [ ] 标记哪些旧 token 需要兼容保留，哪些可以后续删除
+- [x] 整理一份旧变量 -> 新语义 token 的映射表
+- [x] 标记哪些旧 token 需要兼容保留，哪些可以后续删除
 - [ ] 标记项目里硬编码颜色最密集的文件，作为后续优先治理对象
 
 ### Step 1.2 Freeze Token Standard
@@ -166,16 +166,16 @@
 
 - [x] 写一份样式规范文档，建议文件：
   - `doc/normalize/ui-rules.md`
-- [ ] 在文档中明确：
+- [x] 在文档中明确：
   - 哪些样式允许直接写 Tailwind
   - 哪些必须抽成 component variant
   - 哪些复杂场景才允许用 CSS Module
   - 什么时候允许 inline style
-- [ ] 规定禁止事项：
+- [x] 规定禁止事项：
   - 新代码继续使用旧 token 命名
   - 同一组件同时混用两套 token
   - 业务组件里重复发明 button/card/heading 样式
-- [ ] 补充“推荐工作流”：
+- [x] 补充“推荐工作流”：
   - 先复用 `ui`
   - 再扩展 variant
   - 再考虑 `system`
@@ -183,9 +183,9 @@
 
 ### Step 1.4 Tailwind and Theme Cleanup
 
-- [ ] 检查 `tailwind.config.js`
-- [ ] 决定是否缩减 `colors.blue`、`colors.green` 直接暴露给业务的范围
-- [ ] 明确允许使用的品牌色阶
+- [x] 检查 `tailwind.config.js`
+- [x] 决定是否缩减 `colors.blue`、`colors.green` 直接暴露给业务的范围
+- [x] 明确允许使用的品牌色阶
 - [ ] 检查 `globals.css` 中全局 utility 是否过多承担业务视觉职责
 - [x] 盘点动画时长、阴影、radius 是否已经形成可复用 token
 - [ ] 补齐缺失但高频的基础 token：
@@ -196,8 +196,8 @@
 
 ### 完成标准
 
-- [ ] 项目里有一份明确的样式规则文档
-- [ ] 新旧 token 的迁移映射已经固定
+- [x] 项目里有一份明确的样式规则文档
+- [x] 新旧 token 的迁移映射已经固定
 - [ ] 新增样式代码时可以清楚判断“该放哪一层”
 
 ---
@@ -447,7 +447,7 @@
 
 ### Step 7.2 Tighten Rules
 
-- [ ] 把“推荐写法”和“禁止写法”补充进规范文档
+- [x] 把“推荐写法”和“禁止写法”补充进规范文档
 - [ ] 在 code review 时开始按规则检查
 - [ ] 约定以后新增页面优先使用 system components
 
@@ -456,7 +456,7 @@
 - [x] 更新 `app/design-system/page.tsx`
 - [x] 让它展示真实在用的组件，而不是 demo-only 组件
 - [x] 展示 token、variant、组合示例
-- [ ] 补充“推荐用法”和“不要这样用”的示例
+- [x] 补充“推荐用法”和“不要这样用”的示例
 
 ### 完成标准
 

@@ -53,10 +53,7 @@ const Examples = () => {
               onChange={(e) => setInputCode(e.target.value)}
             />
           )}
-          <Button
-            className="bg-blue-500 hover:bg-blue-600"
-            onClick={handleSubmit}
-          >
+          <Button onClick={handleSubmit}>
             X
           </Button>
         </div>

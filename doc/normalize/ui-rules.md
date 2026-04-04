@@ -27,6 +27,34 @@ When a new UI pattern appears, use this order:
 - Use variants for repeated button, card, message, and control states
 - Use inline style only for runtime values that cannot be expressed with classes
 
+## Use Variant Instead Of Raw Classes
+
+These patterns should not be re-invented inside feature components:
+
+- button emphasis, icon buttons, and CTA hierarchy
+- input and textarea validation states
+- card and surface shells
+- inline helper, warning, success, and error messages
+- repeated section headings and section intros
+
+Preferred order:
+
+1. use an existing `ui` primitive
+2. add or reuse a primitive variant
+3. use an existing `system` component
+4. extract a shared `system` pattern only if duplication is real
+5. keep it feature-local only when the pattern is truly one-off
+
+## Inline Style Rules
+
+Inline style is allowed only when at least one of these is true:
+
+- the value is runtime-only and cannot be expressed with classes
+- the value is a generated image or background URL
+- the target API requires a `style` object
+
+Inline style is not an excuse to bypass tokens. If a value is stable, move it to tokens, variants, utilities, or a shared component.
+
 ## Avoid
 
 - New hard-coded colors when a token exists
@@ -46,6 +74,43 @@ Prefer semantic tokens:
 - shape: `--radius`
 
 If a legacy token still exists, map it first and remove it only after the replacement is proven.
+
+## Legacy Token Mapping
+
+Current migration mapping:
+
+- `--text-color` -> `--foreground`
+- `--border-color` -> `--border`
+- `--card-background-color` -> `--card`
+- `--background-color` -> `--background`
+- `--chart-link-color` -> `--primary`
+- `--button-hover-color` -> `--accent`
+- `--scrollable-background-color` -> derived surface token kept temporarily as a compatibility alias
+
+Legacy aliases may stay temporarily in `app/globals.css` and `public/index.js`, but new code should prefer the semantic token directly.
+
+## Tailwind Palette Rule
+
+- `primary` and `secondary` are semantic tokens, not full raw color scales
+- do not depend on `primary-400`, `primary-600`, `secondary-500`, or similar scale classes in new code
+- if a screen still depends on those classes, migrate it to semantic token usage before adding more
+
+## Recommended And Avoided Examples
+
+Recommended:
+
+- `bg-card text-card-foreground border-border`
+- `<Button variant="subtle" />`
+- `<Input state="error" />`
+- `<SurfaceCard />`
+- `<SectionHeading />`
+
+Avoid:
+
+- `bg-[var(--card-background-color)]` in new components
+- `text-yellow-500`, `bg-blue-500`, `border-gray-300` when semantic tokens already cover the need
+- one-off heading styles inside feature components
+- mixing semantic token classes and legacy token variables in the same new component
 
 ## Verification Checklist
 
