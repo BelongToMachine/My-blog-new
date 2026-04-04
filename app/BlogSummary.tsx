@@ -1,7 +1,6 @@
 import { Status } from "@prisma/client"
 import { Card, Flex, Text } from "@radix-ui/themes"
 import React from "react"
-import { xTheme } from "./service/ThemeService"
 import { useTranslations } from "next-intl"
 import { Link as LocaleLink } from "@/app/i18n/navigation"
 
@@ -24,18 +23,21 @@ const BlogSummary = ({ open, inProgress, closed }: Props) => {
   ]
 
   return (
-    <Flex gap="4">
+    <Flex gap="4" wrap="wrap">
       {categoryData.map((container) => (
-        <Card key={container.label} style={xTheme.card}>
-          <Flex direction="column" gap="1">
+        <Card
+          key={container.label}
+          className="summary-stat-card min-w-[132px] flex-1 px-4 py-4"
+        >
+          <Flex direction="column" gap="2">
             <LocaleLink
-              className="text-sm font-medium"
+              className="text-sm font-medium text-foreground transition-colors hover:text-primary"
               href={`/blogs?status=${container.status}`}
             >
               {container.label}
             </LocaleLink>
           </Flex>
-          <Text size="5" className="font-bold">
+          <Text size="5" className="font-bold text-foreground">
             {container.value}
           </Text>
         </Card>

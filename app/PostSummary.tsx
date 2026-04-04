@@ -11,7 +11,7 @@ interface Props {
 
 const PostSummary = ({ web, tech, nonTech }: Props) => {
   return (
-    <Grid columns={{ initial: "1", md: "2" }} gap="5" mt="8">
+    <Grid columns={{ initial: "1", md: "2" }} gap="5" className="mt-4 md:mt-8">
       <Flex direction="column" gap="5">
         <BlogSummary open={web} inProgress={tech} closed={nonTech} />
         <BlogChart open={web} inProgress={tech} closed={nonTech} />

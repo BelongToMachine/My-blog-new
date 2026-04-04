@@ -1,10 +1,8 @@
 import prisma from "@/prisma/client"
 import { withPrismaFallback } from "@/prisma/safe"
 import { Avatar, Card, Flex, Heading, Table } from "@radix-ui/themes"
-import { create } from "domain"
-import React, { CSSProperties } from "react"
+import React from "react"
 import { IssueStatusBadge } from "./components"
-import { xTheme } from "./service/ThemeService"
 import { Link } from "@/app/i18n/navigation"
 import { getLocale, getTranslations } from "next-intl/server"
 
@@ -31,19 +29,18 @@ const LatestBlogs = async () => {
   )
 
   return (
-    <Card style={xTheme.card}>
-      <Heading size="4" mb="4">
+    <Card className="section-shell p-5 sm:p-6">
+      <Heading size="4" className="mb-4 text-foreground">
         {t("latestBlogs")}
       </Heading>
-      <Table.Root>
+      <Table.Root variant="surface">
         <Table.Body>
           {blogs.map((blog) => (
             <Table.Row key={blog.id}>
-              <Table.Cell style={xTheme.innerCellBorder}>
+              <Table.Cell className="border-b border-border/70 px-0 py-4 last:border-b-0">
                 <Flex direction="column" align="start" gap="2">
                   <Link
-                    className="hover:underline"
-                    style={xTheme.latestBlog_table_text}
+                    className="text-foreground transition-colors hover:text-primary hover:underline"
                     href={`/blogs/${blog.id}`}
                   >
                     {blog.title}
