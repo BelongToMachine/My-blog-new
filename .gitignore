@@ -43,7 +43,5 @@ pnpm-lock.yaml
 
 # local agent and research notes
 CLAUDE.md
-agent.md
-doc/
 research/
 /skills
