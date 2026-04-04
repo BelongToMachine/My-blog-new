@@ -34,6 +34,7 @@ The goal is to make the site feel more consistent, more maintainable, and more p
 When making styling changes:
 
 - do not rewrite large sections of UI unless the task explicitly requires it
+- when normalizing, do not break the current look of the website unless the user clearly asks for a visual revision
 - do not mix style refactors with unrelated logic changes
 - do not change data flow, API behavior, auth flow, routing behavior, or localization behavior unless required for the task
 - do not remove distinctive motion or personality just to make components look more uniform

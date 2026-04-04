@@ -12,18 +12,20 @@ export interface PostCssProperties extends CSSProperties {
   accentColor: string
 }
 
+// Transitional compatibility layer for legacy inline styles.
+// New styling work should prefer semantic tokens in Tailwind/CSS over extending this file.
 const style: PostCssProperties = {
-  color: "var(--text-color)",
-  borderColor: "var(--border-color)",
-  cardBackground: "var(--card-background-color)",
-  chartText: "var(--chart-text-color)",
-  link: "var(--chart-link-color)",
-  scrollable: "var(--scrollable-background-color)",
-  background: "var(--background-color)",
-  tableHeader: "var(--table-header-color)",
-  tableGeneral: "var(--table-general-color)",
-  tableText: "var(--table-text-color)",
-  buttonHover: "var(--button-hover-color)",
+  color: "hsl(var(--foreground))",
+  borderColor: "hsl(var(--border))",
+  cardBackground: "hsl(var(--card))",
+  chartText: "hsl(var(--muted-foreground))",
+  link: "hsl(var(--primary))",
+  scrollable: "hsl(var(--muted))",
+  background: "hsl(var(--background))",
+  tableHeader: "hsl(var(--secondary))",
+  tableGeneral: "hsl(var(--background))",
+  tableText: "hsl(var(--foreground))",
+  buttonHover: "hsl(var(--accent))",
   accentColor: "var(--accent-9)",
 }
 
