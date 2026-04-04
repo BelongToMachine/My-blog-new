@@ -6,7 +6,7 @@ import { getTranslations } from "next-intl/server"
 import BlogTable, { columnNames, type BlogQuery } from "@/app/blogs/BlogTable"
 import Pagination from "@/app/components/Pagination"
 import IssueActions from "@/app/blogs/IssueActions"
-import { xTheme } from "@/app/service/ThemeService"
+import { PageSection, SectionHeading } from "@/app/components/system"
 
 interface Props {
   params: { locale: string }
@@ -14,6 +14,7 @@ interface Props {
 }
 
 const BlogsPage = async ({ params, searchParams }: Props) => {
+  const t = await getTranslations("blogs")
   const statuses = Object.values(Status)
   const { locale } = params
   const { status: statusValue, orderBy: orderByValue, page: pageValue } =
@@ -49,8 +50,14 @@ const BlogsPage = async ({ params, searchParams }: Props) => {
   )
 
   return (
-    <Container style={xTheme.blogBackground}>
-      <div className="space-y-3 p-5">
+    <Container>
+      <PageSection className="space-y-6 px-5">
+        <SectionHeading
+          align="left"
+          title={t("listTitle")}
+          description={t("listDescription")}
+          className="mb-0"
+        />
         <IssueActions />
         <BlogTable
           searchParams={Promise.resolve(searchParams)}
@@ -61,7 +68,7 @@ const BlogsPage = async ({ params, searchParams }: Props) => {
           currentPage={page}
           itemCounts={data.issueCount}
         />
-      </div>
+      </PageSection>
     </Container>
   )
 }
