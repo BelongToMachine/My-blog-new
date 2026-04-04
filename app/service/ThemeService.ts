@@ -13,13 +13,13 @@ export interface PostCssProperties extends CSSProperties {
 }
 
 const style: PostCssProperties = {
-  color: "var(--text-color)",
-  borderColor: "var(--border-color)",
-  cardBackground: "var(--card-background-color)",
+  color: "hsl(var(--foreground))",
+  borderColor: "hsl(var(--border))",
+  cardBackground: "hsl(var(--card))",
   chartText: "var(--chart-text-color)",
-  link: "var(--chart-link-color)",
+  link: "hsl(var(--primary))",
   scrollable: "var(--scrollable-background-color)",
-  background: "var(--background-color)",
+  background: "hsl(var(--background))",
   tableHeader: "var(--table-header-color)",
   tableGeneral: "var(--table-general-color)",
   tableText: "var(--table-text-color)",
@@ -45,7 +45,8 @@ export const xTheme: Record<string, CSSProperties> = {
   },
   /* latest blogs card general */
   card: {
-    ...style,
+    color: style.color,
+    borderColor: style.borderColor,
     background: style.cardBackground,
   },
   /* latest blogs table inner text color */

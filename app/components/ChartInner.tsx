@@ -39,11 +39,11 @@ const BlogChart = ({ open, inProgress, closed }: Props) => {
           <XAxis
             dataKey="label"
             tick={{ fill: style.chartText || "#666" }}
-            axisLine={{ stroke: "var(--border-color)" }}
+            axisLine={{ stroke: style.borderColor }}
           />
           <YAxis
             tick={{ fill: style.chartText || "#666" }}
-            axisLine={{ stroke: "var(--border-color)" }}
+            axisLine={{ stroke: style.borderColor }}
           />
           <Bar
             dataKey="value"

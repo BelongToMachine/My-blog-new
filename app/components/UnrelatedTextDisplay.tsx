@@ -17,7 +17,7 @@ const UnrelatedTextDisplay: React.FC<UnrelatedTextDisplayProps> = ({
     <div
       className="mt-4 w-full rounded-2xl border p-4"
       style={{
-        backgroundColor: "color-mix(in srgb, var(--card-background-color) 72%, transparent)",
+        backgroundColor: "color-mix(in srgb, hsl(var(--card)) 72%, transparent)",
         overflow: "auto",
         ...xTheme.chatbotText,
         ...xTheme.innerCellBorder,

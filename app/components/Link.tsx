@@ -1,7 +1,6 @@
 import React from "react"
 import NextLink from "next/link"
 import { Link as RadixLink } from "@radix-ui/themes"
-import style, { xTheme } from "../service/ThemeService"
 
 interface Props {
   href: string
@@ -11,7 +10,7 @@ interface Props {
 const Link = ({ href, children }: Props) => {
   return (
     <NextLink href={href} passHref legacyBehavior>
-      <RadixLink>{children}</RadixLink>
+      <RadixLink className="text-primary">{children}</RadixLink>
     </NextLink>
   )
 }
