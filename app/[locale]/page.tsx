@@ -9,7 +9,6 @@ import Contact from "../Contact"
 import DynamicBezierCurve from "../components/navbar/DynamicBezierCurve"
 import PostSummary from "../PostSummary"
 import Projects from "../projects"
-import { PageSection } from "../components/system"
 
 interface Props {
   params: { locale: string }
@@ -67,20 +66,20 @@ export default async function Home({ params }: Props) {
         <Hero />
       </DynamicBezierCurve>
       <Container className="pb-20">
-        <PageSection className="pt-8">
+        <section className="pt-8 py-10 sm:py-12 lg:py-16">
           <SummaryHeader />
           <PostSummary
             web={summary.open}
             tech={summary.inProgress}
             nonTech={summary.closed}
           />
-        </PageSection>
-        <PageSection className="border-t border-border/60">
+        </section>
+        <section className="border-t border-border/60 py-10 sm:py-12 lg:py-16">
           <Projects />
-        </PageSection>
-        <PageSection className="border-t border-border/60">
+        </section>
+        <section className="border-t border-border/60 py-10 sm:py-12 lg:py-16">
           <Contact />
-        </PageSection>
+        </section>
       </Container>
     </>
   )

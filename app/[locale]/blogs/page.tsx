@@ -6,7 +6,7 @@ import { getTranslations } from "next-intl/server"
 import BlogTable, { columnNames, type BlogQuery } from "@/app/blogs/BlogTable"
 import Pagination from "@/app/components/Pagination"
 import IssueActions from "@/app/blogs/IssueActions"
-import { PageSection, SectionHeading } from "@/app/components/system"
+import { SectionHeading } from "@/app/components/system"
 
 interface Props {
   params: { locale: string }
@@ -51,7 +51,7 @@ const BlogsPage = async ({ params, searchParams }: Props) => {
 
   return (
     <Container>
-      <PageSection className="space-y-6 px-5">
+      <section className="space-y-6 px-5 py-10 sm:py-12 lg:py-16">
         <SectionHeading
           align="left"
           title={t("listTitle")}
@@ -68,7 +68,7 @@ const BlogsPage = async ({ params, searchParams }: Props) => {
           currentPage={page}
           itemCounts={data.issueCount}
         />
-      </PageSection>
+      </section>
     </Container>
   )
 }

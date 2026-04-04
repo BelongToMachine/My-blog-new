@@ -3,11 +3,7 @@ import { getTranslations } from "next-intl/server"
 import { Link } from "@/app/i18n/navigation"
 import { getMdxArticleList } from "@/app/service/mdxArticles"
 import BlogSectionTabs from "@/app/blogs/BlogSectionTabs"
-import {
-  PageSection,
-  SectionHeading,
-  SurfaceCard,
-} from "@/app/components/system"
+import { SectionHeading, SurfaceCard } from "@/app/components/system"
 
 interface Props {
   params: { locale: string }
@@ -19,7 +15,7 @@ export default async function ArticlesPage({ params }: Props) {
 
   return (
     <Container>
-      <PageSection className="space-y-6 px-5">
+      <section className="space-y-6 px-5 py-10 sm:py-12 lg:py-16">
         <BlogSectionTabs active="mdx" />
         <div className="space-y-2">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
@@ -59,7 +55,7 @@ export default async function ArticlesPage({ params }: Props) {
             </SurfaceCard>
           ))}
         </div>
-      </PageSection>
+      </section>
     </Container>
   )
 }
