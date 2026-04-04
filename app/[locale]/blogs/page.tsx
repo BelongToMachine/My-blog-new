@@ -6,7 +6,6 @@ import { getTranslations } from "next-intl/server"
 import BlogTable, { columnNames, type BlogQuery } from "@/app/blogs/BlogTable"
 import Pagination from "@/app/components/Pagination"
 import IssueActions from "@/app/blogs/IssueActions"
-import { xTheme } from "@/app/service/ThemeService"
 
 interface Props {
   params: { locale: string }
@@ -49,7 +48,7 @@ const BlogsPage = async ({ params, searchParams }: Props) => {
   )
 
   return (
-    <Container style={xTheme.blogBackground}>
+    <Container className="content-page-shell">
       <div className="space-y-3 p-5">
         <IssueActions />
         <BlogTable
