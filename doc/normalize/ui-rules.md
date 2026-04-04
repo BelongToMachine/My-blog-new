@@ -27,6 +27,19 @@ When a new UI pattern appears, use this order:
 - Use variants for repeated button, card, message, and control states
 - Use inline style only for runtime values that cannot be expressed with classes
 
+## Escalation Rules
+
+- If a visual pattern appears in 2 or more places, prefer a shared variant or `system` component
+- If a component needs custom surface, heading, or message treatment, check `app/components/system/*` before inventing a new pattern
+- If a style change would affect nav, cards, form states, or section rhythm, update the shared layer first
+
+## Styling Path By Type
+
+- Tailwind directly: layout, spacing, typography scale, responsive behavior, token-based color classes
+- `ui` variants: button, input, textarea, repeated state treatment
+- `system` components: section heading, surface card, action icon button, form/status message, page section rhythm
+- CSS Modules: complex editorial modules, unusual animations, hard-to-express composited visuals
+
 ## Use Variant Instead Of Raw Classes
 
 These patterns should not be re-invented inside feature components:

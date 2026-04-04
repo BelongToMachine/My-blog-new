@@ -55,6 +55,10 @@
     --shadow-md: 0 22px 50px -30px rgba(15, 23, 42, 0.22);
     --motion-base: 200ms;
     --motion-slow: 320ms;
+    --motion-theme: 420ms;
+    --layer-nav: 10;
+    --layer-cursor: 100;
+    --layer-overlay: 120;
 
     /* Legacy aliases kept during incremental normalization */
     --background-color: hsl(var(--background));
@@ -120,7 +124,7 @@
   html.theme-transition *::before,
   html.theme-transition *::after {
     transition-property: background-color, border-color, color, fill, stroke, box-shadow;
-    transition-duration: 420ms;
+    transition-duration: var(--motion-theme);
     transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
   }
 }

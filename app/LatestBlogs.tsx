@@ -3,7 +3,6 @@ import { withPrismaFallback } from "@/prisma/safe"
 import { Avatar, Flex, Heading, Table } from "@radix-ui/themes"
 import React from "react"
 import { IssueStatusBadge } from "./components"
-import { xTheme } from "./service/ThemeService"
 import { Link } from "@/app/i18n/navigation"
 import { getLocale, getTranslations } from "next-intl/server"
 import { SurfaceCard } from "./components/system"
@@ -39,11 +38,10 @@ const LatestBlogs = async () => {
         <Table.Body>
           {blogs.map((blog) => (
             <Table.Row key={blog.id}>
-              <Table.Cell style={xTheme.innerCellBorder}>
+              <Table.Cell className="border-b border-border/60">
                 <Flex direction="column" align="start" gap="2">
                   <Link
-                    className="hover:underline"
-                    style={xTheme.latestBlog_table_text}
+                    className="text-foreground transition-colors hover:text-primary"
                     href={`/blogs/${blog.id}`}
                   >
                     {blog.title}

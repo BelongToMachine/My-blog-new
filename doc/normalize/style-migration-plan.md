@@ -58,7 +58,7 @@
 
 - [ ] 还没有完成 browser-level 验证：Projects / Nav / Contact / design-system route 在真实页面上的表现仍需确认
 - [ ] 旧 token 消费路径仍然很多，尤其在 `ThemeService.ts`、`public/index.js`、blogs/articles CSS Modules 中
-- [ ] `tailwind.config.js` 的品牌色暴露策略还没有真正收口
+- [x] `tailwind.config.js` 的品牌色暴露策略已经开始收口到语义 token，不再继续暴露整套 palette
 - [ ] 首页节奏只完成了局部 normalize，Hero / section rhythm / shared spacing 还没有统一完成
 - [ ] content-heavy 页面和 experimental 页面还没有进入主系统
 
@@ -152,14 +152,14 @@
 ### Step 1.2 Freeze Token Standard
 
 - [x] 确定全站主 token 体系以 `app/globals.css` 语义 token 为准
-- [ ] 明确保留的 token 分类：
+- [x] 明确保留的 token 分类：
   - surface
   - text
   - brand
   - feedback
   - structure
   - shape
-- [ ] 确定 `--chart-link-color` 的最终语义归属
+- [x] 确定 `--chart-link-color` 的最终语义归属
 - [ ] 确定是否补充 `success` / `warning` token
 
 ### Step 1.3 Freeze Styling Rules
@@ -188,7 +188,7 @@
 - [x] 明确允许使用的品牌色阶
 - [ ] 检查 `globals.css` 中全局 utility 是否过多承担业务视觉职责
 - [x] 盘点动画时长、阴影、radius 是否已经形成可复用 token
-- [ ] 补齐缺失但高频的基础 token：
+- [x] 补齐缺失但高频的基础 token：
   - shadow
   - motion duration
   - z-index

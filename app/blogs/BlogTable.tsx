@@ -3,9 +3,9 @@ import { Table } from "@radix-ui/themes"
 import React from "react"
 import { IssueStatusBadge } from "../components"
 import { Issue, Status } from "@prisma/client"
-import { xTheme } from "../service/ThemeService"
 import { Link } from "@/app/i18n/navigation"
 import { getTranslations } from "next-intl/server"
+import { SurfaceCard } from "../components/system"
 export interface BlogQuery {
   status: Status
   orderBy: keyof Issue
@@ -24,52 +24,54 @@ const BlogTable = async ({ searchParams: params, issues }: Props) => {
   const orderBy = searchParams.orderBy ?? undefined
 
   return (
-    <div className="overflow-hidden rounded-[0.55rem] border border-border/70 bg-background/75 shadow-sm">
+    <SurfaceCard padding="none" className="overflow-hidden">
       <Table.Root variant="surface">
-      <Table.Header
-        style={{
-          background: "",
-        }}
-      >
-        <Table.Row style={xTheme.blogTableHeader}>
-          {columns(t).map((column) => (
-            <Table.ColumnHeaderCell
-              key={column.value}
-              className={column.className}
-            >
-              <Link
-                href={{
-                  pathname: "/blogs",
-                  query: { ...searchParams, orderBy: column.value },
-                }}
+        <Table.Header>
+          <Table.Row className="bg-muted/65 text-foreground">
+            {columns(t).map((column) => (
+              <Table.ColumnHeaderCell
+                key={column.value}
+                className={`${column.className ?? ""} text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground`}
               >
-                {column.label}
-              </Link>
-              {column.value === orderBy && <ArrowUpIcon className="inline" />}
-            </Table.ColumnHeaderCell>
-          ))}
-        </Table.Row>
-      </Table.Header>
-      <Table.Body>
-        {issues.map((issue) => (
-          <Table.Row key={issue.id} style={xTheme.blogTableBody}>
-            <Table.Cell>
-              <Link href={`/blogs/${issue.id}`}>{issue.title}</Link>
-              <div className="block md:hidden">
-                <IssueStatusBadge status={issue.status} />
-              </div>
-            </Table.Cell>
-            <Table.Cell className="hidden md:table-cell">
-              <IssueStatusBadge status={issue.status} />
-            </Table.Cell>
-            <Table.Cell className="hidden md:table-cell">
-              {issue.createdAt.toLocaleString()}
-            </Table.Cell>
+                <Link
+                  href={{
+                    pathname: "/blogs",
+                    query: { ...searchParams, orderBy: column.value },
+                  }}
+                  className="transition-colors hover:text-primary"
+                >
+                  {column.label}
+                </Link>
+                {column.value === orderBy && <ArrowUpIcon className="inline" />}
+              </Table.ColumnHeaderCell>
+            ))}
           </Table.Row>
-        ))}
-      </Table.Body>
+        </Table.Header>
+        <Table.Body>
+          {issues.map((issue) => (
+            <Table.Row key={issue.id} className="bg-card/60 text-foreground">
+              <Table.Cell>
+                <Link
+                  href={`/blogs/${issue.id}`}
+                  className="transition-colors hover:text-primary"
+                >
+                  {issue.title}
+                </Link>
+                <div className="block md:hidden">
+                  <IssueStatusBadge status={issue.status} />
+                </div>
+              </Table.Cell>
+              <Table.Cell className="hidden md:table-cell">
+                <IssueStatusBadge status={issue.status} />
+              </Table.Cell>
+              <Table.Cell className="hidden md:table-cell">
+                {issue.createdAt.toLocaleString()}
+              </Table.Cell>
+            </Table.Row>
+          ))}
+        </Table.Body>
       </Table.Root>
-    </div>
+    </SurfaceCard>
   )
 }
 

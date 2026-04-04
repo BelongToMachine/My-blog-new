@@ -59,6 +59,20 @@ module.exports = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      boxShadow: {
+        card: "var(--shadow-sm)",
+        float: "var(--shadow-md)",
+      },
+      transitionDuration: {
+        base: "var(--motion-base)",
+        slow: "var(--motion-slow)",
+        theme: "var(--motion-theme)",
+      },
+      zIndex: {
+        nav: "var(--layer-nav)",
+        cursor: "var(--layer-cursor)",
+        overlay: "var(--layer-overlay)",
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
@@ -81,13 +95,4 @@ module.exports = {
     },
   },
   plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
-  safelist: [
-    "text-green-400",
-    "text-red-400",
-    "text-yellow-400",
-    "text-blue-400",
-    "text-amber-400",
-    "text-lime-400",
-    // Add more dynamically generated class names as needed
-  ],
 };

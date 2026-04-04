@@ -19,9 +19,9 @@ export default async function BlogSectionTabs({ active }: Props) {
         <Link
           key={tab.href}
           href={tab.href}
-          className={`rounded-[0.45rem] border px-4 py-2 text-sm transition-colors ${
+          className={`rounded-full border px-4 py-2 text-sm transition-colors ${
             tab.isActive
-              ? "border-primary bg-primary text-white"
+              ? "border-primary bg-primary text-primary-foreground"
               : "border-border bg-background/70 text-foreground/80 hover:border-primary hover:text-primary"
           }`}
         >
