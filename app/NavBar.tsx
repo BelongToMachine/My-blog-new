@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useState } from "react"
 import DesktopNav from "./components/navbar/DesktopNav"
 import MobileNav from "./components/navbar/MobileNav"
 import { useScrollableStore } from "./service/Store"
+import { cn } from "@/lib/utils"
 
 const NavBar = () => {
   const [windowWidth, setWindowWidth] = useState<number>(0)
@@ -25,22 +26,14 @@ const NavBar = () => {
     return null
   }
 
-  const backgroundColor = isInScrollable
-    ? "var(--scrollable-background-color)"
-    : "color-mix(in srgb, var(--background-color) 88%, transparent)"
-
   return (
     <nav
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 10,
-        backgroundColor,
-        backdropFilter: "blur(10px)",
-        borderBottom: "1px solid color-mix(in srgb, var(--border-color) 72%, transparent)",
-      }}
+      className={cn(
+        "fixed inset-x-0 top-0 z-10 border-b backdrop-blur-md transition-colors",
+        isInScrollable
+          ? "border-border bg-muted/95"
+          : "border-border/60 bg-background/85"
+      )}
     >
       {windowWidth > 768 ? <DesktopNav /> : <MobileNav />}
     </nav>

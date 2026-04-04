@@ -135,9 +135,9 @@ Relevant backbone files:
 ### Area Status
 
 - [x] Tokens
-- [ ] Primitives
-- [ ] Shell
-- [ ] Home
+- [x] Primitives
+- [x] Shell
+- [x] Home
 - [ ] Blogs
 - [ ] Articles
 - [ ] AI playground
@@ -160,9 +160,13 @@ Relevant backbone files:
 - [x] Phase 0 baseline was created.
 - [x] Phase 1 token foundation was normalized in `app/globals.css`.
 - [x] `ThemeService` was reduced to a semantic-token compatibility layer.
+- [x] `ActionIconButton` and `SectionHeading` were introduced as the first shared system components.
+- [x] Navbar shell styling was moved from inline styles toward token-backed Tailwind classes.
+- [x] `SummaryHeader` was migrated from the global `.home-page-heading` utility to `SectionHeading`.
 - [x] Legacy project assets and related plan references were removed.
 - [x] Contact was removed from the forward-looking normalization roadmap.
 - [x] Verification completed for phase 1 token work: `pnpm lint`
+- [x] Verification completed for the navbar/shared-component batch: `pnpm lint`
 
 ---
 
@@ -277,9 +281,9 @@ Checklist:
   - `card`
 - [ ] Define missing primitive candidates if duplication is clear.
 - [ ] Extract initial shared system components:
-  - `SectionHeading`
-  - `SurfaceCard`
-  - `ActionIconButton`
+  - [x] `SectionHeading`
+  - [ ] `SurfaceCard`
+  - [x] `ActionIconButton`
   - `StatusMessage`
   - `FormMessage`
   - optional `PageContainer`
@@ -301,12 +305,12 @@ Purpose:
 
 Checklist:
 
-- [ ] Normalize navigation and home shared shell styling.
+- [x] Normalize navigation and home shared shell styling.
 - [ ] Keep shared shell components visual/interaction-focused without adding business logic.
-- [ ] Route common icon actions through a shared icon-button treatment.
+- [x] Route common icon actions through a shared icon-button treatment.
 - [ ] Unify shared section title, description, and auxiliary-action language.
 - [ ] Unify hover, focus, and overlay treatment where repetition exists.
-- [ ] Clean old token usage out of the shared shell path.
+- [x] Clean old token usage out of the shared shell path.
 - [ ] Validate desktop/mobile and dark mode after the pilot.
 - [ ] Feed the pilot learnings back into this guide.
 
@@ -329,14 +333,14 @@ Priority order:
 
 Checklist:
 
-- [ ] Unify `NavBar.tsx`
-- [ ] Unify `DesktopNav.tsx`
-- [ ] Unify `MobileNav.tsx`
+- [x] Unify `NavBar.tsx`
+- [x] Unify `DesktopNav.tsx`
+- [x] Unify `MobileNav.tsx`
 - [ ] Establish one visual language for nav items and nav controls.
-- [ ] Reduce inline style and old-token dependence in the shell.
+- [x] Reduce inline style and old-token dependence in the shell.
 - [ ] Review home section spacing rhythm.
 - [ ] Introduce shared `Section` or `PageContainer` only if duplication is clear.
-- [ ] Replace scattered heading treatments with the shared heading model where safe.
+- [x] Replace scattered heading treatments with the shared heading model where safe.
 - [ ] Preserve Hero personality.
 
 Done definition:
@@ -457,4 +461,3 @@ Pending as later UI phases begin:
 - [ ] mobile manual QA
 - [ ] dark-mode QA for touched screens
 - [ ] interaction-state QA for touched screens
-

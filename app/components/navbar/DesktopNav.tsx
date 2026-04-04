@@ -10,12 +10,12 @@ import toast from "react-hot-toast"
 import { AnimatePresence, motion } from "framer-motion"
 import DisappearingText from "../DisappearText"
 import { colorMode } from "@/app/context/DarkModeContext"
-import { xTheme } from "@/app/service/ThemeService"
 import { useTheme } from "@/app/hooks/useTheme"
 import { Link, usePathname } from "@/app/i18n/navigation"
 import { useLocale, useTranslations } from "next-intl"
 import LanguageToggle from "./LanguageToggle"
 import ThemeToggle from "./ThemeToggle"
+import { ActionIconButton } from "../system/ActionIconButton"
 
 interface Link {
   label: string
@@ -26,14 +26,16 @@ const DesktopNav = () => {
   const { colorMode } = useTheme()
 
   return (
-    <div className="flex justify-between items-center">
-      <div className="flex space-x-6 py-6 px-5 h-14 items-center">
-        <NextLink href="http://github.com/JieLuis">
-          <PiGithubLogoFill style={xTheme.iconColor} />
-        </NextLink>
+    <div className="flex h-14 items-center justify-between px-5">
+      <div className="flex items-center gap-6">
+        <ActionIconButton asChild aria-label="Open GitHub profile" tone="quiet">
+          <NextLink href="http://github.com/JieLuis">
+            <PiGithubLogoFill size={20} />
+          </NextLink>
+        </ActionIconButton>
         <NavLinks colorMode={colorMode} />
       </div>
-      <div className="flex space-x-6 items-center pr-6">
+      <div className="flex items-center gap-3">
         <LanguageToggle />
         <ThemeToggle />
       </div>
@@ -131,7 +133,7 @@ const NavLinks = ({ colorMode }: { colorMode: colorMode }) => {
   }
 
   return (
-    <ul className="flex space-x-6 relative top-1">
+    <ul className="relative top-1 flex space-x-6">
       <AnimatePresence>
         {links.map((link, index) => {
           const isArrowExist = Boolean(index === 2 && isBlogDetailPage && metaTitle)

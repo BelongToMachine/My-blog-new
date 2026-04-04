@@ -1,10 +1,11 @@
 import React from "react"
 import { useTranslations } from "next-intl"
+import SectionHeading from "./components/system/SectionHeading"
 
 const SummaryHeader = () => {
   const t = useTranslations("home")
 
-  return <h1 className="home-page-heading">{t("blogSummary")}</h1>
+  return <SectionHeading title={t("blogSummary")} />
 }
 
 export default SummaryHeader
