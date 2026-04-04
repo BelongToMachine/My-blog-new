@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Jie Liao — Front-End Developer",
     description:
-      "React / Next.js portfolio with AI chatbot, blog system, and project showcase",
+      "React / Next.js portfolio with AI chatbot, bilingual writing, and polished front-end engineering",
     type: "website",
   },
 }

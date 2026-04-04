@@ -4,7 +4,6 @@ import { hasLocale, NextIntlClientProvider } from "next-intl"
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server"
 import { notFound } from "next/navigation"
 import NavBar from "../NavBar"
-import AuthProvider from "../auth/Provider"
 import QueryClientProvider from "../QueryClientProvider"
 import CursorManager from "../CursorManager"
 import { ThemeProvider } from "../context/DarkModeContext"
@@ -56,16 +55,14 @@ export default async function LocaleLayout({
     <NextIntlClientProvider locale={locale} messages={messages}>
       <div style={xTheme.layoutBackground}>
         <QueryClientProvider>
-          <AuthProvider>
-            <ThemeProvider>
-              <RadixThemeProvider>
-                <NavBar />
-                <CursorManager />
-                <main className="pt-14">{children}</main>
-              </RadixThemeProvider>
-              <ReactQueryDevtools />
-            </ThemeProvider>
-          </AuthProvider>
+          <ThemeProvider>
+            <RadixThemeProvider>
+              <NavBar />
+              <CursorManager />
+              <main className="pt-14">{children}</main>
+            </RadixThemeProvider>
+            <ReactQueryDevtools />
+          </ThemeProvider>
         </QueryClientProvider>
       </div>
     </NextIntlClientProvider>

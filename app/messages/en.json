@@ -38,8 +38,6 @@
   },
   "home": {
     "blogSummary": "My Blog Summary",
-    "myProjects": "My Projects",
-    "contactMe": "Contact Me",
     "webDev": "Web Development",
     "tech": "Tech",
     "nonTech": "Non-Tech",
@@ -79,21 +77,6 @@
     "newDisabled": "This functionality is currently not allowed",
     "detailDescription": "Details of blog {id}"
   },
-  "contact": {
-    "heading": "Contact Me",
-    "yourName": "Your Name",
-    "yourEmail": "Your Email",
-    "message": "Message",
-    "send": "Send",
-    "successMsg": "Your email has been sent!",
-    "limitMsg": "You can only send once per day",
-    "failureMsg": "Failed to send your message.",
-    "validation": {
-      "nameMin": "Name must be at least 2 characters long",
-      "emailInvalid": "Invalid email address",
-      "messageMin": "Message must be at least 15 characters long"
-    }
-  },
   "blogForm": {
     "titlePlaceholder": "Title",
     "descriptionPlaceholder": "Description",
@@ -104,9 +87,6 @@
       "titleRequired": "Title is required",
       "descriptionRequired": "Description is required"
     }
-  },
-  "projects": {
-    "noLink": "This project's GitHub or live URL does not exist..."
   },
   "skills": {
     "heading": "Skill",

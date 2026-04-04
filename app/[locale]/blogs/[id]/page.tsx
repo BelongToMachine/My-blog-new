@@ -2,14 +2,13 @@ import prisma from "@/prisma/client"
 import { withPrismaFallback } from "@/prisma/safe"
 import { Box, Container, Flex, Grid } from "@radix-ui/themes"
 import { notFound } from "next/navigation"
-import { getServerSession } from "next-auth"
 import { cache } from "react"
 import { getTranslations } from "next-intl/server"
-import authOptions from "@/app/auth/authOptions"
 import EditIssueButton from "@/app/blogs/[id]/EditIssueButton"
 import IssueDetails from "@/app/blogs/[id]/IssueDetails"
 import DeleteIssueButton from "@/app/blogs/[id]/DeleteIssueButton"
 import AssigneeSelect from "@/app/blogs/[id]/AssigneeSelect"
+import { MODE } from "@/app/envConfig"
 
 interface Props {
   params: { locale: string; id: string }
@@ -29,11 +28,6 @@ const fetchIssue = cache((issueId: number, locale: string) =>
 )
 
 export default async function BlogDetailPage({ params }: Props) {
-  const session = await withPrismaFallback(
-    () => getServerSession(authOptions),
-    null,
-    "Disabling authenticated blog detail controls because the database is unavailable."
-  )
   const issue = await fetchIssue(parseInt(params.id), params.locale)
 
   if (!issue) {
@@ -46,7 +40,7 @@ export default async function BlogDetailPage({ params }: Props) {
         <Box className="md:col-span-5">
           <IssueDetails issue={issue} />
         </Box>
-        {session && (
+        {MODE === "dev" && (
           <Box>
             <Flex direction="column" gap="4">
               <AssigneeSelect issue={issue} />

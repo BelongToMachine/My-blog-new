@@ -1,8 +1,7 @@
 import { patchBlogSchema } from "@/app/validationSchema"
 import prisma from "@/prisma/client"
-import { getServerSession } from "next-auth"
 import { NextRequest, NextResponse } from "next/server"
-import authOptions from "@/app/auth/authOptions"
+import { MODE } from "@/app/envConfig"
 
 export async function GET(
   request: NextRequest,
@@ -32,8 +31,7 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await getServerSession(authOptions)
-  if (!session) return NextResponse.json({}, { status: 401 })
+  if (MODE !== "dev") return NextResponse.json({}, { status: 403 })
 
   const body = await request.json()
   const validation = patchBlogSchema.safeParse(body)
@@ -82,8 +80,7 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await getServerSession(authOptions)
-  if (!session) return NextResponse.json({}, { status: 401 })
+  if (MODE !== "dev") return NextResponse.json({}, { status: 403 })
 
   const { id } = await params
 

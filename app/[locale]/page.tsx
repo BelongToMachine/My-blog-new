@@ -5,7 +5,6 @@ import { getTranslations } from "next-intl/server"
 import { Tag } from "@prisma/client"
 import Hero from "../components/Hero"
 import SummaryHeader from "../SummaryHeader"
-import Contact from "../Contact"
 import DynamicBezierCurve from "../components/navbar/DynamicBezierCurve"
 import PostSummary from "../PostSummary"
 
@@ -71,7 +70,6 @@ export default async function Home({ params }: Props) {
           tech={summary.inProgress}
           nonTech={summary.closed}
         />
-        <Contact />
       </Container>
     </>
   )
