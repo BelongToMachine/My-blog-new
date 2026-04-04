@@ -165,8 +165,8 @@ Relevant backbone files:
 - [x] `SummaryHeader` was migrated from the global `.home-page-heading` utility to `SectionHeading`.
 - [x] Legacy project assets and related plan references were removed.
 - [x] Contact was removed from the forward-looking normalization roadmap.
-- [x] Verification completed for phase 1 token work: `pnpm lint`
-- [x] Verification completed for the navbar/shared-component batch: `pnpm lint`
+- [x] Verification completed for phase 1 token work: `bun run lint`
+- [x] Verification completed for the navbar/shared-component batch: `bun run lint`
 
 ---
 
@@ -452,7 +452,7 @@ Run only the verification that matches the actual touched area.
 
 Completed verification so far:
 
-- [x] `pnpm lint` for the token-foundation work
+- [x] `bun run lint` for the token-foundation work
 
 Pending as later UI phases begin:
 

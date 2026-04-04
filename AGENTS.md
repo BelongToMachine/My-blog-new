@@ -296,7 +296,7 @@ Not every task needs every skill, but normalization work should usually involve 
 
 ## Repo-Specific Instructions
 
-- prefer `pnpm` over `npm`
+- prefer `bun` as the package manager and script runner
 - do not run a production build after edits unless explicitly asked or genuinely required
 - never upload or modify `.gitignore` for GitHub-related purposes without explicit permission
 - keep Prisma migrations tracked in git
