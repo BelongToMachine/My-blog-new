@@ -2,7 +2,6 @@
 import { Card } from "@radix-ui/themes"
 import React, { useEffect, useState } from "react"
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
-import style from "@/app/service/ThemeService"
 import { useTranslations } from "next-intl"
 
 interface Props {
@@ -30,7 +29,7 @@ const BlogChart = ({ open, inProgress, closed }: Props) => {
   }
 
   return (
-    <Card style={{ ...style, background: style.cardBackground }}>
+    <Card className="section-shell p-4 sm:p-5">
       <ResponsiveContainer width="100%" height={300}>
         <BarChart
           data={data}
@@ -38,18 +37,14 @@ const BlogChart = ({ open, inProgress, closed }: Props) => {
         >
           <XAxis
             dataKey="label"
-            tick={{ fill: style.chartText || "#666" }}
-            axisLine={{ stroke: "var(--border-color)" }}
+            tick={{ fill: "hsl(var(--muted-foreground))" }}
+            axisLine={{ stroke: "hsl(var(--border))" }}
           />
           <YAxis
-            tick={{ fill: style.chartText || "#666" }}
-            axisLine={{ stroke: "var(--border-color)" }}
+            tick={{ fill: "hsl(var(--muted-foreground))" }}
+            axisLine={{ stroke: "hsl(var(--border))" }}
           />
-          <Bar
-            dataKey="value"
-            barSize={60}
-            fill={style.accentColor || "#3b82f6"}
-          />
+          <Bar dataKey="value" barSize={60} fill="hsl(var(--primary))" radius={[10, 10, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </Card>

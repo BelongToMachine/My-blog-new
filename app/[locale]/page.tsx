@@ -63,7 +63,7 @@ export default async function Home({ params }: Props) {
       <DynamicBezierCurve>
         <Hero />
       </DynamicBezierCurve>
-      <Container>
+      <Container className="relative z-40 -mt-[78px] sm:z-auto sm:mt-0">
         <SummaryHeader />
         <PostSummary
           web={summary.open}
