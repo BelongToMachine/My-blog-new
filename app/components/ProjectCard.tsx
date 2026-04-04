@@ -1,47 +1,86 @@
-import { Project } from "@prisma/client"
-import { Text } from "@radix-ui/themes"
 import Link from "next/link"
-import React from "react"
 import projectImage from "@/public/images/project.jpg"
 import { CodeBracketIcon, EyeIcon } from "@heroicons/react/24/outline"
 
-interface Props {
-  project: Project
+import { cn } from "@/lib/utils"
+import { ActionIconButton, SurfaceCard } from "@/app/components/system"
+
+type ProjectLink = {
+  href: string | null | undefined
+  label: string
+  icon: typeof CodeBracketIcon
+  onUnavailable?: (event: React.MouseEvent<HTMLAnchorElement>, href: string | null) => void
 }
 
-const ProjectCard = ({ project }: Props) => {
+type ProjectCardProps = {
+  title: string
+  description: string
+  imageUrl?: string | null
+  primaryHref?: string | null
+  links?: ProjectLink[]
+  className?: string
+}
+
+const ProjectCard = ({
+  title,
+  description,
+  imageUrl,
+  primaryHref,
+  links = [],
+  className,
+}: ProjectCardProps) => {
+  const coverImage = imageUrl || projectImage.src
+
   return (
-    <div className="space-y-3">
-      <div
-        className="group relative h-52 overflow-hidden rounded-2xl border border-[var(--border-color)] bg-[var(--card-background-color)] md:h-72"
-        style={{
-          backgroundImage: `url(${projectImage.src})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
+    <article className={cn("space-y-4", className)}>
+      <SurfaceCard
+        padding="none"
+        interactive
+        className="group relative overflow-hidden rounded-[1.75rem] border-border/80"
       >
-        <div className="absolute inset-0 hidden items-center justify-center rounded-2xl bg-[rgba(11,18,32,0.78)] opacity-0 transition-all duration-300 group-hover:flex group-hover:opacity-100 dark:bg-[rgba(7,12,20,0.82)]">
-          <Link
-            href={"/"}
-            className="group/link relative mr-3 flex h-14 w-14 items-center justify-center rounded-full border border-white/25 bg-white/10 text-slate-100 transition-colors hover:border-[var(--chart-link-color)] hover:bg-white/15"
-          >
-            <CodeBracketIcon className="h-7 w-7 transition-colors group-hover/link:text-[var(--chart-link-color)]" />
-          </Link>
-          <Link
-            href={"/"}
-            className="group/link relative flex h-14 w-14 items-center justify-center rounded-full border border-white/25 bg-white/10 text-slate-100 transition-colors hover:border-[var(--chart-link-color)] hover:bg-white/15"
-          >
-            <EyeIcon className="h-7 w-7 transition-colors group-hover/link:text-[var(--chart-link-color)]" />
-          </Link>
+        <div
+          className="h-52 bg-cover bg-center md:h-72"
+          style={{ backgroundImage: `url(${coverImage})` }}
+        />
+        <div className="absolute inset-0 flex items-center justify-center gap-3 bg-[rgba(11,18,32,0.72)] opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-within:opacity-100 dark:bg-[rgba(7,12,20,0.76)]">
+          {links.map(({ href, icon: Icon, label, onUnavailable }) => (
+            <ActionIconButton
+              key={label}
+              asChild
+              tone="subtle"
+              size="lg"
+              className="border-white/20 bg-white/10 text-white hover:border-white/35 hover:bg-white/20 hover:text-white"
+            >
+              <Link
+                href={href || "#"}
+                aria-label={label}
+                onClick={(event) => onUnavailable?.(event, href ?? null)}
+              >
+                <Icon className="h-6 w-6" />
+              </Link>
+            </ActionIconButton>
+          ))}
         </div>
+      </SurfaceCard>
+
+      <div className="space-y-2 text-center">
+        {primaryHref ? (
+          <Link
+            href={primaryHref}
+            className="inline-flex justify-center text-xl font-semibold tracking-tight text-primary transition-opacity hover:opacity-80"
+          >
+            {title}
+          </Link>
+        ) : (
+          <h3 className="text-xl font-semibold tracking-tight text-primary">
+            {title}
+          </h3>
+        )}
+        <p className="text-sm leading-7 text-muted-foreground sm:text-base">
+          {description}
+        </p>
       </div>
-      <Link href={project.link || ""}>
-        <h5 className="mb-2 text-center text-xl font-semibold text-[var(--chart-link-color)] transition-opacity hover:opacity-80">
-          {project.title}
-        </h5>
-      </Link>
-      <Text className="text-[color:var(--text-color)]/80">{project.content}</Text>
-    </div>
+    </article>
   )
 }
 

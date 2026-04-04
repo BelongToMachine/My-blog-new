@@ -1,57 +1,58 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client"
-import classNames from "classnames"
-import { useParams } from "next/navigation"
-import NextLink from "next/link"
+
 import React, { useEffect, useMemo, useState } from "react"
-import { PiGithubLogoFill } from "react-icons/pi"
 import axios from "axios"
-import toast from "react-hot-toast"
+import NextLink from "next/link"
+import { useParams } from "next/navigation"
 import { AnimatePresence, motion } from "framer-motion"
-import DisappearingText from "../DisappearText"
-import { colorMode } from "@/app/context/DarkModeContext"
-import { xTheme } from "@/app/service/ThemeService"
-import { useTheme } from "@/app/hooks/useTheme"
-import { Link, usePathname } from "@/app/i18n/navigation"
+import { PiGithubLogoFill } from "react-icons/pi"
+import toast from "react-hot-toast"
 import { useLocale, useTranslations } from "next-intl"
+
+import { cn } from "@/lib/utils"
+import { Link, usePathname } from "@/app/i18n/navigation"
+
+import DisappearingText from "../DisappearText"
 import LanguageToggle from "./LanguageToggle"
 import ThemeToggle from "./ThemeToggle"
 
-interface Link {
+interface NavLinkItem {
   label: string
   href: string
 }
 
 const DesktopNav = () => {
-  const { colorMode } = useTheme()
-
   return (
-    <div className="flex justify-between items-center">
-      <div className="flex space-x-6 py-6 px-5 h-14 items-center">
-        <NextLink href="http://github.com/JieLuis">
-          <PiGithubLogoFill style={xTheme.iconColor} />
+    <div className="flex h-16 items-center justify-between gap-6">
+      <div className="flex items-center gap-6">
+        <NextLink
+          href="https://github.com/JieLuis"
+          className="nav-control nav-control-icon"
+          aria-label="Open GitHub profile"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <PiGithubLogoFill className="h-[18px] w-[18px]" />
         </NextLink>
-        <NavLinks colorMode={colorMode} />
+        <NavLinks />
       </div>
-      <div className="flex space-x-6 items-center pr-6">
+      <div className="flex items-center gap-3">
         <LanguageToggle />
         <ThemeToggle />
       </div>
     </div>
   )
 }
-export default DesktopNav
 
-const NavLinks = ({ colorMode }: { colorMode: colorMode }) => {
+const NavLinks = () => {
   const t = useTranslations("nav")
   const locale = useLocale()
   const currentPath = usePathname()
   const { id }: { id?: string | null } = useParams()
-  const [metaTitle, setMetaTitle] = useState<string>("")
-  const [isCollapse, setIsCollapse] = useState<boolean>(false)
-  const isBlogDetailPage = Boolean(
-    id && /^\/blogs\/\d+$/.test(currentPath)
-  )
+  const [metaTitle, setMetaTitle] = useState("")
+  const [isCollapse, setIsCollapse] = useState(false)
+  const isBlogDetailPage = Boolean(id && /^\/blogs\/\d+$/.test(currentPath))
 
   useEffect(() => {
     const fetchTitle = async () => {
@@ -59,11 +60,12 @@ const NavLinks = ({ colorMode }: { colorMode: colorMode }) => {
         if (isBlogDetailPage && id) {
           const res = await axios.get(`/api/blogs/${parseInt(id)}?locale=${locale}`)
           setMetaTitle(res.data.title)
-        } else {
-          setMetaTitle("")
+          return
         }
-      } catch (error) {
-        toast.error(`Error fetching MetaTitle`)
+
+        setMetaTitle("")
+      } catch {
+        toast.error("Error fetching MetaTitle")
       }
     }
 
@@ -71,7 +73,7 @@ const NavLinks = ({ colorMode }: { colorMode: colorMode }) => {
   }, [id, isBlogDetailPage, locale])
 
   const links = useMemo(() => {
-    const baseLinks = [
+    const baseLinks: NavLinkItem[] = [
       { label: t("ai"), href: "/ai" },
       { label: t("blogs"), href: "/blogs" },
       { label: t("aboutMe"), href: "/" },
@@ -85,25 +87,7 @@ const NavLinks = ({ colorMode }: { colorMode: colorMode }) => {
     }
 
     return baseLinks
-  }, [isBlogDetailPage, metaTitle, t, id])
-
-  const handleArrowButtonClick = () => {
-    if (!id) {
-      setIsCollapse(true)
-    }
-  }
-
-  const styledTag = useMemo(() => {
-    return (link: Link, isArrowExist: boolean = false) =>
-      // prettier-ignore
-      classNames({
-        "nav-link": true,
-        "nav-link-dark": colorMode === "dark",
-        "!text-zinc-950": link.href === currentPath && colorMode === "light",
-        "!text-white": link.href === currentPath && colorMode === "dark",
-        "arrowCollapsible": isArrowExist,
-      })
-  }, [currentPath, colorMode])
+  }, [id, isBlogDetailPage, metaTitle, t])
 
   const variants = {
     initial: { opacity: 0 },
@@ -115,53 +99,61 @@ const NavLinks = ({ colorMode }: { colorMode: colorMode }) => {
       index: number
       textLength: number
       isCollapse: boolean
-    }) => {
-      if (custom.isCollapse) {
-        return {
-          opacity: 0,
-          transition: {
-            duration: 0.15,
-            delay: (custom.textLength - custom.index - 1) * 0.05,
-          },
-        }
-      }
-
-      return {}
-    },
+    }) =>
+      custom.isCollapse
+        ? {
+            opacity: 0,
+            transition: {
+              duration: 0.15,
+              delay: (custom.textLength - custom.index - 1) * 0.05,
+            },
+          }
+        : {},
   }
 
+  const linkClassName = (link: NavLinkItem, isArrow = false) =>
+    cn(
+      "nav-link",
+      link.href === currentPath && "text-foreground",
+      isArrow && "arrowCollapsible"
+    )
+
   return (
-    <ul className="flex space-x-6 relative top-1">
+    <ul className="relative top-0.5 flex items-center gap-6">
       <AnimatePresence>
         {links.map((link, index) => {
           const isArrowExist = Boolean(index === 2 && isBlogDetailPage && metaTitle)
+
           return (
             <React.Fragment key={link.href}>
-              {isArrowExist && (
+              {isArrowExist ? (
                 <motion.span
                   variants={variants}
-                  className={styledTag(link, isArrowExist)}
-                  onClick={handleArrowButtonClick}
+                  className={linkClassName(link, true)}
                   initial="initial"
                   animate="animate"
                   exit="exit"
-                  whileHover={{
-                    scale: 1.5,
+                  whileHover={{ scale: 1.15 }}
+                  custom={{
+                    index,
+                    textLength: link.label.length,
+                    isCollapse,
                   }}
-                  custom={{ index, textLength: link.label.length, isCollapse }}
+                  onClick={() => {
+                    setMetaTitle("")
+                    setIsCollapse(true)
+                  }}
                   onAnimationComplete={() => {
                     if (isCollapse) {
-                      setMetaTitle("")
                       setIsCollapse(false)
                     }
                   }}
                 >
-                  {" "}
-                  &gt;{" "}
+                  &gt;
                 </motion.span>
-              )}
+              ) : null}
               <li>
-                <Link className={styledTag(link)} href={link.href}>
+                <Link className={linkClassName(link)} href={link.href}>
                   <DisappearingText
                     text={link.label}
                     variant={variants}
@@ -176,3 +168,5 @@ const NavLinks = ({ colorMode }: { colorMode: colorMode }) => {
     </ul>
   )
 }
+
+export default DesktopNav

@@ -3,13 +3,17 @@ import React, { useRef, FormEvent, useState } from "react"
 import emailjs from "@emailjs/browser"
 import * as Label from "@radix-ui/react-label"
 import { ContactFormErrors, createContactSchema } from "./validationSchema"
-import { Box } from "@radix-ui/themes"
 import TooltipIcon from "./components/TooltipIcon"
 import { Button } from "./components/ui/button"
 import { Input } from "./components/ui/input"
 import { Textarea } from "./components/ui/textarea"
-import { Card, CardContent } from "./components/ui/card"
 import { useTranslations } from "next-intl"
+import {
+  FormMessage,
+  SectionHeading,
+  StatusMessage,
+  SurfaceCard,
+} from "./components/system"
 
 const Contact: React.FC = () => {
   const t = useTranslations("contact")
@@ -46,6 +50,7 @@ const Contact: React.FC = () => {
         .then(
           () => {
             setFormStatus("SUCCESS!")
+            setErrors({})
             form.current!.reset()
             localStorage.setItem("lastSubmissionTime", now.toString())
           },
@@ -59,27 +64,27 @@ const Contact: React.FC = () => {
 
   return (
     <>
-      <Box
-        id="projects"
-        className="flex mb-3 mt-10 justify-center items-center"
+      <div
+        id="contact"
+        className="mt-10"
       >
-        <h1 id="contact-me" className="home-page-heading">
-          {t("heading")}
-        </h1>
-        <TooltipIcon />
-      </Box>
+        <SectionHeading
+          title={t("heading")}
+          action={<TooltipIcon />}
+          className="mb-0"
+          align="center"
+        />
+      </div>
 
-      <Card className="max-w-lg mx-auto mt-5 shadow-md">
-        <CardContent className="p-6">
+      <SurfaceCard className="mx-auto mt-5 max-w-2xl" padding="lg">
           {formStatus && (
-            <div
-              className={`mb-4 rounded-lg border p-4 text-sm ${formStatus === "SUCCESS!"
-                ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
-                : "border-red-500/30 bg-red-500/10 text-red-700 dark:text-red-300"
-                } rounded-lg`}
+            <StatusMessage
+              className="mb-4"
+              tone={formStatus === "SUCCESS!" ? "success" : "error"}
+              title={formStatus === "SUCCESS!" ? t("successMsg") : t("failureMsg")}
             >
               {formStatus === "SUCCESS!" ? t("successMsg") : formStatus}
-            </div>
+            </StatusMessage>
           )}
 
           <form ref={form} onSubmit={sendEmail} className="space-y-6">
@@ -95,12 +100,12 @@ const Contact: React.FC = () => {
                 name="user_name"
                 id="name"
                 required
-                className={
-                  errors.user_name ? "border-red-500" : "border-gray-300"
-                }
+                state={errors.user_name ? "error" : "default"}
               />
               {errors.user_name && (
-                <p className="text-red-500 text-sm">{errors.user_name}</p>
+                <FormMessage tone="error" className="border-none bg-transparent px-0 py-0">
+                  {errors.user_name}
+                </FormMessage>
               )}
             </div>
 
@@ -116,12 +121,12 @@ const Contact: React.FC = () => {
                 name="user_email"
                 id="email"
                 required
-                className={
-                  errors.user_email ? "border-red-500" : "border-gray-300"
-                }
+                state={errors.user_email ? "error" : "default"}
               />
               {errors.user_email && (
-                <p className="text-red-500 text-sm">{errors.user_email}</p>
+                <FormMessage tone="error" className="border-none bg-transparent px-0 py-0">
+                  {errors.user_email}
+                </FormMessage>
               )}
             </div>
 
@@ -136,26 +141,22 @@ const Contact: React.FC = () => {
                 name="message"
                 id="message"
                 required
-                className={
-                  errors.message ? "border-red-500" : "border-gray-300"
-                }
+                state={errors.message ? "error" : "default"}
               />
               {errors.message && (
-                <p className="text-red-500 text-sm">{errors.message}</p>
+                <FormMessage tone="error" className="border-none bg-transparent px-0 py-0">
+                  {errors.message}
+                </FormMessage>
               )}
             </div>
 
             <div>
-              <Button
-                type="submit"
-                className="w-full"
-              >
+              <Button type="submit" className="w-full rounded-xl">
                 {t("send")}
               </Button>
             </div>
           </form>
-        </CardContent>
-      </Card>
+      </SurfaceCard>
     </>
   )
 }

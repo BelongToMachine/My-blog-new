@@ -51,6 +51,19 @@
     --ring: 198 83% 34%;
 
     --radius: 0.5rem;
+    --shadow-sm: 0 10px 30px -22px rgba(15, 23, 42, 0.18);
+    --shadow-md: 0 22px 50px -30px rgba(15, 23, 42, 0.22);
+    --motion-base: 200ms;
+    --motion-slow: 320ms;
+
+    /* Legacy aliases kept during incremental normalization */
+    --background-color: hsl(var(--background));
+    --text-color: hsl(var(--foreground));
+    --card-background-color: hsl(var(--card));
+    --border-color: hsl(var(--border));
+    --chart-link-color: hsl(var(--primary));
+    --button-hover-color: color-mix(in srgb, hsl(var(--accent)) 82%, transparent);
+    --scrollable-background-color: color-mix(in srgb, hsl(var(--card)) 78%, transparent);
   }
 
   .dark {
@@ -81,6 +94,14 @@
     --border: 214 18% 24%;
     --input: 214 18% 24%;
     --ring: 193 85% 66%;
+
+    --background-color: hsl(var(--background));
+    --text-color: hsl(var(--foreground));
+    --card-background-color: hsl(var(--card));
+    --border-color: hsl(var(--border));
+    --chart-link-color: hsl(var(--primary));
+    --button-hover-color: color-mix(in srgb, hsl(var(--accent)) 86%, transparent);
+    --scrollable-background-color: color-mix(in srgb, hsl(var(--card)) 82%, transparent);
   }
 }
 
@@ -125,13 +146,13 @@
 
 @layer utilities {
   .nav-link {
-    @apply text-zinc-500 transition-colors hover:text-zinc-800;
+    @apply text-muted-foreground transition-colors hover:text-foreground;
   }
   .nav-link-dark {
-    @apply text-slate-400 transition-colors hover:text-slate-100;
+    @apply text-muted-foreground transition-colors hover:text-foreground;
   }
   .nav-control {
-    @apply inline-flex items-center justify-center rounded-full border border-transparent text-zinc-500 transition-colors duration-200 hover:bg-zinc-100 hover:text-zinc-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100;
+    @apply inline-flex items-center justify-center rounded-full border border-transparent bg-background/70 text-muted-foreground transition-all duration-200 hover:border-border hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background;
   }
   .nav-control-icon {
     @apply h-9 w-9;
@@ -140,7 +161,7 @@
     @apply min-h-9 px-3 text-sm font-medium;
   }
   .home-page-heading {
-    @apply text-center text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-600 lg:text-6xl leading-normal lg:leading-relaxed;
+    @apply text-center text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary lg:text-6xl leading-normal lg:leading-relaxed;
   }
 }
 

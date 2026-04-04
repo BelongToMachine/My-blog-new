@@ -1,6 +1,7 @@
 import React, { forwardRef, MutableRefObject } from "react"
 import { Callout, Button } from "@radix-ui/themes"
 import { InfoCircledIcon } from "@radix-ui/react-icons"
+import { SurfaceCard } from "./system"
 
 interface DialogProps {
   message: string
@@ -10,16 +11,16 @@ const Dialog = forwardRef<HTMLDialogElement, DialogProps>(
   ({ message }, ref) => (
     <dialog
       ref={ref as MutableRefObject<HTMLDialogElement>}
-      className="rounded-xl border border-[var(--border-color)] bg-[var(--card-background-color)] p-4 text-[var(--text-color)] shadow-lg backdrop:bg-[rgba(8,12,18,0.66)]"
+      className="rounded-[1.75rem] bg-transparent p-0 text-foreground shadow-lg backdrop:bg-[rgba(8,12,18,0.66)]"
     >
-      <div className="rounded-md">
+      <SurfaceCard padding="sm">
         <Callout.Root color="amber" variant="surface">
           <Callout.Icon>
             <InfoCircledIcon />
           </Callout.Icon>
           <Callout.Text>{message}</Callout.Text>
         </Callout.Root>
-      </div>
+      </SurfaceCard>
       {ref && (
         <Button
           onClick={() =>

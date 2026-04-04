@@ -42,6 +42,46 @@
 
 ---
 
+## Current Status After Shared-System Pass
+
+### Effectively Complete
+
+- [x] `app/globals.css` 已经具备语义 token 基础，并保留 legacy alias 作为过渡层
+- [x] `app/components/system/*` 已经落地第一批 shared system components
+- [x] `app/components/ui/*` 已经开始承接统一 variant/state 责任
+- [x] `app/components/ProjectCard.tsx` / `app/components/ProjectsDetail.tsx` / `app/components/ProjectTags.tsx` 已进入首轮 normalize
+- [x] `app/NavBar.tsx` / `app/components/navbar/DesktopNav.tsx` / `app/components/navbar/MobileNav.tsx` 已进入首轮 normalize
+- [x] `app/Contact.tsx` 已接入 shared section / surface / form message 模式
+- [x] `app/design-system/page.tsx` 与 `app/[locale]/design-system/page.tsx` 已存在，可作为规范入口
+
+### High-Risk Gaps Still Open
+
+- [ ] 还没有完成 browser-level 验证：Projects / Nav / Contact / design-system route 在真实页面上的表现仍需确认
+- [ ] 旧 token 消费路径仍然很多，尤其在 `ThemeService.ts`、`public/index.js`、blogs/articles CSS Modules 中
+- [ ] `tailwind.config.js` 的品牌色暴露策略还没有真正收口
+- [ ] 首页节奏只完成了局部 normalize，Hero / section rhythm / shared spacing 还没有统一完成
+- [ ] content-heavy 页面和 experimental 页面还没有进入主系统
+
+### Next-Best Slices
+
+1. Stabilize the current pass:
+   - Playwright 验证 `Contact`、`NavBar`、`Projects`、`/design-system`、`/[locale]/design-system`
+   - 修正这批页面的布局、交互、断点、深色模式回归
+2. Finish Phase 1 for real:
+   - 补 `doc/normalize/ui-rules.md`
+   - 固定旧 token -> 新 token 映射表
+   - 开始削减高频旧 token 消费点
+3. Finish home shared rhythm:
+   - 继续统一 `Hero`、`SummaryHeader`、section spacing、heading hierarchy
+4. Move into content-heavy normalization:
+   - Blog list/detail
+   - Articles enhancement/editorial surface
+5. Then close experimental surfaces:
+   - AI playground
+   - examples / usecase pages
+
+---
+
 ## 总体原则
 
 - [ ] 新增 UI 优先基于 `app/components/ui/*`
@@ -111,7 +151,7 @@
 
 ### Step 1.2 Freeze Token Standard
 
-- [ ] 确定全站主 token 体系以 `app/globals.css` 语义 token 为准
+- [x] 确定全站主 token 体系以 `app/globals.css` 语义 token 为准
 - [ ] 明确保留的 token 分类：
   - surface
   - text
@@ -124,7 +164,7 @@
 
 ### Step 1.3 Freeze Styling Rules
 
-- [ ] 写一份样式规范文档，建议文件：
+- [x] 写一份样式规范文档，建议文件：
   - `doc/normalize/ui-rules.md`
 - [ ] 在文档中明确：
   - 哪些样式允许直接写 Tailwind
@@ -147,7 +187,7 @@
 - [ ] 决定是否缩减 `colors.blue`、`colors.green` 直接暴露给业务的范围
 - [ ] 明确允许使用的品牌色阶
 - [ ] 检查 `globals.css` 中全局 utility 是否过多承担业务视觉职责
-- [ ] 盘点动画时长、阴影、radius 是否已经形成可复用 token
+- [x] 盘点动画时长、阴影、radius 是否已经形成可复用 token
 - [ ] 补齐缺失但高频的基础 token：
   - shadow
   - motion duration
@@ -175,7 +215,7 @@
 ### Step 2.1 Confirm Directory Boundaries
 
 - [ ] 确认 `app/components/ui/*` 只放基础原子组件
-- [ ] 新建或确认 `app/components/system/*` 用于站点级通用视觉组件
+- [x] 新建或确认 `app/components/system/*` 用于站点级通用视觉组件
 - [ ] 新建或确认 `app/components/features/*` 用于业务组合组件
 - [ ] 记录一份目录职责说明
 - [ ] 为“哪些组件不该抽到 system”补一句判断标准
@@ -199,11 +239,11 @@
 
 ### Step 2.3 Extract First System Components
 
-- [ ] 抽 `SectionHeading`
-- [ ] 抽 `SurfaceCard`
-- [ ] 抽 `ActionIconButton`
-- [ ] 抽 `StatusMessage`
-- [ ] 抽 `FormMessage`
+- [x] 抽 `SectionHeading`
+- [x] 抽 `SurfaceCard`
+- [x] 抽 `ActionIconButton`
+- [x] 抽 `StatusMessage`
+- [x] 抽 `FormMessage`
 - [ ] 如果需要，再补：
   - `PageContainer`
   - `Section`
@@ -211,12 +251,12 @@
 
 ### Step 2.4 Standardize Variants
 
-- [ ] 给 `Button` 定义统一 variant 策略
-- [ ] 给 `Input` / `Textarea` 补状态策略
-- [ ] 给 `SurfaceCard` 定义统一 radius / border / shadow / padding
-- [ ] 给 `SectionHeading` 定义统一标题层级
-- [ ] 给 `ActionIconButton` 定义统一 size / focus / hover / overlay 规则
-- [ ] 给 `StatusMessage` / `FormMessage` 定义 success / error / warning / quiet 层级
+- [x] 给 `Button` 定义统一 variant 策略
+- [x] 给 `Input` / `Textarea` 补状态策略
+- [x] 给 `SurfaceCard` 定义统一 radius / border / shadow / padding
+- [x] 给 `SectionHeading` 定义统一标题层级
+- [x] 给 `ActionIconButton` 定义统一 size / focus / hover / overlay 规则
+- [x] 给 `StatusMessage` / `FormMessage` 定义 success / error / warning / quiet 层级
 
 ### 完成标准
 
@@ -245,17 +285,17 @@
 
 ### Step 3.1 Normalize Project Components
 
-- [ ] 合并 `ProjectCard.tsx` 和 `ProjectsDetail.tsx` 的重复视觉实现
-- [ ] 保留一份权威 `ProjectCard`
-- [ ] 让列表组件只负责数据和排版，不负责卡片视觉本体
-- [ ] 把 overlay action 按钮迁移到 `ActionIconButton`
+- [x] 合并 `ProjectCard.tsx` 和 `ProjectsDetail.tsx` 的重复视觉实现
+- [x] 保留一份权威 `ProjectCard`
+- [x] 让列表组件只负责数据和排版，不负责卡片视觉本体
+- [x] 把 overlay action 按钮迁移到 `ActionIconButton`
 
 ### Step 3.2 Normalize Project Section Language
 
-- [ ] 统一 Projects 区域标题样式
-- [ ] 统一项目标题、描述、标签层级
-- [ ] 统一 hover / focus / overlay 行为
-- [ ] 清理项目区域里的旧 token 使用
+- [x] 统一 Projects 区域标题样式
+- [x] 统一项目标题、描述、标签层级
+- [x] 统一 hover / focus / overlay 行为
+- [x] 清理项目区域里的旧 token 使用
 
 ### Step 3.3 Validate the Pilot
 
@@ -286,27 +326,27 @@
 
 ### Step 4.1 Navigation
 
-- [ ] 统一 `NavBar.tsx`
-- [ ] 统一 `DesktopNav.tsx`
-- [ ] 统一 `MobileNav.tsx`
-- [ ] 为 nav item / nav control 建立统一视觉规范
-- [ ] 降低 desktop 和 mobile 之间的视觉割裂
-- [ ] 减少导航中的 inline style 和旧 token 依赖
+- [x] 统一 `NavBar.tsx`
+- [x] 统一 `DesktopNav.tsx`
+- [x] 统一 `MobileNav.tsx`
+- [x] 为 nav item / nav control 建立统一视觉规范
+- [x] 降低 desktop 和 mobile 之间的视觉割裂
+- [x] 减少导航中的 inline style 和旧 token 依赖
 - [ ] 统一 nav item、icon trigger、theme toggle、language toggle 的交互等级
 
 ### Step 4.2 Contact
 
-- [ ] 用 `SectionHeading` 替换散落的 section title 写法
-- [ ] 用 `SurfaceCard` 承接 Contact 容器
-- [ ] 用 `FormMessage` / `StatusMessage` 替换手写状态条
-- [ ] 给 `Input` / `Textarea` 引入统一 error state
-- [ ] 移除 `border-gray-300`、`text-red-500` 这一类硬编码
+- [x] 用 `SectionHeading` 替换散落的 section title 写法
+- [x] 用 `SurfaceCard` 承接 Contact 容器
+- [x] 用 `FormMessage` / `StatusMessage` 替换手写状态条
+- [x] 给 `Input` / `Textarea` 引入统一 error state
+- [x] 移除 `border-gray-300`、`text-red-500` 这一类硬编码
 
 ### Step 4.3 Home Shared Rhythm
 
 - [ ] 检查首页各 section 的间距节奏
 - [ ] 抽通用 `Section` 或 `PageContainer`
-- [ ] 统一 heading 与内容块的 spacing
+- [ ] 统一 heading 与内容块的 spacing（已开始，`SummaryHeader.tsx` 已切到 shared heading）
 - [ ] 处理 `.home-page-heading` 的替代方案
 - [ ] 保留 Hero 的个性，不把首页做成通用模板块拼接
 
@@ -413,9 +453,9 @@
 
 ### Step 7.3 Refresh Design System Page
 
-- [ ] 更新 `app/design-system/page.tsx`
-- [ ] 让它展示真实在用的组件，而不是 demo-only 组件
-- [ ] 展示 token、variant、组合示例
+- [x] 更新 `app/design-system/page.tsx`
+- [x] 让它展示真实在用的组件，而不是 demo-only 组件
+- [x] 展示 token、variant、组合示例
 - [ ] 补充“推荐用法”和“不要这样用”的示例
 
 ### 完成标准
@@ -442,15 +482,14 @@
 
 ### 现在最适合立刻开始的事项
 
-- [ ] 写 `doc/normalize/ui-rules.md`
 - [ ] 盘点旧 token 与新 token 的映射
-- [ ] 创建 `app/components/system/`
-- [ ] 抽第一批 system components：
+- [x] 创建 `app/components/system/`
+- [x] 抽第一批 system components：
   - `SectionHeading`
   - `SurfaceCard`
   - `ActionIconButton`
   - `FormMessage`
-- [ ] 开始 `Projects` 区域的试点迁移
+- [x] 开始 `Projects` 区域的试点迁移
 
 ---
 

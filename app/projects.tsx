@@ -1,25 +1,27 @@
-"use client";
-import React, { Suspense, useEffect, useRef } from "react";
-import ProjectTags from "./components/ProjectTags";
-import ProjectsDetail from "./components/ProjectsDetail";
-import { motion, useInView } from "framer-motion";
-import { Box } from "@radix-ui/themes";
-import { useTranslations } from "next-intl";
+"use client"
+
+import React, { Suspense, useRef } from "react"
+import { motion, useInView } from "framer-motion"
+import { useTranslations } from "next-intl"
+
+import ProjectTags from "./components/ProjectTags"
+import ProjectsDetail from "./components/ProjectsDetail"
+import { SectionHeading } from "./components/system"
 
 const Projects = () => {
-  const t = useTranslations("home");
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true });
+  const t = useTranslations("home")
+  const ref = useRef(null)
+  const isInView = useInView(ref, { once: true })
   const cardVariants = {
     initial: { x: -100, opacity: 0 },
     animate: { x: 0, opacity: 1 },
-  };
+  }
 
   return (
     <>
-      <Box id="projects" className="text-center mb-3 ">
-        <h1 className="home-page-heading">{t("myProjects")}</h1>
-      </Box>
+      <section id="projects" className="space-y-1">
+        <SectionHeading title={t("myProjects")} />
+      </section>
       <div ref={ref}>
         <motion.div
           variants={cardVariants}
@@ -34,7 +36,7 @@ const Projects = () => {
         </motion.div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default Projects;
+export default Projects

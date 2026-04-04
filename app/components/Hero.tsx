@@ -30,8 +30,8 @@ const Hero = () => {
           className="relative z-10 flex items-start sm:col-start-2 sm:col-end-7"
         >
           <div className="w-full max-w-[560px] min-w-0">
-            <h1 className="mb-2 min-h-[5.75rem] text-4xl font-extrabold text-yellow-500 sm:min-h-[7rem] sm:text-5xl lg:min-h-[8rem] lg:text-6xl">
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-secondary-600 flicker">
+            <h1 className="mb-2 min-h-[5.75rem] text-4xl font-extrabold text-foreground sm:min-h-[7rem] sm:text-5xl lg:min-h-[8rem] lg:text-6xl">
+              <span className="flicker bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
                 {`${t("greeting")} `}
               </span>
               <TypeAnimation
