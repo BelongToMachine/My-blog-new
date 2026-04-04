@@ -34,7 +34,7 @@ export async function highlight({
 
     out.children[0].properties = {
       ...out.children[0].properties,
-      style: `${existingStyle}; width: 100%; height: 100%; overflow-y: auto; padding: 0.5rem 1rem;`,
+      style: `${existingStyle}; width: 100%; height: 100%; overflow-y: auto; padding: 0.875rem 1rem 1rem;`,
     }
   }
 

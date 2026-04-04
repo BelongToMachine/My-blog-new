@@ -5,10 +5,8 @@ import React, {
   useEffect,
   useRef,
   ReactNode,
-  useContext,
 } from "react"
 import { Container } from "@radix-ui/themes"
-import { ThemeContext } from "@/app/context/DarkModeContext"
 import style from "@/app/service/ThemeService"
 import useIsInScrollable from "@/app/hooks/useIsInScrollable"
 import { useTheme } from "@/app/hooks/useTheme"
@@ -35,6 +33,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
   const [scrollRatio, setScrollRatio] = useState(0)
   const [scrolledInVH, setScrolledInVh] = useState(0)
   const nodeRef = useRef(null)
+  const mobileAvatarExitScrollRef = useRef<number | null>(null)
   const isInScrollable = useScrollableStore((state) => state.isInScrollable)
   const BACKGROUND_COLOR = style.background
   const SCROLLABLE_COLOR = style.scrollable
@@ -60,6 +59,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
 
   useEffect(() => {
     const handleScroll = (event: WheelEvent) => {
+      if (window.innerWidth < 640) return
       // Only slow down scrolling in specific conditions
       event.preventDefault()
       window.scrollBy({
@@ -75,16 +75,59 @@ const DynamicBezierCurve = ({ children }: Props) => {
   }, [isInScrollable])
 
   useEffect(() => {
+    const captureMobileAvatarExitPoint = () => {
+      if (window.innerWidth >= 640) {
+        mobileAvatarExitScrollRef.current = null
+        return
+      }
+
+      const mobileAvatar = document.querySelector<HTMLElement>(
+        "[data-mobile-hero-avatar]"
+      )
+
+      if (!mobileAvatar) {
+        mobileAvatarExitScrollRef.current = window.innerHeight * 0.6
+        return
+      }
+
+      const rect = mobileAvatar.getBoundingClientRect()
+      const navOffset = 56
+      const avatarBottomInDocument = window.scrollY + rect.bottom
+
+      mobileAvatarExitScrollRef.current = Math.max(
+        avatarBottomInDocument - navOffset,
+        1
+      )
+    }
+
+    captureMobileAvatarExitPoint()
+    window.addEventListener("resize", captureMobileAvatarExitPoint)
+
+    return () => {
+      window.removeEventListener("resize", captureMobileAvatarExitPoint)
+    }
+  }, [])
+
+  useEffect(() => {
     const handleScroll = () => {
       if (!nodeRef.current) return
 
       const windowHeight = window.innerHeight
       const pixelsScrolled = Math.abs(window.scrollY)
-      const baseRatio = pixelsScrolled / windowHeight
+      const isMobileViewport = window.innerWidth < 640
+      let ratio = 0
 
-      setScrolledInVh(baseRatio * 100)
-
-      let ratio = ADJUSTED_SCROLL_COEFFICIENT * baseRatio
+      if (isMobileViewport) {
+        const mobileExitScroll =
+          mobileAvatarExitScrollRef.current ?? windowHeight * 0.6
+        const mobileProgress = pixelsScrolled / mobileExitScroll
+        setScrolledInVh(clamp(mobileProgress) * 100)
+        ratio = clamp(ADJUSTED_SCROLL_COEFFICIENT * mobileProgress)
+      } else {
+        const baseRatio = pixelsScrolled / windowHeight
+        setScrolledInVh(baseRatio * 100)
+        ratio = ADJUSTED_SCROLL_COEFFICIENT * baseRatio
+      }
 
       // We don't care about the negative values when it's
       // below the viewport, or the greater-than-1 values when
@@ -93,18 +136,19 @@ const DynamicBezierCurve = ({ children }: Props) => {
 
       // Small optimization, avoid re-rendering when the
       // SVG isn't in the viewport.
-      if (scrollRatio !== ratio) {
-        setScrollRatio(ratio)
-      }
+      setScrollRatio((prevRatio) => (prevRatio !== ratio ? ratio : prevRatio))
     }
 
+    handleScroll()
     window.addEventListener("scroll", handleScroll)
+    window.addEventListener("resize", handleScroll)
 
     // Clean up event listener on component unmount
     return () => {
       window.removeEventListener("scroll", handleScroll)
+      window.removeEventListener("resize", handleScroll)
     }
-  }, [scrollRatio]) // Include scrollRatio in dependencies to ensure handleScroll has the latest value
+  }, [])
 
   // Use our `getInterpolatedValue` function to figure out the values for
   // the start point and the control points.
@@ -143,41 +187,97 @@ const DynamicBezierCurve = ({ children }: Props) => {
 
   return (
     <>
-      <div
+      <section
+        className="relative sm:hidden"
         style={{
-          position: "fixed",
           backgroundColor: SCROLLABLE_COLOR,
-          height: "100vh",
-          width: "100%",
         }}
       >
-        <Container>{children}</Container>
+        <div
+          aria-hidden
+          style={{
+            position: "absolute",
+            inset: 0,
+            pointerEvents: "none",
+            zIndex: 30,
+          }}
+        >
+          <div
+            style={{
+              position: "sticky",
+              top: "3.5rem",
+              height: "calc(100svh - 3.5rem)",
+            }}
+          >
+            <svg
+              ref={nodeRef}
+              viewBox="0 0 100 100"
+              style={{
+                width: "100%",
+                height: "calc(100svh - 3.5rem)",
+                position: "absolute",
+                inset: 0,
+              }}
+              preserveAspectRatio="none"
+            >
+              <path
+                d={instructions}
+                fill={BACKGROUND_COLOR as string}
+                stroke="hotpink"
+                strokeWidth="0"
+              />
+            </svg>
+          </div>
+        </div>
+        <Container>
+          <div
+            style={{
+              position: "relative",
+              minHeight: "100svh",
+              paddingBottom: "2.5rem",
+            }}
+          >
+            {children}
+          </div>
+        </Container>
+      </section>
+      <div className="hidden sm:block">
+        <div
+          style={{
+            position: "fixed",
+            backgroundColor: SCROLLABLE_COLOR,
+            height: "100vh",
+            width: "100%",
+          }}
+        >
+          <Container>{children}</Container>
+        </div>
+        <svg
+          ref={nodeRef}
+          viewBox="0 0 100 100"
+          style={{
+            width: "100%",
+            height: "100vh",
+            position: "fixed",
+            pointerEvents: "none",
+          }}
+          preserveAspectRatio="none"
+        >
+          <path
+            d={instructions}
+            fill={BACKGROUND_COLOR as string}
+            stroke="hotpink"
+            strokeWidth="0"
+          />
+        </svg>
+        <div
+          id="placeHolder"
+          style={{
+            height: `${SCROLLABLE_HEIGHT_IN_VH}vh`,
+            zIndex: -1,
+          }}
+        ></div>
       </div>
-      <svg
-        ref={nodeRef}
-        viewBox="0 0 100 100"
-        style={{
-          width: "100%",
-          height: "100vh",
-          position: "fixed",
-          pointerEvents: "none",
-        }}
-        preserveAspectRatio="none"
-      >
-        <path
-          d={instructions}
-          fill={BACKGROUND_COLOR as string}
-          stroke="hotpink"
-          strokeWidth="0"
-        />
-      </svg>
-      <div
-        id="placeHolder"
-        style={{
-          height: `${SCROLLABLE_HEIGHT_IN_VH}vh`,
-          zIndex: -1,
-        }}
-      ></div>
     </>
   )
 }

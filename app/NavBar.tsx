@@ -29,7 +29,7 @@ const NavBar = () => {
   return (
     <nav
       className={cn(
-        "fixed inset-x-0 top-0 z-10 border-b backdrop-blur-md transition-colors",
+        "fixed inset-x-0 top-0 z-[60] border-b backdrop-blur-md transition-colors",
         isInScrollable
           ? "border-border bg-muted/95"
           : "border-border/60 bg-background/85"

@@ -1,19 +1,30 @@
 import React from "react"
+import { cn } from "@/lib/utils"
 import { ClientComponent } from "./ClientComponent"
 
 interface Props {
   colorMode: string
   code: string
+  className?: string
+  compact?: boolean
 }
 
-export const CodeBlocker = ({ colorMode, code }: Props) => {
+export const CodeBlocker = ({
+  colorMode,
+  code,
+  className,
+  compact = false,
+}: Props) => {
   const taskbarBackground =
     colorMode === "dark" ? "#2d2d2d" : "#f0f0f0"
 
   return (
-    <div className="overflow-auto rounded-2xl">
+    <div className={cn("overflow-auto rounded-2xl", className)}>
       <div
-        className="flex h-10 items-center px-3 py-2"
+        className={cn(
+          "codeblock-taskbar flex items-center py-2",
+          compact ? "h-10 px-3.5" : "h-11 px-4 sm:px-3"
+        )}
         style={{ background: taskbarBackground }}
       >
         <span
