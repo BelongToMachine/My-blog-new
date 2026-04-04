@@ -51,6 +51,32 @@
     --ring: 198 83% 34%;
 
     --radius: 0.5rem;
+
+    /* Extended semantic tokens for gradual normalization. */
+    --surface-muted: 205 36% 96%;
+    --surface-elevated: 0 0% 100%;
+    --surface-overlay: 0 0% 100%;
+    --text-strong: 212 39% 12%;
+    --text-soft: 214 18% 43%;
+    --text-link: 198 83% 34%;
+    --shadow-elevated: 0 18px 45px -28px rgba(15, 23, 42, 0.22);
+    --shadow-overlay: 0 20px 45px -25px rgba(3, 10, 18, 0.55);
+    --motion-duration-fast: 180ms;
+    --motion-duration-base: 240ms;
+    --motion-duration-slow: 420ms;
+
+    /* Transitional legacy aliases. Keep in sync with the semantic tokens above. */
+    --background-color: hsl(var(--background));
+    --text-color: hsl(var(--foreground));
+    --card-background-color: hsl(var(--card));
+    --border-color: hsl(var(--border));
+    --chart-link-color: hsl(var(--primary));
+    --chart-text-color: hsl(var(--muted-foreground));
+    --scrollable-background-color: hsl(var(--muted));
+    --table-header-color: hsl(var(--secondary));
+    --table-general-color: hsl(var(--background));
+    --table-text-color: hsl(var(--foreground));
+    --button-hover-color: hsl(var(--accent));
   }
 
   .dark {
@@ -81,6 +107,15 @@
     --border: 214 18% 24%;
     --input: 214 18% 24%;
     --ring: 193 85% 66%;
+
+    --surface-muted: 214 22% 17%;
+    --surface-elevated: 212 30% 13%;
+    --surface-overlay: 212 30% 13%;
+    --text-strong: 210 40% 96%;
+    --text-soft: 213 20% 72%;
+    --text-link: 193 85% 66%;
+    --shadow-elevated: 0 20px 50px -28px rgba(2, 8, 23, 0.55);
+    --shadow-overlay: 0 20px 45px -25px rgba(2, 8, 23, 0.72);
   }
 }
 
@@ -99,7 +134,7 @@
   html.theme-transition *::before,
   html.theme-transition *::after {
     transition-property: background-color, border-color, color, fill, stroke, box-shadow;
-    transition-duration: 420ms;
+    transition-duration: var(--motion-duration-slow);
     transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
   }
 }
