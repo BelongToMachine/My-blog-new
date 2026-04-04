@@ -7,10 +7,11 @@ import { DropdownMenu } from "@radix-ui/themes"
 import { FaBook } from "react-icons/fa6"
 import { FaLinkedin } from "react-icons/fa"
 import { useTranslations } from "next-intl"
-import { Link } from "@/app/i18n/navigation"
+import { Link, usePathname } from "@/app/i18n/navigation"
 import LanguageToggle from "./LanguageToggle"
 import ThemeToggle from "./ThemeToggle"
 import { ActionIconButton } from "../system/ActionIconButton"
+import { NavItem } from "../system/NavItem"
 
 const MobileNav = () => {
   return (
@@ -32,6 +33,7 @@ export default MobileNav
 
 const Menu = () => {
   const t = useTranslations("nav")
+  const pathname = usePathname()
   const mobileLinks = [
     { label: t("ai"), href: "/ai", type: "ai" as const },
     { label: t("myBlog"), href: "/blogs", type: "blogs" as const },
@@ -51,13 +53,17 @@ const Menu = () => {
       </DropdownMenu.Trigger>
       <DropdownMenu.Content size="1">
         {mobileLinks.map((link, index) => {
+          const isActive = pathname === link.href
+
           return (
             <div key={index}>
-              <DropdownMenu.Item className="flex justify-between">
-                <Link key={link.href} href={link.href} className="pr-3">
-                  {link.label}
-                </Link>
-                <Icon type={link.type} />
+              <DropdownMenu.Item asChild>
+                <NavItem asChild active={isActive} variant="dropdown">
+                  <Link key={link.href} href={link.href}>
+                    <span className="pr-3">{link.label}</span>
+                    <Icon type={link.type} />
+                  </Link>
+                </NavItem>
               </DropdownMenu.Item>
             </div>
           )

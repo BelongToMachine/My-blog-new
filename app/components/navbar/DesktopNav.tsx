@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client"
-import classNames from "classnames"
 import { useParams } from "next/navigation"
 import NextLink from "next/link"
 import React, { useEffect, useMemo, useState } from "react"
@@ -9,13 +8,13 @@ import axios from "axios"
 import toast from "react-hot-toast"
 import { AnimatePresence, motion } from "framer-motion"
 import DisappearingText from "../DisappearText"
-import { colorMode } from "@/app/context/DarkModeContext"
-import { useTheme } from "@/app/hooks/useTheme"
 import { Link, usePathname } from "@/app/i18n/navigation"
 import { useLocale, useTranslations } from "next-intl"
 import LanguageToggle from "./LanguageToggle"
 import ThemeToggle from "./ThemeToggle"
 import { ActionIconButton } from "../system/ActionIconButton"
+import { cn } from "@/lib/utils"
+import { NavItem } from "../system/NavItem"
 
 interface Link {
   label: string
@@ -23,8 +22,6 @@ interface Link {
 }
 
 const DesktopNav = () => {
-  const { colorMode } = useTheme()
-
   return (
     <div className="flex h-14 items-center justify-between px-5">
       <div className="flex items-center gap-6">
@@ -33,7 +30,7 @@ const DesktopNav = () => {
             <PiGithubLogoFill size={20} />
           </NextLink>
         </ActionIconButton>
-        <NavLinks colorMode={colorMode} />
+        <NavLinks />
       </div>
       <div className="flex items-center gap-3">
         <LanguageToggle />
@@ -44,7 +41,7 @@ const DesktopNav = () => {
 }
 export default DesktopNav
 
-const NavLinks = ({ colorMode }: { colorMode: colorMode }) => {
+const NavLinks = () => {
   const t = useTranslations("nav")
   const locale = useLocale()
   const currentPath = usePathname()
@@ -97,15 +94,12 @@ const NavLinks = ({ colorMode }: { colorMode: colorMode }) => {
 
   const styledTag = useMemo(() => {
     return (link: Link, isArrowExist: boolean = false) =>
-      // prettier-ignore
-      classNames({
-        "nav-link": true,
-        "nav-link-dark": colorMode === "dark",
-        "!text-zinc-950": link.href === currentPath && colorMode === "light",
-        "!text-white": link.href === currentPath && colorMode === "dark",
-        "arrowCollapsible": isArrowExist,
-      })
-  }, [currentPath, colorMode])
+      cn(
+        "text-sm font-medium text-muted-foreground transition-colors hover:text-foreground",
+        link.href === currentPath && "text-foreground",
+        isArrowExist && "arrowCollapsible"
+      )
+  }, [currentPath])
 
   const variants = {
     initial: { opacity: 0 },
@@ -163,13 +157,15 @@ const NavLinks = ({ colorMode }: { colorMode: colorMode }) => {
                 </motion.span>
               )}
               <li>
-                <Link className={styledTag(link)} href={link.href}>
-                  <DisappearingText
-                    text={link.label}
-                    variant={variants}
-                    isCollapse={isCollapse}
-                  />
-                </Link>
+                <NavItem asChild active={link.href === currentPath} variant="desktop">
+                  <Link className={styledTag(link)} href={link.href}>
+                    <DisappearingText
+                      text={link.label}
+                      variant={variants}
+                      isCollapse={isCollapse}
+                    />
+                  </Link>
+                </NavItem>
               </li>
             </React.Fragment>
           )
