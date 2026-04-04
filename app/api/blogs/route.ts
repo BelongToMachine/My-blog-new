@@ -1,18 +1,18 @@
-import { NextRequest, NextResponse } from "next/server";
-import prisma from "@/prisma/client";
-import { blogSchema } from "@/app/validationSchema";
-import authOptions from "@/app/auth/authOptions";
-import { getServerSession } from "next-auth";
+import { NextRequest, NextResponse } from "next/server"
+import prisma from "@/prisma/client"
+import { blogSchema } from "@/app/validationSchema"
+import { MODE } from "@/app/envConfig"
 
 export async function POST(request: NextRequest) {
-  const session = await getServerSession(authOptions);
-  // if (!session) return NextResponse.json({}, { status: 401 });
+  if (MODE !== "dev") {
+    return NextResponse.json({}, { status: 403 })
+  }
 
-  const body = await request.json();
-  const validation = blogSchema.safeParse(body);
+  const body = await request.json()
+  const validation = blogSchema.safeParse(body)
 
   if (!validation.success)
-    return NextResponse.json(validation.error.format(), { status: 400 });
+    return NextResponse.json(validation.error.format(), { status: 400 })
 
   const newBlog = await prisma.issue.create({
     data: {
@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
       description: body.description,
       language: body.language ?? "zh",
     },
-  });
+  })
 
-  return NextResponse.json(newBlog, { status: 201 });
+  return NextResponse.json(newBlog, { status: 201 })
 }
