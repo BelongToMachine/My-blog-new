@@ -1,12 +1,12 @@
 import prisma from "@/prisma/client"
 import { withPrismaFallback } from "@/prisma/safe"
-import { Avatar, Card, Flex, Heading, Table } from "@radix-ui/themes"
-import { create } from "domain"
-import React, { CSSProperties } from "react"
+import { Avatar, Flex, Heading, Table } from "@radix-ui/themes"
+import React from "react"
 import { IssueStatusBadge } from "./components"
 import { xTheme } from "./service/ThemeService"
 import { Link } from "@/app/i18n/navigation"
 import { getLocale, getTranslations } from "next-intl/server"
+import { SurfaceCard } from "./components/system"
 
 const LatestBlogs = async () => {
   const locale = await getLocale()
@@ -31,7 +31,7 @@ const LatestBlogs = async () => {
   )
 
   return (
-    <Card style={xTheme.card}>
+    <SurfaceCard>
       <Heading size="4" mb="4">
         {t("latestBlogs")}
       </Heading>
@@ -63,7 +63,7 @@ const LatestBlogs = async () => {
           ))}
         </Table.Body>
       </Table.Root>
-    </Card>
+    </SurfaceCard>
   )
 }
 

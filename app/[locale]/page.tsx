@@ -8,6 +8,8 @@ import SummaryHeader from "../SummaryHeader"
 import Contact from "../Contact"
 import DynamicBezierCurve from "../components/navbar/DynamicBezierCurve"
 import PostSummary from "../PostSummary"
+import Projects from "../projects"
+import { PageSection } from "../components/system"
 
 interface Props {
   params: { locale: string }
@@ -64,14 +66,21 @@ export default async function Home({ params }: Props) {
       <DynamicBezierCurve>
         <Hero />
       </DynamicBezierCurve>
-      <Container>
-        <SummaryHeader />
-        <PostSummary
-          web={summary.open}
-          tech={summary.inProgress}
-          nonTech={summary.closed}
-        />
-        <Contact />
+      <Container className="pb-20">
+        <PageSection className="pt-8">
+          <SummaryHeader />
+          <PostSummary
+            web={summary.open}
+            tech={summary.inProgress}
+            nonTech={summary.closed}
+          />
+        </PageSection>
+        <PageSection className="border-t border-border/60">
+          <Projects />
+        </PageSection>
+        <PageSection className="border-t border-border/60">
+          <Contact />
+        </PageSection>
       </Container>
     </>
   )

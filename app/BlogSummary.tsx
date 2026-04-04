@@ -1,9 +1,9 @@
 import { Status } from "@prisma/client"
-import { Card, Flex, Text } from "@radix-ui/themes"
+import { Text } from "@radix-ui/themes"
 import React from "react"
-import { xTheme } from "./service/ThemeService"
 import { useTranslations } from "next-intl"
 import { Link as LocaleLink } from "@/app/i18n/navigation"
+import { SurfaceCard } from "./components/system"
 
 interface Props {
   open: number
@@ -24,23 +24,23 @@ const BlogSummary = ({ open, inProgress, closed }: Props) => {
   ]
 
   return (
-    <Flex gap="4">
+    <div className="grid gap-4 sm:grid-cols-3">
       {categoryData.map((container) => (
-        <Card key={container.label} style={xTheme.card}>
-          <Flex direction="column" gap="1">
+        <SurfaceCard key={container.label} className="space-y-2" interactive>
+          <div className="space-y-1">
             <LocaleLink
-              className="text-sm font-medium"
+              className="text-sm font-medium text-primary hover:underline"
               href={`/blogs?status=${container.status}`}
             >
               {container.label}
             </LocaleLink>
-          </Flex>
-          <Text size="5" className="font-bold">
+          </div>
+          <Text size="5" className="font-bold text-foreground">
             {container.value}
           </Text>
-        </Card>
+        </SurfaceCard>
       ))}
-    </Flex>
+    </div>
   )
 }
 
