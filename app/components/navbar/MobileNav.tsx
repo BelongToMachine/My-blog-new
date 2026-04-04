@@ -3,27 +3,28 @@ import { LuMoveVertical } from "react-icons/lu"
 import React from "react"
 import { PiGithubLogoFill } from "react-icons/pi"
 import NextLink from "next/link"
-import { Button, DropdownMenu } from "@radix-ui/themes"
+import { DropdownMenu } from "@radix-ui/themes"
 import { FaBook } from "react-icons/fa6"
 import { FaLinkedin } from "react-icons/fa"
 import { useTranslations } from "next-intl"
 import { Link } from "@/app/i18n/navigation"
 import LanguageToggle from "./LanguageToggle"
 import ThemeToggle from "./ThemeToggle"
+import { ActionIconButton } from "../system/ActionIconButton"
 
 const MobileNav = () => {
   return (
-    <>
-      <div className="flex justify-between items-center px-4 py-4">
+    <div className="flex items-center justify-between px-4 py-4">
+      <ActionIconButton asChild aria-label="Open GitHub profile" tone="quiet">
         <NextLink href="http://github.com/JieLuis">
-          <PiGithubLogoFill />
+          <PiGithubLogoFill size={20} />
         </NextLink>
-        <div className="flex items-center gap-2">
-          <ThemeToggle />
-          <Menu />
-        </div>
+      </ActionIconButton>
+      <div className="flex items-center gap-2">
+        <ThemeToggle />
+        <Menu />
       </div>
-    </>
+    </div>
   )
 }
 
@@ -43,10 +44,10 @@ const Menu = () => {
 
   return (
     <DropdownMenu.Root>
-      <DropdownMenu.Trigger>
-        <Button variant="soft" size="2">
+      <DropdownMenu.Trigger asChild>
+        <ActionIconButton aria-label="Open navigation menu" tone="surface">
           <LuMoveVertical />
-        </Button>
+        </ActionIconButton>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content size="1">
         {mobileLinks.map((link, index) => {
