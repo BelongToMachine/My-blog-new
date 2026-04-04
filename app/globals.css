@@ -175,3 +175,15 @@ ul li {
 .flicker {
   font-family: 'flickering', sans-serif;
 }
+
+.hero-codeblock-mobile pre {
+  font-size: 12px !important;
+  line-height: 1.42 !important;
+  padding: 0.8rem 0.9rem 0.9rem !important;
+}
+
+.hero-codeblock-mobile code,
+.hero-codeblock-mobile pre code {
+  font-size: inherit !important;
+  line-height: inherit !important;
+}
