@@ -1,5 +1,4 @@
 import React from "react"
-import { xTheme } from "../service/ThemeService"
 
 interface UnrelatedTextDisplayProps {
   text: string
@@ -15,13 +14,7 @@ const UnrelatedTextDisplay: React.FC<UnrelatedTextDisplayProps> = ({
 
   return (
     <div
-      className="mt-4 w-full rounded-2xl border p-4"
-      style={{
-        backgroundColor: "color-mix(in srgb, var(--card-background-color) 72%, transparent)",
-        overflow: "auto",
-        ...xTheme.chatbotText,
-        ...xTheme.innerCellBorder,
-      }}
+      className="mt-4 w-full overflow-auto rounded-2xl border border-border/70 bg-[color:color-mix(in_srgb,var(--card-background-color)_72%,transparent)] p-4 text-foreground"
     >
       <div className="space-y-4 text-sm leading-7">
         {blocks.map((block, index) => {
