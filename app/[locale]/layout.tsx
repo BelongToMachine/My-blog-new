@@ -8,7 +8,6 @@ import QueryClientProvider from "../QueryClientProvider"
 import CursorManager from "../CursorManager"
 import { ThemeProvider } from "../context/DarkModeContext"
 import RadixThemeProvider from "../context/RadixThemeProvider"
-import { xTheme } from "../service/ThemeService"
 import { locales } from "../i18n/routing"
 
 export function generateStaticParams() {
@@ -53,7 +52,7 @@ export default async function LocaleLayout({
 
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
-      <div style={xTheme.layoutBackground}>
+      <div className="app-shell">
         <QueryClientProvider>
           <ThemeProvider>
             <RadixThemeProvider>
