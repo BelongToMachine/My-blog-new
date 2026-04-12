@@ -3,6 +3,9 @@ import React from 'react'
 import { Button } from '@/app/components/ui/button'
 import { Input } from '@/app/components/ui/input'
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/app/components/ui/card'
+import SectionHeading from '@/app/components/system/SectionHeading'
+import { ActionIconButton } from '@/app/components/system/ActionIconButton'
+import { PlusIcon } from '@radix-ui/react-icons'
 
 const DesignSystemPage = () => {
     return (
@@ -63,6 +66,22 @@ const DesignSystemPage = () => {
                             <Button>Action</Button>
                         </CardFooter>
                     </Card>
+                </div>
+            </section>
+            <section className="space-y-4">
+                <h2 className="text-xl font-semibold">System Components</h2>
+                <div className="grid gap-8 p-6 border rounded-xl bg-card">
+                    <div>
+                        <p className="mb-4 text-sm font-semibold text-muted-foreground uppercase tracking-widest">Section Heading</p>
+                        <SectionHeading title="A Unified Heading" description="This is an example description for the section heading, establishing shared rhythm." align="left" />
+                    </div>
+                    <div>
+                        <p className="mb-4 text-sm font-semibold text-muted-foreground uppercase tracking-widest">Action Icon Button</p>
+                        <div className="flex gap-4">
+                            <ActionIconButton tone="quiet"><PlusIcon /></ActionIconButton>
+                            <ActionIconButton tone="surface"><PlusIcon /></ActionIconButton>
+                        </div>
+                    </div>
                 </div>
             </section>
         </div>

@@ -57,13 +57,13 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
   return (
     <div>
       {error && (
-        <Callout.Root color="red" className="mb-5 rounded-[0.55rem]">
+        <Callout.Root color="red" className="mb-5 rounded-lg shadow-sm">
           <Callout.Text>{error}</Callout.Text>
         </Callout.Root>
       )}
       <form className="space-y-3" onSubmit={onSubmit}>
         <Theme radius="none">
-        <TextField.Root className="rounded-[0.45rem]">
+        <TextField.Root className="rounded-md">
           <TextField.Input
             defaultValue={issue?.title}
             placeholder={t("titlePlaceholder")}
@@ -81,7 +81,7 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
           )}
         />
         <ErrorMessage>{errors.description?.message}</ErrorMessage>
-        <Button disabled={isSubmitting} className="rounded-[0.45rem]">
+        <Button disabled={isSubmitting} className="rounded-md">
           {issue ? t("update") : t("submitNew")}{" "}
           {isSubmitting && <Spinner />}
         </Button>

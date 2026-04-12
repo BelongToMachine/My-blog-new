@@ -6,7 +6,8 @@ import {
   DoubleArrowLeftIcon,
   DoubleArrowRightIcon,
 } from "@radix-ui/react-icons";
-import { Button, Flex, Text } from "@radix-ui/themes";
+import { Flex, Text } from "@radix-ui/themes";
+import { Button } from "@/app/components/ui/button";
 import { useSearchParams } from "next/navigation";
 import React from "react";
 import { useTranslations } from "next-intl";
@@ -34,40 +35,36 @@ const Pagination = ({ itemCounts, pageSize, currentPage }: Props) => {
 
   return (
     <Flex align="center" gap="2">
-      <Text>
+      <Text className="mr-2">
         {t("page", { current: currentPage, total: pageCount })}
       </Text>
       <Button
-        color="gray"
-        variant="soft"
-        className="rounded-[0.45rem]"
+        variant="outline"
+        size="icon"
         disabled={currentPage === 1}
         onClick={() => changePage(1)}
       >
         <DoubleArrowLeftIcon />
       </Button>
       <Button
-        color="gray"
-        variant="soft"
-        className="rounded-[0.45rem]"
+        variant="outline"
+        size="icon"
         disabled={currentPage === 1}
         onClick={() => changePage(currentPage - 1)}
       >
         <ChevronLeftIcon />
       </Button>
       <Button
-        color="gray"
-        variant="soft"
-        className="rounded-[0.45rem]"
+        variant="outline"
+        size="icon"
         disabled={currentPage === pageCount}
         onClick={() => changePage(currentPage + 1)}
       >
         <ChevronRightIcon />
       </Button>
       <Button
-        color="gray"
-        variant="soft"
-        className="rounded-[0.45rem]"
+        variant="outline"
+        size="icon"
         disabled={currentPage === pageCount}
         onClick={() => changePage(pageCount)}
       >

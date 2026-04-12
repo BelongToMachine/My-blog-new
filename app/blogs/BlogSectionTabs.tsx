@@ -1,5 +1,7 @@
 import { Link } from "@/app/i18n/navigation"
 import { getTranslations } from "next-intl/server"
+import { buttonVariants } from "@/app/components/ui/button"
+import { cn } from "@/lib/utils"
 
 interface Props {
   active: "database" | "mdx"
@@ -19,11 +21,10 @@ export default async function BlogSectionTabs({ active }: Props) {
         <Link
           key={tab.href}
           href={tab.href}
-          className={`rounded-[0.45rem] border px-4 py-2 text-sm transition-colors ${
-            tab.isActive
-              ? "border-primary bg-primary text-white"
-              : "border-border bg-background/70 text-foreground/80 hover:border-primary hover:text-primary"
-          }`}
+          className={cn(
+            buttonVariants({ variant: tab.isActive ? "default" : "outline" }),
+            "rounded-md"
+          )}
         >
           {tab.label}
         </Link>

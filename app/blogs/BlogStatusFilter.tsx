@@ -30,9 +30,9 @@ const BlogStatusFilter = () => {
       >
         <Select.Trigger
           placeholder={t("filterPlaceholder")}
-          className="!rounded-[0.45rem] !border-border/70 !bg-background/85 px-4"
+          className="!rounded-md !border-input"
         />
-        <Select.Content className="!rounded-[0.45rem] !border-border/70">
+        <Select.Content className="!rounded-md !border-input">
           {statuses.map((status, index) => (
             <Select.Item key={index} value={status.value || "unSelected"}>
               {status.label}

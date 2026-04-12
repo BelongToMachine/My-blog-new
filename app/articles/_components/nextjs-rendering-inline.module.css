@@ -1,12 +1,12 @@
 .panel {
-  --surface: color-mix(in srgb, var(--card-background-color) 94%, var(--background-color));
-  --surface-strong: color-mix(in srgb, var(--card-background-color) 86%, var(--background-color));
-  --border: color-mix(in srgb, var(--border-color) 78%, transparent);
-  --text-main: var(--text-color);
-  --text-soft: color-mix(in srgb, var(--text-color) 78%, transparent);
-  --text-muted: color-mix(in srgb, var(--text-color) 58%, transparent);
-  --accent: var(--chart-link-color);
-  --accent-soft: color-mix(in srgb, var(--chart-link-color) 10%, var(--background-color));
+  --surface: color-mix(in srgb, hsl(var(--card)) 94%, hsl(var(--background)));
+  --surface-strong: color-mix(in srgb, hsl(var(--card)) 86%, hsl(var(--background)));
+  --border: color-mix(in srgb, hsl(var(--border)) 78%, transparent);
+  --text-main: hsl(var(--foreground));
+  --text-soft: color-mix(in srgb, hsl(var(--foreground)) 78%, transparent);
+  --text-muted: color-mix(in srgb, hsl(var(--foreground)) 58%, transparent);
+  --accent: hsl(var(--primary));
+  --accent-soft: color-mix(in srgb, hsl(var(--primary)) 10%, hsl(var(--background)));
   position: relative;
   margin: 1.4rem 0 2rem;
   overflow: hidden;
@@ -65,8 +65,8 @@
   display: inline-grid;
   gap: 0.15rem;
   border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--accent) 18%, var(--border-color));
-  background: color-mix(in srgb, var(--background-color) 60%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 18%, hsl(var(--border)));
+  background: color-mix(in srgb, hsl(var(--background)) 60%, transparent);
   padding: 0.72rem 0.95rem;
   text-align: left;
   color: var(--text-main);
@@ -83,12 +83,12 @@
 
 .pill:hover {
   transform: translateY(-1px);
-  border-color: color-mix(in srgb, var(--accent) 36%, var(--border-color));
+  border-color: color-mix(in srgb, var(--accent) 36%, hsl(var(--border)));
 }
 
 .pillActive {
-  background: color-mix(in srgb, var(--accent) 11%, var(--background-color));
-  border-color: color-mix(in srgb, var(--accent) 42%, var(--border-color));
+  background: color-mix(in srgb, var(--accent) 11%, hsl(var(--background)));
+  border-color: color-mix(in srgb, var(--accent) 42%, hsl(var(--border)));
   box-shadow: 0 14px 34px color-mix(in srgb, var(--accent) 10%, transparent);
 }
 
@@ -109,8 +109,8 @@
   display: grid;
   gap: 0.8rem;
   border-radius: 1.25rem;
-  border: 1px solid color-mix(in srgb, var(--accent) 10%, var(--border-color));
-  background: color-mix(in srgb, var(--background-color) 54%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 10%, hsl(var(--border)));
+  background: color-mix(in srgb, hsl(var(--background)) 54%, transparent);
   padding: 0.95rem;
   text-align: left;
   color: var(--text-main);
@@ -125,7 +125,7 @@
 }
 
 .scoreCardActive {
-  border-color: color-mix(in srgb, var(--accent) 42%, var(--border-color));
+  border-color: color-mix(in srgb, var(--accent) 42%, hsl(var(--border)));
   box-shadow: 0 16px 40px color-mix(in srgb, var(--accent) 8%, transparent);
 }
 
@@ -164,7 +164,7 @@
   height: 0.45rem;
   overflow: hidden;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--border-color) 55%, transparent);
+  background: color-mix(in srgb, hsl(var(--border)) 55%, transparent);
 }
 
 .metricFill,
@@ -175,7 +175,7 @@
 }
 
 .metricFillAlt {
-  background: linear-gradient(90deg, color-mix(in srgb, var(--text-color) 30%, var(--accent)), color-mix(in srgb, var(--accent) 20%, white));
+  background: linear-gradient(90deg, color-mix(in srgb, hsl(var(--foreground)) 30%, var(--accent)), color-mix(in srgb, var(--accent) 20%, white));
 }
 
 .spotlight,
@@ -184,8 +184,8 @@
 .continuumCard,
 .timelineStep {
   border-radius: 1.25rem;
-  border: 1px solid color-mix(in srgb, var(--accent) 8%, var(--border-color));
-  background: color-mix(in srgb, var(--background-color) 56%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 8%, hsl(var(--border)));
+  background: color-mix(in srgb, hsl(var(--background)) 56%, transparent);
 }
 
 .spotlight {
@@ -244,15 +244,15 @@
 
 .segmentedButton {
   border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--accent) 18%, var(--border-color));
-  background: color-mix(in srgb, var(--background-color) 62%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 18%, hsl(var(--border)));
+  background: color-mix(in srgb, hsl(var(--background)) 62%, transparent);
   padding: 0.65rem 0.9rem;
   color: var(--text-main);
 }
 
 .segmentedButtonActive {
-  background: color-mix(in srgb, var(--accent) 12%, var(--background-color));
-  border-color: color-mix(in srgb, var(--accent) 42%, var(--border-color));
+  background: color-mix(in srgb, var(--accent) 12%, hsl(var(--background)));
+  border-color: color-mix(in srgb, var(--accent) 42%, hsl(var(--border)));
 }
 
 .pipelineMeta {
@@ -276,7 +276,7 @@
 .calloutTag {
   width: fit-content;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--accent) 12%, var(--background-color));
+  background: color-mix(in srgb, var(--accent) 12%, hsl(var(--background)));
   padding: 0.48rem 0.78rem;
   color: var(--text-main);
   font-size: 0.82rem;
@@ -304,7 +304,7 @@
   width: 2rem;
   height: 2rem;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--accent) 16%, var(--background-color));
+  background: color-mix(in srgb, var(--accent) 16%, hsl(var(--background)));
   color: var(--text-main);
   font-size: 0.8rem;
   font-weight: 700;

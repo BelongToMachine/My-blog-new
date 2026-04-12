@@ -27,22 +27,22 @@ const DeleteIssueButton = ({ issueId }: { issueId: number }) => {
     <>
       <AlertDialog.Root>
         <AlertDialog.Trigger>
-          <Button disabled={isDeleting} color="red" className="rounded-[0.45rem]">
+          <Button disabled={isDeleting} color="red" className="rounded-md">
             {t("delete")}
             {isDeleting && <Spinner />}
           </Button>
         </AlertDialog.Trigger>
-        <AlertDialog.Content className="rounded-[0.55rem]">
+        <AlertDialog.Content className="rounded-lg shadow-[var(--shadow-overlay)]">
           <AlertDialog.Title>{t("deleteConfirm")}</AlertDialog.Title>
           <AlertDialog.Description></AlertDialog.Description>
           <Flex mt="4" gap="3">
             <AlertDialog.Cancel>
-              <Button variant="soft" className="rounded-[0.45rem]">
+              <Button variant="soft" className="rounded-md">
                 {t("deleteCancel")}
               </Button>
             </AlertDialog.Cancel>
             <AlertDialog.Action>
-              <Button color="red" onClick={deleteIssue} className="rounded-[0.45rem]">
+              <Button color="red" onClick={deleteIssue} className="rounded-md">
                 {t("deleteAction")}
               </Button>
             </AlertDialog.Action>
@@ -50,7 +50,7 @@ const DeleteIssueButton = ({ issueId }: { issueId: number }) => {
         </AlertDialog.Content>
       </AlertDialog.Root>
       <AlertDialog.Root open={error}>
-        <AlertDialog.Content className="rounded-[0.55rem]">
+        <AlertDialog.Content className="rounded-lg shadow-[var(--shadow-overlay)]">
           <AlertDialog.Title>{t("deleteErrorTitle")}</AlertDialog.Title>
           <AlertDialog.Description>
             {t("deleteErrorDescription")}
@@ -59,7 +59,7 @@ const DeleteIssueButton = ({ issueId }: { issueId: number }) => {
             color="gray"
             variant="soft"
             my="2"
-            className="rounded-[0.45rem]"
+            className="rounded-md"
             onClick={() => setError(false)}
           >
             OK
