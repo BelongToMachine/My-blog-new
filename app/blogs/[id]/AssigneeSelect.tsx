@@ -34,9 +34,9 @@ const AssigneeSelect = ({ issue }: { issue: Issue }) => {
         >
           <Select.Trigger
             placeholder={t("assigneePlaceholder")}
-            className="!rounded-[0.45rem] !border-border/70 !bg-background/85"
+            className="!rounded-md !border-input"
           />
-          <Select.Content className="!rounded-[0.45rem] !border-border/70">
+          <Select.Content className="!rounded-md !border-input">
             <Select.Group>
               <Select.Label>{t("assigneeSuggestions")}</Select.Label>
               <Select.Item value="unassigned">{t("assigneeUnassigned")}</Select.Item>

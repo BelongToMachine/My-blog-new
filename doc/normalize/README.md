@@ -128,20 +128,33 @@ Relevant backbone files:
 - [ ] Reuse variants before inventing new one-off class combinations.
 - [ ] Keep feature-local components local unless reuse is clear.
 
+### Final Recommended & Forbidden Patterns
+
+**Recommended:**
+- Prefer building reusable `app/components/ui/*` primitives over custom styling blocks.
+- Route semantic colors through established Tailwind preset variables (e.g., `text-foreground`, `bg-card`) instead of writing raw hex/transparent layers.
+- Embrace `color-mix(in srgb, hsl(var(--primary)) 20%, transparent)` when variable opacities derived from tokens are needed.
+- Keep structural grids and utility-first layout definitions directly in components, while sending complicated bespoke typography or animation handling into `module.css`.
+
+**Forbidden:**
+- Do not add explicit hex colors into components or regular stylesheets.
+- Do not introduce new `--*-color` CSS variable aliases into `globals.css` unless they align strictly with the broader semantic namespace.
+- Do not overwrite basic Radix Theme configuration manually; leverage `globals.css` and Tailwind overrides.
+
 ---
 
 ## Progress Tracker
 
 ### Area Status
 
-- [x] Tokens
-- [x] Primitives
-- [x] Shell
-- [x] Home
-- [ ] Blogs
-- [ ] Articles
-- [ ] AI playground
-- [x] Deprecated `Projects` cleanup
+  - [x] Tokens
+  - [x] Primitives
+  - [x] Shell
+  - [x] Home
+  - [x] Blogs
+  - [x] Articles
+  - [x] AI playground
+  - [x] Deprecated `Projects` cleanup
 - [x] Deprecated `Contact` cleanup
 
 ### Verification Checklist Per Batch
@@ -356,23 +369,23 @@ Purpose:
 
 Checklist:
 
-- [ ] Normalize blog list heading and filter/action entry styling.
-- [ ] Normalize blog list surface language across table/card/list patterns.
-- [ ] Audit blog detail special styling and identify which CSS Modules must remain.
-- [ ] Systematize shared blog detail parts where safe:
+- [x] Normalize blog list heading and filter/action entry styling.
+- [x] Normalize blog list surface language across table/card/list patterns.
+- [x] Audit blog detail special styling and identify which CSS Modules must remain.
+- [x] Systematize shared blog detail parts where safe:
   - heading
   - metadata
   - panels
   - actions
   - feedback areas
-- [ ] Keep markdown, code block, and reading quality intact.
-- [ ] Audit article enhancement components against the system.
-- [ ] Preserve editorial personality while aligning spacing, surface, and hierarchy.
+- [x] Keep markdown, code block, and reading quality intact.
+- [x] Audit article enhancement components against the system.
+- [x] Preserve editorial personality while aligning spacing, surface, and hierarchy.
 
 Done definition:
 
-- [ ] Blogs and articles feel like part of the same product as home and shell.
-- [ ] Editorial character remains intact.
+- [x] Blogs and articles feel like part of the same product as home and shell.
+- [x] Editorial character remains intact.
 
 ## Phase 7: Normalize AI Playground And Experimental Surfaces
 
@@ -382,16 +395,16 @@ Purpose:
 
 Checklist:
 
-- [ ] Unify AI playground input area styling.
-- [ ] Unify message/panel surfaces outside specialized code rendering.
-- [ ] Unify prompt, error, and status feedback treatment.
-- [ ] Unify toolbar, upload, and supporting interaction surfaces.
-- [ ] Keep the AI playground’s experimental feel while aligning tokens and surface language.
-- [ ] Review examples/use-case pages and decide whether to normalize, downgrade, or delete them.
+- [x] Unify AI playground input area styling.
+- [x] Unify message/panel surfaces outside specialized code rendering.
+- [x] Unify prompt, error, and status feedback treatment.
+- [x] Unify toolbar, upload, and supporting interaction surfaces.
+- [x] Keep the AI playground’s experimental feel while aligning tokens and surface language.
+- [x] Review examples/use-case pages and decide whether to normalize, downgrade, or delete them.
 
 Done definition:
 
-- [ ] Experimental pages no longer feel visually detached from the rest of the product.
+- [x] Experimental pages no longer feel visually detached from the rest of the product.
 
 ## Phase 8: Cleanup And Deletion
 
@@ -403,15 +416,15 @@ Checklist:
 
 - [x] Remove deprecated project assets and helper files.
 - [x] Remove contact from the active normalization roadmap.
-- [ ] Delete legacy token paths once no longer needed.
-- [ ] Delete obsolete duplicate visual implementations replaced by shared components.
-- [ ] Add recommended and forbidden patterns to the final rules doc.
-- [ ] Refresh `app/design-system/page.tsx` so it reflects real in-use components.
+- [x] Delete legacy token paths once no longer needed.
+- [x] Delete obsolete duplicate visual implementations replaced by shared components.
+- [x] Add recommended and forbidden patterns to the final rules doc.
+- [x] Refresh `app/design-system/page.tsx` so it reflects real in-use components.
 
 Done definition:
 
-- [ ] Removed paths no longer influence future styling work.
-- [ ] Design-system guidance reflects real current usage.
+- [x] Removed paths no longer influence future styling work.
+- [x] Design-system guidance reflects real current usage.
 
 ---
 

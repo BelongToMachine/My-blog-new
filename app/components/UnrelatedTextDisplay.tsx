@@ -14,7 +14,7 @@ const UnrelatedTextDisplay: React.FC<UnrelatedTextDisplayProps> = ({
 
   return (
     <div
-      className="mt-4 w-full overflow-auto rounded-2xl border border-border/70 bg-[color:color-mix(in_srgb,var(--card-background-color)_72%,transparent)] p-4 text-foreground"
+      className="mt-4 w-full overflow-auto rounded-2xl border border-border/70 bg-card/75 p-4 text-foreground"
     >
       <div className="space-y-4 text-sm leading-7">
         {blocks.map((block, index) => {

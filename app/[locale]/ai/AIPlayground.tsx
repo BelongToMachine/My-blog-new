@@ -95,7 +95,7 @@ const AIPlayground = () => {
                     ? t("imagePromptPlaceholder")
                     : t("textPromptPlaceholder")
                 }
-                className="min-h-[180px] rounded-[1.25rem] border-border/80 bg-background/80 px-4 py-4 text-sm"
+                className="min-h-[180px] rounded-2xl border-border/80 bg-background/80 px-4 py-4 text-sm"
               />
             </div>
 
@@ -114,7 +114,7 @@ const AIPlayground = () => {
                   onChange={(event) =>
                     setFile(event.target.files?.[0] ?? null)
                   }
-                  className="rounded-[1.25rem] border-border/80 bg-background/80 px-4 py-3 text-sm"
+                  className="rounded-2xl border-border/80 bg-background/80 px-4 py-3 text-sm"
                 />
                 <p className="text-xs text-muted-foreground">
                   {t("imageHelp")}
@@ -123,7 +123,7 @@ const AIPlayground = () => {
             )}
 
             {error && (
-              <div className="rounded-2xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-700 dark:text-red-300">
+              <div className="rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
                 {error}
               </div>
             )}
@@ -156,7 +156,7 @@ const AIPlayground = () => {
           {response ? (
             <ChatBot input={response} />
           ) : (
-            <div className="flex min-h-[360px] items-center justify-center rounded-[1.5rem] border border-dashed border-border/80 bg-background/50 p-8 text-center text-sm leading-7 text-muted-foreground">
+            <div className="flex min-h-[360px] items-center justify-center rounded-3xl border border-dashed border-border/80 bg-background/50 p-8 text-center text-sm leading-7 text-muted-foreground">
               {t("empty")}
             </div>
           )}
@@ -181,7 +181,7 @@ const ModeCard = ({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-[1.5rem] border px-5 py-5 text-left transition-all duration-300 ${
+      className={`rounded-3xl border px-5 py-5 text-left transition-all duration-300 ${
         active
           ? "border-primary/45 bg-[linear-gradient(180deg,hsl(var(--secondary)/0.55),transparent)] shadow-[0_18px_40px_rgba(15,23,42,0.08)]"
           : "border-border/75 bg-background/70 hover:-translate-y-0.5 hover:border-primary/25"
