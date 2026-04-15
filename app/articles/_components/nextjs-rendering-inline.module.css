@@ -10,15 +10,13 @@
   position: relative;
   margin: 1.4rem 0 2rem;
   overflow: hidden;
-  border-radius: 1.75rem;
+  border-radius: 0;
   border: 1px solid var(--border);
   background:
     radial-gradient(circle at top right, color-mix(in srgb, var(--accent) 14%, transparent), transparent 32%),
     radial-gradient(circle at bottom left, color-mix(in srgb, var(--accent) 10%, transparent), transparent 34%),
     linear-gradient(180deg, var(--surface), var(--surface-strong));
-  box-shadow:
-    0 20px 50px rgba(8, 12, 24, 0.08),
-    inset 0 1px 0 color-mix(in srgb, white 45%, transparent);
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.24);
 }
 
 .panelHeader,
@@ -33,8 +31,9 @@
 }
 
 .eyebrow {
-  font-size: 0.72rem;
-  letter-spacing: 0.22em;
+  font-family: var(--font-pixel), monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--text-muted);
 }
@@ -43,9 +42,11 @@
 .inlineTitle {
   margin: 0;
   color: var(--text-main);
-  font-size: clamp(1.2rem, 2vw, 1.7rem);
-  line-height: 1.1;
-  letter-spacing: -0.04em;
+  font-family: var(--font-pixel), monospace;
+  font-size: clamp(1rem, 2vw, 1.4rem);
+  line-height: 1.45;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
 .panelLead {
@@ -64,12 +65,15 @@
 .pill {
   display: inline-grid;
   gap: 0.15rem;
-  border-radius: 999px;
+  border-radius: 0;
   border: 1px solid color-mix(in srgb, var(--accent) 18%, hsl(var(--border)));
   background: color-mix(in srgb, hsl(var(--background)) 60%, transparent);
   padding: 0.72rem 0.95rem;
   text-align: left;
   color: var(--text-main);
+  font-family: var(--font-pixel), monospace;
+  font-size: 0.62rem;
+  text-transform: uppercase;
   transition:
     transform 180ms ease,
     border-color 180ms ease,
@@ -89,7 +93,7 @@
 .pillActive {
   background: color-mix(in srgb, var(--accent) 11%, hsl(var(--background)));
   border-color: color-mix(in srgb, var(--accent) 42%, hsl(var(--border)));
-  box-shadow: 0 14px 34px color-mix(in srgb, var(--accent) 10%, transparent);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.18);
 }
 
 .overviewLayout {
@@ -108,7 +112,7 @@
 .scoreCard {
   display: grid;
   gap: 0.8rem;
-  border-radius: 1.25rem;
+  border-radius: 0;
   border: 1px solid color-mix(in srgb, var(--accent) 10%, hsl(var(--border)));
   background: color-mix(in srgb, hsl(var(--background)) 54%, transparent);
   padding: 0.95rem;
@@ -126,7 +130,7 @@
 
 .scoreCardActive {
   border-color: color-mix(in srgb, var(--accent) 42%, hsl(var(--border)));
-  box-shadow: 0 16px 40px color-mix(in srgb, var(--accent) 8%, transparent);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.18);
 }
 
 .scoreCardTop {
@@ -183,7 +187,7 @@
 .scenarioCard,
 .continuumCard,
 .timelineStep {
-  border-radius: 1.25rem;
+  border-radius: 0;
   border: 1px solid color-mix(in srgb, var(--accent) 8%, hsl(var(--border)));
   background: color-mix(in srgb, hsl(var(--background)) 56%, transparent);
 }
@@ -243,11 +247,14 @@
 }
 
 .segmentedButton {
-  border-radius: 999px;
+  border-radius: 0;
   border: 1px solid color-mix(in srgb, var(--accent) 18%, hsl(var(--border)));
   background: color-mix(in srgb, hsl(var(--background)) 62%, transparent);
   padding: 0.65rem 0.9rem;
   color: var(--text-main);
+  font-family: var(--font-pixel), monospace;
+  font-size: 0.62rem;
+  text-transform: uppercase;
 }
 
 .segmentedButtonActive {
