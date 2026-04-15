@@ -1,8 +1,9 @@
 import { Status } from "@prisma/client"
-import { Card, Flex, Text } from "@radix-ui/themes"
 import React from "react"
 import { useTranslations } from "next-intl"
 import { Link as LocaleLink } from "@/app/i18n/navigation"
+import { RetroBadge } from "./components/system/RetroBadge"
+import { RetroStatCard } from "./components/system/RetroStatCard"
 
 interface Props {
   open: number
@@ -23,26 +24,28 @@ const BlogSummary = ({ open, inProgress, closed }: Props) => {
   ]
 
   return (
-    <Flex gap="4" wrap="wrap">
+    <div className="grid gap-4 sm:grid-cols-3">
       {categoryData.map((container) => (
-        <Card
+        <RetroStatCard
           key={container.label}
-          className="summary-stat-card min-w-[132px] flex-1 px-4 py-4"
-        >
-          <Flex direction="column" gap="2">
+          className="min-w-[132px]"
+          label={
             <LocaleLink
-              className="text-sm font-medium text-foreground transition-colors hover:text-primary"
+              className="transition-colors hover:text-primary"
               href={`/blogs?status=${container.status}`}
             >
               {container.label}
             </LocaleLink>
-          </Flex>
-          <Text size="5" className="font-bold text-foreground">
-            {container.value}
-          </Text>
-        </Card>
+          }
+          value={container.value}
+          hint={
+            <RetroBadge tone="primary" className="mt-1">
+              {container.status.replaceAll("_", " ")}
+            </RetroBadge>
+          }
+        />
       ))}
-    </Flex>
+    </div>
   )
 }
 

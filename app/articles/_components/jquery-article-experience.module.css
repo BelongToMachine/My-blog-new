@@ -1,21 +1,19 @@
 .panel {
-  --paper: oklch(0.975 0.01 95);
-  --paper-strong: oklch(0.93 0.018 92);
-  --ink: oklch(0.29 0.03 255);
-  --ink-soft: oklch(0.46 0.025 250);
-  --accent: oklch(0.58 0.19 250);
-  --accent-soft: oklch(0.91 0.05 250);
-  --signal: oklch(0.67 0.17 42);
+  --paper: hsl(var(--card));
+  --paper-strong: color-mix(in srgb, hsl(var(--card)) 82%, hsl(var(--background)));
+  --ink: hsl(var(--foreground));
+  --ink-soft: hsl(var(--muted-foreground));
+  --accent: hsl(var(--primary));
+  --accent-soft: color-mix(in srgb, hsl(var(--primary)) 14%, hsl(var(--background)));
+  --signal: hsl(var(--signal-amber));
   position: relative;
   overflow: hidden;
-  border-radius: 2rem;
-  border: 1px solid color-mix(in srgb, var(--accent) 20%, white);
+  border-radius: 0;
+  border: 1px solid color-mix(in srgb, var(--accent) 20%, hsl(var(--border)));
   background:
     radial-gradient(circle at top left, color-mix(in srgb, var(--accent) 14%, transparent), transparent 36%),
     linear-gradient(180deg, var(--paper), color-mix(in srgb, var(--paper-strong) 90%, white));
-  box-shadow:
-    0 24px 80px rgba(24, 42, 93, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.24);
   color: var(--ink);
 }
 
@@ -42,18 +40,21 @@
 }
 
 .eyebrow {
-  font-size: 0.72rem;
-  letter-spacing: 0.28em;
+  font-family: var(--font-pixel), monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
   color: color-mix(in srgb, var(--accent) 70%, var(--ink-soft));
 }
 
 .headline {
   max-width: 34rem;
-  font-size: clamp(1.7rem, 3vw, 2.7rem);
-  line-height: 1;
+  font-family: var(--font-pixel), monospace;
+  font-size: clamp(1.2rem, 2.6vw, 1.9rem);
+  line-height: 1.4;
   font-weight: 700;
-  letter-spacing: -0.04em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .subline {
@@ -73,11 +74,14 @@
   display: inline-flex;
   align-items: center;
   gap: 0.65rem;
-  border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--accent) 14%, white);
+  border-radius: 0;
+  border: 1px solid color-mix(in srgb, var(--accent) 14%, hsl(var(--border)));
   background: rgba(255, 255, 255, 0.72);
   padding: 0.72rem 1rem;
   color: var(--ink-soft);
+  font-family: var(--font-pixel), monospace;
+  font-size: 0.65rem;
+  text-transform: uppercase;
   transition:
     transform 180ms ease,
     border-color 180ms ease,
@@ -95,7 +99,7 @@
   border-color: color-mix(in srgb, var(--accent) 55%, white);
   background: color-mix(in srgb, var(--accent-soft) 86%, white);
   color: var(--ink);
-  box-shadow: 0 14px 32px rgba(47, 91, 211, 0.12);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.18);
 }
 
 .tabIndex {
@@ -120,12 +124,10 @@
 }
 
 .frame {
-  border-radius: 1.6rem;
+  border-radius: 0;
   border: 1px solid color-mix(in srgb, var(--accent) 14%, white);
   background: rgba(255, 255, 255, 0.7);
-  box-shadow:
-    0 20px 50px rgba(25, 42, 88, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.65);
+  box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.18);
 }
 
 .codeFrame {

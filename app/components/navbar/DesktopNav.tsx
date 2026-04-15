@@ -23,7 +23,7 @@ interface Link {
 
 const DesktopNav = () => {
   return (
-    <div className="flex h-14 items-center justify-between px-5">
+    <div className="flex h-16 items-center justify-between px-5">
       <div className="flex items-center gap-6">
         <ActionIconButton asChild aria-label="Open GitHub profile" tone="quiet">
           <NextLink href="http://github.com/JieLuis">
@@ -127,7 +127,7 @@ const NavLinks = () => {
   }
 
   return (
-    <ul className="relative top-1 flex space-x-6">
+    <ul className="relative top-1 flex flex-wrap gap-4">
       <AnimatePresence>
         {links.map((link, index) => {
           const isArrowExist = Boolean(index === 2 && isBlogDetailPage && metaTitle)

@@ -1,10 +1,12 @@
 import prisma from "@/prisma/client"
 import { withPrismaFallback } from "@/prisma/safe"
-import { Avatar, Card, Flex, Heading, Table } from "@radix-ui/themes"
+import { Avatar, Flex } from "@radix-ui/themes"
 import React from "react"
 import { IssueStatusBadge } from "./components"
 import { Link } from "@/app/i18n/navigation"
 import { getLocale, getTranslations } from "next-intl/server"
+import RetroPanel from "./components/system/RetroPanel"
+import { RetroBadge } from "./components/system/RetroBadge"
 
 const LatestBlogs = async () => {
   const locale = await getLocale()
@@ -29,38 +31,46 @@ const LatestBlogs = async () => {
   )
 
   return (
-    <Card className="section-shell p-5 sm:p-6">
-      <Heading size="4" className="mb-4 text-foreground">
-        {t("latestBlogs")}
-      </Heading>
-      <Table.Root variant="surface">
-        <Table.Body>
+    <RetroPanel
+      eyebrow="recent logs"
+      title={t("latestBlogs")}
+      action={<RetroBadge tone="primary">{blogs.length} items</RetroBadge>}
+    >
+      <div className="grid gap-3">
           {blogs.map((blog) => (
-            <Table.Row key={blog.id}>
-              <Table.Cell className="border-b border-border/70 px-0 py-4 last:border-b-0">
-                <Flex direction="column" align="start" gap="2">
+            <div
+              key={blog.id}
+              className="pixel-panel border border-border/70 bg-background/70 px-4 py-4"
+            >
+                <Flex direction="column" align="start" gap="3">
                   <Link
-                    className="text-foreground transition-colors hover:text-primary hover:underline"
+                    className="text-base font-medium text-foreground transition-colors hover:text-primary hover:underline"
                     href={`/blogs/${blog.id}`}
                   >
                     {blog.title}
                   </Link>
-                  <IssueStatusBadge status={blog.status} />
+                  <div className="flex flex-wrap items-center gap-3">
+                    <IssueStatusBadge status={blog.status} />
+                    <RetroBadge tone="neutral">
+                      {blog.createdAt.toLocaleDateString()}
+                    </RetroBadge>
+                  </div>
                 </Flex>
                 {blog.assignedToUser && (
-                  <Avatar
-                    src={blog.assignedToUser?.image!}
-                    fallback="?"
-                    size="2"
-                    radius="full"
-                  />
+                  <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
+                    <Avatar
+                      src={blog.assignedToUser?.image!}
+                      fallback="?"
+                      size="2"
+                      radius="none"
+                    />
+                    <span>{blog.assignedToUser.name ?? "Unknown"}</span>
+                  </div>
                 )}
-              </Table.Cell>
-            </Table.Row>
+            </div>
           ))}
-        </Table.Body>
-      </Table.Root>
-    </Card>
+      </div>
+    </RetroPanel>
   )
 }
 

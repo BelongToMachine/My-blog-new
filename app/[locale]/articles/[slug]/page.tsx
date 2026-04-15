@@ -6,6 +6,8 @@ import TableOfContent from "@/app/blogs/_components/TableOfContent"
 import BlogSectionTabs from "@/app/blogs/BlogSectionTabs"
 import ArticleEnhancement from "@/app/articles/_components/ArticleEnhancement"
 import ArticleBody from "@/app/articles/_components/ArticleBody"
+import { RetroBadge } from "@/app/components/system/RetroBadge"
+import RetroPanel from "@/app/components/system/RetroPanel"
 
 interface Props {
   params: { locale: string; slug: string }
@@ -34,16 +36,19 @@ export default async function ArticleDetailPage({ params }: Props) {
         <ArticleEnhancement slug={article.slug} />
         <Grid columns={{ initial: "1", lg: "5" }} gap="5">
           <Box className="lg:col-span-4">
-            <article
-              className={`${styles.article} rounded-[0.55rem] border border-border/70 bg-background/85 shadow-sm`}
+            <RetroPanel
+              className={styles.article}
+              eyebrow="article detail"
+              title={article.title}
+              action={<RetroBadge tone="amber">{article.publishedOn}</RetroBadge>}
+              contentClassName="px-5 py-5 sm:px-6 sm:py-6"
             >
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
-                MDX POC
-              </p>
-              <h1>{article.title}</h1>
-              <p className="post-meta">{article.publishedOn}</p>
+              <div className="mb-5 flex flex-wrap gap-3">
+                <RetroBadge tone="primary">MDX POC</RetroBadge>
+                <RetroBadge tone="neutral">{article.locale}</RetroBadge>
+              </div>
               <ArticleBody slug={article.slug} htmlContent={article.htmlContent} headings={article.headings} />
-            </article>
+            </RetroPanel>
           </Box>
           <Box className="lg:col-span-1">
             <div className="lg:sticky lg:top-24">
