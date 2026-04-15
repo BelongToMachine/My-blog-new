@@ -6,6 +6,8 @@ import { getTranslations } from "next-intl/server"
 import BlogTable, { columnNames, type BlogQuery } from "@/app/blogs/BlogTable"
 import Pagination from "@/app/components/Pagination"
 import IssueActions from "@/app/blogs/IssueActions"
+import RetroPanel from "@/app/components/system/RetroPanel"
+import { RetroBadge } from "@/app/components/system/RetroBadge"
 
 interface Props {
   params: { locale: string }
@@ -15,6 +17,7 @@ interface Props {
 const BlogsPage = async ({ params, searchParams }: Props) => {
   const statuses = Object.values(Status)
   const { locale } = params
+  const t = await getTranslations({ locale, namespace: "blogs" })
   const { status: statusValue, orderBy: orderByValue, page: pageValue } =
     searchParams
 
@@ -51,6 +54,16 @@ const BlogsPage = async ({ params, searchParams }: Props) => {
     <Container className="content-page-shell">
       <div className="space-y-3 p-5">
         <IssueActions />
+        <RetroPanel
+          eyebrow="database entries"
+          title={t("blogsTitle")}
+          action={<RetroBadge tone="primary">{data.issueCount} records</RetroBadge>}
+          contentClassName="px-0 py-0"
+        >
+          <div className="px-4 py-4 text-sm leading-7 text-muted-foreground">
+            Browse and manage issue-backed posts in the retro admin workspace.
+          </div>
+        </RetroPanel>
         <BlogTable
           searchParams={Promise.resolve(searchParams)}
           issues={data.issues}

@@ -1,11 +1,12 @@
 "use client";
 
 import { Spinner } from "@/app/components";
-import { AlertDialog, Button, Flex } from "@radix-ui/themes";
+import { AlertDialog, Flex } from "@radix-ui/themes";
 import axios from "axios";
 import { useTranslations } from "next-intl";
 import React, { useState } from "react";
 import { useRouter } from "@/app/i18n/navigation";
+import { Button } from "@/app/components/ui/button";
 
 const DeleteIssueButton = ({ issueId }: { issueId: number }) => {
   const t = useTranslations("blogs");
@@ -27,22 +28,22 @@ const DeleteIssueButton = ({ issueId }: { issueId: number }) => {
     <>
       <AlertDialog.Root>
         <AlertDialog.Trigger>
-          <Button disabled={isDeleting} color="red" className="rounded-md">
+          <Button disabled={isDeleting} variant="destructive">
             {t("delete")}
             {isDeleting && <Spinner />}
           </Button>
         </AlertDialog.Trigger>
-        <AlertDialog.Content className="rounded-lg shadow-[var(--shadow-overlay)]">
-          <AlertDialog.Title>{t("deleteConfirm")}</AlertDialog.Title>
+        <AlertDialog.Content className="pixel-panel border border-border/80 bg-card/95 shadow-[var(--shadow-overlay)]">
+          <AlertDialog.Title className="font-pixel text-sm uppercase tracking-[0.14em]">{t("deleteConfirm")}</AlertDialog.Title>
           <AlertDialog.Description></AlertDialog.Description>
           <Flex mt="4" gap="3">
             <AlertDialog.Cancel>
-              <Button variant="soft" className="rounded-md">
+              <Button variant="outline">
                 {t("deleteCancel")}
               </Button>
             </AlertDialog.Cancel>
             <AlertDialog.Action>
-              <Button color="red" onClick={deleteIssue} className="rounded-md">
+              <Button variant="destructive" onClick={deleteIssue}>
                 {t("deleteAction")}
               </Button>
             </AlertDialog.Action>
@@ -50,16 +51,13 @@ const DeleteIssueButton = ({ issueId }: { issueId: number }) => {
         </AlertDialog.Content>
       </AlertDialog.Root>
       <AlertDialog.Root open={error}>
-        <AlertDialog.Content className="rounded-lg shadow-[var(--shadow-overlay)]">
-          <AlertDialog.Title>{t("deleteErrorTitle")}</AlertDialog.Title>
+        <AlertDialog.Content className="pixel-panel border border-border/80 bg-card/95 shadow-[var(--shadow-overlay)]">
+          <AlertDialog.Title className="font-pixel text-sm uppercase tracking-[0.14em]">{t("deleteErrorTitle")}</AlertDialog.Title>
           <AlertDialog.Description>
             {t("deleteErrorDescription")}
           </AlertDialog.Description>
           <Button
-            color="gray"
-            variant="soft"
-            my="2"
-            className="rounded-md"
+            variant="outline"
             onClick={() => setError(false)}
           >
             OK

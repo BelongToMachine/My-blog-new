@@ -1,13 +1,13 @@
-import { Text } from "@radix-ui/themes";
-import React, { PropsWithChildren } from "react";
+import React, { PropsWithChildren } from "react"
+import { RetroNotice } from "./system/RetroNotice"
 
 const ErrorMessage = ({ children }: PropsWithChildren) => {
-  if (!children) return null;
+  if (!children) return null
   return (
-    <Text color="red" as="p">
+    <RetroNotice tone="danger" title="validation error">
       {children}
-    </Text>
-  );
-};
+    </RetroNotice>
+  )
+}
 
-export default ErrorMessage;
+export default ErrorMessage

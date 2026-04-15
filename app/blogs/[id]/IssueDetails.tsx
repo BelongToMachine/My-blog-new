@@ -2,12 +2,13 @@
 
 import { IssueStatusBadge } from "@/app/components"
 import { Issue } from "@prisma/client"
-import { Box, Flex, Heading, Text } from "@radix-ui/themes"
-import { Card } from "@/app/components/ui/card"
+import { Box, Flex } from "@radix-ui/themes"
 import { useState, useEffect, useRef } from "react"
 import styles from "@/app/blogs/[id]/post.module.css"
 import BlogParser from "@/app/service/BlogParser"
 import NavigationBar from "../_components/NavigationBar"
+import RetroPanel from "@/app/components/system/RetroPanel"
+import { RetroBadge } from "@/app/components/system/RetroBadge"
 
 const IssueDetails = ({ issue }: { issue: Issue }) => {
   const parser = new BlogParser(issue.description)
@@ -45,23 +46,19 @@ const IssueDetails = ({ issue }: { issue: Issue }) => {
 
   return (
     <Flex
-      className="w-full p-6 relative"
+      className="relative w-full p-5"
       style={{ gap: "1rem" }}
       direction={{ initial: "column", md: "row" }}
     >
-      {/* 
-       Flex: Here to control the title and TOC text color with "color" 
-      */}
-      <Card ref={mainContentRef} className="flex-grow max-w-3xl p-6 shadow-[var(--shadow-elevated)]">
-        <Heading className="text-2xl font-bold">{issue.title}</Heading>
-        <Flex className="space-x-4 mt-2 text-muted-foreground text-sm" align="center">
+      <RetroPanel ref={mainContentRef} className="max-w-3xl flex-grow" eyebrow="blog entry" title={issue.title}>
+        <Flex className="mt-2 flex-wrap gap-3 text-sm text-muted-foreground" align="center">
           <IssueStatusBadge status={issue?.status} />
-          <Text>{issue.createdAt.toDateString()}</Text>
+          <RetroBadge tone="neutral">{issue.createdAt.toDateString()}</RetroBadge>
         </Flex>
         <div className="prose max-w-none mt-4">
           <article className={styles.article}>
-            <h1>{header.title}</h1>
-            <p className="post-meta">{header.date}</p>
+            {header.title ? <h1>{header.title}</h1> : null}
+            {header.date ? <p className="post-meta">{header.date}</p> : null}
             <div
               id="post-content"
               className="post-content"
@@ -69,7 +66,7 @@ const IssueDetails = ({ issue }: { issue: Issue }) => {
             />
           </article>
         </div>
-      </Card>
+      </RetroPanel>
 
       <NavigationBar
         headings={headings}

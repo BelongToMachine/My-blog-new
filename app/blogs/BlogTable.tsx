@@ -1,10 +1,10 @@
 import { ArrowUpIcon } from "@radix-ui/react-icons"
-import { Table } from "@radix-ui/themes"
 import React from "react"
 import { IssueStatusBadge } from "../components"
 import { Issue, Status } from "@prisma/client"
 import { Link } from "@/app/i18n/navigation"
 import { getTranslations } from "next-intl/server"
+import { RetroBadge } from "@/app/components/system/RetroBadge"
 export interface BlogQuery {
   status: Status
   orderBy: keyof Issue
@@ -23,12 +23,10 @@ const BlogTable = async ({ searchParams: params, issues }: Props) => {
   const orderBy = searchParams.orderBy ?? undefined
 
   return (
-    <div className="data-table-shell">
-      <Table.Root variant="surface">
-        <Table.Header className="data-table-header">
-          <Table.Row className="data-table-header">
+    <div className="pixel-panel overflow-hidden border border-border/80 bg-card/88">
+      <div className="hidden grid-cols-[minmax(0,1.3fr)_180px_220px] gap-4 border-b border-border/70 px-4 py-4 font-pixel text-[10px] uppercase tracking-[0.18em] text-muted-foreground md:grid">
             {columns(t).map((column) => (
-              <Table.ColumnHeaderCell
+              <div
                 key={column.value}
                 className={column.className}
               >
@@ -42,34 +40,36 @@ const BlogTable = async ({ searchParams: params, issues }: Props) => {
                   {column.label}
                 </Link>
                 {column.value === orderBy && <ArrowUpIcon className="inline" />}
-              </Table.ColumnHeaderCell>
+              </div>
             ))}
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
+      </div>
+      <div className="grid">
           {issues.map((issue) => (
-            <Table.Row key={issue.id} className="data-table-row">
-              <Table.Cell>
+            <div
+              key={issue.id}
+              className="grid gap-3 border-b border-border/70 px-4 py-4 last:border-b-0 md:grid-cols-[minmax(0,1.3fr)_180px_220px] md:items-center"
+            >
+              <div>
                 <Link
                   className="text-foreground transition-colors hover:text-primary hover:underline"
                   href={`/blogs/${issue.id}`}
                 >
                   {issue.title}
                 </Link>
-                <div className="block md:hidden">
+                <div className="mt-3 flex flex-wrap gap-2 md:hidden">
                   <IssueStatusBadge status={issue.status} />
+                  <RetroBadge tone="neutral">{issue.createdAt.toLocaleDateString()}</RetroBadge>
                 </div>
-              </Table.Cell>
-              <Table.Cell className="hidden md:table-cell">
+              </div>
+              <div className="hidden md:block">
                 <IssueStatusBadge status={issue.status} />
-              </Table.Cell>
-              <Table.Cell className="hidden text-foreground/80 md:table-cell">
+              </div>
+              <div className="hidden text-foreground/80 md:block">
                 {issue.createdAt.toLocaleString()}
-              </Table.Cell>
-            </Table.Row>
+              </div>
+            </div>
           ))}
-        </Table.Body>
-      </Table.Root>
+      </div>
     </div>
   )
 }

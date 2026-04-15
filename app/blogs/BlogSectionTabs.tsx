@@ -21,10 +21,7 @@ export default async function BlogSectionTabs({ active }: Props) {
         <Link
           key={tab.href}
           href={tab.href}
-          className={cn(
-            buttonVariants({ variant: tab.isActive ? "default" : "outline" }),
-            "rounded-md"
-          )}
+          className={cn(buttonVariants({ variant: tab.isActive ? "default" : "outline" }))}
         >
           {tab.label}
         </Link>

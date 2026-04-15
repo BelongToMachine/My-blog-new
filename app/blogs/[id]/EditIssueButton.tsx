@@ -10,7 +10,7 @@ const EditIssueButton = ({ issueId }: { issueId: number }) => {
 
   return (
     <Button variant="outline" asChild>
-      <Link href={`/blogs/${issueId}/edit`} className="flex gap-2">
+      <Link href={`/blogs/${issueId}/edit`} className="flex items-center gap-2">
         <Pencil2Icon />
         {t("edit")}
       </Link>

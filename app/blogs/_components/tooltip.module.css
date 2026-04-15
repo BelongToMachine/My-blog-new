@@ -7,14 +7,14 @@
   font-size: 18px;
   background: linear-gradient(
     180deg,
-    color-mix(in srgb, hsl(var(--card)) 96%, white),
-    color-mix(in srgb, hsl(var(--card)) 90%, hsl(var(--background)))
+    color-mix(in srgb, hsl(var(--card)) 92%, hsl(var(--background))),
+    color-mix(in srgb, hsl(var(--card)) 84%, hsl(var(--background)))
   );
   color: hsl(var(--foreground));
   padding: 10px;
   border-bottom: var(--h) solid #0000;
   border: 1px solid hsl(var(--border));
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.24);
   clip-path: polygon(
     0 0,
     100% 0,
@@ -27,6 +27,9 @@
 }
 
 .tooltip p {
-  font-size: 13px;
-  line-height: 1.5;
+  font-family: var(--font-pixel), monospace;
+  font-size: 10px;
+  line-height: 1.8;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
