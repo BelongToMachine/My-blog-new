@@ -7,7 +7,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const navTextButtonVariants = cva(
-  "inline-flex min-h-9 items-center justify-center rounded-full border border-transparent px-3 text-sm font-medium text-muted-foreground transition-colors duration-200 hover:bg-accent/70 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50"
+  "font-pixel inline-flex min-h-9 items-center justify-center border border-transparent px-3 text-[10px] font-medium uppercase tracking-[0.22em] text-muted-foreground transition-[transform,background-color,color,border-color] duration-200 hover:-translate-y-0.5 hover:border-border/70 hover:bg-accent/70 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50"
 )
 
 export interface NavTextButtonProps
