@@ -1,27 +1,27 @@
-import { Status } from "@prisma/client";
-import { Badge } from "@radix-ui/themes";
-import React from "react";
-import { useTranslations } from "next-intl";
+import { Status } from "@prisma/client"
+import React from "react"
+import { useTranslations } from "next-intl"
+import { RetroBadge } from "./system/RetroBadge"
 
 interface Props {
-  status: Status;
+  status: Status
 }
 
 const statusMap: Record<
   Status,
-  { key: Status; color: "red" | "violet" | "green" | "yellow" | "blue" }
+  { key: Status; tone: "primary" | "rose" | "green" }
 > = {
-  FINISHED: { key: "FINISHED", color: "blue" },
-  IN_PROGRESS: { key: "IN_PROGRESS", color: "violet" },
-  CLOSED: { key: "CLOSED", color: "green" },
-};
+  FINISHED: { key: "FINISHED", tone: "primary" },
+  IN_PROGRESS: { key: "IN_PROGRESS", tone: "rose" },
+  CLOSED: { key: "CLOSED", tone: "green" },
+}
 
 const IssueStatusBadge = ({ status }: Props) => {
-  const t = useTranslations("status");
+  const t = useTranslations("status")
 
   return (
-    <Badge color={statusMap[status].color}>{t(statusMap[status].key)}</Badge>
-  );
-};
+    <RetroBadge tone={statusMap[status].tone}>{t(statusMap[status].key)}</RetroBadge>
+  )
+}
 
-export default IssueStatusBadge;
+export default IssueStatusBadge

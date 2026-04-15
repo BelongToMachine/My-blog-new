@@ -13,7 +13,7 @@ const JButton = ({ children, onClick, disabled, attri, className }: Props) => {
   return (
     <div
       className={cn(
-        "w-[100px] cursor-none overflow-hidden text-ellipsis whitespace-nowrap rounded-[7px] border border-border/70 bg-card/75 px-3 py-[0.65rem] text-center text-[0.8rem] text-foreground shadow-[0_8px_20px_rgba(15,23,42,0.08)] transition-[background-color,transform,border-color] duration-200 hover:-translate-y-0.5 hover:bg-accent",
+        "font-pixel w-[100px] cursor-none overflow-hidden text-ellipsis whitespace-nowrap border border-border/70 bg-card/88 px-3 py-[0.65rem] text-center text-[10px] uppercase tracking-[0.18em] text-foreground shadow-[4px_4px_0_rgba(0,0,0,0.18)] transition-[background-color,transform,border-color] duration-200 hover:-translate-y-0.5 hover:border-primary/60 hover:bg-accent",
         disabled && "pointer-events-none opacity-60",
         className
       )}

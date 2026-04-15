@@ -1,9 +1,8 @@
 "use client";
 import { Issue, User } from "@prisma/client";
-import { Select, Theme } from "@radix-ui/themes";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Skeleton from "react-loading-skeleton";
 import toast, { Toaster } from "react-hot-toast";
 import { useTranslations } from "next-intl";
@@ -27,32 +26,21 @@ const AssigneeSelect = ({ issue }: { issue: Issue }) => {
 
   return (
     <>
-      <Theme radius="none">
-        <Select.Root
-          defaultValue={issue.assignedToUserId || ""}
-          onValueChange={assignIssue}
+      <label className="font-pixel grid gap-2 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+        <span>{t("assigneePlaceholder")}</span>
+        <select
+          className="retro-select"
+          defaultValue={issue.assignedToUserId || "unassigned"}
+          onChange={(event) => assignIssue(event.target.value)}
         >
-          <Select.Trigger
-            placeholder={t("assigneePlaceholder")}
-            className="!rounded-md !border-input"
-          />
-          <Select.Content className="!rounded-md !border-input">
-            <Select.Group>
-              <Select.Label>{t("assigneeSuggestions")}</Select.Label>
-              <Select.Item value="unassigned">{t("assigneeUnassigned")}</Select.Item>
-              {users?.map((user) => (
-                <Select.Item
-                  key={user.id}
-                  value={user.id}
-                  className="cursor-pointer"
-                >
-                  {user.name}
-                </Select.Item>
-              ))}
-            </Select.Group>
-          </Select.Content>
-        </Select.Root>
-      </Theme>
+          <option value="unassigned">{t("assigneeUnassigned")}</option>
+          {users?.map((user) => (
+            <option key={user.id} value={user.id}>
+              {user.name}
+            </option>
+          ))}
+        </select>
+      </label>
       <Toaster />
     </>
   )

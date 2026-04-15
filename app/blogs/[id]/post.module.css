@@ -1,42 +1,46 @@
 /* General styles for the article */
 .article {
   max-width: 800px;
-  margin: 0 auto; /* Center the article on the page */
+  margin: 0 auto;
   padding: 24px;
   font-family: inherit;
-  line-height: 1.6; /* Better text readability */
+  line-height: 1.75;
   color: hsl(var(--foreground));
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, hsl(var(--border)) 8%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, hsl(var(--border)) 8%, transparent) 1px, transparent 1px);
+  background-size: 20px 20px;
 }
 
-/* Title styling */
 .article h1 {
   font-size: clamp(2rem, 4vw, 3.4rem);
   color: hsl(var(--foreground));
-  margin-bottom: 1rem; /* Space below the title */
+  margin-bottom: 1rem;
   text-align: left;
-  line-height: 0.95;
-  letter-spacing: -0.05em;
+  line-height: 0.9;
+  letter-spacing: -0.07em;
 }
 
 .article h2 {
-  margin-top: 2.4rem;
-  margin-bottom: 0.9rem;
-  font-size: clamp(1.55rem, 2vw, 2.15rem);
-  letter-spacing: -0.04em;
+  margin-top: 3rem;
+  margin-bottom: 1.1rem;
+  border-top: 1px solid color-mix(in srgb, hsl(var(--border)) 70%, transparent);
+  padding-top: 1.4rem;
+  font-size: clamp(1.5rem, 2vw, 2rem);
+  letter-spacing: -0.05em;
 }
 
 .article h3 {
   margin-top: 1.8rem;
   margin-bottom: 0.8rem;
-  font-size: clamp(1.18rem, 1.5vw, 1.45rem);
+  font-size: clamp(1.1rem, 1.5vw, 1.35rem);
   letter-spacing: -0.03em;
 }
 
-/* Paragraph styling */
 .article p {
   font-size: 1rem;
-  color: color-mix(in srgb, hsl(var(--foreground)) 78%, transparent);
-  margin-bottom: 1.5rem; /* Space below paragraphs */
+  color: color-mix(in srgb, hsl(var(--foreground)) 82%, transparent);
+  margin-bottom: 1.2rem;
 }
 
 .articleFlow {
@@ -58,17 +62,10 @@
   margin-bottom: 0.5rem;
 }
 
-/* Markdown content styling */
-/* .article div {
-  font-size: 1rem;
-  color: #444;
-} */
-
-/* Styling for links inside markdown */
 .article div a {
   color: hsl(var(--primary));
   text-decoration: none;
-  border-bottom: 1px solid transparent; /* Underline effect on hover */
+  border-bottom: 1px solid color-mix(in srgb, hsl(var(--primary)) 36%, transparent);
   transition: border-color 0.2s ease-in-out;
 }
 
@@ -76,74 +73,78 @@
   border-color: hsl(var(--primary));
 }
 
-/* Images inside markdown */
 .article div img {
   max-width: 100%;
   height: auto;
-  border-radius: 18px;
-  margin: 1rem 0; /* Add spacing around images */
+  border-radius: 0;
+  margin: 1.4rem 0;
   border: 1px solid color-mix(in srgb, hsl(var(--border)) 70%, transparent);
-  box-shadow: 0 20px 45px rgba(12, 18, 35, 0.12);
+  box-shadow: var(--shadow-elevated);
 }
 
-/* Blockquote styling inside markdown */
 .article div blockquote {
-  margin: 1rem 0;
-  padding: 1.1rem 1.2rem;
+  margin: 1.4rem 0;
+  padding: 1rem 1.2rem 1rem 1.4rem;
   background-color: color-mix(in srgb, hsl(var(--card)) 82%, transparent);
+  border: 1px solid color-mix(in srgb, hsl(var(--border)) 75%, transparent);
   border-left: 4px solid hsl(var(--primary));
   color: color-mix(in srgb, hsl(var(--foreground)) 82%, transparent);
-  border-radius: 0 18px 18px 0;
-  font-style: italic;
+  border-radius: 0;
 }
 
-/* Code block styling inside markdown */
 .article div pre {
   position: relative;
   background:
-    linear-gradient(180deg, rgba(9, 14, 29, 0.98), rgba(14, 21, 39, 0.96)),
-    linear-gradient(135deg, rgba(67, 104, 214, 0.18), transparent 42%);
+    linear-gradient(180deg, rgba(8, 16, 24, 0.98), rgba(8, 12, 20, 0.98)),
+    linear-gradient(to right, rgba(38, 211, 237, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(38, 211, 237, 0.05) 1px, transparent 1px);
+  background-size: auto, 18px 18px, 18px 18px;
   color: oklch(0.94 0.02 255);
-  padding: 1.15rem 1.2rem;
-  border-radius: 20px;
-  overflow-x: auto; /* Horizontal scroll for long lines */
-  font-family: "Courier New", Courier, monospace;
-  border: 1px solid rgba(88, 120, 214, 0.18);
-  box-shadow:
-    0 22px 48px rgba(14, 20, 39, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  padding: 1rem 1.1rem;
+  border-radius: 0;
+  overflow-x: auto;
+  font-family: var(--font-mono), monospace;
+  border: 1px solid color-mix(in srgb, hsl(var(--primary)) 22%, hsl(var(--border)));
+  box-shadow: var(--shadow-elevated);
 }
 
 .article div pre::before {
-  content: "";
+  content: "code";
   position: absolute;
-  top: 0.9rem;
-  left: 1rem;
-  width: 0.7rem;
-  height: 0.7rem;
-  border-radius: 999px;
-  background: rgba(248, 119, 102, 0.92);
-  box-shadow:
-    1.1rem 0 0 rgba(242, 191, 87, 0.92),
-    2.2rem 0 0 rgba(86, 207, 142, 0.92);
+  top: 0.7rem;
+  right: 0.9rem;
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(174, 223, 233, 0.7);
 }
 
 .article div pre code {
   display: block;
-  padding-top: 0.8rem;
+  padding-top: 1rem;
   background: transparent;
   color: inherit;
 }
 
 .article div code {
-  font-family: "Courier New", Courier, monospace;
+  font-family: var(--font-mono), monospace;
   background-color: color-mix(in srgb, hsl(var(--card)) 86%, transparent);
   padding: 2px 6px;
-  border-radius: 8px;
+  border-radius: 0;
+  border: 1px solid color-mix(in srgb, hsl(var(--border)) 70%, transparent);
   color: hsl(var(--primary));
 }
 
-/* Responsive styling */
+.article :global(.post-meta) {
+  margin-bottom: 2rem;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: hsl(var(--muted-foreground));
+}
+
 @media (max-width: 768px) {
   .article {
     padding: 15px;

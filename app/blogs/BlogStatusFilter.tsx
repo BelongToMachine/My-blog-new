@@ -1,6 +1,5 @@
 "use client"
 import { Status } from "@prisma/client"
-import { Select, Theme } from "@radix-ui/themes"
 import React from "react"
 import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation"
 import { useTranslations } from "next-intl"
@@ -19,28 +18,25 @@ const BlogStatusFilter = () => {
   ]
 
   return (
-    <Theme radius="none">
-      <Select.Root
-        defaultValue={searchParams.get("status") || ""}
-        onValueChange={(status) => {
+    <label className="font-pixel inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+      <span>{t("filterPlaceholder")}</span>
+      <select
+        className="retro-select"
+        defaultValue={searchParams.get("status") || "unSelected"}
+        onChange={(event) => {
+          const status = event.target.value
           initailizeStatus(status)
           const query: string = buildQuery(status, searchParams)
           router.push(`/blogs${query}`)
         }}
       >
-        <Select.Trigger
-          placeholder={t("filterPlaceholder")}
-          className="!rounded-md !border-input"
-        />
-        <Select.Content className="!rounded-md !border-input">
-          {statuses.map((status, index) => (
-            <Select.Item key={index} value={status.value || "unSelected"}>
-              {status.label}
-            </Select.Item>
-          ))}
-        </Select.Content>
-      </Select.Root>
-    </Theme>
+        {statuses.map((status, index) => (
+          <option key={index} value={status.value || "unSelected"}>
+            {status.label}
+          </option>
+        ))}
+      </select>
+    </label>
   )
 }
 
@@ -53,7 +49,7 @@ const buildQuery = (
   searchParams: ReadonlyURLSearchParams
 ) => {
   const params = new URLSearchParams()
-  if (selectStatus) params.append("status", selectStatus)
+  if (selectStatus && selectStatus !== "unSelected") params.append("status", selectStatus)
   if (searchParams.get("orderBy"))
     params.append("orderBy", searchParams.get("orderBy")!)
   return params.size ? "?" + params.toString() : ""

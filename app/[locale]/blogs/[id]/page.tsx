@@ -9,6 +9,7 @@ import IssueDetails from "@/app/blogs/[id]/IssueDetails"
 import DeleteIssueButton from "@/app/blogs/[id]/DeleteIssueButton"
 import AssigneeSelect from "@/app/blogs/[id]/AssigneeSelect"
 import { MODE } from "@/app/envConfig"
+import RetroPanel from "@/app/components/system/RetroPanel"
 
 interface Props {
   params: { locale: string; id: string }
@@ -42,11 +43,13 @@ export default async function BlogDetailPage({ params }: Props) {
         </Box>
         {MODE === "dev" && (
           <Box>
-            <Flex direction="column" gap="4">
+            <RetroPanel eyebrow="entry controls" title="admin actions">
+              <Flex direction="column" gap="4">
               <AssigneeSelect issue={issue} />
               <EditIssueButton issueId={issue.id} />
               <DeleteIssueButton issueId={issue.id} />
-            </Flex>
+              </Flex>
+            </RetroPanel>
           </Box>
         )}
       </Grid>
