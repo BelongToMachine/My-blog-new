@@ -6,12 +6,15 @@ const prismaConnectivityMessages = [
   "authentication failed",
   "database does not exist",
   "error querying the database",
+  "server has closed the connection",
+  "max clients reached",
 ]
 
 export const isPrismaConnectivityError = (error: unknown) => {
   if (
     error instanceof Prisma.PrismaClientInitializationError ||
-    error instanceof Prisma.PrismaClientKnownRequestError
+    error instanceof Prisma.PrismaClientKnownRequestError ||
+    error instanceof Prisma.PrismaClientUnknownRequestError
   ) {
     const message = error.message.toLowerCase()
     return prismaConnectivityMessages.some((candidate) =>
