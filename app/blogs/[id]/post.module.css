@@ -13,28 +13,34 @@
 }
 
 .article h1 {
+  font-family: var(--font-pixel), monospace;
   font-size: clamp(2rem, 4vw, 3.4rem);
   color: hsl(var(--foreground));
   margin-bottom: 1rem;
   text-align: left;
-  line-height: 0.9;
-  letter-spacing: -0.07em;
+  line-height: 1.08;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
 .article h2 {
+  font-family: var(--font-pixel), monospace;
   margin-top: 3rem;
   margin-bottom: 1.1rem;
   border-top: 1px solid color-mix(in srgb, hsl(var(--border)) 70%, transparent);
   padding-top: 1.4rem;
   font-size: clamp(1.5rem, 2vw, 2rem);
-  letter-spacing: -0.05em;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .article h3 {
+  font-family: var(--font-pixel), monospace;
   margin-top: 1.8rem;
   margin-bottom: 0.8rem;
   font-size: clamp(1.1rem, 1.5vw, 1.35rem);
-  letter-spacing: -0.03em;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
 }
 
 .article p {
@@ -138,7 +144,7 @@
 
 .article :global(.post-meta) {
   margin-bottom: 2rem;
-  font-family: var(--font-mono), monospace;
+  font-family: var(--font-pixel), monospace;
   font-size: 0.75rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;

@@ -24,7 +24,7 @@ const GeekPanel = React.forwardRef<HTMLDivElement, GeekPanelProps>(
           <header className="flex flex-wrap items-start justify-between gap-4 border-b border-border/70 px-5 py-4 sm:px-6">
             <div className="space-y-2">
               {eyebrow ? <p className="terminal-label">{eyebrow}</p> : null}
-              {title ? <div className="text-lg font-semibold tracking-[-0.03em]">{title}</div> : null}
+              {title ? <div className="font-pixel text-sm uppercase tracking-[0.16em] text-foreground sm:text-base">{title}</div> : null}
             </div>
             {aside ? <div className="shrink-0">{aside}</div> : null}
           </header>

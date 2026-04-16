@@ -56,7 +56,7 @@ const AIPlayground = () => {
         <div className="space-y-6">
           <div className="space-y-3">
             <p className="section-kicker">{t("eyebrow")}</p>
-            <h1 className="home-page-heading max-w-3xl">{t("title")}</h1>
+            <h1 className="pixel-heading max-w-3xl text-[clamp(1.4rem,4vw,2.6rem)]">{t("title")}</h1>
             <p className="section-copy max-w-xl">{t("description")}</p>
           </div>
 
@@ -82,7 +82,7 @@ const AIPlayground = () => {
             <div className="space-y-2">
               <label
                 htmlFor="ai-prompt"
-                className="text-sm font-semibold text-foreground"
+                className="font-pixel text-[10px] uppercase tracking-[0.18em] text-foreground"
               >
                 {t("promptLabel")}
               </label>
@@ -103,7 +103,7 @@ const AIPlayground = () => {
               <div className="space-y-2">
                 <label
                   htmlFor="ai-image"
-                  className="text-sm font-semibold text-foreground"
+                  className="font-pixel text-[10px] uppercase tracking-[0.18em] text-foreground"
                 >
                   {t("imageLabel")}
                 </label>
@@ -147,7 +147,7 @@ const AIPlayground = () => {
           <div className="mb-5 flex items-center justify-between gap-4">
             <div>
               <p className="section-kicker mb-2">{t("resultEyebrow")}</p>
-              <h2 className="text-2xl font-bold tracking-[-0.04em] text-foreground">
+              <h2 className="font-pixel text-sm uppercase tracking-[0.16em] text-foreground sm:text-base">
                 {t("resultTitle")}
               </h2>
             </div>
@@ -181,13 +181,13 @@ const ModeCard = ({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-3xl border px-5 py-5 text-left transition-all duration-300 ${
+      className={`border px-5 py-5 text-left transition-all duration-300 ${
         active
           ? "border-primary/45 bg-[linear-gradient(180deg,hsl(var(--secondary)/0.55),transparent)] shadow-[0_18px_40px_rgba(15,23,42,0.08)]"
           : "border-border/75 bg-background/70 hover:-translate-y-0.5 hover:border-primary/25"
       }`}
     >
-      <p className="mb-2 text-base font-semibold tracking-[-0.02em] text-foreground">
+      <p className="font-pixel mb-2 text-xs uppercase tracking-[0.16em] text-foreground sm:text-sm">
         {title}
       </p>
       <p className="text-sm leading-7 text-muted-foreground">{body}</p>
