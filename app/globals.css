@@ -12,19 +12,30 @@
 }
 
 @font-face {
-  font-family: 'silkscreen';
-  src: url('/fonts/silkscreen/silkscreen-regular.woff2') format('woff2');
+  font-family: 'retro-pixel';
+  src: url('/fonts/ark-pixel/ark-pixel-12px-proportional-latin.ttf.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
+  unicode-range:
+    U+0000-00FF,
+    U+0100-024F,
+    U+1E00-1EFF,
+    U+2000-206F;
 }
 
 @font-face {
-  font-family: 'silkscreen';
-  src: url('/fonts/silkscreen/silkscreen-bold.woff2') format('woff2');
-  font-weight: 700;
+  font-family: 'retro-pixel';
+  src: url('/fonts/ark-pixel/ark-pixel-12px-proportional-zh_cn.ttf.woff2') format('woff2');
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
+  unicode-range:
+    U+3000-303F,
+    U+3400-4DBF,
+    U+4E00-9FFF,
+    U+F900-FAFF,
+    U+FF00-FFEF;
 }
 
 /* @font-face {
@@ -40,7 +51,8 @@
   :root {
     --font-sans: "Avenir Next", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
     --font-mono: "Monaco", "Menlo", "Consolas", monospace;
-    --font-pixel: "silkscreen", "Monaco", monospace;
+    --font-pixel-cjk: "retro-pixel";
+    --font-pixel: "retro-pixel", "Monaco", monospace;
     --background: 210 30% 97%;
     --foreground: 210 30% 10%;
 
@@ -245,10 +257,12 @@
   }
 
   .display-title {
+    font-family: var(--font-pixel), monospace;
     font-size: clamp(2.4rem, 6vw, 5.5rem);
     line-height: 0.92;
-    letter-spacing: -0.07em;
+    letter-spacing: 0.04em;
     text-wrap: balance;
+    text-transform: uppercase;
   }
 
   .pixel-heading {
@@ -272,7 +286,7 @@
   }
 
   .home-page-heading {
-    @apply text-center text-4xl font-extrabold text-foreground lg:text-6xl leading-normal lg:leading-relaxed;
+    @apply font-pixel text-center text-4xl uppercase tracking-[0.08em] text-foreground lg:text-6xl leading-normal lg:leading-relaxed;
   }
 
   .section-shell {
@@ -280,7 +294,7 @@
   }
 
   .section-kicker {
-    @apply text-xs font-semibold uppercase tracking-[0.22em] text-primary/80;
+    @apply font-pixel text-[10px] uppercase tracking-[0.28em] text-primary/80;
   }
 
   .section-copy {
