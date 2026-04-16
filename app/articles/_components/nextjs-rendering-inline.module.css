@@ -201,6 +201,7 @@
 
 .spotlightLabel,
 .noteLabel {
+  font-family: var(--font-pixel), monospace;
   font-size: 0.72rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -210,8 +211,10 @@
 .spotlight h4 {
   margin: 0;
   color: var(--text-main);
-  font-size: 1.32rem;
-  letter-spacing: -0.04em;
+  font-family: var(--font-pixel), monospace;
+  font-size: 1.1rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .spotlight p {
@@ -272,6 +275,9 @@
   display: block;
   margin-bottom: 0.35rem;
   color: var(--text-main);
+  font-family: var(--font-pixel), monospace;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .pipelineMeta p {
@@ -323,6 +329,9 @@
   display: block;
   margin-bottom: 0.25rem;
   color: var(--text-main);
+  font-family: var(--font-pixel), monospace;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .timelineStep p,

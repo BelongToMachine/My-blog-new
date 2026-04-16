@@ -45,7 +45,7 @@ const Hero = () => {
                 wrapper="div"
                 speed={50}
                 repeat={Infinity}
-                className="mt-3 block min-h-[1.1em] whitespace-nowrap text-left text-foreground"
+                className="font-pixel mt-3 block min-h-[1.1em] text-left uppercase tracking-[0.04em] text-foreground"
               />
             </h1>
             <p className="mb-5 max-w-xl text-sm leading-7 text-muted-foreground sm:text-base">

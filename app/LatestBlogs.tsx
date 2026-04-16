@@ -44,7 +44,7 @@ const LatestBlogs = async () => {
             >
                 <Flex direction="column" align="start" gap="3">
                   <Link
-                    className="text-base font-medium text-foreground transition-colors hover:text-primary hover:underline"
+                    className="font-pixel text-sm uppercase tracking-[0.12em] text-foreground transition-colors hover:text-primary hover:underline sm:text-base"
                     href={`/blogs/${blog.id}`}
                   >
                     {blog.title}

@@ -24,7 +24,7 @@ export function RetroStatCard({
       {...props}
     >
       <div className="terminal-label">{label}</div>
-      <div className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-foreground">
+      <div className="font-pixel mt-3 text-2xl uppercase tracking-[0.08em] text-foreground sm:text-3xl">
         {value}
       </div>
       {hint ? (
