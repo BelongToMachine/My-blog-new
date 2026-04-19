@@ -31,9 +31,13 @@ export async function highlight({
     const existingStyle = out.children[0].properties?.style
       ? String(out.children[0].properties.style)
       : ""
+    const existingClassName = Array.isArray(out.children[0].properties?.className)
+      ? out.children[0].properties.className
+      : []
 
     out.children[0].properties = {
       ...out.children[0].properties,
+      className: [...existingClassName, "codeblock-pre"],
       style: `${existingStyle}; width: 100%; height: 100%; overflow-y: auto; padding: 0.875rem 1rem 1rem;`,
     }
   }
