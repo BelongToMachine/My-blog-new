@@ -31,6 +31,11 @@ interface ScrollableStore {
   setIsInScrollable: (param: boolean) => void
 }
 
+interface StyleModeStore {
+  styleMode: "pixel" | "normal"
+  toggleStyleMode: () => void
+}
+
 export const useDefaultCursorStore = create<CursorStateStore>((set) => ({
   isMagicCursor: false,
 
@@ -78,5 +83,14 @@ export const useScrollableStore = create<ScrollableStore>((set) => ({
   isInScrollable: true,
   setIsInScrollable: (userInputBoolean) => {
     set({ isInScrollable: userInputBoolean })
+  },
+}))
+
+export const useStyleModeStore = create<StyleModeStore>((set) => ({
+  styleMode: "pixel",
+  toggleStyleMode: () => {
+    set((state) => ({
+      styleMode: state.styleMode === "pixel" ? "normal" : "pixel",
+    }))
   },
 }))
