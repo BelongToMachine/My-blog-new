@@ -30,7 +30,7 @@ const Hero = () => {
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
-          className="relative z-10 flex w-full justify-center items-start lg:justify-start lg:col-start-2 lg:col-end-7"
+          className="relative z-10 flex w-full justify-center items-start lg:justify-start lg:items-end lg:col-start-2 lg:col-end-7"
         >
           <div className="w-full max-w-[800px] lg:max-w-[560px] min-w-0">
             <div className="mb-4 flex flex-wrap gap-2">
@@ -38,7 +38,7 @@ const Hero = () => {
               <TerminalPill tone="amber">next.js</TerminalPill>
               <TerminalPill tone="rose">ai notes</TerminalPill>
             </div>
-            <h1 className="mb-4 min-h-[5rem] text-left text-[1.75rem] min-[375px]:text-[2rem] sm:text-[2.5rem] font-extrabold leading-[0.95] text-yellow-500 md:min-h-[7rem] md:text-5xl lg:min-h-[8rem] lg:text-6xl">
+            <h1 className="mb-3 min-h-[5rem] text-left text-[1.75rem] min-[375px]:text-[2rem] sm:text-[2.5rem] font-extrabold leading-[1.05] text-yellow-500 md:min-h-[7rem] md:text-5xl lg:min-h-[8rem] lg:text-6xl">
               <span className="font-pixel uppercase tracking-[0.04em] text-primary">
                 {`${t("greeting")} `}
               </span>
@@ -52,16 +52,13 @@ const Hero = () => {
                 speed={50}
                 repeat={Infinity}
                 className={cn(
-                  "font-pixel mt-3 block whitespace-nowrap min-h-[1.1em] text-left uppercase tracking-[0.04em] text-foreground transition-all duration-300",
+                  "font-pixel mt-1 block whitespace-nowrap min-h-[1.1em] text-left uppercase tracking-[0.04em] text-foreground transition-all duration-300",
                   typingIndex === 1 && "text-[0.7em]"
                 )}
               />
             </h1>
-            <p className="mb-5 max-w-xl text-sm leading-7 text-muted-foreground sm:text-base">
-              Building a bilingual personal blog and issue tracker around frontend engineering, AI experiments, and long-form technical writing.
-            </p>
-            <div className="relative mt-3 min-h-[356px] sm:min-h-[440px] lg:hidden">
-              <div className="relative z-10 w-[90%] sm:w-[88%] max-w-[500px] min-w-0 pt-10">
+            <div className="relative mt-3 min-h-[280px] sm:min-h-[360px] lg:hidden">
+              <div className="relative z-10 w-[90%] sm:w-[88%] max-w-[500px] min-w-0 pt-6">
                 <CodeBlocker
                   code={code}
                   colorMode={colorMode}
@@ -92,9 +89,9 @@ const Hero = () => {
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
-          className="relative z-0 hidden justify-center pt-2 lg:col-start-7 lg:col-end-12 lg:flex lg:justify-end lg:pt-0"
+          className="relative z-0 hidden lg:col-start-7 lg:col-end-12 lg:flex lg:items-center lg:justify-end"
         >
-          <div className="relative w-full max-w-[272px] lg:max-w-[380px] lg:-translate-y-8">
+          <div className="relative w-full max-w-[272px] lg:max-w-[380px]">
             <Image
               src={selfie}
               alt={t("imageAlt")}
