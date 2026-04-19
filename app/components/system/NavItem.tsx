@@ -7,14 +7,14 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const navItemVariants = cva(
-  "inline-flex items-center border text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+  "inline-flex items-center border-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
   {
     variants: {
       variant: {
         desktop:
-          "border-transparent px-2 py-1 font-pixel text-[10px] uppercase tracking-[0.2em] text-muted-foreground hover:border-border/70 hover:bg-accent/60 hover:text-foreground",
+          "border-transparent px-2 py-1 font-pixel text-[10px] uppercase tracking-[0.2em] text-muted-foreground hover:border-border hover:bg-accent/60 hover:text-foreground",
         dropdown:
-          "w-full justify-between border-border/70 px-2 py-2 font-pixel text-[10px] uppercase tracking-[0.18em] text-foreground hover:bg-accent hover:text-accent-foreground",
+          "w-full justify-between border-border px-2 py-2 font-pixel text-[10px] uppercase tracking-[0.18em] text-foreground hover:bg-accent hover:text-accent-foreground",
       },
       active: {
         true: "",
@@ -25,7 +25,7 @@ const navItemVariants = cva(
       {
         variant: "desktop",
         active: true,
-        className: "border-primary/60 bg-primary/10 text-foreground",
+        className: "border-primary bg-primary/10 text-foreground",
       },
       {
         variant: "dropdown",

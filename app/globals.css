@@ -278,7 +278,7 @@
   }
 
   .retro-select {
-    @apply min-h-11 border border-input bg-background/80 px-3 py-2 font-pixel text-[10px] uppercase tracking-[0.18em] text-foreground focus:border-primary focus:outline-none;
+    @apply min-h-11 border-2 border-input bg-background/80 px-3 py-2 font-pixel text-[10px] uppercase tracking-[0.18em] text-foreground focus:border-primary focus:outline-none;
   }
 
   .pixelated {
