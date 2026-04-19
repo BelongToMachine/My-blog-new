@@ -14,6 +14,7 @@ const ThemeToggle = () => {
       aria-label={`Switch to ${nextMode} mode`}
       onClick={() => setColorMode(nextMode)}
       type="button"
+      tone="borderless"
     >
       {colorMode === "light" ? <PiSunDim size={18} /> : <GoMoon size={18} />}
     </ActionIconButton>
