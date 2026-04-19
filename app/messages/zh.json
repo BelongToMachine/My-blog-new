@@ -34,6 +34,7 @@
     "name": "廖永杰",
     "imageAlt": "Jie 站在这里",
     "typeSequence": ["Jie", "前端开发者", "廖永杰"],
+    "shortIntro": "深耕于现代化前端构建，并具备深度集成大语言模型（LLM）以独立开发和调度 AI 智能体（AI Agents）的工程能力。",
     "code": "const coder = {\n  name: \"廖永杰\",\n  role: [\"前端开发工程师\"],\n  skill: [\"React\", \"Next.js\"],\n  location: \"中国杭州\",\n  problemSolver: true,\n  welcomeMessage: () => {\n    return \"很高兴认识你！\"\n  }\n}"
   },
   "home": {
