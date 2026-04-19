@@ -6,13 +6,13 @@ type RetroBadgeTone = "neutral" | "primary" | "amber" | "rose" | "green"
 
 const toneStyles: Record<RetroBadgeTone, string> = {
   neutral: "border-border/80 bg-muted/70 text-muted-foreground",
-  primary: "border-primary/70 bg-primary/15 text-primary",
+  primary: "border-primary bg-primary/15 text-primary",
   amber:
-    "border-[hsl(var(--signal-amber))]/60 bg-[hsl(var(--signal-amber))]/12 text-[hsl(var(--signal-amber))]",
+    "border-[hsl(var(--signal-amber))] bg-[hsl(var(--signal-amber))]/12 text-[hsl(var(--signal-amber))]",
   rose:
-    "border-[hsl(var(--signal-rose))]/60 bg-[hsl(var(--signal-rose))]/12 text-[hsl(var(--signal-rose))]",
+    "border-[hsl(var(--signal-rose))] bg-[hsl(var(--signal-rose))]/12 text-[hsl(var(--signal-rose))]",
   green:
-    "border-[hsl(var(--signal-green))]/60 bg-[hsl(var(--signal-green))]/12 text-[hsl(var(--signal-green))]",
+    "border-[hsl(var(--signal-green))] bg-[hsl(var(--signal-green))]/12 text-[hsl(var(--signal-green))]",
 }
 
 interface RetroBadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
@@ -27,7 +27,7 @@ export function RetroBadge({
   return (
     <span
       className={cn(
-        "font-pixel inline-flex items-center border px-2.5 py-1 text-[10px] uppercase tracking-[0.22em]",
+        "font-pixel inline-flex items-center border-2 px-2.5 py-1 text-[10px] uppercase tracking-[0.22em]",
         toneStyles[tone],
         className
       )}
