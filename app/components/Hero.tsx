@@ -1,5 +1,6 @@
 "use client"
-import React, { useContext } from "react"
+import React, { useContext, useState } from "react"
+import { cn } from "@/lib/utils"
 import selfie from "@/public/images/me2.png"
 import Image from "next/image"
 import { TypeAnimation } from "react-type-animation"
@@ -21,6 +22,7 @@ const Hero = () => {
 
   const typeSequence = t.raw("typeSequence") as string[]
   const code = t.raw("code") as string
+  const [typingIndex, setTypingIndex] = useState(0)
   return (
     <div id="about-me-section" className="px-5 pb-12 pt-6 sm:px-10 md:px-14 lg:pb-8 lg:pt-4">
       <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-8">
@@ -30,22 +32,29 @@ const Hero = () => {
           transition={{ duration: 0.5 }}
           className="relative z-10 flex w-full justify-center items-start lg:justify-start lg:col-start-2 lg:col-end-7"
         >
-          <div className="pixel-panel panel-grid w-full max-w-[800px] border border-border/80 bg-card/88 p-5 lg:max-w-[560px] min-w-0 sm:p-6">
+          <div className="w-full max-w-[800px] lg:max-w-[560px] min-w-0">
             <div className="mb-4 flex flex-wrap gap-2">
               <TerminalPill tone="cyan">frontend log</TerminalPill>
               <TerminalPill tone="amber">next.js</TerminalPill>
               <TerminalPill tone="rose">ai notes</TerminalPill>
             </div>
-            <h1 className="mb-4 min-h-[5rem] text-left text-[2.5rem] font-extrabold leading-[0.95] text-yellow-500 md:min-h-[7rem] md:text-5xl lg:min-h-[8rem] lg:text-6xl">
+            <h1 className="mb-4 min-h-[5rem] text-left text-[1.75rem] min-[375px]:text-[2rem] sm:text-[2.5rem] font-extrabold leading-[0.95] text-yellow-500 md:min-h-[7rem] md:text-5xl lg:min-h-[8rem] lg:text-6xl">
               <span className="font-pixel uppercase tracking-[0.04em] text-primary">
                 {`${t("greeting")} `}
               </span>
               <TypeAnimation
-                sequence={typeSequence.flatMap((value) => [value, 1500])}
+                sequence={typeSequence.flatMap((value, index) => [
+                  () => setTypingIndex(index),
+                  value,
+                  1500
+                ])}
                 wrapper="div"
                 speed={50}
                 repeat={Infinity}
-                className="font-pixel mt-3 block min-h-[1.1em] text-left uppercase tracking-[0.04em] text-foreground"
+                className={cn(
+                  "font-pixel mt-3 block whitespace-nowrap min-h-[1.1em] text-left uppercase tracking-[0.04em] text-foreground transition-all duration-300",
+                  typingIndex === 1 && "text-[0.7em]"
+                )}
               />
             </h1>
             <p className="mb-5 max-w-xl text-sm leading-7 text-muted-foreground sm:text-base">
@@ -85,7 +94,7 @@ const Hero = () => {
           transition={{ duration: 0.5 }}
           className="relative z-0 hidden justify-center pt-2 lg:col-start-7 lg:col-end-12 lg:flex lg:justify-end lg:pt-0"
         >
-          <div className="pixel-panel relative w-full max-w-[272px] border border-border/80 bg-card/88 p-4 lg:max-w-[380px] lg:-translate-y-8">
+          <div className="relative w-full max-w-[272px] lg:max-w-[380px] lg:-translate-y-8">
             <Image
               src={selfie}
               alt={t("imageAlt")}
