@@ -12,6 +12,7 @@ import { Link, usePathname } from "@/app/i18n/navigation"
 import { useLocale, useTranslations } from "next-intl"
 import LanguageToggle from "./LanguageToggle"
 import ThemeToggle from "./ThemeToggle"
+import StyleToggle from "./StyleToggle"
 import { ActionIconButton } from "../system/ActionIconButton"
 import { cn } from "@/lib/utils"
 import { NavItem } from "../system/NavItem"
@@ -35,6 +36,7 @@ const DesktopNav = () => {
       <div className="flex items-center gap-3">
         <LanguageToggle />
         <ThemeToggle />
+        <StyleToggle />
       </div>
     </div>
   )
