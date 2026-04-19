@@ -353,3 +353,15 @@ ul li {
   font-size: inherit !important;
   line-height: inherit !important;
 }
+
+.codeblock-pre,
+.codeblock-pre code {
+  font-family: var(--font-pixel), monospace !important;
+  letter-spacing: 0.03em;
+}
+
+html[data-style-mode="normal"] .codeblock-pre,
+html[data-style-mode="normal"] .codeblock-pre code {
+  font-family: var(--font-mono), monospace !important;
+  letter-spacing: normal;
+}
