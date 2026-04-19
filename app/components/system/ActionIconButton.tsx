@@ -7,13 +7,14 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const actionIconButtonVariants = cva(
-  "inline-flex items-center justify-center border text-muted-foreground transition-[transform,background-color,color,border-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center border text-muted-foreground transition-[background-color,color,border-color,box-shadow] duration-200 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       tone: {
         quiet: "border-border/70 bg-transparent shadow-[3px_3px_0_hsl(var(--foreground)/0.14)] hover:border-primary/60 hover:bg-accent/60",
         surface:
           "border-border/80 bg-background/80 shadow-[4px_4px_0_hsl(var(--foreground)/0.18)] hover:border-primary/60 hover:bg-accent/80",
+        borderless: "border-transparent bg-transparent hover:bg-accent/50",
       },
       size: {
         sm: "h-8 w-8",

@@ -184,7 +184,7 @@ const ModeCard = ({
       className={`border px-5 py-5 text-left transition-all duration-300 ${
         active
           ? "border-primary/45 bg-[linear-gradient(180deg,hsl(var(--secondary)/0.55),transparent)] shadow-[0_18px_40px_rgba(15,23,42,0.08)]"
-          : "border-border/75 bg-background/70 hover:-translate-y-0.5 hover:border-primary/25"
+          : "border-border/75 bg-background/70 hover:border-primary/25"
       }`}
     >
       <p className="font-pixel mb-2 text-xs uppercase tracking-[0.16em] text-foreground sm:text-sm">
