@@ -16,7 +16,7 @@ const CursorManager = () => {
   const virtualCursorStyles: React.CSSProperties = {
     backgroundImage: `url('/images/cursor.png')`,
     position: "fixed",
-    zIndex: 100,
+    zIndex: 50,
     width: "32px",
     height: "32px",
     borderRadius: "50%",
