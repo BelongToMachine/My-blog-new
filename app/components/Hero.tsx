@@ -24,21 +24,21 @@ const Hero = () => {
   const code = t.raw("code") as string
   const [typingIndex, setTypingIndex] = useState(0)
   return (
-    <div id="about-me-section" className="px-5 pb-12 pt-6 sm:px-10 md:px-14 lg:pb-8 lg:pt-4">
-      <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-8">
+    <div id="about-me-section" className="px-5 pb-12 pt-6 sm:px-10 md:px-14 lg:pb-12 lg:pt-2">
+      <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-8 lg:items-end">
         <motion.div
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className="relative z-10 flex w-full justify-center items-start lg:justify-start lg:items-end lg:col-start-2 lg:col-end-7"
         >
-          <div className="w-full max-w-[800px] lg:max-w-[560px] min-w-0">
-            <div className="mb-4 flex flex-wrap gap-2">
+          <div className="w-full max-w-[800px] lg:max-w-[560px] min-w-0 lg:mb-14">
+            <div className="mb-5 flex flex-wrap gap-2">
               <TerminalPill tone="cyan">frontend log</TerminalPill>
               <TerminalPill tone="amber">next.js</TerminalPill>
               <TerminalPill tone="rose">ai notes</TerminalPill>
             </div>
-            <h1 className="mb-3 min-h-[5rem] text-left text-[1.75rem] min-[375px]:text-[2rem] sm:text-[2.5rem] font-extrabold leading-[1.05] text-yellow-500 md:min-h-[7rem] md:text-5xl lg:min-h-[8rem] lg:text-6xl">
+            <h1 className="mb-3 min-h-[5rem] text-left text-[1.75rem] min-[375px]:text-[2rem] sm:text-[2.5rem] font-extrabold leading-[1.05] md:min-h-[7rem] md:text-5xl lg:min-h-[8rem] lg:text-6xl">
               <span className="font-pixel uppercase tracking-[0.04em] text-primary">
                 {`${t("greeting")} `}
               </span>
@@ -57,7 +57,10 @@ const Hero = () => {
                 )}
               />
             </h1>
-            <div className="relative mt-3 min-h-[280px] sm:min-h-[360px] lg:hidden">
+            <p className="font-pixel mb-4 mt-2 max-w-xl text-sm leading-relaxed tracking-wide text-muted-foreground sm:text-base">
+              {t("shortIntro")}
+            </p>
+            <div className="relative mt-5 min-h-[280px] sm:min-h-[360px] lg:hidden">
               <div className="relative z-10 w-[90%] sm:w-[88%] max-w-[500px] min-w-0 pt-6">
                 <CodeBlocker
                   code={code}
@@ -80,7 +83,7 @@ const Hero = () => {
                 />
               </div>
             </div>
-            <div className="hidden w-full max-w-[520px] min-w-0 lg:block">
+            <div className="hidden w-full max-w-[520px] min-w-0 lg:block mt-6 lg:mt-6">
               <CodeBlocker code={code} colorMode={colorMode} />
             </div>
           </div>
@@ -88,7 +91,7 @@ const Hero = () => {
         <motion.div
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
           className="relative z-0 hidden lg:col-start-7 lg:col-end-12 lg:flex lg:items-center lg:justify-end"
         >
           <div className="relative w-full max-w-[272px] lg:max-w-[380px]">
