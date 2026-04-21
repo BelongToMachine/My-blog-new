@@ -76,18 +76,15 @@ export const CodeBlocker = ({
       {/* Taskbar */}
       <div
         className={cn(
-          "flex items-center justify-between border-b-2 border-border",
+          "flex items-center border-b-2 border-border",
           compact ? "h-9 px-3" : "h-11 px-4"
         )}
         style={{ background: taskbarBg }}
       >
-        <span className="font-pixel select-none text-[9px] uppercase tracking-[0.22em] text-muted-foreground/70">
-          {filename}
-        </span>
         <div className="flex items-center gap-1.5">
-          <span className="block h-3 w-3" style={{ background: "hsl(var(--signal-rose))" }} />
-          <span className="block h-3 w-3" style={{ background: "hsl(var(--signal-amber))" }} />
-          <span className="block h-3 w-3" style={{ background: "hsl(var(--primary))" }} />
+          <span className="block h-3 w-3" style={{ background: "#ff5f57" }} />
+          <span className="block h-3 w-3" style={{ background: "#ffbd2e" }} />
+          <span className="block h-3 w-3" style={{ background: "#28c840" }} />
         </div>
       </div>
 
