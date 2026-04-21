@@ -1,74 +1,45 @@
-import prisma from "@/prisma/client"
-import { withPrismaFallback } from "@/prisma/safe"
-import { Avatar, Flex } from "@radix-ui/themes"
 import React from "react"
-import { IssueStatusBadge } from "./components"
 import { Link } from "@/app/i18n/navigation"
 import { getLocale, getTranslations } from "next-intl/server"
+import { getMdxArticleList } from "@/app/service/mdxArticles"
 import RetroPanel from "./components/system/RetroPanel"
 import { RetroBadge } from "./components/system/RetroBadge"
 
 const LatestBlogs = async () => {
   const locale = await getLocale()
   const t = await getTranslations("home")
-  const blogs = await withPrismaFallback(
-    async () => {
-      const localizedCount = await prisma.issue.count({
-        where: { language: locale },
-      })
+  const articles = await getMdxArticleList(locale).catch(() => [])
 
-      return prisma.issue.findMany({
-        where: localizedCount > 0 ? { language: locale } : undefined,
-        orderBy: { createdAt: "desc" },
-        take: 5,
-        include: {
-          assignedToUser: true,
-        },
-      })
-    },
-    [],
-    "Falling back to an empty latest blogs list because the database is unavailable.",
-  )
+  const recent = articles.slice(0, 5)
 
   return (
     <RetroPanel
       eyebrow="recent logs"
       title={t("latestBlogs")}
-      action={<RetroBadge tone="primary">{blogs.length} items</RetroBadge>}
+      action={<RetroBadge tone="primary">{recent.length} items</RetroBadge>}
     >
       <div className="grid gap-3">
-          {blogs.map((blog) => (
-            <div
-              key={blog.id}
-              className="pixel-panel border border-border/70 bg-background/70 px-4 py-4"
-            >
-                <Flex direction="column" align="start" gap="3">
-                  <Link
-                    className="font-pixel text-sm uppercase tracking-[0.12em] text-foreground transition-colors hover:text-primary hover:underline sm:text-base"
-                    href={`/blogs/${blog.id}`}
-                  >
-                    {blog.title}
-                  </Link>
-                  <div className="flex flex-wrap items-center gap-3">
-                    <IssueStatusBadge status={blog.status} />
-                    <RetroBadge tone="neutral">
-                      {blog.createdAt.toLocaleDateString()}
-                    </RetroBadge>
-                  </div>
-                </Flex>
-                {blog.assignedToUser && (
-                  <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
-                    <Avatar
-                      src={blog.assignedToUser?.image!}
-                      fallback="?"
-                      size="2"
-                      radius="none"
-                    />
-                    <span>{blog.assignedToUser.name ?? "Unknown"}</span>
-                  </div>
-                )}
+        {recent.map((article) => (
+          <div
+            key={article.slug}
+            className="pixel-panel border border-border/70 bg-background/70 px-4 py-4"
+          >
+            <div className="flex flex-col gap-3">
+              <Link
+                className="font-pixel text-sm uppercase tracking-[0.12em] text-foreground transition-colors hover:text-primary hover:underline sm:text-base"
+                href={`/articles/${article.slug}`}
+              >
+                {article.title}
+              </Link>
+              <div className="flex flex-wrap items-center gap-3">
+                <RetroBadge tone="primary">MDX</RetroBadge>
+                <RetroBadge tone="neutral">
+                  {article.publishedOn}
+                </RetroBadge>
+              </div>
             </div>
-          ))}
+          </div>
+        ))}
       </div>
     </RetroPanel>
   )

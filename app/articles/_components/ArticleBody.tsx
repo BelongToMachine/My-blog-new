@@ -1,5 +1,5 @@
 import NextjsRenderingInlineBlock from "./NextjsRenderingInlineBlock"
-import styles from "@/app/blogs/[id]/post.module.css"
+import styles from "@/app/articles/post.module.css"
 import type { Heading } from "@/app/service/BlogParser"
 
 interface ArticleBodyProps {

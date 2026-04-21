@@ -2,8 +2,6 @@ import { Container } from "@radix-ui/themes"
 import { getTranslations } from "next-intl/server"
 import { Link } from "@/app/i18n/navigation"
 import { getMdxArticleList } from "@/app/service/mdxArticles"
-import BlogSectionTabs from "@/app/blogs/BlogSectionTabs"
-import RetroPanel from "@/app/components/system/RetroPanel"
 import { RetroBadge } from "@/app/components/system/RetroBadge"
 
 interface Props {
@@ -16,35 +14,58 @@ export default async function ArticlesPage({ params }: Props) {
 
   return (
     <Container className="content-page-shell">
-      <div className="space-y-6 p-5">
-        <BlogSectionTabs active="mdx" />
-        <RetroPanel
-          eyebrow={t("mdxEyebrow")}
-          title={t("mdxListTitle")}
-          action={<RetroBadge tone="primary">{articles.length} logs</RetroBadge>}
-        >
-          <p className="section-copy max-w-2xl">{t("mdxListDescription")}</p>
-        </RetroPanel>
+      <div className="space-y-8 p-5">
+        {/* Page Header */}
+        <div className="space-y-6">
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="pixel-header-label">
+              {t("mdxEyebrow")}
+            </div>
+            <RetroBadge tone="primary">
+              {articles.length} {params.locale === "zh" ? "篇" : "posts"}
+            </RetroBadge>
+          </div>
+          <div className="pixel-title-wrapper">
+            <h1 className="pixel-title text-foreground">
+              {params.locale === "zh" ? "文章" : "ARTICLES"}
+            </h1>
+          </div>
+          <p className="section-copy max-w-2xl">
+            {t("mdxListDescription")}
+          </p>
+        </div>
 
+        {/* Decorative pixel divider */}
+        <div className="pixel-divider" />
+
+        {/* Articles */}
         <div className="grid gap-5">
           {articles.map((article) => (
             <Link
               key={article.slug}
               href={`/articles/${article.slug}`}
-              className="article-preview-card pixel-panel"
+              className="pixel-card group"
             >
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-4">
                 <div className="flex flex-wrap items-center gap-3">
                   <RetroBadge tone="primary">{t("mdxBadge")}</RetroBadge>
                   <RetroBadge tone="neutral">{article.locale}</RetroBadge>
                   <RetroBadge tone="amber">{article.publishedOn}</RetroBadge>
                 </div>
-                <h2 className="font-pixel text-xl uppercase tracking-[0.08em] text-foreground sm:text-2xl">
+                <h2 className="font-pixel text-xl uppercase tracking-[0.08em] text-foreground transition-colors group-hover:text-primary sm:text-2xl">
                   {article.title}
                 </h2>
                 <p className="max-w-3xl text-sm leading-7 text-foreground/70">
                   {article.description}
                 </p>
+                <div className="flex items-center gap-2 pt-1 text-xs text-primary">
+                  <span className="font-pixel uppercase tracking-[0.2em]">
+                    {params.locale === "zh" ? "阅读" : "Read"}
+                  </span>
+                  <span className="pixel-arrow transition-transform duration-200 group-hover:translate-x-1">
+                    &rarr;
+                  </span>
+                </div>
               </div>
             </Link>
           ))}
