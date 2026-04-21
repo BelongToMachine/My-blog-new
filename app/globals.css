@@ -445,6 +445,37 @@
     border-bottom: 2px solid hsl(var(--border));
   }
 
+  .mdx-index-shell .pixel-title {
+    text-shadow:
+      5px 5px 0 hsl(var(--border) / 0.5),
+      -1px -1px 0 hsl(var(--foreground) / 0.08);
+  }
+
+  .mdx-index-copy {
+    max-width: 40rem;
+  }
+
+  html[data-style-mode="pixel"] .mdx-index-copy {
+    font-family: var(--font-pixel), monospace;
+    font-size: 12px;
+    line-height: 2;
+    letter-spacing: 0.12em;
+    color: hsl(var(--foreground) / 0.82);
+  }
+
+  html[data-style-mode="pixel"] .mdx-index-card-title {
+    line-height: 1.08;
+    text-shadow: 3px 3px 0 hsl(var(--border) / 0.38);
+  }
+
+  html[data-style-mode="pixel"] .mdx-index-card-copy {
+    font-family: var(--font-pixel), monospace;
+    font-size: 11px;
+    line-height: 1.9;
+    letter-spacing: 0.08em;
+    color: hsl(var(--foreground) / 0.72);
+  }
+
   .pixel-toc {
     position: relative;
     background-image:

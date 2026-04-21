@@ -2,8 +2,7 @@
 "use client"
 import NextLink from "next/link"
 import React, { useMemo } from "react"
-import { AnimatePresence, motion } from "framer-motion"
-import DisappearingText from "../DisappearText"
+import { AnimatePresence } from "framer-motion"
 import { Link, usePathname } from "@/app/i18n/navigation"
 import { useTranslations } from "next-intl"
 import LanguageToggle from "./LanguageToggle"
@@ -27,6 +26,7 @@ const DesktopNav = () => {
 
   return (
     <div className="flex h-16 items-center justify-between px-5">
+      {/* Left: GitHub + desktop nav links */}
       <div className="flex items-center gap-6">
         <ActionIconButton
           asChild
@@ -37,8 +37,17 @@ const DesktopNav = () => {
             {isPixel ? <PixelGithubIcon /> : <PiGithubLogoFill size={20} />}
           </NextLink>
         </ActionIconButton>
-        <NavLinks />
+        <div className="hidden lg:block">
+          <NavLinks />
+        </div>
       </div>
+
+      {/* Center: compact nav links for tablet */}
+      <div className="flex flex-1 justify-center lg:hidden">
+        <NavLinks compact />
+      </div>
+
+      {/* Right: controls */}
       <div className="flex items-center gap-3">
         <LanguageToggle />
         <ThemeToggle />
@@ -49,7 +58,7 @@ const DesktopNav = () => {
 }
 export default DesktopNav
 
-const NavLinks = () => {
+const NavLinks = ({ compact = false }: { compact?: boolean }) => {
   const t = useTranslations("nav")
   const currentPath = usePathname()
 
@@ -87,11 +96,24 @@ const NavLinks = () => {
   }
 
   return (
-    <ul className="relative top-1 flex flex-wrap gap-4">
+    <ul
+      className={cn(
+        "relative top-1 flex flex-wrap gap-4",
+        compact && "top-0 gap-1"
+      )}
+    >
       <AnimatePresence>
         {links.map((link, index) => (
           <li key={link.href}>
-            <NavItem asChild active={link.href === currentPath} variant="desktop">
+            <NavItem
+              asChild
+              active={link.href === currentPath}
+              variant="desktop"
+              className={cn(
+                compact &&
+                  "px-1.5 py-1 text-[9px] tracking-[0.12em]"
+              )}
+            >
               <Link className={styledTag(link)} href={link.href}>
                 <DisappearingText text={link.label} variant={variants} />
               </Link>

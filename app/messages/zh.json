@@ -54,7 +54,7 @@
     "mdxEyebrow": "POC 功能",
     "mdxBadge": "MDX 文章",
     "mdxListTitle": "MDX 文章实验区",
-    "mdxListDescription": "这里是一个与现有数据库博客并行存在的文件式文章实验区。",
+    "mdxListDescription": "这里收录的是以 MDX 为核心的长文笔记、组件化内容块与交互式阅读实验。",
     "filterAll": "全部",
     "webDev": "Web开发",
     "tech": "科技类",
@@ -107,6 +107,6 @@
     "blogsTitle": "博客列表",
     "blogsDescription": "查看我所有的博客文章",
     "mdxArticlesTitle": "MDX 文章实验区",
-    "mdxArticlesDescription": "与当前博客系统并行存在的文件式文章实验。"
+    "mdxArticlesDescription": "以 MDX 为核心的长文笔记、组件化内容块与交互式阅读实验。"
   }
 }
