@@ -50,13 +50,13 @@ const MobileNav = () => {
                 variant="desktop"
                 className="px-1.5 py-1 text-[9px] tracking-[0.12em]"
               >
-                <Link
-                  className={cn(
-                    "block whitespace-nowrap text-center text-muted-foreground transition-colors hover:text-foreground",
-                    link.href === currentPath && "text-foreground"
-                  )}
-                  href={link.href}
-                >
+              <Link
+                className={cn(
+                  "whitespace-nowrap text-muted-foreground hover:text-foreground",
+                  link.href === currentPath && "text-foreground"
+                )}
+                href={link.href}
+              >
                   {link.label}
                 </Link>
               </NavItem>

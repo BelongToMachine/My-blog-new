@@ -71,7 +71,7 @@ const NavLinks = ({ compact = false }: { compact?: boolean }) => {
   const styledTag = useMemo(
     () => (link: NavLinkItem) =>
       cn(
-        "text-sm font-medium text-muted-foreground transition-colors hover:text-foreground",
+        "text-sm font-medium text-muted-foreground hover:text-foreground",
         link.href === currentPath && "text-foreground"
       ),
     [currentPath]
