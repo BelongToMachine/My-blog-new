@@ -18,18 +18,20 @@ export function RetroStatCard({
   return (
     <div
       className={cn(
-        "pixel-panel panel-grid border border-border/80 bg-card/88 p-4",
+        "pixel-panel panel-grid flex flex-col border border-border/80 bg-card/88 p-4",
         className
       )}
       {...props}
     >
       <div className="terminal-label">{label}</div>
-      <div className="font-pixel mt-3 text-2xl uppercase tracking-[0.08em] text-foreground sm:text-3xl">
-        {value}
+      <div className="flex flex-1 flex-col items-center justify-center gap-2">
+        <div className="font-pixel text-2xl uppercase tracking-[0.08em] text-foreground sm:text-3xl">
+          {value}
+        </div>
+        {hint ? (
+          <div className="text-sm leading-6 text-muted-foreground">{hint}</div>
+        ) : null}
       </div>
-      {hint ? (
-        <div className="mt-2 text-sm leading-6 text-muted-foreground">{hint}</div>
-      ) : null}
     </div>
   )
 }

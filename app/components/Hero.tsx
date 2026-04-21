@@ -7,11 +7,12 @@ import { TypeAnimation } from "react-type-animation"
 import { motion } from "framer-motion"
 import { ThemeContext } from "../context/DarkModeContext"
 import { CodeBlocker } from "../packages/index"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import { TerminalPill } from "./system/TerminalPill"
 
 const Hero = () => {
   const t = useTranslations("hero")
+  const locale = useLocale()
   const themeContext = useContext(ThemeContext)
 
   if (!themeContext) {
@@ -23,6 +24,7 @@ const Hero = () => {
   const typeSequence = t.raw("typeSequence") as string[]
   const code = t.raw("code") as string
   const [typingIndex, setTypingIndex] = useState(0)
+  const isEnLongText = locale === "en" && typingIndex === 1
   return (
     <div id="about-me-section" className="px-5 pb-12 pt-6 sm:px-10 md:px-14 lg:pb-12 lg:pt-2">
       <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-8 lg:items-end">
@@ -53,7 +55,7 @@ const Hero = () => {
                 repeat={Infinity}
                 className={cn(
                   "font-pixel mt-1 block whitespace-nowrap min-h-[1.1em] text-left uppercase tracking-[0.04em] text-foreground transition-all duration-300",
-                  typingIndex === 1 && "text-[0.7em]"
+                  isEnLongText && "text-[0.55em]"
                 )}
               />
             </h1>
