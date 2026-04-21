@@ -68,7 +68,7 @@ export const CodeBlocker = ({
   }
 
   // ── Pixel mode: retro terminal ─────────────────────────────────────────────
-  const taskbarBg = isDark ? "hsl(264 48% 10%)" : "hsl(215 30% 14%)"
+  const taskbarBg = isDark ? "#2d2d2d" : "#f0f0f0"
   const bodyBg = isDark ? "hsl(265 55% 8%)" : "hsl(215 30% 10%)"
 
   return (
