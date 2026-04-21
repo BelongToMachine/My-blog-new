@@ -10,6 +10,7 @@ import { Container } from "@radix-ui/themes"
 import style from "@/app/service/ThemeService"
 import useIsInScrollable from "@/app/hooks/useIsInScrollable"
 import { useTheme } from "@/app/hooks/useTheme"
+import { useStyleModeStore } from "@/app/service/Store"
 
 interface Props {
   children: ReactNode
@@ -29,12 +30,92 @@ const getInterpolatedValue = (
   return curvyValue * (1 - scrollRatio) + flatValue * scrollRatio
 }
 
+const cubicPoint = (t: number, p0: number, p1: number, p2: number, p3: number) => {
+  const oneMinusT = 1 - t
+
+  return (
+    oneMinusT ** 3 * p0 +
+    3 * oneMinusT ** 2 * t * p1 +
+    3 * oneMinusT * t ** 2 * p2 +
+    t ** 3 * p3
+  )
+}
+
+const quantize = (value: number, grain: number) =>
+  Math.round(value / grain) * grain
+
+const getPixelCurveInstructions = (
+  startPoint: number,
+  firstControlPoint: number,
+  secondControlPoint: number,
+  endPoint: number,
+  stepCount = 120
+) => {
+  const xGrain = 1.6
+  const yGrain = 1.8
+  const points = Array.from({ length: stepCount + 1 }, (_, index) => {
+    const t = index / stepCount
+
+    return {
+      x: quantize(cubicPoint(t, 0, 30, 50, 100), xGrain),
+      y: quantize(
+        cubicPoint(t, startPoint, firstControlPoint, secondControlPoint, endPoint),
+        yGrain
+      ),
+    }
+  }).reduce<Array<{ x: number; y: number }>>((accumulator, point) => {
+    const previousPoint = accumulator[accumulator.length - 1]
+
+    if (!previousPoint) {
+      accumulator.push(point)
+      return accumulator
+    }
+
+    const normalizedPoint = {
+      x: Math.max(point.x, previousPoint.x),
+      y: point.y,
+    }
+
+    if (
+      normalizedPoint.x !== previousPoint.x ||
+      normalizedPoint.y !== previousPoint.y
+    ) {
+      accumulator.push(normalizedPoint)
+    }
+
+    return accumulator
+  }, [])
+
+  let path = `M 0,${points[0].y}`
+  let currentX = 0
+  let currentY = points[0].y
+
+  for (let index = 1; index < points.length; index += 1) {
+    const point = points[index]
+
+    if (point.x !== currentX) {
+      path += ` H ${point.x}`
+      currentX = point.x
+    }
+
+    if (point.y !== currentY) {
+      path += ` V ${point.y}`
+      currentY = point.y
+    }
+  }
+
+  path += " L 100,100 L 0,100 Z"
+
+  return path
+}
+
 const DynamicBezierCurve = ({ children }: Props) => {
   const [scrollRatio, setScrollRatio] = useState(0)
   const [scrolledInVH, setScrolledInVh] = useState(0)
   const nodeRef = useRef(null)
   const mobileAvatarExitScrollRef = useRef<number | null>(null)
   const isInScrollable = useScrollableStore((state) => state.isInScrollable)
+  const styleMode = useStyleModeStore((state) => state.styleMode)
   const BACKGROUND_COLOR = style.background
   const SCROLLABLE_COLOR = style.scrollable
 
@@ -184,6 +265,20 @@ const DynamicBezierCurve = ({ children }: Props) => {
     L 100,100
     L 0,100
   `
+  const pixelInstructions = getPixelCurveInstructions(
+    startPoint,
+    firstControlPoint,
+    secondControlPoint,
+    endPoint
+  )
+  const activeInstructions =
+    styleMode === "pixel" ? pixelInstructions : instructions
+  const curveShapeRendering =
+    styleMode === "pixel" ? "crispEdges" : "geometricPrecision"
+  const curveStrokeWidth = styleMode === "pixel" ? 0 : 0
+  const curveStroke = styleMode === "pixel"
+    ? "hsl(var(--border))"
+    : "hotpink"
 
   return (
     <>
@@ -218,13 +313,15 @@ const DynamicBezierCurve = ({ children }: Props) => {
                 position: "absolute",
                 inset: 0,
               }}
+              shapeRendering={curveShapeRendering}
               preserveAspectRatio="none"
             >
               <path
-                d={instructions}
+                d={activeInstructions}
                 fill={BACKGROUND_COLOR as string}
-                stroke="hotpink"
-                strokeWidth="0"
+                stroke={curveStroke}
+                strokeWidth={curveStrokeWidth}
+                vectorEffect="non-scaling-stroke"
               />
             </svg>
           </div>
@@ -261,13 +358,15 @@ const DynamicBezierCurve = ({ children }: Props) => {
             position: "fixed",
             pointerEvents: "none",
           }}
+          shapeRendering={curveShapeRendering}
           preserveAspectRatio="none"
         >
           <path
-            d={instructions}
+            d={activeInstructions}
             fill={BACKGROUND_COLOR as string}
-            stroke="hotpink"
-            strokeWidth="0"
+            stroke={curveStroke}
+            strokeWidth={curveStrokeWidth}
+            vectorEffect="non-scaling-stroke"
           />
         </svg>
         <div
