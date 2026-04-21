@@ -285,6 +285,27 @@
     image-rendering: pixelated;
   }
 
+  .pixel-chart text {
+    font-family: var(--font-pixel), monospace !important;
+    font-size: 11px !important;
+    letter-spacing: 0.05em !important;
+    text-transform: uppercase !important;
+    fill: hsl(var(--muted-foreground)) !important;
+  }
+
+  .pixel-chart .recharts-rectangle {
+    shape-rendering: crispEdges !important;
+    stroke: hsl(var(--foreground) / 0.55) !important;
+    stroke-width: 2px !important;
+  }
+
+  .pixel-chart .recharts-cartesian-axis-line,
+  .pixel-chart .recharts-cartesian-axis-tick-line {
+    shape-rendering: crispEdges !important;
+    stroke: hsl(var(--border)) !important;
+    stroke-width: 2px !important;
+  }
+
   .home-page-heading {
     @apply font-pixel text-center text-4xl uppercase tracking-[0.08em] text-foreground lg:text-6xl leading-normal lg:leading-relaxed;
   }
