@@ -3,11 +3,11 @@ import { motion, Variants } from "framer-motion"
 const DisappearingText = ({
   text,
   variant,
-  isCollapse,
+  isCollapse = false,
 }: {
   text: string
   variant: Variants
-  isCollapse: boolean
+  isCollapse?: boolean
 }) => {
   return (
     <span>

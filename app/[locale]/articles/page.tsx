@@ -14,9 +14,9 @@ export default async function ArticlesPage({ params }: Props) {
 
   return (
     <Container className="content-page-shell">
-      <div className="space-y-8 p-5">
+        <div className="space-y-8 p-5">
         {/* Page Header */}
-        <div className="space-y-6">
+        <div className="space-y-6 mdx-index-shell">
           <div className="flex flex-wrap items-center gap-3">
             <div className="pixel-header-label">
               {t("mdxEyebrow")}
@@ -30,7 +30,7 @@ export default async function ArticlesPage({ params }: Props) {
               {params.locale === "zh" ? "文章" : "ARTICLES"}
             </h1>
           </div>
-          <p className="section-copy max-w-2xl">
+          <p className="section-copy mdx-index-copy max-w-2xl">
             {t("mdxListDescription")}
           </p>
         </div>
@@ -52,10 +52,10 @@ export default async function ArticlesPage({ params }: Props) {
                   <RetroBadge tone="neutral">{article.locale}</RetroBadge>
                   <RetroBadge tone="amber">{article.publishedOn}</RetroBadge>
                 </div>
-                <h2 className="font-pixel text-xl uppercase tracking-[0.08em] text-foreground transition-colors group-hover:text-primary sm:text-2xl">
+                <h2 className="mdx-index-card-title font-pixel text-xl uppercase tracking-[0.08em] text-foreground transition-colors group-hover:text-primary sm:text-2xl">
                   {article.title}
                 </h2>
-                <p className="max-w-3xl text-sm leading-7 text-foreground/70">
+                <p className="mdx-index-card-copy max-w-3xl text-sm leading-7 text-foreground/70">
                   {article.description}
                 </p>
                 <div className="flex items-center gap-2 pt-1 text-xs text-primary">

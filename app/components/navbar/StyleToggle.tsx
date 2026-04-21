@@ -11,7 +11,7 @@ const PixelSquaresFour = () => (
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
     shapeRendering="crispEdges"
-    className="h-5 w-5"
+    className="h-4 w-4"
     fill="currentColor"
   >
     <rect x="2" y="2" width="8" height="8" />
@@ -26,7 +26,7 @@ const PixelLayout = () => (
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
     shapeRendering="crispEdges"
-    className="h-5 w-5"
+    className="h-4 w-4"
     fill="currentColor"
   >
     <rect x="2" y="2" width="20" height="4" />

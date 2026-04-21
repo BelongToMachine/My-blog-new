@@ -11,7 +11,7 @@ const PixelSun = () => (
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
     shapeRendering="crispEdges"
-    className="h-5 w-5"
+    className="h-4 w-4"
     fill="currentColor"
   >
     <rect x="11" y="2" width="2" height="3" />
@@ -31,7 +31,7 @@ const PixelMoon = () => (
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
     shapeRendering="crispEdges"
-    className="h-5 w-5"
+    className="h-4 w-4"
     fill="currentColor"
   >
     <rect x="9" y="3" width="2" height="2" />

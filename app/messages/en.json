@@ -54,7 +54,7 @@
     "mdxEyebrow": "POC Feature",
     "mdxBadge": "MDX Article",
     "mdxListTitle": "MDX Articles",
-    "mdxListDescription": "A file-based article experiment that lives beside the existing database-backed blog.",
+    "mdxListDescription": "MDX notes for long-form writing, custom components, and interactive reading experiments.",
     "filterAll": "All",
     "webDev": "Web Development",
     "tech": "Tech",
@@ -107,6 +107,6 @@
     "blogsTitle": "Blogs List",
     "blogsDescription": "View all of my blogs",
     "mdxArticlesTitle": "MDX Articles",
-    "mdxArticlesDescription": "File-based MDX article experiments running beside the current blog system."
+    "mdxArticlesDescription": "MDX notes focused on long-form writing, custom components, and interactive reading experiments."
   }
 }
