@@ -1,9 +1,8 @@
 import { getMdxArticle, getMdxArticleList } from "@/app/service/mdxArticles"
 import { Box, Container, Grid } from "@radix-ui/themes"
 import { notFound } from "next/navigation"
-import styles from "@/app/blogs/[id]/post.module.css"
-import TableOfContent from "@/app/blogs/_components/TableOfContent"
-import BlogSectionTabs from "@/app/blogs/BlogSectionTabs"
+import styles from "@/app/articles/post.module.css"
+import TableOfContent from "@/app/articles/_components/TableOfContent"
 import ArticleEnhancement from "@/app/articles/_components/ArticleEnhancement"
 import ArticleBody from "@/app/articles/_components/ArticleBody"
 import { RetroBadge } from "@/app/components/system/RetroBadge"
@@ -32,7 +31,6 @@ export default async function ArticleDetailPage({ params }: Props) {
   return (
     <Container>
       <div className="space-y-6 p-5">
-        <BlogSectionTabs active="mdx" />
         <ArticleEnhancement slug={article.slug} />
         <Grid columns={{ initial: "1", lg: "5" }} gap="5">
           <Box className="lg:col-span-4">

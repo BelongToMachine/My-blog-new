@@ -55,7 +55,7 @@ const Hero = () => {
                 repeat={Infinity}
                 className={cn(
                   "font-pixel mt-1 block whitespace-nowrap min-h-[1.1em] text-left uppercase tracking-[0.04em] text-foreground transition-all duration-300",
-                  isEnLongText && "text-[0.55em]"
+                  isEnLongText && "lg:text-[0.55em]"
                 )}
               />
             </h1>
