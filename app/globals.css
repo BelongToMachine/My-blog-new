@@ -313,7 +313,7 @@
   }
 
   .section-copy {
-    @apply text-sm leading-7 text-muted-foreground sm:text-base;
+    @apply text-sm leading-7 text-muted-foreground md:text-base;
   }
 
   .summary-stat-card {

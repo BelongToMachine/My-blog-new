@@ -122,7 +122,7 @@ const BlogChart = ({ open, inProgress, closed }: Props) => {
   }
 
   return (
-    <Card className="section-shell flex items-center justify-center p-4 sm:p-5">
+    <Card className="section-shell flex items-center justify-center p-4 md:p-5">
       <div className={`flex h-full w-full items-center justify-center ${isPixel ? "pixel-chart" : ""}`}>
         <ResponsiveContainer width="100%" height={300}>
           <BarChart

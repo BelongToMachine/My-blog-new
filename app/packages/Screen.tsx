@@ -52,7 +52,7 @@ export const CodeBlocker = ({
         <div
           className={cn(
             "codeblock-taskbar flex items-center py-2",
-            compact ? "h-10 px-3.5" : "h-11 px-4 sm:px-3"
+            compact ? "h-10 px-3.5" : "h-11 px-4 md:px-3"
           )}
           style={{ background: taskbarBg }}
         >

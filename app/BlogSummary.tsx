@@ -11,7 +11,7 @@ const BlogSummary = ({ total }: Props) => {
   const t = useTranslations("home")
 
   return (
-    <div className="grid gap-4 sm:grid-cols-3">
+    <div className="grid gap-4 md:grid-cols-3">
       <RetroStatCard
         className="min-w-[132px]"
         label={t("webDev")}

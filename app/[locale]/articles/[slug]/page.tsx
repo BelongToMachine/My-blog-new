@@ -40,7 +40,7 @@ export default async function ArticleDetailPage({ params }: Props) {
               eyebrow="article detail"
               title={article.title}
               action={<RetroBadge tone="amber">{article.publishedOn}</RetroBadge>}
-              contentClassName="px-5 py-5 sm:px-6 sm:py-6 min-w-0"
+              contentClassName="min-w-0 px-5 py-5 md:px-6 md:py-6"
             >
               <div className="mb-5 flex flex-wrap gap-3">
                 <RetroBadge tone="primary">MDX POC</RetroBadge>

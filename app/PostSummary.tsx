@@ -1,4 +1,3 @@
-import { Grid } from "@radix-ui/themes"
 import React from "react"
 import BlogSummary from "./BlogSummary"
 import BlogChart from "./BlogChart"
@@ -10,13 +9,15 @@ interface Props {
 
 const PostSummary = ({ total }: Props) => {
   return (
-    <Grid columns={{ initial: "1", md: "2" }} gap="5" className="mt-4 md:mt-8">
-      <div className="grid gap-5">
+    <div className="mt-4 grid gap-5 md:mt-8 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+      <div className="grid min-w-0 gap-5">
         <BlogSummary total={total} />
         <BlogChart open={total} inProgress={0} closed={0} />
       </div>
-      <LatestBlogs />
-    </Grid>
+      <div className="min-w-0">
+        <LatestBlogs />
+      </div>
+    </div>
   )
 }
 

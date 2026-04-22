@@ -51,7 +51,7 @@ const AIPlayground = () => {
   }
 
   return (
-    <section className="mx-auto max-w-6xl px-4 pb-16 pt-8 sm:px-6 lg:px-8 lg:pb-24">
+    <section className="mx-auto max-w-6xl px-4 pb-16 pt-8 md:px-6 lg:px-8 lg:pb-24">
       <div className="grid gap-8 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:items-start">
         <div className="space-y-6">
           <div className="space-y-3">
@@ -60,7 +60,7 @@ const AIPlayground = () => {
             <p className="section-copy max-w-xl">{t("description")}</p>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-3 md:grid-cols-2">
             <ModeCard
               active={mode === "text"}
               body={t("textModeDescription")}
@@ -76,7 +76,7 @@ const AIPlayground = () => {
           </div>
 
           <form
-            className="section-shell space-y-5 p-5 sm:p-6"
+            className="section-shell space-y-5 p-5 md:p-6"
             onSubmit={handleSubmit}
           >
             <div className="space-y-2">
@@ -143,11 +143,11 @@ const AIPlayground = () => {
           </form>
         </div>
 
-        <div className="section-shell min-h-[520px] p-5 sm:p-6">
+        <div className="section-shell min-h-[520px] p-5 md:p-6">
           <div className="mb-5 flex items-center justify-between gap-4">
             <div>
               <p className="section-kicker mb-2">{t("resultEyebrow")}</p>
-              <h2 className="font-pixel text-sm uppercase tracking-[0.16em] text-foreground sm:text-base">
+              <h2 className="font-pixel text-sm uppercase tracking-[0.16em] text-foreground md:text-base">
                 {t("resultTitle")}
               </h2>
             </div>
@@ -187,7 +187,7 @@ const ModeCard = ({
           : "border-border/75 bg-background/70 hover:border-primary/25"
       }`}
     >
-      <p className="font-pixel mb-2 text-xs uppercase tracking-[0.16em] text-foreground sm:text-sm">
+      <p className="font-pixel mb-2 text-xs uppercase tracking-[0.16em] text-foreground md:text-sm">
         {title}
       </p>
       <p className="text-sm leading-7 text-muted-foreground">{body}</p>

@@ -52,7 +52,7 @@ export default async function ArticlesPage({ params }: Props) {
                   <RetroBadge tone="neutral">{article.locale}</RetroBadge>
                   <RetroBadge tone="amber">{article.publishedOn}</RetroBadge>
                 </div>
-                <h2 className="mdx-index-card-title font-pixel text-xl uppercase tracking-[0.08em] text-foreground transition-colors group-hover:text-primary sm:text-2xl">
+                <h2 className="mdx-index-card-title font-pixel text-xl uppercase tracking-[0.08em] text-foreground transition-colors group-hover:text-primary md:text-2xl">
                   {article.title}
                 </h2>
                 <p className="mdx-index-card-copy max-w-3xl text-sm leading-7 text-foreground/70">
