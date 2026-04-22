@@ -47,8 +47,8 @@ export default async function ArticleDetailPage({ params }: Props) {
                 <RetroBadge tone="neutral">{article.locale}</RetroBadge>
               </div>
               <ArticleBody slug={article.slug} htmlContent={article.htmlContent} headings={article.headings} />
-              <ArticleFooter />
             </RetroPanel>
+            <ArticleFooter />
           </Box>
           <Box className="lg:col-span-1">
             <div className="lg:sticky lg:top-24">
