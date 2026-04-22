@@ -4,12 +4,16 @@ import { Heading } from "@/app/service/BlogParser"
 
 const TableOfContent = ({ headings }: { headings: Heading[] }) => (
   <ScrollArea.Root
-    className="pixel-toc w-full max-w-[340px] overflow-hidden h-[min(calc(100vh-9.5rem),39rem)]"
+    className="pixel-toc w-full max-w-[340px] overflow-hidden"
+    style={{ maxHeight: "min(calc(100vh - 9.5rem), 39rem)" }}
   >
-    <div className="sticky top-0 z-10 border-b border-border/70 bg-card/95 px-5 py-4 backdrop-blur-[1px]">
+    <div className="border-b border-border/70 bg-card/95 px-5 py-4">
       <div className="terminal-label">目录</div>
     </div>
-    <ScrollArea.Viewport className="h-full w-full">
+    <ScrollArea.Viewport
+      className="w-full"
+      style={{ maxHeight: "calc(min(100vh - 9.5rem, 39rem) - 3.5rem)" }}
+    >
       <div className="px-5 pb-4 pt-3">
         {headings.map((heading, index) => (
           <div

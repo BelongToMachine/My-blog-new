@@ -34,13 +34,13 @@ export default async function ArticleDetailPage({ params }: Props) {
       <div className="space-y-6 p-5">
         <ArticleEnhancement slug={article.slug} />
         <Grid columns={{ initial: "1", lg: "5" }} gap="5">
-          <Box className="lg:col-span-4">
+          <Box className="min-w-0 lg:col-span-4">
             <RetroPanel
               className={styles.article}
               eyebrow="article detail"
               title={article.title}
               action={<RetroBadge tone="amber">{article.publishedOn}</RetroBadge>}
-              contentClassName="px-5 py-5 sm:px-6 sm:py-6"
+              contentClassName="px-5 py-5 sm:px-6 sm:py-6 min-w-0"
             >
               <div className="mb-5 flex flex-wrap gap-3">
                 <RetroBadge tone="primary">MDX POC</RetroBadge>
@@ -50,7 +50,7 @@ export default async function ArticleDetailPage({ params }: Props) {
             </RetroPanel>
             <ArticleFooter />
           </Box>
-          <Box className="lg:col-span-1">
+          <Box className="hidden lg:block lg:col-span-1">
             <div className="lg:sticky lg:top-24">
               <TableOfContent headings={article.headings} />
             </div>

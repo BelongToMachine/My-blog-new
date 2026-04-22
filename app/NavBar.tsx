@@ -4,6 +4,7 @@ import DesktopNav from "./components/navbar/DesktopNav"
 import MobileNav from "./components/navbar/MobileNav"
 import { useScrollableStore } from "./service/Store"
 import { cn } from "@/lib/utils"
+import { isDesktopViewport } from "./lib/responsive"
 
 const NavBar = () => {
   const [windowWidth, setWindowWidth] = useState<number>(0)
@@ -35,7 +36,7 @@ const NavBar = () => {
           : "pixel-panel border-border/70 bg-background/92"
       )}
     >
-      {windowWidth > 768 ? <DesktopNav /> : <MobileNav />}
+      {isDesktopViewport(windowWidth) ? <DesktopNav /> : <MobileNav />}
     </nav>
   )
 }
