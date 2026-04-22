@@ -5,6 +5,7 @@ import styles from "@/app/articles/post.module.css"
 import TableOfContent from "@/app/articles/_components/TableOfContent"
 import ArticleEnhancement from "@/app/articles/_components/ArticleEnhancement"
 import ArticleBody from "@/app/articles/_components/ArticleBody"
+import ArticleFooter from "@/app/articles/_components/ArticleFooter"
 import { RetroBadge } from "@/app/components/system/RetroBadge"
 import RetroPanel from "@/app/components/system/RetroPanel"
 
@@ -46,6 +47,7 @@ export default async function ArticleDetailPage({ params }: Props) {
                 <RetroBadge tone="neutral">{article.locale}</RetroBadge>
               </div>
               <ArticleBody slug={article.slug} htmlContent={article.htmlContent} headings={article.headings} />
+              <ArticleFooter />
             </RetroPanel>
           </Box>
           <Box className="lg:col-span-1">
