@@ -237,6 +237,9 @@
   .pixel-panel {
     box-shadow: var(--shadow-elevated);
     position: relative;
+    border-width: 3px !important;
+    border-style: solid !important;
+    border-color: hsl(var(--border)) !important;
   }
 
   .font-pixel {
@@ -556,6 +559,7 @@ html[data-style-mode="normal"] body::before {
 html[data-style-mode="normal"] .pixel-panel {
   box-shadow: none;
   border-radius: 0.5rem;
+  border-width: 1px !important;
 }
 
 html[data-style-mode="normal"] .panel-grid {
