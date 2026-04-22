@@ -14,6 +14,7 @@ const LatestBlogs = async () => {
 
   return (
     <RetroPanel
+      className="min-w-0"
       eyebrow="recent logs"
       title={t("latestBlogs")}
       action={<RetroBadge tone="primary">{recent.length} items</RetroBadge>}
@@ -26,7 +27,7 @@ const LatestBlogs = async () => {
           >
             <div className="flex flex-col gap-3">
               <Link
-                className="font-pixel text-sm uppercase tracking-[0.12em] text-foreground transition-colors hover:text-primary hover:underline sm:text-base"
+                className="font-pixel text-sm uppercase tracking-[0.12em] text-foreground transition-colors hover:text-primary hover:underline md:text-base"
                 href={`/articles/${article.slug}`}
               >
                 {article.title}

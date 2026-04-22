@@ -8,7 +8,7 @@ import { useTranslations } from "next-intl"
 const Chart = dynamic(() => import("@/app/components/ChartInner"), {
   ssr: false,
   loading: () => (
-    <Card className="section-shell p-4 sm:p-5">
+    <Card className="section-shell p-4 md:p-5">
       <div className="flex h-[300px] items-center justify-center text-sm text-muted-foreground">
         Loading chart...
       </div>
@@ -28,7 +28,7 @@ const BlogChart = (props: Props) => {
   return (
     <Suspense
       fallback={
-        <Card className="section-shell p-4 sm:p-5">
+        <Card className="section-shell p-4 md:p-5">
           <div className="flex h-[300px] items-center justify-center text-sm text-muted-foreground">
             {t("loadingMore")}
           </div>

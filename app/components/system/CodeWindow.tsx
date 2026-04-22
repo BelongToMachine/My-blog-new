@@ -34,7 +34,7 @@ export function CodeWindow({
         </div>
         <span className="text-primary">{language}</span>
       </div>
-      <pre className="overflow-x-auto px-4 py-4 font-mono text-[13px] leading-6 text-slate-100 sm:px-5">
+      <pre className="overflow-x-auto px-4 py-4 font-mono text-[13px] leading-6 text-slate-100 md:px-5">
         <code>{code}</code>
       </pre>
     </div>

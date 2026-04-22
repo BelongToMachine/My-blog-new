@@ -26,7 +26,7 @@ const Hero = () => {
   const [typingIndex, setTypingIndex] = useState(0)
   const isEnLongText = locale === "en" && typingIndex === 1
   return (
-    <div id="about-me-section" className="px-5 pb-12 pt-6 sm:px-10 md:px-14 lg:pb-12 lg:pt-2">
+    <div id="about-me-section" className="px-5 pb-12 pt-6 md:px-10 lg:px-14 lg:pb-12 lg:pt-2">
       <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-8 lg:items-end">
         <motion.div
           initial={{ opacity: 0, scale: 0.5 }}
@@ -40,7 +40,7 @@ const Hero = () => {
               <TerminalPill tone="amber">next.js</TerminalPill>
               <TerminalPill tone="rose">ai notes</TerminalPill>
             </div>
-            <h1 className="mb-3 min-h-[5rem] text-left text-[1.75rem] min-[375px]:text-[2rem] sm:text-[2.5rem] font-extrabold leading-[1.05] md:min-h-[7rem] md:text-5xl lg:min-h-[8rem] lg:text-6xl">
+            <h1 className="mb-3 min-h-[5rem] text-left text-[1.75rem] min-[375px]:text-[2rem] md:text-[2.5rem] font-extrabold leading-[1.05] lg:min-h-[7rem] lg:text-5xl xl:min-h-[8rem] xl:text-6xl">
               <span className="font-pixel uppercase tracking-[0.04em] text-primary">
                 {`${t("greeting")} `}
               </span>
@@ -59,11 +59,11 @@ const Hero = () => {
                 )}
               />
             </h1>
-            <p className="font-pixel mb-4 mt-2 max-w-xl text-sm leading-relaxed tracking-wide text-muted-foreground sm:text-base">
+            <p className="font-pixel mb-4 mt-2 max-w-xl text-sm leading-relaxed tracking-wide text-muted-foreground md:text-base">
               {t("shortIntro")}
             </p>
-            <div className="relative mt-5 min-h-[280px] sm:min-h-[360px] lg:hidden">
-              <div className="relative z-10 w-[90%] sm:w-[88%] max-w-[500px] min-w-0 pt-6">
+            <div className="relative mt-5 min-h-[280px] md:min-h-[360px] lg:hidden">
+              <div className="relative z-10 w-[90%] md:w-[88%] max-w-[500px] min-w-0 pt-6">
                 <CodeBlocker
                   code={code}
                   colorMode={colorMode}
@@ -73,7 +73,7 @@ const Hero = () => {
               </div>
               <div
                 data-mobile-hero-avatar
-                className="absolute -right-2 -top-4 z-20 h-[400px] w-[62%] max-w-[300px] sm:h-[460px] sm:w-[60%] sm:max-w-[340px] sm:-right-6 sm:-top-12 overflow-visible"
+                className="absolute -right-2 -top-4 z-20 h-[400px] w-[62%] max-w-[300px] md:h-[460px] md:w-[60%] md:max-w-[340px] md:-right-6 md:-top-12 overflow-visible"
               >
                 <Image
                   src={selfie}
@@ -85,7 +85,7 @@ const Hero = () => {
                 />
               </div>
             </div>
-            <div className="hidden w-full max-w-[520px] min-w-0 lg:block mt-6 lg:mt-6">
+            <div className="mt-6 hidden w-full max-w-[520px] min-w-0 lg:block">
               <CodeBlocker code={code} colorMode={colorMode} />
             </div>
           </div>

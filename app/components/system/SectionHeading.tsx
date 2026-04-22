@@ -30,7 +30,7 @@ const SectionHeading = ({
           "flex w-full gap-4",
           align === "center"
             ? "flex-col items-center"
-            : "flex-col items-start sm:flex-row sm:items-end sm:justify-between"
+            : "flex-col items-start md:flex-row md:items-end md:justify-between"
         )}
       >
         <div className="space-y-3">
@@ -39,7 +39,7 @@ const SectionHeading = ({
             {title}
           </h2>
           {description ? (
-            <p className="max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base">
+            <p className="max-w-2xl text-sm leading-7 text-muted-foreground md:text-base">
               {description}
             </p>
           ) : null}

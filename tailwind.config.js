@@ -9,13 +9,20 @@ module.exports = {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    screens: {
+      sm: "640px",
+      md: "768px",
+      lg: "1024px",
+      xl: "1280px",
+      "2xl": "1536px",
+    },
     container: {
       center: true,
       screens: {
         sm: "640px",
         md: "768px",
-        lg: "950px",
-        xl: "1024px",
+        lg: "1024px",
+        xl: "1280px",
         "2xl": "1500px",
       },
     },

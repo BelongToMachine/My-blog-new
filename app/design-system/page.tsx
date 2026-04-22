@@ -21,7 +21,7 @@ const DesignSystemPage = () => {
 }`
 
     return (
-        <div className="container space-y-10 px-5 py-10 sm:px-8 lg:px-10">
+        <div className="container space-y-10 px-5 py-10 md:px-8 lg:px-10">
             <section className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
                 <div className="space-y-5">
                     <p className="display-kicker">geek style / component library / v0.1</p>
@@ -51,7 +51,7 @@ const DesignSystemPage = () => {
 
             <section className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
                 <GeekPanel eyebrow="palette" title="Signal Colors">
-                    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                    <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
                         {[
                             ["background", "bg-background text-foreground border"],
                             ["card", "bg-card text-card-foreground border"],
@@ -134,7 +134,7 @@ const DesignSystemPage = () => {
                             The article system should feel like a research notebook rather than a generic blog theme.
                             That means strong section dividers, code windows, metadata strips, and callouts with explicit tone.
                         </p>
-                        <div className="grid gap-3 sm:grid-cols-2">
+                        <div className="grid gap-3 md:grid-cols-2">
                             <div className="border border-border/70 bg-background/70 p-4">
                                 <div className="terminal-label">planned</div>
                                 <p className="mt-3 text-sm leading-7 text-muted-foreground">CalloutBlock, PromptCard, SpecTable, FigureFrame.</p>
