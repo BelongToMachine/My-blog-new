@@ -1,36 +1,38 @@
 "use client"
 
-import { Flex, Button } from "@radix-ui/themes"
 import { useState } from "react"
+import { Button } from "@radix-ui/themes"
 import Wind from "./Wind"
 import HoverWrapper from "./HoverWrapper"
 import Image from "next/image"
 import fan from "@/public/images/fan.png"
+import styles from "@/app/articles/post.module.css"
 
 interface ArticleFooterProps {
   initialLikes?: number
 }
 
 const ArticleFooter = ({ initialLikes = 0 }: ArticleFooterProps) => {
-  const [userlikes, setLikes] = useState(initialLikes)
-
-  const updateLikes = () => {
-    setLikes((prev) => prev + 1)
-  }
+  const [likes, setLikes] = useState(initialLikes)
 
   return (
-    <Flex className="items-center">
-      <Button style={{ marginRight: "10px" }} onClick={updateLikes}>
-        Likes ({userlikes})
-      </Button>
+    <div className={styles.footerWrapper}>
+      <div className="flex items-center justify-between">
+        <Button onClick={() => setLikes((v) => v + 1)}>
+          Likes ({likes})
+        </Button>
 
-      <HoverWrapper>
-        <Button className="absolute right-24">Dislike</Button>
-        <Wind />
-      </HoverWrapper>
-
-      <Image src={fan} alt="a fan" height={130} />
-    </Flex>
+        <div className="flex items-center gap-2">
+          <HoverWrapper>
+            <Button color="red" variant="soft">
+              Dislike
+            </Button>
+            <Wind />
+          </HoverWrapper>
+          <Image src={fan} alt="a fan" height={130} />
+        </div>
+      </div>
+    </div>
   )
 }
 

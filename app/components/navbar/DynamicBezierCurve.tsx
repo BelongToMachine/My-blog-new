@@ -11,6 +11,7 @@ import style from "@/app/service/ThemeService"
 import useIsInScrollable from "@/app/hooks/useIsInScrollable"
 import { useTheme } from "@/app/hooks/useTheme"
 import { useStyleModeStore } from "@/app/service/Store"
+import { isDesktopViewport } from "@/app/lib/responsive"
 
 interface Props {
   children: ReactNode
@@ -140,7 +141,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
 
   useEffect(() => {
     const handleScroll = (event: WheelEvent) => {
-      if (window.innerWidth < 640) return
+      if (!isDesktopViewport(window.innerWidth)) return
       // Only slow down scrolling in specific conditions
       event.preventDefault()
       window.scrollBy({
@@ -157,7 +158,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
 
   useEffect(() => {
     const captureMobileAvatarExitPoint = () => {
-      if (window.innerWidth >= 640) {
+      if (isDesktopViewport(window.innerWidth)) {
         mobileAvatarExitScrollRef.current = null
         return
       }
@@ -195,10 +196,10 @@ const DynamicBezierCurve = ({ children }: Props) => {
 
       const windowHeight = window.innerHeight
       const pixelsScrolled = Math.abs(window.scrollY)
-      const isMobileViewport = window.innerWidth < 640
+      const isDesktop = isDesktopViewport(window.innerWidth)
       let ratio = 0
 
-      if (isMobileViewport) {
+      if (!isDesktop) {
         const mobileExitScroll =
           mobileAvatarExitScrollRef.current ?? windowHeight * 0.6
         const mobileProgress = pixelsScrolled / mobileExitScroll
@@ -283,7 +284,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
   return (
     <>
       <section
-        className="relative sm:hidden"
+        className="relative lg:hidden"
         style={{
           backgroundColor: SCROLLABLE_COLOR,
         }}
@@ -338,7 +339,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
           </div>
         </Container>
       </section>
-      <div className="hidden sm:block">
+      <div className="hidden lg:block">
         <div
           style={{
             position: "fixed",

@@ -39,7 +39,7 @@ const DesktopNav = () => {
         <div className="hidden lg:block">
           <NavLinks />
         </div>
-        <div className="lg:hidden">
+        <div className="hidden">
           <NavLinks compact />
         </div>
       </div>

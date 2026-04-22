@@ -6,10 +6,19 @@
   font-family: inherit;
   line-height: 1.75;
   color: hsl(var(--foreground));
+  overflow-wrap: break-word;
+  word-break: normal;
+  min-width: 0;
   background-image:
     linear-gradient(to right, color-mix(in srgb, hsl(var(--border)) 8%, transparent) 1px, transparent 1px),
     linear-gradient(to bottom, color-mix(in srgb, hsl(var(--border)) 8%, transparent) 1px, transparent 1px);
   background-size: 20px 20px;
+}
+
+.footerWrapper {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px;
 }
 
 .article h1 {
@@ -52,10 +61,12 @@
 .articleFlow {
   display: grid;
   gap: 0.25rem;
+  min-width: 0;
 }
 
 .articleSection {
   display: grid;
+  min-width: 0;
 }
 
 .article ul,
@@ -151,17 +162,67 @@
   color: hsl(var(--muted-foreground));
 }
 
-@media (max-width: 768px) {
+.article :global(.post-content) {
+  min-width: 0;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+.article :global(table) {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+.article :global(th),
+.article :global(td) {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid color-mix(in srgb, hsl(var(--border)) 70%, transparent);
+  text-align: left;
+}
+
+.article :global(th) {
+  background-color: color-mix(in srgb, hsl(var(--card)) 86%, transparent);
+  font-family: var(--font-pixel), monospace;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.article :global(tr:nth-child(even)) {
+  background-color: color-mix(in srgb, hsl(var(--card)) 40%, transparent);
+}
+
+@media (max-width: 1024px) {
   .article {
-    padding: 15px;
+    width: 100%;
+    padding: 16px;
+    max-width: 100%;
+  }
+
+  .footerWrapper {
+    max-width: 100%;
+    padding: 16px;
   }
 
   .article h1 {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
+  }
+
+  .article h2 {
+    font-size: 1.3rem;
   }
 
   .article p,
   .article div {
     font-size: 0.9rem;
+  }
+
+  .article div pre {
+    padding: 0.75rem;
+    font-size: 0.8rem;
   }
 }
