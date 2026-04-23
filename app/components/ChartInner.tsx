@@ -1,5 +1,4 @@
 "use client"
-import { Card } from "@radix-ui/themes"
 import React, { useEffect, useState } from "react"
 import { Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 import { useTranslations } from "next-intl"
@@ -119,7 +118,7 @@ const BlogChart = ({ open, inProgress, closed }: Props) => {
   }
 
   return (
-    <Card className="section-shell flex items-center justify-center p-4 md:p-5">
+    <div className="pixel-panel panel-grid flex min-w-0 flex-1 flex-col overflow-hidden border border-border/80 bg-card/88 p-4 md:p-5">
       <div className="pixel-chart flex h-full w-full items-center justify-center">
         <ResponsiveContainer width="100%" height={300}>
           <BarChart
@@ -167,7 +166,7 @@ const BlogChart = ({ open, inProgress, closed }: Props) => {
           </BarChart>
         </ResponsiveContainer>
       </div>
-    </Card>
+    </div>
   )
 }
 
