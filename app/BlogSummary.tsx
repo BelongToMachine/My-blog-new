@@ -11,9 +11,9 @@ const BlogSummary = ({ total }: Props) => {
   const t = useTranslations("home")
 
   return (
-    <div className="grid gap-4 md:grid-cols-3">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-[repeat(auto-fit,minmax(min(100%,10rem),1fr))]">
       <RetroStatCard
-        className="min-w-[132px]"
+        className="w-full min-w-0"
         label={t("webDev")}
         value={total}
         hint={
@@ -23,7 +23,7 @@ const BlogSummary = ({ total }: Props) => {
         }
       />
       <RetroStatCard
-        className="min-w-[132px]"
+        className="w-full min-w-0"
         label={t("tech")}
         value={0}
         hint={
@@ -33,7 +33,7 @@ const BlogSummary = ({ total }: Props) => {
         }
       />
       <RetroStatCard
-        className="min-w-[132px]"
+        className="w-full min-w-0"
         label={t("nonTech")}
         value={0}
         hint={

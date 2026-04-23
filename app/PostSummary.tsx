@@ -9,7 +9,7 @@ interface Props {
 
 const PostSummary = ({ total }: Props) => {
   return (
-    <div className="mt-4 grid gap-5 md:mt-8 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+    <div className="mt-4 grid gap-5 md:mt-8 min-[1180px]:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
       <div className="grid min-w-0 gap-5">
         <BlogSummary total={total} />
         <BlogChart open={total} inProgress={0} closed={0} />
