@@ -20,7 +20,7 @@ const SectionHeading = ({
   return (
     <div
       className={cn(
-        "mb-8 flex flex-col gap-4 lg:mb-10",
+        "mb-6 flex flex-col gap-3 md:mb-8 md:gap-4 lg:mb-10",
         align === "center" ? "items-center text-center" : "items-start text-left",
         className
       )}
@@ -33,13 +33,13 @@ const SectionHeading = ({
             : "flex-col items-start md:flex-row md:items-end md:justify-between"
         )}
       >
-        <div className="space-y-3">
+        <div className="space-y-2 md:space-y-3">
           <div className="terminal-label">system heading</div>
           <h2 className="pixel-heading max-w-4xl text-balance">
             {title}
           </h2>
           {description ? (
-            <p className="max-w-2xl text-sm leading-7 text-muted-foreground md:text-base">
+            <p className="max-w-xl text-sm leading-6 text-muted-foreground md:max-w-2xl md:text-base md:leading-7">
               {description}
             </p>
           ) : null}

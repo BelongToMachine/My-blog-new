@@ -35,9 +35,6 @@ export default async function ArticlesPage({ params }: Props) {
           </p>
         </div>
 
-        {/* Decorative pixel divider */}
-        <div className="pixel-divider" />
-
         {/* Articles */}
         <div className="grid gap-5">
           {articles.map((article) => (

@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react"
 import { Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 import { useTranslations } from "next-intl"
+import { BREAKPOINTS, isTabletViewport } from "@/app/lib/responsive"
 
 interface Props {
   open: number
@@ -9,41 +10,63 @@ interface Props {
   closed: number
 }
 
-/* ---------- Pixel-mode custom renderers ---------- */
-
-const PixelXTick = ({ x, y, payload }: any) => (
+const PixelXTick = ({
+  x = 0,
+  y = 0,
+  payload,
+  fontSize = 11,
+  dy = 16,
+}: {
+  x?: number
+  y?: number
+  payload?: { value?: string }
+  fontSize?: number
+  dy?: number
+}) => (
   <text
     x={x}
     y={y}
-    dy={16}
+    dy={dy}
     textAnchor="middle"
     fill="hsl(var(--muted-foreground))"
     style={{
       fontFamily: "var(--font-pixel), monospace",
-      fontSize: 11,
+      fontSize,
       textTransform: "uppercase",
       letterSpacing: "0.05em",
     }}
   >
-    {payload.value}
+    {payload?.value}
   </text>
 )
 
-const PixelYTick = ({ x, y, payload }: any) => (
+const PixelYTick = ({
+  x = 0,
+  y = 0,
+  payload,
+  dx = -10,
+  fontSize = 11,
+}: {
+  x?: number
+  y?: number
+  payload?: { value?: string | number }
+  dx?: number
+  fontSize?: number
+}) => (
   <text
     x={x}
     y={y}
-    dx={-10}
+    dx={dx}
     textAnchor="end"
     fill="hsl(var(--muted-foreground))"
     style={{
       fontFamily: "var(--font-pixel), monospace",
-      fontSize: 11,
+      fontSize,
       textTransform: "uppercase",
       letterSpacing: "0.05em",
     }}
   >
-    {payload.value}
+    {payload?.value}
   </text>
 )
 
@@ -51,7 +74,6 @@ const PixelBarShape = (props: any) => {
   const { x, y, width, height, fill } = props
   return (
     <g>
-      {/* main block */}
       <rect
         x={x}
         y={y}
@@ -62,7 +84,6 @@ const PixelBarShape = (props: any) => {
         strokeWidth={2}
         shapeRendering="crispEdges"
       />
-      {/* top highlight for 8-bit bevel */}
       <rect
         x={x + 2}
         y={y + 2}
@@ -97,37 +118,68 @@ const PixelTooltip = ({ active, payload, label }: any) => {
   )
 }
 
-/* ---------- Component ---------- */
-
-const BlogChart = ({ open, inProgress, closed }: Props) => {
+const ChartInner = ({ open, inProgress, closed }: Props) => {
   const t = useTranslations("home")
-  const [isMounted, setIsMounted] = useState(false)
+  const [viewportWidth, setViewportWidth] = useState(() =>
+    typeof window === "undefined" ? BREAKPOINTS.desktop : window.innerWidth
+  )
 
   useEffect(() => {
-    setIsMounted(true)
+    const updateViewportWidth = () => {
+      setViewportWidth(window.innerWidth)
+    }
+
+    updateViewportWidth()
+    window.addEventListener("resize", updateViewportWidth)
+
+    return () => {
+      window.removeEventListener("resize", updateViewportWidth)
+    }
   }, [])
 
+  const isMobileViewport = viewportWidth < BREAKPOINTS.tablet
+  const isTabletOnlyViewport = isTabletViewport(viewportWidth)
+
+  const chartHeight = isMobileViewport ? 228 : isTabletOnlyViewport ? 280 : 300
+  const barSize = isMobileViewport ? 30 : isTabletOnlyViewport ? 38 : 48
+  const xTickFontSize = isMobileViewport ? 8 : isTabletOnlyViewport ? 10 : 11
+  const xTickDy = isMobileViewport ? 12 : 16
+  const yTickFontSize = isMobileViewport ? 9 : 11
+  const yTickDx = isMobileViewport ? -6 : -10
+  const yAxisWidth = isMobileViewport ? 24 : 32
+  const chartMargin = isMobileViewport
+    ? { top: 18, right: 10, left: 2, bottom: 6 }
+    : isTabletOnlyViewport
+      ? { top: 18, right: 20, left: 8, bottom: 6 }
+      : { top: 20, right: 30, left: 20, bottom: 5 }
+
   const data = [
-    { label: t("webDev"), value: open },
-    { label: t("tech"), value: inProgress },
-    { label: t("nonTech"), value: closed },
+    {
+      label: isMobileViewport ? t("webDevShort") : t("webDev"),
+      value: open,
+    },
+    {
+      label: isMobileViewport ? t("techShort") : t("tech"),
+      value: inProgress,
+    },
+    {
+      label: isMobileViewport ? t("nonTechShort") : t("nonTech"),
+      value: closed,
+    },
   ]
 
-  if (!isMounted) {
-    return null
-  }
-
   return (
-    <div className="pixel-panel panel-grid flex min-w-0 flex-1 flex-col overflow-hidden border border-border/80 bg-card/88 p-4 md:p-5">
+    <div className="pixel-panel panel-grid flex min-w-0 flex-1 flex-col overflow-hidden border border-border/80 bg-card/88 p-3 sm:p-4 md:p-5">
       <div className="pixel-chart flex h-full w-full items-center justify-center">
-        <ResponsiveContainer width="100%" height={300}>
+        <ResponsiveContainer width="100%" height={chartHeight}>
           <BarChart
             data={data}
-            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+            margin={chartMargin}
           >
             <XAxis
               dataKey="label"
-              tick={<PixelXTick />}
+              tick={<PixelXTick fontSize={xTickFontSize} dy={xTickDy} />}
+              height={isMobileViewport ? 40 : 34}
               axisLine={{
                 stroke: "hsl(var(--border))",
                 strokeWidth: 2,
@@ -138,7 +190,8 @@ const BlogChart = ({ open, inProgress, closed }: Props) => {
               }}
             />
             <YAxis
-              tick={<PixelYTick />}
+              tick={<PixelYTick dx={yTickDx} fontSize={yTickFontSize} />}
+              width={yAxisWidth}
               axisLine={{
                 stroke: "hsl(var(--border))",
                 strokeWidth: 2,
@@ -154,7 +207,7 @@ const BlogChart = ({ open, inProgress, closed }: Props) => {
             />
             <Bar
               dataKey="value"
-              barSize={48}
+              barSize={barSize}
               fill="hsl(var(--primary))"
               radius={[0, 0, 0, 0]}
               shape={<PixelBarShape />}
@@ -170,4 +223,4 @@ const BlogChart = ({ open, inProgress, closed }: Props) => {
   )
 }
 
-export default BlogChart
+export default ChartInner
