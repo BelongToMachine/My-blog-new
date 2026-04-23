@@ -45,3 +45,11 @@ pnpm-lock.yaml
 CLAUDE.md
 research/
 /skills
+
+# playwright / local browser automation artifacts
+.codex-*.png
+.playwright/
+.playwright-*/
+playwright-report/
+test-results/
+.next.corrupt-*
