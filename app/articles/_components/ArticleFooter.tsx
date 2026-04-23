@@ -29,7 +29,7 @@ const ArticleFooter = ({ initialLikes = 0 }: ArticleFooterProps) => {
             </Button>
             <Wind />
           </HoverWrapper>
-          <Image src={fan} alt="a fan" height={130} />
+          <Image src={fan} alt="a fan" height={130} width={77} className="pixelated" />
         </div>
       </div>
     </div>

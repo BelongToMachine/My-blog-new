@@ -1,0 +1,46 @@
+.fanWrapper {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.fanBase {
+  object-fit: contain;
+  object-position: center;
+}
+
+.fanBlades {
+  object-fit: contain;
+  object-position: center;
+  clip-path: circle(29% at 38% 47%);
+  transform-origin: 38% 47%;
+  animation: blade-spin 0.22s linear infinite;
+  will-change: transform;
+}
+
+@keyframes blade-spin {
+  0% {
+    filter: blur(0);
+    transform: scaleX(1);
+  }
+
+  20% {
+    filter: blur(1px);
+    transform: scaleX(0.06);
+  }
+
+  50% {
+    filter: blur(0);
+    transform: scaleX(-1);
+  }
+
+  70% {
+    filter: blur(1px);
+    transform: scaleX(-0.06);
+  }
+
+  100% {
+    filter: blur(0);
+    transform: scaleX(1);
+  }
+}
