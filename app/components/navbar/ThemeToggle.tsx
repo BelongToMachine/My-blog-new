@@ -1,9 +1,6 @@
 "use client"
 
-import { PiSunDim } from "react-icons/pi"
-import { GoMoon } from "react-icons/go"
 import { useTheme } from "@/app/hooks/useTheme"
-import { useStyleModeStore } from "@/app/service/Store"
 import { ActionIconButton } from "../system/ActionIconButton"
 
 const PixelSun = () => (
@@ -59,8 +56,6 @@ const PixelMoon = () => (
 const ThemeToggle = () => {
   const { colorMode, setColorMode } = useTheme()
   const nextMode = colorMode === "light" ? "dark" : "light"
-  const { styleMode } = useStyleModeStore()
-  const isPixel = styleMode === "pixel"
 
   return (
     <ActionIconButton
@@ -70,12 +65,8 @@ const ThemeToggle = () => {
       tone="borderless"
     >
       {colorMode === "light"
-        ? isPixel
-          ? <PixelSun />
-          : <PiSunDim size={18} />
-        : isPixel
-          ? <PixelMoon />
-          : <GoMoon size={18} />}
+        ? <PixelSun />
+        : <PixelMoon />}
     </ActionIconButton>
   )
 }

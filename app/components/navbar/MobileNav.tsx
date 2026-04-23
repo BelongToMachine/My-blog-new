@@ -1,21 +1,16 @@
 "use client"
 import React, { useMemo } from "react"
-import { PiGithubLogoFill } from "react-icons/pi"
 import NextLink from "next/link"
 import LanguageToggle from "./LanguageToggle"
 import ThemeToggle from "./ThemeToggle"
 import { ActionIconButton } from "../system/ActionIconButton"
-import { useStyleModeStore } from "@/app/service/Store"
 import PixelGithubIcon from "./PixelGithubIcon"
-import StyleToggle from "./StyleToggle"
 import { Link, usePathname } from "@/app/i18n/navigation"
 import { useTranslations } from "next-intl"
 import { NavItem } from "../system/NavItem"
 import { cn } from "@/lib/utils"
 
 const MobileNav = () => {
-  const { styleMode } = useStyleModeStore()
-  const isPixel = styleMode === "pixel"
   const t = useTranslations("nav")
   const currentPath = usePathname()
   const links = useMemo(
@@ -35,11 +30,11 @@ const MobileNav = () => {
           asChild
           aria-label="Open GitHub profile"
           className="shrink-0 self-center"
-          tone={isPixel ? "borderless" : "quiet"}
+          tone="borderless"
           size="sm"
         >
           <NextLink href="http://github.com/JieLuis">
-            {isPixel ? <PixelGithubIcon className="h-5 w-5" /> : <PiGithubLogoFill size={18} />}
+            <PixelGithubIcon className="h-5 w-5" />
           </NextLink>
         </ActionIconButton>
         <ul className="m-0 flex h-8 list-none items-center gap-1 p-0">
@@ -70,7 +65,6 @@ const MobileNav = () => {
       <div className="flex items-center gap-1">
         <LanguageToggle />
         <ThemeToggle />
-        <StyleToggle />
       </div>
     </div>
   )

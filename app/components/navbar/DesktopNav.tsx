@@ -6,9 +6,6 @@ import { Link, usePathname } from "@/app/i18n/navigation"
 import { useTranslations } from "next-intl"
 import LanguageToggle from "./LanguageToggle"
 import ThemeToggle from "./ThemeToggle"
-import StyleToggle from "./StyleToggle"
-import { PiGithubLogoFill } from "react-icons/pi"
-import { useStyleModeStore } from "@/app/service/Store"
 import { ActionIconButton } from "../system/ActionIconButton"
 import { cn } from "@/lib/utils"
 import { NavItem } from "../system/NavItem"
@@ -20,9 +17,6 @@ interface NavLinkItem {
 }
 
 const DesktopNav = () => {
-  const { styleMode } = useStyleModeStore()
-  const isPixel = styleMode === "pixel"
-
   return (
     <div className="flex h-16 items-center justify-between px-5">
       {/* Left: GitHub + nav links */}
@@ -30,10 +24,10 @@ const DesktopNav = () => {
         <ActionIconButton
           asChild
           aria-label="Open GitHub profile"
-          tone={isPixel ? "borderless" : "quiet"}
+          tone="borderless"
         >
           <NextLink href="http://github.com/JieLuis">
-            {isPixel ? <PixelGithubIcon /> : <PiGithubLogoFill size={20} />}
+            <PixelGithubIcon />
           </NextLink>
         </ActionIconButton>
         <div className="hidden lg:block">
@@ -48,7 +42,6 @@ const DesktopNav = () => {
       <div className="flex items-center gap-3">
         <LanguageToggle />
         <ThemeToggle />
-        <StyleToggle />
       </div>
     </div>
   )

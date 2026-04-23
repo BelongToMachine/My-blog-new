@@ -9,8 +9,6 @@ import React, {
 import { Container } from "@radix-ui/themes"
 import style from "@/app/service/ThemeService"
 import useIsInScrollable from "@/app/hooks/useIsInScrollable"
-import { useTheme } from "@/app/hooks/useTheme"
-import { useStyleModeStore } from "@/app/service/Store"
 import { isDesktopViewport } from "@/app/lib/responsive"
 
 interface Props {
@@ -116,11 +114,8 @@ const DynamicBezierCurve = ({ children }: Props) => {
   const nodeRef = useRef(null)
   const mobileAvatarExitScrollRef = useRef<number | null>(null)
   const isInScrollable = useScrollableStore((state) => state.isInScrollable)
-  const styleMode = useStyleModeStore((state) => state.styleMode)
   const BACKGROUND_COLOR = style.background
   const SCROLLABLE_COLOR = style.scrollable
-
-  const theme = useTheme()
 
   const SCROLLABLE_HEIGHT_IN_VH = 100
   {
@@ -256,30 +251,12 @@ const DynamicBezierCurve = ({ children }: Props) => {
   // constant, and doesn't need interpolation.
   const endPoint = getInterpolatedValue(80, 0, scrollRatio)
 
-  // Create the SVG path instructions, using our
-  // interpolated values.
-  const instructions = `
-    M 0,${startPoint}
-    C 30,${firstControlPoint}
-      50,${secondControlPoint}
-      100,${endPoint}
-    L 100,100
-    L 0,100
-  `
   const pixelInstructions = getPixelCurveInstructions(
     startPoint,
     firstControlPoint,
     secondControlPoint,
     endPoint
   )
-  const activeInstructions =
-    styleMode === "pixel" ? pixelInstructions : instructions
-  const curveShapeRendering =
-    styleMode === "pixel" ? "crispEdges" : "geometricPrecision"
-  const curveStrokeWidth = styleMode === "pixel" ? 0 : 0
-  const curveStroke = styleMode === "pixel"
-    ? "hsl(var(--border))"
-    : "hotpink"
 
   return (
     <>
@@ -314,14 +291,14 @@ const DynamicBezierCurve = ({ children }: Props) => {
                 position: "absolute",
                 inset: 0,
               }}
-              shapeRendering={curveShapeRendering}
+              shapeRendering="crispEdges"
               preserveAspectRatio="none"
             >
               <path
-                d={activeInstructions}
+                d={pixelInstructions}
                 fill={BACKGROUND_COLOR as string}
-                stroke={curveStroke}
-                strokeWidth={curveStrokeWidth}
+                stroke="hsl(var(--border))"
+                strokeWidth={0}
                 vectorEffect="non-scaling-stroke"
               />
             </svg>
@@ -359,14 +336,14 @@ const DynamicBezierCurve = ({ children }: Props) => {
             position: "fixed",
             pointerEvents: "none",
           }}
-          shapeRendering={curveShapeRendering}
+          shapeRendering="crispEdges"
           preserveAspectRatio="none"
         >
           <path
-            d={activeInstructions}
+            d={pixelInstructions}
             fill={BACKGROUND_COLOR as string}
-            stroke={curveStroke}
-            strokeWidth={curveStrokeWidth}
+            stroke="hsl(var(--border))"
+            strokeWidth={0}
             vectorEffect="non-scaling-stroke"
           />
         </svg>
