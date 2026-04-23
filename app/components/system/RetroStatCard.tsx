@@ -18,7 +18,7 @@ export function RetroStatCard({
   return (
     <div
       className={cn(
-        "pixel-panel panel-grid flex flex-col border border-border/80 bg-card/88 px-6 py-7 md:px-5 md:py-6 lg:p-4",
+        "pixel-panel panel-grid flex w-full min-w-0 flex-col border border-border/80 bg-card/88 px-6 py-7 md:px-5 md:py-6 lg:p-4",
         className
       )}
       {...props}

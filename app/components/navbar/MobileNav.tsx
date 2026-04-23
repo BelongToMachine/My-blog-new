@@ -30,10 +30,11 @@ const MobileNav = () => {
   return (
     <div className="flex items-center justify-between gap-2 px-4 py-2.5">
       {/* Left: GitHub + nav links */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3">
         <ActionIconButton
           asChild
           aria-label="Open GitHub profile"
+          className="shrink-0 self-center"
           tone={isPixel ? "borderless" : "quiet"}
           size="sm"
         >
@@ -41,22 +42,22 @@ const MobileNav = () => {
             {isPixel ? <PixelGithubIcon className="h-5 w-5" /> : <PiGithubLogoFill size={18} />}
           </NextLink>
         </ActionIconButton>
-        <ul className="flex items-center gap-1">
+        <ul className="m-0 flex h-8 list-none items-center gap-1 p-0">
           {links.map((link) => (
-            <li key={link.href}>
+            <li key={link.href} className="mb-0 flex items-center">
               <NavItem
                 asChild
                 active={link.href === currentPath}
                 variant="desktop"
-                className="px-1.5 py-1 text-[9px] tracking-[0.12em]"
+                className="flex h-8 items-center px-1.5 py-0 text-[9px] leading-none tracking-[0.12em]"
               >
-              <Link
-                className={cn(
-                  "whitespace-nowrap text-muted-foreground hover:text-foreground",
-                  link.href === currentPath && "text-foreground"
-                )}
-                href={link.href}
-              >
+                <Link
+                  className={cn(
+                    "whitespace-nowrap text-muted-foreground hover:text-foreground",
+                    link.href === currentPath && "text-foreground"
+                  )}
+                  href={link.href}
+                >
                   {link.label}
                 </Link>
               </NavItem>
