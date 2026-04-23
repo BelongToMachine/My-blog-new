@@ -378,7 +378,7 @@
   color: var(--text-muted);
 }
 
-@media (max-width: 960px) {
+@media (max-width: 1024px) {
   .overviewLayout,
   .scenarioGrid,
   .dualPanel,
@@ -391,7 +391,7 @@
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .panelHeader,
   .inlineHeader,
   .tabRow,
