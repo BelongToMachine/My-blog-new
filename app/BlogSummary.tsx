@@ -11,9 +11,9 @@ const BlogSummary = ({ total }: Props) => {
   const t = useTranslations("home")
 
   return (
-    <div className="flex min-w-0 flex-wrap gap-2 sm:gap-3 md:gap-4">
+    <div className="flex min-w-0 flex-col gap-2 sm:gap-3 md:flex-row md:gap-4">
       <RetroStatCard
-        className="min-h-[9rem] min-w-0 basis-full sm:basis-[calc(50%-0.375rem)] lg:basis-0 lg:flex-1"
+        className="min-h-[8.5rem] min-w-0 basis-full md:min-h-[9rem] md:basis-0 md:flex-1"
         label={t("webDev")}
         value={total}
         hint={
@@ -26,7 +26,7 @@ const BlogSummary = ({ total }: Props) => {
         }
       />
       <RetroStatCard
-        className="min-h-[9rem] min-w-0 basis-full sm:basis-[calc(50%-0.375rem)] lg:basis-0 lg:flex-1"
+        className="min-h-[8.5rem] min-w-0 basis-full md:min-h-[9rem] md:basis-0 md:flex-1"
         label={t("tech")}
         value={0}
         hint={
@@ -39,7 +39,7 @@ const BlogSummary = ({ total }: Props) => {
         }
       />
       <RetroStatCard
-        className="min-h-[9rem] min-w-0 basis-full sm:basis-[calc(50%-0.375rem)] lg:basis-0 lg:flex-1"
+        className="min-h-[8.5rem] min-w-0 basis-full md:min-h-[9rem] md:basis-0 md:flex-1"
         label={t("nonTech")}
         value={0}
         hint={

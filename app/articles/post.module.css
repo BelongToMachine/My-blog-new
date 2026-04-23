@@ -53,7 +53,9 @@
 }
 
 .article p {
+  font-family: var(--font-pixel), monospace;
   font-size: 1rem;
+  line-height: 1.9;
   color: color-mix(in srgb, hsl(var(--foreground)) 82%, transparent);
   margin-bottom: 1.2rem;
 }
@@ -76,6 +78,9 @@
 }
 
 .article li {
+  font-family: var(--font-pixel), monospace;
+  font-size: 1rem;
+  line-height: 1.8;
   margin-bottom: 0.5rem;
 }
 
@@ -107,6 +112,9 @@
   border-left: 4px solid hsl(var(--primary));
   color: color-mix(in srgb, hsl(var(--foreground)) 82%, transparent);
   border-radius: 0;
+  font-family: var(--font-pixel), monospace;
+  font-size: 0.95rem;
+  line-height: 1.85;
 }
 
 .article div pre {
@@ -182,6 +190,9 @@
   padding: 0.5rem 0.75rem;
   border: 1px solid color-mix(in srgb, hsl(var(--border)) 70%, transparent);
   text-align: left;
+  font-family: var(--font-pixel), monospace;
+  font-size: 0.875rem;
+  line-height: 1.7;
 }
 
 .article :global(th) {
@@ -217,7 +228,7 @@
   }
 
   .article p,
-  .article div {
+  .article li {
     font-size: 0.9rem;
   }
 

@@ -40,8 +40,11 @@
   "home": {
     "blogSummary": "我的博客总结",
     "webDev": "Web开发",
+    "webDevShort": "Web开发",
     "tech": "科技类",
+    "techShort": "科技",
     "nonTech": "非技术类",
+    "nonTechShort": "非技术",
     "latestBlogs": "最近的博客",
     "loadingMore": "加载中..."
   },

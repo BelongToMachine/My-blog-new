@@ -40,8 +40,11 @@
   "home": {
     "blogSummary": "My Blog Summary",
     "webDev": "Web Development",
+    "webDevShort": "Web Dev",
     "tech": "Tech",
+    "techShort": "Tech",
     "nonTech": "Non-Tech",
+    "nonTechShort": "Non-Tech",
     "latestBlogs": "Latest Blogs",
     "loadingMore": "Loading..."
   },
