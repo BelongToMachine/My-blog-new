@@ -38,7 +38,7 @@ export default async function Home({ params }: Props) {
       <DynamicBezierCurve>
         <Hero />
       </DynamicBezierCurve>
-      <Container className="relative z-40 -mt-[78px] md:z-auto md:mt-0">
+      <Container className="relative z-40 -mt-[78px] px-3 sm:px-4 md:mt-0 md:px-6 lg:px-0 md:z-auto">
         <SummaryHeader />
         <PostSummary total={articles.length} />
       </Container>
