@@ -4,8 +4,7 @@ import { useState } from "react"
 import { Button } from "@radix-ui/themes"
 import Wind from "./Wind"
 import HoverWrapper from "./HoverWrapper"
-import Image from "next/image"
-import fan from "@/public/images/fan.png"
+import { PixelFan } from "./PixelFan"
 import styles from "@/app/articles/post.module.css"
 
 interface ArticleFooterProps {
@@ -29,7 +28,7 @@ const ArticleFooter = ({ initialLikes = 0 }: ArticleFooterProps) => {
             </Button>
             <Wind />
           </HoverWrapper>
-          <Image src={fan} alt="a fan" height={130} width={77} className="pixelated" />
+          <PixelFan size={130} />
         </div>
       </div>
     </div>
