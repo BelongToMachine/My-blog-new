@@ -73,7 +73,7 @@ const Hero = () => {
               </div>
               <div
                 data-mobile-hero-avatar
-                className="absolute -right-2 -top-4 z-20 h-[400px] w-[62%] max-w-[300px] md:h-[460px] md:w-[60%] md:max-w-[340px] md:-right-6 md:-top-12 overflow-visible"
+                className="absolute -right-2 -top-4 z-20 h-[400px] w-[62%] max-w-[300px] md:h-[540px] md:w-[60%] md:max-w-[340px] md:-right-6 md:-top-32 overflow-visible"
               >
                 <Image
                   src={selfie}

@@ -9,12 +9,12 @@ interface Props {
 
 const PostSummary = ({ total }: Props) => {
   return (
-    <div className="mt-4 grid gap-5 md:mt-8 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)]">
-      <div className="grid min-w-0 gap-5">
+    <div className="mt-4 flex flex-col gap-5 md:mt-8 lg:flex-row lg:items-stretch">
+      <div className="flex min-w-0 flex-col gap-5 lg:flex-[0.92]">
         <BlogSummary total={total} />
         <BlogChart open={total} inProgress={0} closed={0} />
       </div>
-      <div className="min-w-0">
+      <div className="flex min-w-0 lg:flex-[1.08]">
         <LatestBlogs />
       </div>
     </div>
