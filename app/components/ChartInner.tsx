@@ -3,7 +3,6 @@ import { Card } from "@radix-ui/themes"
 import React, { useEffect, useState } from "react"
 import { Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 import { useTranslations } from "next-intl"
-import { useStyleModeStore } from "@/app/service/Store"
 
 interface Props {
   open: number
@@ -104,8 +103,6 @@ const PixelTooltip = ({ active, payload, label }: any) => {
 const BlogChart = ({ open, inProgress, closed }: Props) => {
   const t = useTranslations("home")
   const [isMounted, setIsMounted] = useState(false)
-  const { styleMode } = useStyleModeStore()
-  const isPixel = styleMode === "pixel"
 
   useEffect(() => {
     setIsMounted(true)
@@ -123,7 +120,7 @@ const BlogChart = ({ open, inProgress, closed }: Props) => {
 
   return (
     <Card className="section-shell flex items-center justify-center p-4 md:p-5">
-      <div className={`flex h-full w-full items-center justify-center ${isPixel ? "pixel-chart" : ""}`}>
+      <div className="pixel-chart flex h-full w-full items-center justify-center">
         <ResponsiveContainer width="100%" height={300}>
           <BarChart
             data={data}
@@ -131,50 +128,37 @@ const BlogChart = ({ open, inProgress, closed }: Props) => {
           >
             <XAxis
               dataKey="label"
-              tick={isPixel ? <PixelXTick /> : undefined}
+              tick={<PixelXTick />}
               axisLine={{
                 stroke: "hsl(var(--border))",
-                strokeWidth: isPixel ? 2 : 1,
+                strokeWidth: 2,
               }}
               tickLine={{
                 stroke: "hsl(var(--border))",
-                strokeWidth: isPixel ? 2 : 1,
+                strokeWidth: 2,
               }}
             />
             <YAxis
-              tick={isPixel ? <PixelYTick /> : undefined}
+              tick={<PixelYTick />}
               axisLine={{
                 stroke: "hsl(var(--border))",
-                strokeWidth: isPixel ? 2 : 1,
+                strokeWidth: 2,
               }}
               tickLine={{
                 stroke: "hsl(var(--border))",
-                strokeWidth: isPixel ? 2 : 1,
+                strokeWidth: 2,
               }}
             />
             <Tooltip
               cursor={{ fill: "hsl(var(--muted) / 0.2)" }}
-              content={isPixel ? <PixelTooltip /> : undefined}
-              contentStyle={
-                !isPixel
-                  ? {
-                      backgroundColor: "hsl(var(--card))",
-                      borderColor: "hsl(var(--border))",
-                      borderWidth: "1px",
-                      borderStyle: "solid",
-                      color: "hsl(var(--card-foreground))",
-                      borderRadius: "6px",
-                      fontSize: "12px",
-                    }
-                  : undefined
-              }
+              content={<PixelTooltip />}
             />
             <Bar
               dataKey="value"
-              barSize={isPixel ? 48 : 60}
+              barSize={48}
               fill="hsl(var(--primary))"
-              radius={isPixel ? [0, 0, 0, 0] : [10, 10, 0, 0]}
-              shape={isPixel ? <PixelBarShape /> : undefined}
+              radius={[0, 0, 0, 0]}
+              shape={<PixelBarShape />}
             >
               {data.map((_, i) => (
                 <Cell key={i} />
