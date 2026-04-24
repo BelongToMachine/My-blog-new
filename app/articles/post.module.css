@@ -275,6 +275,11 @@
   word-break: normal;
 }
 
+/* Hide the first h1 in article body since the title is rendered separately above */
+.article :global(.post-content h1:first-of-type) {
+  display: none;
+}
+
 .article :global(table) {
   display: block;
   width: 100%;

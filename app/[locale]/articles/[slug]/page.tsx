@@ -34,20 +34,18 @@ export default async function ArticleDetailPage({ params }: Props) {
         <ArticleEnhancement slug={article.slug} />
         <Grid columns={{ initial: "1", lg: "5" }} gap="5">
           <Box className="min-w-0 lg:col-span-4">
-            <div className={styles.article}>
-              <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
-                <div className="min-w-0 flex-1 space-y-2">
-                  <div className="terminal-label">article detail</div>
-                  <div className="font-pixel text-sm uppercase tracking-[0.16em] text-foreground md:text-base">
-                    {article.title}
-                  </div>
-                </div>
+            <div className="mb-10 md:mb-14">
+              <div className="terminal-label mb-3">article detail</div>
+              <h1 className="font-pixel uppercase tracking-[0.05em] text-foreground leading-[1.08] text-[clamp(2rem,4vw,3.4rem)] mb-5">
+                {article.title}
+              </h1>
+              <div className="flex flex-wrap items-center gap-3">
                 <RetroBadge tone="amber">{article.publishedOn}</RetroBadge>
-              </div>
-              <div className="mb-5 flex flex-wrap gap-3">
                 <RetroBadge tone="primary">MDX POC</RetroBadge>
                 <RetroBadge tone="neutral">{article.locale}</RetroBadge>
               </div>
+            </div>
+            <div className={styles.article}>
               <ArticleBody slug={article.slug} htmlContent={article.htmlContent} headings={article.headings} />
             </div>
             <ArticleFooter />
