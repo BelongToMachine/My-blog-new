@@ -473,155 +473,20 @@
 
   .pixel-toc {
     position: relative;
-    background-image:
-      linear-gradient(to right, color-mix(in srgb, hsl(var(--border)) 6%, transparent) 1px, transparent 1px),
-      linear-gradient(to bottom, color-mix(in srgb, hsl(var(--border)) 6%, transparent) 1px, transparent 1px);
-    background-size: 10px 10px;
-    border: 3px solid hsl(var(--border));
-    background-color: hsl(var(--card) / 0.96);
-  }
-
-  .pixel-toc::before {
-    content: "";
-    position: absolute;
-    inset: -6px;
-    pointer-events: none;
-    z-index: 1;
-    background-repeat: no-repeat;
-    background-image:
-      /* ---------- 转角 3×3 外凸阶梯（左上角） ---------- */
-      linear-gradient(hsl(var(--border)), hsl(var(--border))),
-      linear-gradient(hsl(var(--border)), hsl(var(--border))),
-      linear-gradient(hsl(var(--border)), hsl(var(--border))),
-      linear-gradient(hsl(var(--border)), hsl(var(--border))),
-      linear-gradient(hsl(var(--border)), hsl(var(--border))),
-      linear-gradient(hsl(var(--border)), hsl(var(--border))),
-      /* ---------- 转角 3×3 外凸阶梯（右上角） ---------- */
-      linear-gradient(hsl(var(--border)), hsl(var(--border))),
-      linear-gradient(hsl(var(--border)), hsl(var(--border))),
-      linear-gradient(hsl(var(--border)), hsl(var(--border))),
-      linear-gradient(hsl(var(--border)), hsl(var(--border))),
-      linear-gradient(hsl(var(--border)), hsl(var(--border))),
-      linear-gradient(hsl(var(--border)), hsl(var(--border))),
-      /* ---------- 转角 3×3 外凸阶梯（左下角） ---------- */
-      linear-gradient(hsl(var(--border)), hsl(var(--border))),
-      linear-gradient(hsl(var(--border)), hsl(var(--border))),
-      linear-gradient(hsl(var(--border)), hsl(var(--border))),
-      linear-gradient(hsl(var(--border)), hsl(var(--border))),
-      linear-gradient(hsl(var(--border)), hsl(var(--border))),
-      linear-gradient(hsl(var(--border)), hsl(var(--border))),
-      /* ---------- 转角 3×3 外凸阶梯（右下角） ---------- */
-      linear-gradient(hsl(var(--border)), hsl(var(--border))),
-      linear-gradient(hsl(var(--border)), hsl(var(--border))),
-      linear-gradient(hsl(var(--border)), hsl(var(--border))),
-      linear-gradient(hsl(var(--border)), hsl(var(--border))),
-      linear-gradient(hsl(var(--border)), hsl(var(--border))),
-      linear-gradient(hsl(var(--border)), hsl(var(--border))),
-      /* ---------- 边框缺口（顶部） ---------- */
-      linear-gradient(hsl(var(--card) / 0.96), hsl(var(--card) / 0.96)),
-      linear-gradient(hsl(var(--card) / 0.96), hsl(var(--card) / 0.96)),
-      linear-gradient(hsl(var(--card) / 0.96), hsl(var(--card) / 0.96)),
-      linear-gradient(hsl(var(--card) / 0.96), hsl(var(--card) / 0.96)),
-      linear-gradient(hsl(var(--card) / 0.96), hsl(var(--card) / 0.96)),
-      linear-gradient(hsl(var(--card) / 0.96), hsl(var(--card) / 0.96)),
-      linear-gradient(hsl(var(--card) / 0.96), hsl(var(--card) / 0.96)),
-      linear-gradient(hsl(var(--card) / 0.96), hsl(var(--card) / 0.96)),
-      /* ---------- 边框缺口（底部） ---------- */
-      linear-gradient(hsl(var(--card) / 0.96), hsl(var(--card) / 0.96)),
-      linear-gradient(hsl(var(--card) / 0.96), hsl(var(--card) / 0.96)),
-      linear-gradient(hsl(var(--card) / 0.96), hsl(var(--card) / 0.96)),
-      linear-gradient(hsl(var(--card) / 0.96), hsl(var(--card) / 0.96)),
-      linear-gradient(hsl(var(--card) / 0.96), hsl(var(--card) / 0.96)),
-      linear-gradient(hsl(var(--card) / 0.96), hsl(var(--card) / 0.96)),
-      linear-gradient(hsl(var(--card) / 0.96), hsl(var(--card) / 0.96)),
-      linear-gradient(hsl(var(--card) / 0.96), hsl(var(--card) / 0.96)),
-      /* ---------- 边框缺口（左侧） ---------- */
-      linear-gradient(hsl(var(--card) / 0.96), hsl(var(--card) / 0.96)),
-      linear-gradient(hsl(var(--card) / 0.96), hsl(var(--card) / 0.96)),
-      linear-gradient(hsl(var(--card) / 0.96), hsl(var(--card) / 0.96)),
-      linear-gradient(hsl(var(--card) / 0.96), hsl(var(--card) / 0.96)),
-      linear-gradient(hsl(var(--card) / 0.96), hsl(var(--card) / 0.96)),
-      linear-gradient(hsl(var(--card) / 0.96), hsl(var(--card) / 0.96)),
-      /* ---------- 边框缺口（右侧） ---------- */
-      linear-gradient(hsl(var(--card) / 0.96), hsl(var(--card) / 0.96)),
-      linear-gradient(hsl(var(--card) / 0.96), hsl(var(--card) / 0.96)),
-      linear-gradient(hsl(var(--card) / 0.96), hsl(var(--card) / 0.96)),
-      linear-gradient(hsl(var(--card) / 0.96), hsl(var(--card) / 0.96)),
-      linear-gradient(hsl(var(--card) / 0.96), hsl(var(--card) / 0.96)),
-      linear-gradient(hsl(var(--card) / 0.96), hsl(var(--card) / 0.96)),
-      /* ---------- 内部噪点（边框内侧 1px 零散像素） ---------- */
-      linear-gradient(color-mix(in srgb, hsl(var(--border)) 60%, transparent), color-mix(in srgb, hsl(var(--border)) 60%, transparent)),
-      linear-gradient(color-mix(in srgb, hsl(var(--border)) 60%, transparent), color-mix(in srgb, hsl(var(--border)) 60%, transparent)),
-      linear-gradient(color-mix(in srgb, hsl(var(--border)) 60%, transparent), color-mix(in srgb, hsl(var(--border)) 60%, transparent)),
-      linear-gradient(color-mix(in srgb, hsl(var(--border)) 60%, transparent), color-mix(in srgb, hsl(var(--border)) 60%, transparent)),
-      linear-gradient(color-mix(in srgb, hsl(var(--border)) 60%, transparent), color-mix(in srgb, hsl(var(--border)) 60%, transparent)),
-      linear-gradient(color-mix(in srgb, hsl(var(--border)) 60%, transparent), color-mix(in srgb, hsl(var(--border)) 60%, transparent)),
-      linear-gradient(color-mix(in srgb, hsl(var(--border)) 60%, transparent), color-mix(in srgb, hsl(var(--border)) 60%, transparent)),
-      linear-gradient(color-mix(in srgb, hsl(var(--border)) 60%, transparent), color-mix(in srgb, hsl(var(--border)) 60%, transparent)),
-      linear-gradient(color-mix(in srgb, hsl(var(--border)) 60%, transparent), color-mix(in srgb, hsl(var(--border)) 60%, transparent)),
-      linear-gradient(color-mix(in srgb, hsl(var(--border)) 60%, transparent), color-mix(in srgb, hsl(var(--border)) 60%, transparent)),
-      linear-gradient(color-mix(in srgb, hsl(var(--border)) 60%, transparent), color-mix(in srgb, hsl(var(--border)) 60%, transparent)),
-      linear-gradient(color-mix(in srgb, hsl(var(--border)) 60%, transparent), color-mix(in srgb, hsl(var(--border)) 60%, transparent));
-    background-size:
-      /* 转角方块 — 3px */
-      3px 3px, 3px 3px, 3px 3px, 3px 3px, 3px 3px, 3px 3px,
-      3px 3px, 3px 3px, 3px 3px, 3px 3px, 3px 3px, 3px 3px,
-      3px 3px, 3px 3px, 3px 3px, 3px 3px, 3px 3px, 3px 3px,
-      3px 3px, 3px 3px, 3px 3px, 3px 3px, 3px 3px, 3px 3px,
-      /* 顶部缺口 — 1px×1px 穿透 */
-      1px 1px, 1px 1px, 1px 1px, 1px 1px, 1px 1px, 1px 1px, 1px 1px, 1px 1px,
-      /* 底部缺口 — 1px×1px 穿透 */
-      1px 1px, 1px 1px, 1px 1px, 1px 1px, 1px 1px, 1px 1px, 1px 1px, 1px 1px,
-      /* 左侧缺口 */
-      1px 1px, 1px 1px, 1px 1px, 1px 1px, 1px 1px, 1px 1px,
-      /* 右侧缺口 */
-      1px 1px, 1px 1px, 1px 1px, 1px 1px, 1px 1px, 1px 1px,
-      /* 内部噪点 — 1px */
-      1px 1px, 1px 1px, 1px 1px, 1px 1px, 1px 1px, 1px 1px,
-      1px 1px, 1px 1px, 1px 1px, 1px 1px, 1px 1px, 1px 1px;
-    background-position:
-      /* 左上角 3×3 阶梯 */
-      0 0, 3px 0, 6px 0,
-      0 3px, 3px 3px,
-      0 6px,
-      /* 右上角 3×3 阶梯 */
-      calc(100% - 3px) 0, calc(100% - 6px) 0, calc(100% - 9px) 0,
-      calc(100% - 3px) 3px, calc(100% - 6px) 3px,
-      calc(100% - 3px) 6px,
-      /* 左下角 3×3 阶梯 */
-      0 calc(100% - 3px), 3px calc(100% - 3px), 6px calc(100% - 3px),
-      0 calc(100% - 6px), 3px calc(100% - 6px),
-      0 calc(100% - 9px),
-      /* 右下角 3×3 阶梯 */
-      calc(100% - 3px) calc(100% - 3px), calc(100% - 6px) calc(100% - 3px), calc(100% - 9px) calc(100% - 3px),
-      calc(100% - 3px) calc(100% - 6px), calc(100% - 6px) calc(100% - 6px),
-      calc(100% - 3px) calc(100% - 9px),
-      /* 顶部缺口（8 个，1px 穿透） */
-      9px 3px, 15px 0, 21px 3px, 30px 0, 42px 3px, 54px 0, 66px 3px, 78px 0,
-      /* 底部缺口（8 个，1px 穿透） */
-      12px calc(100% - 1px), 18px calc(100% - 4px), 24px calc(100% - 1px), 36px calc(100% - 4px),
-      48px calc(100% - 1px), 60px calc(100% - 4px), 72px calc(100% - 1px), 84px calc(100% - 4px),
-      /* 左侧缺口（6 个） */
-      0 9px, 3px 15px, 0 21px, 3px 27px, 0 36px, 3px 42px,
-      /* 右侧缺口（6 个） */
-      calc(100% - 1px) 9px, calc(100% - 4px) 15px, calc(100% - 1px) 21px,
-      calc(100% - 4px) 27px, calc(100% - 1px) 36px, calc(100% - 4px) 42px,
-      /* 内部噪点（散布在边框内侧 3px 处） */
-      6px 6px, 12px 6px, 18px 6px, 24px 6px,
-      6px calc(100% - 6px), 12px calc(100% - 6px), 18px calc(100% - 6px), 24px calc(100% - 6px),
-      6px 12px, 6px 18px, 6px 24px, 6px 30px;
   }
 
   .pixel-toc-item {
     position: relative;
-    padding-top: 0.75rem;
-    margin-top: 0.75rem;
-    border-top: 3px dashed color-mix(in srgb, hsl(var(--border)) 80%, transparent);
+    padding-top: 0.6rem;
+    margin-top: 0.6rem;
+    border-top: 1px solid color-mix(in srgb, hsl(var(--border)) 28%, transparent);
     animation: fadeInUp 0.3s ease both;
   }
 
   .pixel-toc-item:first-of-type {
-    margin-top: 0.5rem;
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
   }
 
   @keyframes fadeInUp {

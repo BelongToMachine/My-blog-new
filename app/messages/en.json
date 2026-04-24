@@ -102,6 +102,13 @@
     "IN_PROGRESS": "Tech",
     "CLOSED": "Non-Tech"
   },
+  "footer": {
+    "identity": "Jie Liao",
+    "tagline": "Front-End Developer & AI Prompt Engineer — crafting thoughtful interfaces and practical AI integrations.",
+    "navigate": "Navigate",
+    "connect": "Connect",
+    "copyright": "© {year} Jie Liao. Crafted with pixel precision."
+  },
   "meta": {
     "homeTitle": "Jie Liao — Front-End Developer & AI Prompt Engineer",
     "homeDescription": "Portfolio of Jie Liao — a front-end developer specializing in React, Next.js, TypeScript, and AI.",

@@ -4,6 +4,7 @@ import { hasLocale, NextIntlClientProvider } from "next-intl"
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server"
 import { notFound } from "next/navigation"
 import NavBar from "../NavBar"
+import Footer from "../components/Footer"
 import QueryClientProvider from "../QueryClientProvider"
 import CursorManager from "../CursorManager"
 import { ThemeProvider } from "../context/DarkModeContext"
@@ -59,6 +60,7 @@ export default async function LocaleLayout({
               <NavBar />
               <CursorManager />
               <main className="pt-14">{children}</main>
+              <Footer />
             </RadixThemeProvider>
             <ReactQueryDevtools />
           </ThemeProvider>
