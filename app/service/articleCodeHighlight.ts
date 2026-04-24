@@ -67,7 +67,10 @@ export async function renderArticleCodeBlock(code: string, info: string) {
 
   await highlighter.loadLanguage(language as any)
 
-  const highlightedHtml = highlighter.codeToHtml(code, {
+  const trimmedCode = code.trimEnd()
+  const lineCount = trimmedCode.split("\n").length
+
+  const highlightedHtml = highlighter.codeToHtml(trimmedCode, {
     lang: language as any,
     themes: {
       light: ARTICLE_CODE_THEMES.light,
@@ -76,7 +79,7 @@ export async function renderArticleCodeBlock(code: string, info: string) {
   })
 
   return [
-    `<div class="article-code-shell" data-language="${escapeHtml(language)}"${
+    `<div class="article-code-shell" data-language="${escapeHtml(language)}" data-line-count="${lineCount}"${
       title ? ` data-title="${escapeHtml(title)}"` : ""
     }>`,
     `<button class="article-code-copy" data-code="${escapeHtml(code)}" onclick="navigator.clipboard.writeText(this.dataset.code).then(()=>{this.classList.add('is-copied');setTimeout(()=>this.classList.remove('is-copied'),1500)})" aria-label="复制代码">copy</button>`,
