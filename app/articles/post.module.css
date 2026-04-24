@@ -2,17 +2,12 @@
 .article {
   max-width: 800px;
   margin: 0 auto;
-  padding: 24px;
   font-family: inherit;
   line-height: 1.75;
   color: hsl(var(--foreground));
   overflow-wrap: break-word;
   word-break: normal;
   min-width: 0;
-  background-image:
-    linear-gradient(to right, color-mix(in srgb, hsl(var(--border)) 8%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in srgb, hsl(var(--border)) 8%, transparent) 1px, transparent 1px);
-  background-size: 20px 20px;
   --article-code-shell-bg:
     linear-gradient(180deg, rgba(246, 250, 255, 0.98), rgba(236, 244, 252, 0.96)),
     linear-gradient(to right, rgba(14, 165, 233, 0.045) 1px, transparent 1px),
