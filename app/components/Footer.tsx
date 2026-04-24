@@ -62,8 +62,6 @@ export default function Footer() {
 
   return (
     <footer className="border-t-4 border-border bg-background/80 backdrop-blur-sm">
-      <div className="pixel-divider mx-auto max-w-6xl" />
-
       <div className="mx-auto max-w-6xl px-6 py-12">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
           {/* Identity */}
