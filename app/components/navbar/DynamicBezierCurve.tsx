@@ -296,6 +296,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
             height: "calc(100svh - 3.5rem)",
             width: "100%",
             backgroundColor: SCROLLABLE_COLOR,
+            visibility: isInScrollable ? "visible" : "hidden",
             zIndex: 0,
           }}
         >
@@ -310,6 +311,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
             right: 0,
             height: "calc(100svh - 3.5rem)",
             pointerEvents: "none",
+            visibility: isInScrollable ? "visible" : "hidden",
             zIndex: 30,
           }}
         >
@@ -356,6 +358,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
             backgroundColor: SCROLLABLE_COLOR,
             height: "100vh",
             width: "100%",
+            visibility: isInScrollable ? "visible" : "hidden",
           }}
         >
           <Container>{children}</Container>
@@ -368,6 +371,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
             height: "100vh",
             position: "fixed",
             pointerEvents: "none",
+            visibility: isInScrollable ? "visible" : "hidden",
           }}
           shapeRendering="crispEdges"
           preserveAspectRatio="none"
