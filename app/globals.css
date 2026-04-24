@@ -248,7 +248,7 @@
   }
 
   .terminal-label {
-    @apply font-pixel text-[10px] uppercase tracking-[0.28em] text-primary;
+    @apply font-pixel text-[11px] uppercase tracking-[0.24em] text-primary;
   }
 
   .display-title {
