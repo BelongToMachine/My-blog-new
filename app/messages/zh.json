@@ -102,6 +102,13 @@
     "IN_PROGRESS": "科技类",
     "CLOSED": "非技术类"
   },
+  "footer": {
+    "identity": "开发者",
+    "tagline": "前端开发工程师 & AI 提示词工程师 — 构建精心打磨的界面与实用的 AI 集成方案。",
+    "navigate": "导航",
+    "connect": "联系",
+    "copyright": "© {year} 开发者. 像素匠心，精工打造。"
+  },
   "meta": {
     "homeTitle": "开发者 — 前端开发工程师 & AI 提示词工程师",
     "homeDescription": "开发者（Developer）的作品集，专注于 React、Next.js、TypeScript 和 AI 集成。",
