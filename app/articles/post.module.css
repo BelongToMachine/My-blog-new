@@ -251,6 +251,15 @@
   padding: 0 1rem;
 }
 
+.article :global(.article-code-shell[data-line-count="1"] pre.shiki) {
+  padding: 0.4rem 0 !important;
+  line-height: 1.4rem !important;
+}
+
+.article :global(.article-code-shell[data-line-count="1"] pre.shiki .line) {
+  min-height: 0;
+}
+
 .article div code {
   font-family: var(--font-mono), monospace;
   background-color: color-mix(in srgb, hsl(var(--card)) 86%, transparent);
@@ -349,6 +358,15 @@
 
   .article :global(.article-code-shell pre.shiki .line) {
     min-height: 1.4rem;
+    padding: 0 0.8rem;
+  }
+
+  .article :global(.article-code-shell[data-line-count="1"] pre.shiki) {
+    padding: 0.35rem 0 !important;
+  }
+
+  .article :global(.article-code-shell[data-line-count="1"] pre.shiki .line) {
+    min-height: 0;
     padding: 0 0.8rem;
   }
 }
