@@ -23,7 +23,7 @@ const TableOfContent = ({ headings }: { headings: Heading[] }) => (
           >
             <a
               href={`#${heading.id}`}
-              className="font-pixel text-[10px] uppercase tracking-[0.16em] transition-colors duration-200 hover:text-primary"
+              className="font-pixel text-[11px] uppercase tracking-[0.14em] transition-colors duration-200 hover:text-primary"
             >
               {heading.text}
             </a>

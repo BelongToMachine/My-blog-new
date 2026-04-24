@@ -79,15 +79,7 @@ export async function renderArticleCodeBlock(code: string, info: string) {
     `<div class="article-code-shell" data-language="${escapeHtml(language)}"${
       title ? ` data-title="${escapeHtml(title)}"` : ""
     }>`,
-    '<div class="article-code-meta">',
-    '<div class="article-code-traffic" aria-hidden="true">',
-    '<span class="article-code-dot article-code-dot--rose"></span>',
-    '<span class="article-code-dot article-code-dot--amber"></span>',
-    '<span class="article-code-dot article-code-dot--green"></span>',
-    "</div>",
-    title ? `<span class="article-code-title">${escapeHtml(title)}</span>` : '<span class="article-code-title">snippet</span>',
-    `<span class="article-code-label">${escapeHtml(language)}</span>`,
-    "</div>",
+    `<button class="article-code-copy" data-code="${escapeHtml(code)}" onclick="navigator.clipboard.writeText(this.dataset.code).then(()=>{this.classList.add('is-copied');setTimeout(()=>this.classList.remove('is-copied'),1500)})" aria-label="复制代码">copy</button>`,
     highlightedHtml,
     "</div>",
   ].join("")

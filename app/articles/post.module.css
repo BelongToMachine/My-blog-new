@@ -83,7 +83,7 @@
   font-family: var(--font-pixel), monospace;
   margin-top: 1.8rem;
   margin-bottom: 0.8rem;
-  font-size: clamp(1.1rem, 1.5vw, 1.35rem);
+  font-size: clamp(1.2rem, 1.8vw, 1.5rem);
   letter-spacing: 0.03em;
   text-transform: uppercase;
 }
@@ -149,8 +149,8 @@
   color: color-mix(in srgb, hsl(var(--foreground)) 82%, transparent);
   border-radius: 0;
   font-family: var(--font-pixel), monospace;
-  font-size: 0.95rem;
-  line-height: 1.85;
+  font-size: 1rem;
+  line-height: 1.8;
 }
 
 .article div pre:not(.shiki) {
@@ -167,18 +167,6 @@
   font-family: var(--font-mono), monospace;
   border: 1px solid color-mix(in srgb, hsl(var(--primary)) 22%, hsl(var(--border)));
   box-shadow: var(--shadow-elevated);
-}
-
-.article div pre:not(.shiki)::before {
-  content: "code";
-  position: absolute;
-  top: 0.7rem;
-  right: 0.9rem;
-  font-family: var(--font-mono), monospace;
-  font-size: 11px;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: rgba(174, 223, 233, 0.7);
 }
 
 .article div pre:not(.shiki) code {
@@ -198,73 +186,52 @@
   box-shadow: var(--article-code-shell-shadow);
 }
 
-.article :global(.article-code-meta) {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.9rem;
-  border-bottom: 1px solid var(--article-code-meta-border);
-  padding: 0.65rem 1rem 0.55rem;
-  background: var(--article-code-meta-bg);
-}
-
-.article :global(.article-code-traffic) {
-  display: inline-flex;
-  flex-shrink: 0;
-  align-items: center;
-  gap: 0.45rem;
-}
-
-.article :global(.article-code-dot) {
-  width: 0.55rem;
-  height: 0.55rem;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.18) inset;
-}
-
-.article :global(.article-code-dot--rose) {
-  background: hsl(var(--signal-rose));
-}
-
-.article :global(.article-code-dot--amber) {
-  background: hsl(var(--signal-amber));
-}
-
-.article :global(.article-code-dot--green) {
-  background: hsl(var(--signal-green));
-}
-
-.article :global(.article-code-title) {
-  min-width: 0;
-  flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-family: var(--font-mono), monospace;
-  font-size: 0.78rem;
-  letter-spacing: 0.02em;
-  color: var(--article-code-title-color);
-}
-
-.article :global(.article-code-label) {
+.article :global(.article-code-copy) {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 2;
   font-family: var(--font-pixel), monospace;
-  font-size: 11px;
-  letter-spacing: 0.26em;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
+  line-height: 1;
+  padding: 0.25rem 0.6rem;
+  border: 2px solid var(--article-code-gutter-border);
+  background: transparent;
+  color: var(--article-code-gutter-color);
+  cursor: pointer;
+  transition: color 0.2s ease-out, border-color 0.2s ease-out, background 0.2s ease-out;
+}
+
+.article :global(.article-code-copy:hover) {
   color: var(--article-code-label-color);
-  flex-shrink: 0;
+  border-color: color-mix(in srgb, var(--article-code-label-color) 50%, transparent);
+  background: color-mix(in srgb, var(--article-code-label-color) 10%, transparent);
+}
+
+.article :global(.article-code-copy.is-copied) {
+  color: hsl(var(--signal-green));
+  border-color: hsl(var(--signal-green));
+  background: color-mix(in srgb, hsl(var(--signal-green)) 10%, transparent);
+}
+
+.article :global(.article-code-copy:focus-visible) {
+  outline: none;
+  color: var(--article-code-label-color);
+  border-color: color-mix(in srgb, var(--article-code-label-color) 60%, transparent);
 }
 
 .article :global(.article-code-shell pre.shiki) {
   margin: 0 !important;
   overflow-x: auto !important;
   background: var(--article-code-content-bg) !important;
-  padding: 0.58rem 0 0.64rem !important;
+  padding: 0.75rem 0 !important;
   font-family: var(--font-mono), monospace;
   font-size: 0.92rem;
-  line-height: 1rem;
+  line-height: 1.5rem;
   tab-size: 2;
-  counter-reset: code-line;
 }
 
 .article :global(.article-code-shell pre.shiki code) {
@@ -285,23 +252,8 @@
 
 .article :global(.article-code-shell pre.shiki .line) {
   display: block;
-  min-height: 1rem;
-  position: relative;
-  padding: 0 1rem 0 4.5rem;
-}
-
-.article :global(.article-code-shell pre.shiki .line::before) {
-  content: counter(code-line, decimal-leading-zero);
-  counter-increment: code-line;
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 3.2rem;
-  padding-right: 0.7rem;
-  text-align: right;
-  color: var(--article-code-gutter-color);
-  border-right: 1px solid var(--article-code-gutter-border);
-  user-select: none;
+  min-height: 1.5rem;
+  padding: 0 1rem;
 }
 
 .article div code {
@@ -343,14 +295,14 @@
   border: 1px solid color-mix(in srgb, hsl(var(--border)) 70%, transparent);
   text-align: left;
   font-family: var(--font-pixel), monospace;
-  font-size: 0.875rem;
+  font-size: 0.95rem;
   line-height: 1.7;
 }
 
 .article :global(th) {
   background-color: color-mix(in srgb, hsl(var(--card)) 86%, transparent);
   font-family: var(--font-pixel), monospace;
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
@@ -381,35 +333,22 @@
 
   .article p,
   .article li {
-    font-size: 0.9rem;
+    font-size: 1rem;
   }
 
   .article div pre {
     padding: 0.75rem;
-    font-size: 0.8rem;
-  }
-
-  .article :global(.article-code-meta) {
-    padding: 0.55rem 0.8rem 0.45rem;
-  }
-
-  .article :global(.article-code-title) {
-    font-size: 0.72rem;
+    font-size: 0.85rem;
   }
 
   .article :global(.article-code-shell pre.shiki) {
-    padding: 0.5rem 0 0.56rem !important;
+    padding: 0.6rem 0 !important;
     font-size: 0.82rem;
-    line-height: 1rem;
+    line-height: 1.4rem;
   }
 
   .article :global(.article-code-shell pre.shiki .line) {
-    min-height: 1rem;
-    padding: 0 0.8rem 0 3.8rem;
-  }
-
-  .article :global(.article-code-shell pre.shiki .line::before) {
-    width: 2.7rem;
-    padding-right: 0.55rem;
+    min-height: 1.4rem;
+    padding: 0 0.8rem;
   }
 }
