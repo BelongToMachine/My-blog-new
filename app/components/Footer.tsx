@@ -60,7 +60,7 @@ export default function Footer() {
   ]
 
   return (
-    <footer className="border-t-4 border-border bg-background/80 backdrop-blur-sm">
+    <footer className="relative z-40 border-t-4 border-border bg-background/80 backdrop-blur-sm">
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10 lg:py-12">
         <div className="flex flex-col gap-6 sm:grid sm:grid-cols-3 sm:gap-8 lg:gap-10">
           {/* Identity */}
