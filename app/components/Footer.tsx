@@ -24,7 +24,7 @@ const PixelMailIcon = ({ className }: { className?: string }) => (
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
     shapeRendering="crispEdges"
-    className={cn("h-6 w-6", className)}
+    className={cn("h-5 w-5", className)}
     fill="currentColor"
   >
     <path d="M23 4H1v16h22V4zm-2 2v.4l-9 5.6-9-5.6V6h18zm0 12H3V9.2l9 5.6 9-5.6V18z" />
@@ -34,7 +34,6 @@ const PixelMailIcon = ({ className }: { className?: string }) => (
 interface FooterLink {
   label: string
   href: string
-  external?: boolean
 }
 
 export default function Footer() {
@@ -47,47 +46,39 @@ export default function Footer() {
     { label: navT("ai"), href: "/ai" },
   ]
 
-  const socialLinks: FooterLink[] = [
+  const socialLinks = [
     {
       label: "GitHub",
       href: "https://github.com/JieLuis",
-      external: true,
+      icon: <PixelGithubIcon />,
     },
     {
       label: "LinkedIn",
       href: "https://www.linkedin.com/in/jieliao",
-      external: true,
+      icon: <PixelLinkedInIcon />,
     },
   ]
 
   return (
     <footer className="border-t-4 border-border bg-background/80 backdrop-blur-sm">
-      <div className="mx-auto max-w-6xl px-6 py-12">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10 lg:py-12">
+        <div className="flex flex-col gap-6 sm:grid sm:grid-cols-3 sm:gap-8 lg:gap-10">
           {/* Identity */}
-          <div className="space-y-3">
-            <p
-              className={cn(
-                "font-pixel text-sm uppercase tracking-[0.22em] text-foreground"
-              )}
-            >
+          <div className="sm:col-span-2 lg:col-span-1">
+            <p className="font-pixel text-sm uppercase tracking-[0.22em] text-foreground">
               {t("identity")}
             </p>
-            <p className="font-pixel text-[11px] leading-relaxed tracking-[0.12em] text-muted-foreground">
+            <p className="mt-1.5 font-pixel text-[11px] leading-relaxed tracking-[0.12em] text-muted-foreground sm:max-w-[28ch]">
               {t("tagline")}
             </p>
           </div>
 
           {/* Navigate */}
-          <div className="space-y-3">
-            <p
-              className={cn(
-                "font-pixel text-[10px] uppercase tracking-[0.28em] text-primary/80"
-              )}
-            >
+          <div>
+            <p className="font-pixel text-[10px] uppercase tracking-[0.28em] text-primary/80">
               {t("navigate")}
             </p>
-            <ul className="space-y-1.5">
+            <ul className="mt-2 flex flex-wrap gap-x-3 gap-y-1 sm:flex-col sm:gap-y-1">
               {navLinks.map((link) => (
                 <li key={link.href}>
                   <Link
@@ -104,15 +95,11 @@ export default function Footer() {
           </div>
 
           {/* Connect */}
-          <div className="space-y-3">
-            <p
-              className={cn(
-                "font-pixel text-[10px] uppercase tracking-[0.28em] text-primary/80"
-              )}
-            >
+          <div>
+            <p className="font-pixel text-[10px] uppercase tracking-[0.28em] text-primary/80">
               {t("connect")}
             </p>
-            <div className="flex items-center gap-1.5 -ml-1.5">
+            <div className="mt-2 flex flex-wrap items-center gap-1.5">
               {socialLinks.map((link) => (
                 <ActionIconButton
                   key={link.href}
@@ -126,25 +113,20 @@ export default function Footer() {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    {link.label === "GitHub" ? (
-                      <PixelGithubIcon />
-                    ) : (
-                      <PixelLinkedInIcon />
-                    )}
+                    {link.icon}
                   </NextLink>
                 </ActionIconButton>
               ))}
+              <span className="flex items-center gap-1.5 ml-1 font-pixel text-[10px] tracking-[0.12em] text-muted-foreground">
+                <PixelMailIcon className="h-4 w-4 shrink-0 text-primary/60" />
+                jie.liao.dev@gmail.com
+              </span>
             </div>
-
-            <p className="flex items-center gap-1.5 pt-2 font-pixel text-[10px] tracking-[0.12em] text-muted-foreground">
-              <PixelMailIcon className="h-4 w-4 shrink-0 text-primary/60" />
-              <span>jie.liao.dev@gmail.com</span>
-            </p>
           </div>
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-12 border-t-2 border-border pt-6">
+        <div className="mt-8 border-t-2 border-border pt-5 sm:mt-10 sm:pt-6 lg:mt-12">
           <p className="font-pixel text-[9px] uppercase tracking-[0.32em] text-muted-foreground/60 text-center">
             {t("copyright", { year: new Date().getFullYear() })}
           </p>

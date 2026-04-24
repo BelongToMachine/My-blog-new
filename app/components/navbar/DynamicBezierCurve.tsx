@@ -112,12 +112,14 @@ const DynamicBezierCurve = ({ children }: Props) => {
   const [scrollRatio, setScrollRatio] = useState(0)
   const [scrolledInVH, setScrolledInVh] = useState(0)
   const nodeRef = useRef(null)
-  const mobileAvatarExitScrollRef = useRef<number | null>(null)
+  const nonDesktopCurveTargetScrollRef = useRef<number | null>(null)
   const isInScrollable = useScrollableStore((state) => state.isInScrollable)
   const BACKGROUND_COLOR = style.background
   const SCROLLABLE_COLOR = style.scrollable
 
   const SCROLLABLE_HEIGHT_IN_VH = 100
+  const NON_DESKTOP_STICKY_TOP_IN_PX = 56
+  const DESKTOP_CURVE_FLATTEN_SCROLL_RATIO = 0.94
   {
     /* 
   ADJUSTED_SCROLL_COEFFICIENT: assoicate with the curve flaten speed, affect this by
@@ -152,9 +154,24 @@ const DynamicBezierCurve = ({ children }: Props) => {
   }, [isInScrollable])
 
   useEffect(() => {
-    const captureMobileAvatarExitPoint = () => {
+    const captureNonDesktopCurveTarget = () => {
       if (isDesktopViewport(window.innerWidth)) {
-        mobileAvatarExitScrollRef.current = null
+        nonDesktopCurveTargetScrollRef.current = null
+        return
+      }
+
+      const summaryHeadingAnchor = document.querySelector<HTMLElement>(
+        "[data-summary-heading-anchor]"
+      )
+
+      if (summaryHeadingAnchor) {
+        const rect = summaryHeadingAnchor.getBoundingClientRect()
+        const summaryAnchorTopInDocument = window.scrollY + rect.top
+
+        nonDesktopCurveTargetScrollRef.current = Math.max(
+          summaryAnchorTopInDocument - NON_DESKTOP_STICKY_TOP_IN_PX,
+          1
+        )
         return
       }
 
@@ -162,26 +179,28 @@ const DynamicBezierCurve = ({ children }: Props) => {
         "[data-mobile-hero-avatar]"
       )
 
-      if (!mobileAvatar) {
-        mobileAvatarExitScrollRef.current = window.innerHeight * 0.6
+      if (mobileAvatar) {
+        const rect = mobileAvatar.getBoundingClientRect()
+        const avatarBottomInDocument = window.scrollY + rect.bottom
+
+        nonDesktopCurveTargetScrollRef.current = Math.max(
+          avatarBottomInDocument - NON_DESKTOP_STICKY_TOP_IN_PX,
+          1
+        )
         return
       }
 
-      const rect = mobileAvatar.getBoundingClientRect()
-      const navOffset = 56
-      const avatarBottomInDocument = window.scrollY + rect.bottom
-
-      mobileAvatarExitScrollRef.current = Math.max(
-        avatarBottomInDocument - navOffset,
+      nonDesktopCurveTargetScrollRef.current = Math.max(
+        window.innerHeight - NON_DESKTOP_STICKY_TOP_IN_PX,
         1
       )
     }
 
-    captureMobileAvatarExitPoint()
-    window.addEventListener("resize", captureMobileAvatarExitPoint)
+    captureNonDesktopCurveTarget()
+    window.addEventListener("resize", captureNonDesktopCurveTarget)
 
     return () => {
-      window.removeEventListener("resize", captureMobileAvatarExitPoint)
+      window.removeEventListener("resize", captureNonDesktopCurveTarget)
     }
   }, [])
 
@@ -195,13 +214,15 @@ const DynamicBezierCurve = ({ children }: Props) => {
       let ratio = 0
 
       if (!isDesktop) {
-        const mobileExitScroll =
-          mobileAvatarExitScrollRef.current ?? windowHeight * 0.6
-        const mobileProgress = pixelsScrolled / mobileExitScroll
-        setScrolledInVh(clamp(mobileProgress) * 100)
-        ratio = clamp(ADJUSTED_SCROLL_COEFFICIENT * mobileProgress)
+        const nonDesktopTargetScroll =
+          nonDesktopCurveTargetScrollRef.current ??
+          Math.max(windowHeight - NON_DESKTOP_STICKY_TOP_IN_PX, 1)
+        const nonDesktopProgress = pixelsScrolled / nonDesktopTargetScroll
+        setScrolledInVh(clamp(nonDesktopProgress) * 100)
+        ratio = clamp(ADJUSTED_SCROLL_COEFFICIENT * nonDesktopProgress)
       } else {
-        const baseRatio = pixelsScrolled / windowHeight
+        const baseRatio =
+          pixelsScrolled / (windowHeight * DESKTOP_CURVE_FLATTEN_SCROLL_RATIO)
         setScrolledInVh(baseRatio * 100)
         ratio = ADJUSTED_SCROLL_COEFFICIENT * baseRatio
       }
@@ -269,17 +290,20 @@ const DynamicBezierCurve = ({ children }: Props) => {
         <div
           aria-hidden
           style={{
-            position: "absolute",
-            inset: 0,
+            position: "fixed",
+            top: "3.5rem",
+            left: 0,
+            right: 0,
+            height: "calc(100svh - 3.5rem)",
             pointerEvents: "none",
+            visibility: scrollRatio >= 1 ? "hidden" : "visible",
             zIndex: 30,
           }}
         >
           <div
             style={{
-              position: "sticky",
-              top: "3.5rem",
-              height: "calc(100svh - 3.5rem)",
+              position: "relative",
+              height: "100%",
             }}
           >
             <svg
@@ -287,7 +311,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
               viewBox="0 0 100 100"
               style={{
                 width: "100%",
-                height: "calc(100svh - 3.5rem)",
+                height: "100%",
                 position: "absolute",
                 inset: 0,
               }}
