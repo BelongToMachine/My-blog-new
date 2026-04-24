@@ -144,7 +144,13 @@ Non-desktop 使用：
 <section className="relative lg:hidden">
 ```
 
-曲线层现在是 fixed：
+它现在和 desktop 一样，也是 fixed hero + fixed curve + placeholder：
+
+- hero layer 固定在 navbar 下方，负责保持 About Me 内容不参与滚动。
+- curve layer 固定在 hero 上方，负责用页面背景色遮罩 hero。
+- `nonDesktopPlaceHolder` 提供 `100svh` 的滚动距离，让后面的 summary 正常覆盖上来。
+
+曲线层是 fixed：
 
 ```ts
 position: "fixed"
@@ -154,13 +160,7 @@ height: "calc(100svh - 3.5rem)"
 
 这样做是为了避免 `sticky` 被父级 `100svh` 限制。之前 sticky 停留空间太短，curve 会先从视口顶部滑走，summary 还在下面追，造成明显空白。
 
-当 `scrollRatio >= 1` 时，non-desktop curve layer 会隐藏：
-
-```ts
-visibility: scrollRatio >= 1 ? "hidden" : "visible"
-```
-
-这可以避免 curve 完全收平之后还挡在 summary 上方。
+curve layer 不需要在收平后隐藏。收平后的 path 会用 `BACKGROUND_COLOR` 覆盖 fixed hero，正好成为 summary 后方的页面背景；summary 自己有 `z-40`，会显示在 curve 上方。
 
 ## Why The Summary Anchor Exists
 
@@ -185,7 +185,7 @@ visibility: scrollRatio >= 1 ? "hidden" : "visible"
   提高 `DESKTOP_CURVE_FLATTEN_SCROLL_RATIO`，例如 `0.94 -> 1`。
 
 - Mobile/tablet 出现 curve 先走、summary 下面留大空白:
-  优先检查 non-desktop curve layer 是否仍是 `fixed`，以及 `data-summary-heading-anchor` 是否存在。
+  优先检查 non-desktop hero/curve layer 是否仍是 `fixed`，`nonDesktopPlaceHolder` 是否仍提供 `100svh`，以及 `data-summary-heading-anchor` 是否存在。
 
 - Mobile/tablet summary 被 curve 压住:
   检查 `NON_DESKTOP_STICKY_TOP_IN_PX` 是否仍匹配 nav 高度。当前 nav 高度按 `3.5rem = 56px` 处理。
@@ -219,8 +219,8 @@ curve edge should stay close to the summary heading handoff
 
 ## Things To Avoid
 
+- 不要把 non-desktop hero 放回普通文档流，除非你明确想让 mobile/tablet 回到和 desktop 不同的滚动体感。
 - 不要把 non-desktop curve layer 改回 sticky，除非同时重做父级滚动空间。
 - 不要把 summary 的负 margin 当成主要调节点；那会影响整个 summary section，而不是 curve handoff 本身。
 - 不要只在 `834px` 这类普通 tablet 宽度测；`1024px` 已经进入 desktop path。
 - 不要只在 light mode 测。dark mode 下背景差异更明显，空白和遮挡会更容易暴露。
-

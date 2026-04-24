@@ -119,7 +119,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
 
   const SCROLLABLE_HEIGHT_IN_VH = 100
   const NON_DESKTOP_STICKY_TOP_IN_PX = 56
-  const DESKTOP_CURVE_FLATTEN_SCROLL_RATIO = 0.94
+  const DESKTOP_CURVE_FLATTEN_SCROLL_RATIO = 0.92
   {
     /* 
   ADJUSTED_SCROLL_COEFFICIENT: assoicate with the curve flaten speed, affect this by
@@ -288,6 +288,20 @@ const DynamicBezierCurve = ({ children }: Props) => {
         }}
       >
         <div
+          style={{
+            position: "fixed",
+            top: "3.5rem",
+            left: 0,
+            right: 0,
+            height: "calc(100svh - 3.5rem)",
+            width: "100%",
+            backgroundColor: SCROLLABLE_COLOR,
+            zIndex: 0,
+          }}
+        >
+          <Container>{children}</Container>
+        </div>
+        <div
           aria-hidden
           style={{
             position: "fixed",
@@ -296,7 +310,6 @@ const DynamicBezierCurve = ({ children }: Props) => {
             right: 0,
             height: "calc(100svh - 3.5rem)",
             pointerEvents: "none",
-            visibility: scrollRatio >= 1 ? "hidden" : "visible",
             zIndex: 30,
           }}
         >
@@ -328,17 +341,13 @@ const DynamicBezierCurve = ({ children }: Props) => {
             </svg>
           </div>
         </div>
-        <Container>
-          <div
-            style={{
-              position: "relative",
-              minHeight: "100svh",
-              paddingBottom: "2.5rem",
-            }}
-          >
-            {children}
-          </div>
-        </Container>
+        <div
+          id="nonDesktopPlaceHolder"
+          style={{
+            height: `${SCROLLABLE_HEIGHT_IN_VH}svh`,
+            zIndex: -1,
+          }}
+        ></div>
       </section>
       <div className="hidden lg:block">
         <div
