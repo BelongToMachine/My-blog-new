@@ -120,6 +120,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
   const SCROLLABLE_HEIGHT_IN_VH = 100
   const NON_DESKTOP_STICKY_TOP_IN_PX = 56
   const DESKTOP_CURVE_FLATTEN_SCROLL_RATIO = 0.92
+  const HERO_LAYER_HIDE_SCROLL_RATIO = 0.995
   {
     /* 
   ADJUSTED_SCROLL_COEFFICIENT: assoicate with the curve flaten speed, affect this by
@@ -278,6 +279,8 @@ const DynamicBezierCurve = ({ children }: Props) => {
     secondControlPoint,
     endPoint
   )
+  const shouldShowFixedHero =
+    isInScrollable && scrollRatio < HERO_LAYER_HIDE_SCROLL_RATIO
 
   return (
     <>
@@ -296,7 +299,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
             height: "calc(100svh - 3.5rem)",
             width: "100%",
             backgroundColor: SCROLLABLE_COLOR,
-            visibility: isInScrollable ? "visible" : "hidden",
+            visibility: shouldShowFixedHero ? "visible" : "hidden",
             zIndex: 0,
           }}
         >
@@ -311,7 +314,6 @@ const DynamicBezierCurve = ({ children }: Props) => {
             right: 0,
             height: "calc(100svh - 3.5rem)",
             pointerEvents: "none",
-            visibility: isInScrollable ? "visible" : "hidden",
             zIndex: 30,
           }}
         >
@@ -358,7 +360,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
             backgroundColor: SCROLLABLE_COLOR,
             height: "100vh",
             width: "100%",
-            visibility: isInScrollable ? "visible" : "hidden",
+            visibility: shouldShowFixedHero ? "visible" : "hidden",
           }}
         >
           <Container>{children}</Container>
@@ -371,7 +373,6 @@ const DynamicBezierCurve = ({ children }: Props) => {
             height: "100vh",
             position: "fixed",
             pointerEvents: "none",
-            visibility: isInScrollable ? "visible" : "hidden",
           }}
           shapeRendering="crispEdges"
           preserveAspectRatio="none"

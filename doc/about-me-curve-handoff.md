@@ -160,7 +160,9 @@ height: "calc(100svh - 3.5rem)"
 
 这样做是为了避免 `sticky` 被父级 `100svh` 限制。之前 sticky 停留空间太短，curve 会先从视口顶部滑走，summary 还在下面追，造成明显空白。
 
-fixed hero / curve layer 现在都会跟随 `isInScrollable` 显隐。也就是它们只在首页首屏 handoff 区间里可见；一旦 scroll 进度离开这段区间，就让正常页面内容和 footer 完全接管，避免 fixed 层继续盖住 navbar 或 footer。
+fixed hero layer 会跟随 `isInScrollable` 和 `HERO_LAYER_HIDE_SCROLL_RATIO` 显隐。它会在 curve 视觉上接近收平时退场，避免 `TypeAnimation` 在 handoff 边界重绘时突然闪到 summary 上方。
+
+fixed curve layer 不跟随 `isInScrollable` 隐藏。它在收平后继续作为页面背景遮罩留在内容下方；summary 和 footer 都有更高的 z-index，所以正常内容仍然会显示在 curve 上方。
 
 ## Why The Summary Anchor Exists
 
