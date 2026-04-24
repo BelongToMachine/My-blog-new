@@ -6,11 +6,13 @@ const SummaryHeader = () => {
   const t = useTranslations("home")
 
   return (
-    <SectionHeading
-      title={t("blogSummary")}
-      description="Retro-styled summaries, recent entries, and article activity snapshots."
-      align="left"
-    />
+    <div data-summary-heading-anchor>
+      <SectionHeading
+        title={t("blogSummary")}
+        description="Retro-styled summaries, recent entries, and article activity snapshots."
+        align="left"
+      />
+    </div>
   )
 }
 
