@@ -1,6 +1,7 @@
 import matter from "gray-matter"
 import MarkdownIt from "markdown-it"
 import { v4 as uuidv4 } from "uuid"
+import { renderArticleCodeBlock } from "@/app/service/articleCodeHighlight"
 
 export interface ArticleHeader {
   title: string
@@ -14,57 +15,92 @@ export interface Heading {
   id: string
 }
 
-const md = new MarkdownIt({
-  html: true,
-  linkify: true,
-  typographer: true,
-})
-
-md.renderer.rules.heading_open = (tokens, idx, options, _env, self) => {
-  const token = tokens[idx]
-  const id = uuidv4()
-
-  token.attrSet("id", id)
-  return self.renderToken(tokens, idx, options)
+function createMarkdownParser() {
+  return new MarkdownIt({
+    html: true,
+    linkify: true,
+    typographer: true,
+  })
 }
+
+function extractHeadings(tokens: MarkdownToken[]) {
+  const headings: Heading[] = []
+
+  tokens.forEach((token, index) => {
+    if (token.type !== "heading_open" || token.tag !== "h2") {
+      return
+    }
+
+    const id = uuidv4()
+    const inlineToken = tokens[index + 1]
+    const text = inlineToken?.content?.trim()
+
+    token.attrSet("id", id)
+
+    if (!text) {
+      return
+    }
+
+    headings.push({
+      text,
+      level: 2,
+      id,
+    })
+  })
+
+  return headings
+}
+
+async function renderMarkdown(content: string) {
+  const md = createMarkdownParser()
+  const tokens = md.parse(content, {})
+  const headings = extractHeadings(tokens)
+  const highlightedBlocks = new Map<number, string>()
+  const defaultFenceRenderer = md.renderer.rules.fence
+
+  const fenceTokens = tokens
+    .map((token, index) => ({ token, index }))
+    .filter(({ token }) => token.type === "fence")
+
+  const renderedBlocks = await Promise.all(
+    fenceTokens.map(async ({ token, index }) => [
+      index,
+      await renderArticleCodeBlock(token.content, token.info),
+    ] as const)
+  )
+
+  renderedBlocks.forEach(([index, html]) => {
+    highlightedBlocks.set(index, html)
+  })
+
+  md.renderer.rules.fence = (currentTokens, idx, options, env, self) => {
+    return (
+      highlightedBlocks.get(idx) ??
+      defaultFenceRenderer?.(currentTokens, idx, options, env, self) ??
+      self.renderToken(currentTokens, idx, options)
+    )
+  }
+
+  return {
+    htmlContent: md.renderer.render(tokens, md.options, {}),
+    headings,
+  }
+}
+
 class BlogParser {
-  private header
-  private htmlContent
-  private headings
+  constructor(private blog: string) {}
 
-  constructor(private blog: string) {
-    const { data, content } = matter(blog)
-    this.header = data as ArticleHeader
-    this.htmlContent = md.render(content)
-    this.headings = this.extractHeadings(this.htmlContent)
-  }
+  public async getParserdContent() {
+    const { data, content } = matter(this.blog)
+    const { htmlContent, headings } = await renderMarkdown(content)
 
-  public getParserdContent() {
     return {
-      header: this.header,
-      htmlContent: this.htmlContent,
-      headings: this.headings,
+      header: data as ArticleHeader,
+      htmlContent,
+      headings,
     }
-  }
-
-  private extractHeadings(htmlContent: string): Heading[] {
-    const headingRegex = /<h([2])\s*(?:id="([^"]*)")?[^>]*>([^<]+)<\/h\1>/g
-    const headings: Heading[] = []
-    let match
-
-    while ((match = headingRegex.exec(htmlContent)) !== null) {
-      const [, levelStr, existingId, text] = match
-      const level = parseInt(levelStr)
-      const id = existingId || `heading-${headings.length}`
-
-      headings.push({
-        text: text.trim(),
-        level,
-        id,
-      })
-    }
-    return headings
   }
 }
 
 export default BlogParser
+type MarkdownToken = MarkdownIt.Token

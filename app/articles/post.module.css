@@ -13,6 +13,42 @@
     linear-gradient(to right, color-mix(in srgb, hsl(var(--border)) 8%, transparent) 1px, transparent 1px),
     linear-gradient(to bottom, color-mix(in srgb, hsl(var(--border)) 8%, transparent) 1px, transparent 1px);
   background-size: 20px 20px;
+  --article-code-shell-bg:
+    linear-gradient(180deg, rgba(246, 250, 255, 0.98), rgba(236, 244, 252, 0.96)),
+    linear-gradient(to right, rgba(14, 165, 233, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(14, 165, 233, 0.045) 1px, transparent 1px);
+  --article-code-shell-shadow:
+    var(--shadow-elevated),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    inset 0 0 0 1px rgba(125, 170, 214, 0.18);
+  --article-code-shell-border: color-mix(in srgb, hsl(var(--primary)) 16%, hsl(var(--border)));
+  --article-code-meta-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.65), rgba(255, 255, 255, 0.14));
+  --article-code-meta-border: color-mix(in srgb, hsl(var(--primary)) 10%, transparent);
+  --article-code-title-color: rgba(58, 78, 102, 0.78);
+  --article-code-label-color: rgba(8, 145, 178, 0.86);
+  --article-code-gutter-color: rgba(95, 119, 145, 0.42);
+  --article-code-gutter-border: rgba(95, 119, 145, 0.16);
+  --article-code-content-bg: #fff;
+}
+
+:global(html[data-color-mode="dark"]) .article,
+:global(html.dark) .article {
+  --article-code-shell-bg:
+    linear-gradient(180deg, rgba(22, 8, 44, 0.98), rgba(10, 8, 25, 0.98)),
+    linear-gradient(to right, rgba(38, 211, 237, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(38, 211, 237, 0.045) 1px, transparent 1px);
+  --article-code-shell-shadow:
+    var(--shadow-elevated),
+    inset 0 1px 0 rgba(190, 232, 244, 0.08),
+    inset 0 0 0 1px rgba(106, 78, 145, 0.18);
+  --article-code-shell-border: color-mix(in srgb, hsl(var(--primary)) 22%, hsl(var(--border)));
+  --article-code-meta-bg: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0));
+  --article-code-meta-border: color-mix(in srgb, hsl(var(--primary)) 12%, transparent);
+  --article-code-title-color: rgba(220, 228, 244, 0.74);
+  --article-code-label-color: rgba(174, 223, 233, 0.78);
+  --article-code-gutter-color: rgba(173, 194, 214, 0.34);
+  --article-code-gutter-border: rgba(173, 194, 214, 0.12);
+  --article-code-content-bg: #000;
 }
 
 .footerWrapper {
@@ -117,7 +153,7 @@
   line-height: 1.85;
 }
 
-.article div pre {
+.article div pre:not(.shiki) {
   position: relative;
   background:
     linear-gradient(180deg, rgba(8, 16, 24, 0.98), rgba(8, 12, 20, 0.98)),
@@ -133,7 +169,7 @@
   box-shadow: var(--shadow-elevated);
 }
 
-.article div pre::before {
+.article div pre:not(.shiki)::before {
   content: "code";
   position: absolute;
   top: 0.7rem;
@@ -145,11 +181,127 @@
   color: rgba(174, 223, 233, 0.7);
 }
 
-.article div pre code {
+.article div pre:not(.shiki) code {
   display: block;
   padding-top: 1rem;
   background: transparent;
   color: inherit;
+}
+
+.article :global(.article-code-shell) {
+  margin: 1.4rem 0;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--article-code-shell-border);
+  background: var(--article-code-shell-bg);
+  background-size: auto, 18px 18px, 18px 18px;
+  box-shadow: var(--article-code-shell-shadow);
+}
+
+.article :global(.article-code-meta) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.9rem;
+  border-bottom: 1px solid var(--article-code-meta-border);
+  padding: 0.65rem 1rem 0.55rem;
+  background: var(--article-code-meta-bg);
+}
+
+.article :global(.article-code-traffic) {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.article :global(.article-code-dot) {
+  width: 0.55rem;
+  height: 0.55rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.18) inset;
+}
+
+.article :global(.article-code-dot--rose) {
+  background: hsl(var(--signal-rose));
+}
+
+.article :global(.article-code-dot--amber) {
+  background: hsl(var(--signal-amber));
+}
+
+.article :global(.article-code-dot--green) {
+  background: hsl(var(--signal-green));
+}
+
+.article :global(.article-code-title) {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  color: var(--article-code-title-color);
+}
+
+.article :global(.article-code-label) {
+  font-family: var(--font-pixel), monospace;
+  font-size: 11px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--article-code-label-color);
+  flex-shrink: 0;
+}
+
+.article :global(.article-code-shell pre.shiki) {
+  margin: 0 !important;
+  overflow-x: auto !important;
+  background: var(--article-code-content-bg) !important;
+  padding: 0.58rem 0 0.64rem !important;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.92rem;
+  line-height: 1rem;
+  tab-size: 2;
+  counter-reset: code-line;
+}
+
+.article :global(.article-code-shell pre.shiki code) {
+  display: block;
+  min-width: max-content;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  color: inherit;
+}
+
+:global(html[data-color-mode="dark"]) .article :global(.article-code-shell pre.shiki),
+:global(html[data-color-mode="dark"]) .article :global(.article-code-shell pre.shiki span),
+:global(html.dark) .article :global(.article-code-shell pre.shiki),
+:global(html.dark) .article :global(.article-code-shell pre.shiki span) {
+  color: var(--shiki-dark) !important;
+}
+
+.article :global(.article-code-shell pre.shiki .line) {
+  display: block;
+  min-height: 1rem;
+  position: relative;
+  padding: 0 1rem 0 4.5rem;
+}
+
+.article :global(.article-code-shell pre.shiki .line::before) {
+  content: counter(code-line, decimal-leading-zero);
+  counter-increment: code-line;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 3.2rem;
+  padding-right: 0.7rem;
+  text-align: right;
+  color: var(--article-code-gutter-color);
+  border-right: 1px solid var(--article-code-gutter-border);
+  user-select: none;
 }
 
 .article div code {
@@ -235,5 +387,29 @@
   .article div pre {
     padding: 0.75rem;
     font-size: 0.8rem;
+  }
+
+  .article :global(.article-code-meta) {
+    padding: 0.55rem 0.8rem 0.45rem;
+  }
+
+  .article :global(.article-code-title) {
+    font-size: 0.72rem;
+  }
+
+  .article :global(.article-code-shell pre.shiki) {
+    padding: 0.5rem 0 0.56rem !important;
+    font-size: 0.82rem;
+    line-height: 1rem;
+  }
+
+  .article :global(.article-code-shell pre.shiki .line) {
+    min-height: 1rem;
+    padding: 0 0.8rem 0 3.8rem;
+  }
+
+  .article :global(.article-code-shell pre.shiki .line::before) {
+    width: 2.7rem;
+    padding-right: 0.55rem;
   }
 }
