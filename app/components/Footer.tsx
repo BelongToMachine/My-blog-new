@@ -6,7 +6,6 @@ import { useTranslations } from "next-intl"
 import { Link } from "@/app/i18n/navigation"
 import { cn } from "@/lib/utils"
 import PixelGithubIcon from "./navbar/PixelGithubIcon"
-import Boop from "./system/Boop"
 
 const PixelLinkedInIcon = ({ className }: { className?: string }) => (
   <svg
@@ -118,11 +117,9 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   className="group flex items-center gap-3 border-b border-border/60 pb-3 transition-colors duration-200 hover:border-primary/40"
                 >
-                  <Boop>
-                    <span className="flex h-11 w-11 shrink-0 items-center justify-center border-2 border-border/80 bg-background/60 text-muted-foreground transition-colors duration-200 group-hover:border-primary/50 group-hover:text-primary">
-                      {link.icon}
-                    </span>
-                  </Boop>
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center border-2 border-border/80 bg-background/60 text-muted-foreground transition-colors duration-200 group-hover:border-primary/50 group-hover:text-primary">
+                    {link.icon}
+                  </span>
                   <span className="min-w-0">
                     <span className="block font-pixel text-sm uppercase tracking-[0.14em] text-foreground sm:text-[15px]">
                       {link.label}
@@ -137,11 +134,9 @@ export default function Footer() {
                 href="mailto:jie.liao.dev@gmail.com"
                 className="group flex items-center gap-3 border-b border-border/60 pb-3 transition-colors duration-200 hover:border-primary/40"
               >
-                <Boop>
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center border-2 border-border/80 bg-background/60 text-muted-foreground transition-colors duration-200 group-hover:border-primary/50 group-hover:text-primary">
-                    <PixelMailIcon className="h-4.5 w-4.5 text-primary/70 sm:h-5 sm:w-5" />
-                  </span>
-                </Boop>
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center border-2 border-border/80 bg-background/60 text-muted-foreground transition-colors duration-200 group-hover:border-primary/50 group-hover:text-primary">
+                  <PixelMailIcon className="h-4.5 w-4.5 text-primary/70 sm:h-5 sm:w-5" />
+                </span>
                 <span className="min-w-0">
                   <span className="block font-pixel text-sm uppercase tracking-[0.14em] text-foreground sm:text-[15px]">
                     Email
