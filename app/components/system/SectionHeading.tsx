@@ -39,7 +39,7 @@ const SectionHeading = ({
             {title}
           </h2>
           {description ? (
-            <p className="max-w-xl text-sm leading-6 text-muted-foreground md:max-w-2xl md:text-base md:leading-7">
+            <p className="max-w-xl font-pixel text-[11px] leading-6 tracking-[0.08em] text-muted-foreground md:max-w-2xl md:text-[12px] md:leading-7">
               {description}
             </p>
           ) : null}
