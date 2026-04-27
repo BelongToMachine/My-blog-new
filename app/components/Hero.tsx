@@ -9,6 +9,10 @@ import { ThemeContext } from "../context/DarkModeContext"
 import { CodeBlocker } from "../packages/index"
 import { useLocale, useTranslations } from "next-intl"
 import { TerminalPill } from "./system/TerminalPill"
+import { FloatingPixelAssistant } from "./PixelAssistantPreview"
+
+const SHOW_FLOATING_ASSISTANT = false
+// TODO: bring back the floating AI assistant after we define its final role, placement, and motion states.
 
 const Hero = () => {
   const t = useTranslations("hero")
@@ -26,7 +30,7 @@ const Hero = () => {
   const [typingIndex, setTypingIndex] = useState(0)
   const isEnLongText = locale === "en" && typingIndex === 1
   return (
-    <div id="about-me-section" className="px-5 pb-12 pt-6 md:px-10 lg:px-14 lg:pb-12 lg:pt-2">
+    <div className="px-5 pb-12 pt-10 md:px-10 md:pt-12 lg:px-14 lg:pb-12 lg:pt-12" id="about-me-section">
       <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-8 lg:items-end">
         <motion.div
           initial={{ opacity: 0, scale: 0.5 }}
@@ -34,7 +38,7 @@ const Hero = () => {
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className="relative z-10 flex w-full justify-center items-start lg:justify-start lg:items-end lg:col-start-2 lg:col-end-7"
         >
-          <div className="w-full max-w-[800px] lg:max-w-[560px] min-w-0 lg:mb-14">
+          <div className="relative w-full max-w-[800px] min-w-0 lg:mb-14 lg:max-w-[560px]">
             <div className="mb-5 flex flex-wrap gap-2">
               <TerminalPill tone="cyan">frontend log</TerminalPill>
               <TerminalPill tone="amber">next.js</TerminalPill>
@@ -62,6 +66,7 @@ const Hero = () => {
             <p className="font-pixel mb-4 mt-2 max-w-xl text-sm leading-relaxed tracking-wide text-muted-foreground md:text-base">
               {t("shortIntro")}
             </p>
+            {SHOW_FLOATING_ASSISTANT ? <FloatingPixelAssistant /> : null}
             <div className="relative mt-5 min-h-[280px] md:min-h-[360px] lg:hidden">
               <div className="relative z-10 w-[90%] md:w-[88%] max-w-[500px] min-w-0 pt-6">
                 <CodeBlocker
