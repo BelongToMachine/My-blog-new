@@ -1,10 +1,10 @@
 "use client"
 
+import type { ReactNode } from "react"
 import NextLink from "next/link"
 import { useTranslations } from "next-intl"
 import { Link } from "@/app/i18n/navigation"
 import { cn } from "@/lib/utils"
-import { ActionIconButton } from "./system/ActionIconButton"
 import PixelGithubIcon from "./navbar/PixelGithubIcon"
 
 const PixelLinkedInIcon = ({ className }: { className?: string }) => (
@@ -36,6 +36,11 @@ interface FooterLink {
   href: string
 }
 
+interface FooterContactLink extends FooterLink {
+  detail: string
+  icon: ReactNode
+}
+
 export default function Footer() {
   const t = useTranslations("footer")
   const navT = useTranslations("nav")
@@ -46,88 +51,107 @@ export default function Footer() {
     { label: navT("ai"), href: "/ai" },
   ]
 
-  const socialLinks = [
+  const socialLinks: FooterContactLink[] = [
     {
       label: "GitHub",
       href: "https://github.com/JieLuis",
-      icon: <PixelGithubIcon />,
+      detail: "github.com/JieLuis",
+      icon: <PixelGithubIcon className="h-5 w-5 sm:h-6 sm:w-6" />,
     },
     {
       label: "LinkedIn",
       href: "https://www.linkedin.com/in/jieliao",
-      icon: <PixelLinkedInIcon />,
+      detail: "linkedin.com/in/jieliao",
+      icon: <PixelLinkedInIcon className="h-5 w-5 sm:h-6 sm:w-6" />,
     },
   ]
 
   return (
-    <footer className="relative z-40 border-t-4 border-border bg-background/80 backdrop-blur-sm">
-      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10 lg:py-12">
-        <div className="flex flex-col gap-6 sm:grid sm:grid-cols-3 sm:gap-8 lg:gap-10">
-          {/* Identity */}
-          <div className="sm:col-span-2 lg:col-span-1">
-            <p className="font-pixel text-sm uppercase tracking-[0.22em] text-foreground">
+    <footer className="relative z-40 border-t-4 border-border bg-background/88 backdrop-blur-sm">
+      <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-12 lg:py-14">
+        <div className="grid gap-8 md:grid-cols-2 md:gap-x-10 md:gap-y-8 lg:grid-cols-[minmax(0,1.35fr)_minmax(11rem,0.8fr)_minmax(0,1fr)] lg:gap-x-12">
+          <div className="space-y-4 border-b-2 border-border/70 pb-8 md:col-span-2 lg:col-span-1 lg:border-b-0 lg:border-r-2 lg:pb-0 lg:pr-10">
+            <p className="font-pixel text-lg uppercase tracking-[0.14em] text-foreground sm:text-xl lg:text-2xl">
               {t("identity")}
             </p>
-            <p className="mt-1.5 font-pixel text-[11px] leading-relaxed tracking-[0.12em] text-muted-foreground sm:max-w-[28ch]">
+            <p className="max-w-[36rem] text-sm leading-7 text-muted-foreground sm:text-base sm:leading-8">
               {t("tagline")}
             </p>
           </div>
 
-          {/* Navigate */}
-          <div>
-            <p className="font-pixel text-[10px] uppercase tracking-[0.28em] text-primary/80">
+          <div className="space-y-4">
+            <p className="font-pixel text-[11px] uppercase tracking-[0.28em] text-primary/80 sm:text-xs">
               {t("navigate")}
             </p>
-            <ul className="mt-2 flex flex-wrap gap-x-3 gap-y-1 sm:flex-col sm:gap-y-1">
-              {navLinks.map((link) => (
+            <ul className="grid gap-1.5">
+              {navLinks.map((link, index) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
                     className={cn(
-                      "inline-block px-2 py-1 -mx-2 font-pixel text-[11px] uppercase tracking-[0.18em] text-muted-foreground transition-colors duration-200 hover:text-primary border-2 border-transparent hover:border-primary/30 hover:bg-primary/5"
+                      "group flex items-center justify-between border-b border-border/60 py-2.5 transition-colors duration-200 hover:border-primary/40"
                     )}
                   >
-                    {link.label}
+                    <span className="font-pixel text-sm uppercase tracking-[0.14em] text-foreground transition-colors duration-200 group-hover:text-primary sm:text-[15px]">
+                      {link.label}
+                    </span>
+                    <span className="text-xs tracking-[0.16em] text-muted-foreground transition-colors duration-200 group-hover:text-primary/80 sm:text-sm">
+                      0{index + 1}
+                    </span>
                   </Link>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Connect */}
-          <div>
-            <p className="font-pixel text-[10px] uppercase tracking-[0.28em] text-primary/80">
+          <div className="space-y-4">
+            <p className="font-pixel text-[11px] uppercase tracking-[0.28em] text-primary/80 sm:text-xs">
               {t("connect")}
             </p>
-            <div className="mt-2 flex flex-wrap items-center gap-1.5">
+            <div className="grid gap-3">
               {socialLinks.map((link) => (
-                <ActionIconButton
+                <NextLink
                   key={link.href}
-                  asChild
-                  aria-label={link.label}
-                  tone="borderless"
-                  size="default"
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-center gap-3 border-b border-border/60 pb-3 transition-colors duration-200 hover:border-primary/40"
                 >
-                  <NextLink
-                    href={link.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center border-2 border-border/80 bg-background/60 text-muted-foreground transition-colors duration-200 group-hover:border-primary/50 group-hover:text-primary">
                     {link.icon}
-                  </NextLink>
-                </ActionIconButton>
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block font-pixel text-sm uppercase tracking-[0.14em] text-foreground sm:text-[15px]">
+                      {link.label}
+                    </span>
+                    <span className="mt-1 block break-all text-sm text-muted-foreground sm:break-normal sm:text-base">
+                      {link.detail}
+                    </span>
+                  </span>
+                </NextLink>
               ))}
-              <span className="flex items-center gap-1.5 ml-1 font-pixel text-[10px] tracking-[0.12em] text-muted-foreground">
-                <PixelMailIcon className="h-4 w-4 shrink-0 text-primary/60" />
-                jie.liao.dev@gmail.com
-              </span>
+              <NextLink
+                href="mailto:jie.liao.dev@gmail.com"
+                className="group flex items-center gap-3 border-b border-border/60 pb-3 transition-colors duration-200 hover:border-primary/40"
+              >
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center border-2 border-border/80 bg-background/60 text-muted-foreground transition-colors duration-200 group-hover:border-primary/50 group-hover:text-primary">
+                  <PixelMailIcon className="h-4.5 w-4.5 text-primary/70 sm:h-5 sm:w-5" />
+                </span>
+                <span className="min-w-0">
+                  <span className="block font-pixel text-sm uppercase tracking-[0.14em] text-foreground sm:text-[15px]">
+                    Email
+                  </span>
+                  <span className="mt-1 block break-all text-sm text-muted-foreground sm:break-normal sm:text-base">
+                    jie.liao.dev@gmail.com
+                  </span>
+                </span>
+              </NextLink>
             </div>
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="mt-8 border-t-2 border-border pt-5 sm:mt-10 sm:pt-6 lg:mt-12">
-          <p className="font-pixel text-[9px] uppercase tracking-[0.32em] text-muted-foreground/60 text-center">
+        <div className="mt-8 border-t-2 border-border/80 pt-4 sm:mt-10 sm:pt-5 lg:mt-12">
+          <p className="text-center text-sm tracking-[0.08em] text-muted-foreground sm:text-[15px]">
             {t("copyright", { year: new Date().getFullYear() })}
           </p>
         </div>
