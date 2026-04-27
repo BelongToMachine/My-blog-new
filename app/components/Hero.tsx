@@ -12,7 +12,7 @@ import { TerminalPill } from "./system/TerminalPill"
 import { FloatingPixelAssistant } from "./PixelAssistantPreview"
 
 const SHOW_FLOATING_ASSISTANT = false
-// TODO: bring back the floating AI assistant after we define its final role, placement, and motion states.
+// TODO: revisit the floating SVG assistant if we decide to keep a mascot in the hero.
 
 const Hero = () => {
   const t = useTranslations("hero")
