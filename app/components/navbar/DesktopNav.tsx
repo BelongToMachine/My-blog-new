@@ -10,6 +10,7 @@ import { ActionIconButton } from "../system/ActionIconButton"
 import { cn } from "@/lib/utils"
 import { NavItem } from "../system/NavItem"
 import PixelGithubIcon from "./PixelGithubIcon"
+import Boop from "../system/Boop"
 
 interface NavLinkItem {
   label: string
@@ -21,15 +22,17 @@ const DesktopNav = () => {
     <div className="flex h-16 items-center justify-between px-5">
       {/* Left: GitHub + nav links */}
       <div className="flex items-center gap-6">
-        <ActionIconButton
-          asChild
-          aria-label="Open GitHub profile"
-          tone="borderless"
-        >
-          <NextLink href="http://github.com/JieLuis">
-            <PixelGithubIcon />
-          </NextLink>
-        </ActionIconButton>
+        <Boop>
+          <ActionIconButton
+            asChild
+            aria-label="Open GitHub profile"
+            tone="borderless"
+          >
+            <NextLink href="http://github.com/JieLuis">
+              <PixelGithubIcon />
+            </NextLink>
+          </ActionIconButton>
+        </Boop>
         <div className="hidden lg:block">
           <NavLinks />
         </div>

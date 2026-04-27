@@ -5,6 +5,7 @@ import LanguageToggle from "./LanguageToggle"
 import ThemeToggle from "./ThemeToggle"
 import { ActionIconButton } from "../system/ActionIconButton"
 import PixelGithubIcon from "./PixelGithubIcon"
+import Boop from "../system/Boop"
 import { Link, usePathname } from "@/app/i18n/navigation"
 import { useTranslations } from "next-intl"
 import { NavItem } from "../system/NavItem"
@@ -26,17 +27,19 @@ const MobileNav = () => {
     <div className="flex items-center justify-between gap-2 px-4 py-2.5">
       {/* Left: GitHub + nav links */}
       <div className="flex items-center gap-3">
-        <ActionIconButton
-          asChild
-          aria-label="Open GitHub profile"
-          className="shrink-0 self-center"
-          tone="borderless"
-          size="sm"
-        >
-          <NextLink href="http://github.com/JieLuis">
-            <PixelGithubIcon className="h-5 w-5" />
-          </NextLink>
-        </ActionIconButton>
+        <Boop>
+          <ActionIconButton
+            asChild
+            aria-label="Open GitHub profile"
+            className="shrink-0 self-center"
+            tone="borderless"
+            size="sm"
+          >
+            <NextLink href="http://github.com/JieLuis">
+              <PixelGithubIcon className="h-5 w-5" />
+            </NextLink>
+          </ActionIconButton>
+        </Boop>
         <ul className="m-0 flex h-8 list-none items-center gap-1 p-0">
           {links.map((link) => (
             <li key={link.href} className="mb-0 flex items-center">
