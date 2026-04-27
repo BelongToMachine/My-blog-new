@@ -14,7 +14,7 @@ export default async function ArticlesPage({ params }: Props) {
 
   return (
     <Container className="content-page-shell">
-        <div className="space-y-8 p-5">
+      <div className="space-y-8 p-5 pt-10 md:pt-12 lg:pt-12">
         {/* Page Header */}
         <div className="space-y-6 mdx-index-shell">
           <div className="flex flex-wrap items-center gap-3">
@@ -41,7 +41,7 @@ export default async function ArticlesPage({ params }: Props) {
             <Link
               key={article.slug}
               href={`/articles/${article.slug}`}
-              className="pixel-card group"
+              className="pixel-corners group"
             >
               <div className="flex flex-col gap-4">
                 <div className="flex flex-wrap items-center gap-3">
