@@ -28,7 +28,7 @@ export default function ProjectGridBlock({
         {projects.map((item, index) => {
           const project = item as Project
           return (
-            <div key={index} className="pixel-card">
+            <div key={index} className="space-y-3 border-b border-border/40 pb-4 last:border-0 last:pb-0">
               <p className="font-pixel mb-2 text-sm uppercase tracking-[0.12em] text-foreground">
                 {project.title}
               </p>

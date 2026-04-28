@@ -32,7 +32,7 @@ export default function ProfileCardBlock({
   } = data
 
   return (
-    <div className="pixel-card space-y-4">
+    <div className="space-y-4">
       {title ? (
         <p className="font-pixel text-xs uppercase tracking-[0.22em] text-primary">
           {title}

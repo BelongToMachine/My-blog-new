@@ -1,14 +1,15 @@
 "use client"
 
 import React, { useEffect, useRef, useState } from "react"
-import { useChat } from "@ai-sdk/react"
-import { DefaultChatTransport, isToolUIPart, type UIMessage } from "ai"
+import { isToolUIPart, type UIMessage } from "ai"
 import ReactMarkdown from "react-markdown"
 import { Button } from "@/app/components/ui/button"
 import { Textarea } from "@/app/components/ui/textarea"
 import { useTranslations } from "next-intl"
 import { useTheme } from "@/app/hooks/useTheme"
 import { useChatThreads, type ChatThread } from "@/app/hooks/useChatThreads"
+import { useThreadChat } from "@/app/hooks/useThreadChat"
+import { useGlobalChatRuntime } from "@/app/context/GlobalChatRuntimeContext"
 import {
   ProfileCardBlock,
   ProjectGridBlock,
@@ -17,6 +18,25 @@ import {
   ComparisonTableBlock,
 } from "@/app/components/ai-blocks"
 import { CodeBlocker } from "@/app/packages/Screen"
+
+/* ─── Generative UI wrapper ─── */
+
+function GenerativeUIBorder({
+  label,
+  children,
+}: {
+  label: string
+  children: React.ReactNode
+}) {
+  return (
+    <div className="relative border-l-4 border-l-primary bg-primary/[0.03] py-3 pl-4 pr-3 dark:bg-primary/[0.06]">
+      <p className="font-pixel mb-2 text-[9px] uppercase tracking-[0.2em] text-primary/70">
+        {label}
+      </p>
+      {children}
+    </div>
+  )
+}
 
 /* ─── Tool renderer ─── */
 
@@ -31,20 +51,26 @@ function ToolOutputRenderer({
 
   switch (toolName) {
     case "get_profile_summary":
-      return <ProfileCardBlock title="Profile" data={data} />
+      return (
+        <GenerativeUIBorder label="Generated Profile">
+          <ProfileCardBlock data={data} />
+        </GenerativeUIBorder>
+      )
     case "list_projects":
       return (
-        <ProjectGridBlock
-          title="Projects"
-          data={{ projects: Array.isArray(output) ? output : [] }}
-        />
+        <GenerativeUIBorder label="Generated Projects">
+          <ProjectGridBlock
+            data={{ projects: Array.isArray(output) ? output : [] }}
+          />
+        </GenerativeUIBorder>
       )
     case "search_articles":
       return (
-        <ArticleSummaryBlock
-          title="Articles"
-          data={{ articles: Array.isArray(output) ? output : [] }}
-        />
+        <GenerativeUIBorder label="Generated Articles">
+          <ArticleSummaryBlock
+            data={{ articles: Array.isArray(output) ? output : [] }}
+          />
+        </GenerativeUIBorder>
       )
     case "build_ui_block": {
       const blockType = data.blockType as string
@@ -53,15 +79,35 @@ function ToolOutputRenderer({
 
       switch (blockType) {
         case "profile-card":
-          return <ProfileCardBlock title={blockTitle} data={blockData} />
+          return (
+            <GenerativeUIBorder label="Generated Profile">
+              <ProfileCardBlock title={blockTitle} data={blockData} />
+            </GenerativeUIBorder>
+          )
         case "project-grid":
-          return <ProjectGridBlock title={blockTitle} data={blockData} />
+          return (
+            <GenerativeUIBorder label="Generated Projects">
+              <ProjectGridBlock title={blockTitle} data={blockData} />
+            </GenerativeUIBorder>
+          )
         case "article-summary":
-          return <ArticleSummaryBlock title={blockTitle} data={blockData} />
+          return (
+            <GenerativeUIBorder label="Generated Articles">
+              <ArticleSummaryBlock title={blockTitle} data={blockData} />
+            </GenerativeUIBorder>
+          )
         case "timeline":
-          return <TimelineBlock title={blockTitle} data={blockData} />
+          return (
+            <GenerativeUIBorder label="Generated Timeline">
+              <TimelineBlock title={blockTitle} data={blockData} />
+            </GenerativeUIBorder>
+          )
         case "comparison-table":
-          return <ComparisonTableBlock title={blockTitle} data={blockData} />
+          return (
+            <GenerativeUIBorder label="Generated Comparison">
+              <ComparisonTableBlock title={blockTitle} data={blockData} />
+            </GenerativeUIBorder>
+          )
         default:
           return null
       }
@@ -177,14 +223,10 @@ function ChatThreadView({
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const scrollViewportRef = useRef<HTMLDivElement>(null)
 
-  const { messages, sendMessage, status, error } = useChat({
-    transport: new DefaultChatTransport({
-      api: "/api/ai/chat",
-    }),
-    messages: thread.messages,
-    onFinish: ({ messages: finalMessages }) => {
-      onMessagesChange(finalMessages)
-    },
+  const { messages, sendMessage, status, error, isBusy } = useThreadChat({
+    threadId: thread.id,
+    initialMessages: thread.messages,
+    onMessagesPersist: onMessagesChange,
   })
 
   useEffect(() => {
@@ -195,8 +237,6 @@ function ChatThreadView({
       behavior: "smooth",
     })
   }, [messages])
-
-  const isBusy = status === "submitted" || status === "streaming"
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -383,6 +423,7 @@ export default function AIPlayground() {
     updateThreadMessages,
     setActiveThread,
   } = useChatThreads()
+  const { removeChat } = useGlobalChatRuntime()
 
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
@@ -471,6 +512,7 @@ export default function AIPlayground() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation()
+                          removeChat(thread.id)
                           deleteThread(thread.id)
                         }}
                         className="absolute right-2 top-1/2 hidden -translate-y-1/2 px-1.5 py-0.5 font-pixel text-sm leading-none text-muted-foreground/40 transition-colors hover:text-destructive group-hover:inline-block"
