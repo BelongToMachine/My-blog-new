@@ -9,8 +9,8 @@
   },
   "ai": {
     "eyebrow": "AI Playground",
-    "title": "Ask the AI assistant about Jie, this portfolio, and the work behind it",
-    "description": "This assistant is tuned to answer questions about Jie's background, front-end strengths, project decisions, and portfolio implementation. You can also use screenshots for portfolio-specific discussion.",
+    "title": "Ask the AI about Jie & this portfolio",
+    "description": "Ask about Jie's background, front-end work, project decisions, and how this portfolio was built.",
     "textMode": "Ask about Jie",
     "textModeDescription": "Ask about experience, skills, project choices, engineering approach, or fit for a role.",
     "imageMode": "Portfolio screenshot",
@@ -27,7 +27,11 @@
     "resultEyebrow": "Assistant output",
     "resultTitle": "Response",
     "empty": "The answer will appear here. Try asking who Jie is, what he built, why a project was implemented a certain way, or what makes this portfolio credible.",
-    "errorGeneric": "Something went wrong while contacting the assistant."
+    "errorGeneric": "Something went wrong while contacting the assistant.",
+    "newChat": "New Chat",
+    "noChats": "No conversations yet",
+    "chatSingular": "chat",
+    "chatPlural": "chats"
   },
   "hero": {
     "greeting": "Heya I'm",
