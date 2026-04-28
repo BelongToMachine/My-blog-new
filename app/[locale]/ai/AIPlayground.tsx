@@ -120,9 +120,9 @@ export default function AIPlayground() {
         {/* Message list */}
         <div ref={scrollViewportRef} className="flex-1 overflow-y-auto p-4 md:p-5">
           {messages.length === 0 ? (
-            <div className="flex h-full flex-col items-center justify-center gap-5 px-4 text-center">
-              <div className="font-pixel text-3xl text-primary/30">&gt;_</div>
-              <p className="font-pixel max-w-sm text-[10px] uppercase leading-relaxed tracking-[0.24em] text-muted-foreground/70">
+            <div className="flex h-full flex-col items-center justify-center gap-8 px-4 text-center">
+              <div className="font-pixel text-6xl text-primary/30">&gt;_</div>
+              <p className="font-pixel max-w-md text-sm uppercase leading-relaxed tracking-[0.2em] text-muted-foreground/70">
                 {t("empty")}
               </p>
             </div>
