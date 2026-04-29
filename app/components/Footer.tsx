@@ -74,7 +74,7 @@ export default function Footer() {
             <p className="font-pixel text-lg uppercase tracking-[0.14em] text-foreground sm:text-xl lg:text-2xl">
               {t("identity")}
             </p>
-            <p className="max-w-[36rem] text-sm leading-7 text-muted-foreground sm:text-base sm:leading-8">
+            <p className="font-pixel max-w-[36rem] text-sm leading-7 text-muted-foreground sm:text-base sm:leading-8">
               {t("tagline")}
             </p>
           </div>
@@ -95,7 +95,7 @@ export default function Footer() {
                     <span className="font-pixel text-sm uppercase tracking-[0.14em] text-foreground transition-colors duration-200 group-hover:text-primary sm:text-[15px]">
                       {link.label}
                     </span>
-                    <span className="text-xs tracking-[0.16em] text-muted-foreground transition-colors duration-200 group-hover:text-primary/80 sm:text-sm">
+                    <span className="font-pixel text-xs tracking-[0.16em] text-muted-foreground transition-colors duration-200 group-hover:text-primary/80 sm:text-sm">
                       0{index + 1}
                     </span>
                   </Link>
@@ -124,7 +124,7 @@ export default function Footer() {
                     <span className="block font-pixel text-sm uppercase tracking-[0.14em] text-foreground sm:text-[15px]">
                       {link.label}
                     </span>
-                    <span className="mt-1 block break-all text-sm text-muted-foreground sm:break-normal sm:text-base">
+                    <span className="font-pixel mt-1 block break-all text-sm text-muted-foreground sm:break-normal sm:text-base">
                       {link.detail}
                     </span>
                   </span>
@@ -141,9 +141,9 @@ export default function Footer() {
                   <span className="block font-pixel text-sm uppercase tracking-[0.14em] text-foreground sm:text-[15px]">
                     Email
                   </span>
-                  <span className="mt-1 block break-all text-sm text-muted-foreground sm:break-normal sm:text-base">
-                    jie.liao.dev@gmail.com
-                  </span>
+                <span className="font-pixel mt-1 block break-all text-sm text-muted-foreground sm:break-normal sm:text-base">
+                  jie.liao.dev@gmail.com
+                </span>
                 </span>
               </NextLink>
             </div>
@@ -151,7 +151,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-8 border-t-2 border-border/80 pt-4 sm:mt-10 sm:pt-5 lg:mt-12">
-          <p className="text-center text-sm tracking-[0.08em] text-muted-foreground sm:text-[15px]">
+          <p className="font-pixel text-center text-sm tracking-[0.08em] text-muted-foreground sm:text-[15px]">
             {t("copyright", { year: new Date().getFullYear() })}
           </p>
         </div>

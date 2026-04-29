@@ -34,7 +34,17 @@
     "chatPlural": "chats",
     "openSidebar": "Open sidebar",
     "closeSidebar": "Close sidebar",
-    "deleteChat": "Delete chat"
+    "deleteChat": "Delete chat",
+    "chatTab": "Chat",
+    "workspaceTab": "Workspace",
+    "workspaceEyebrow": "Workspace",
+    "workspaceEmpty": "Workspace is empty",
+    "workspaceEmptyHint": "Ask the AI to generate a project grid, timeline, or comparison table. Results will appear here.",
+    "artifactSingular": "artifact",
+    "artifactPlural": "artifacts",
+    "artifactUpdating": "Updating...",
+    "clear": "Clear",
+    "clearWorkspace": "Clear workspace"
   },
   "hero": {
     "greeting": "Heya I'm",
@@ -111,10 +121,10 @@
   },
   "footer": {
     "identity": "Developer",
-    "tagline": "Front-End Developer & AI Prompt Engineer — crafting thoughtful interfaces and practical AI integrations.",
+    "tagline": "Front-End Developer & AI Prompt Engineer",
     "navigate": "Navigate",
     "connect": "Connect",
-    "copyright": "© {year} Developer. Crafted with pixel precision."
+    "copyright": "© {year} Developer"
   },
   "meta": {
     "homeTitle": "Developer — Front-End Developer & AI Prompt Engineer",
