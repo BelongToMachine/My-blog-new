@@ -284,25 +284,24 @@ function MarkdownRenderer({
   )
 }
 
-/* ─── Chat thread view (isolated per thread) ─── */
+const MemoizedMarkdownRenderer = React.memo(MarkdownRenderer)
 
-function ChatThreadView({
-  thread,
-  onMessagesChange,
+const ChatMessagesViewport = React.memo(function ChatMessagesViewport({
+  messages,
+  isBusy,
+  showThinking,
+  lastAssistantMessageId,
+  loadingLabel,
+  emptyLabel,
 }: {
-  thread: ChatThread
-  onMessagesChange: (messages: UIMessage[]) => void
+  messages: UIMessage[]
+  isBusy: boolean
+  showThinking: boolean
+  lastAssistantMessageId?: string
+  loadingLabel: string
+  emptyLabel: string
 }) {
-  const t = useTranslations("ai")
-  const [input, setInput] = useState("")
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
   const scrollViewportRef = useRef<HTMLDivElement>(null)
-
-  const { messages, sendMessage, status, error, isBusy } = useThreadChat({
-    threadId: thread.id,
-    initialMessages: thread.messages,
-    onMessagesPersist: onMessagesChange,
-  })
 
   useBrowserLayoutEffect(() => {
     const viewport = scrollViewportRef.current
@@ -313,6 +312,141 @@ function ChatThreadView({
     })
   }, [messages, isBusy])
 
+  return (
+    <div
+      ref={scrollViewportRef}
+      className="flex-1 overflow-y-auto p-4 md:p-5"
+    >
+      {messages.length === 0 ? (
+        <div className="flex h-full flex-col items-center justify-center gap-8 px-4 text-center">
+          <div className="font-pixel text-6xl text-primary/30">&gt;_</div>
+          <p className="font-pixel max-w-md text-sm uppercase leading-relaxed tracking-[0.2em] text-muted-foreground/70">
+            {emptyLabel}
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-6">
+          {messages.map((message) => (
+            <div
+              key={message.id}
+              className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+            >
+              <div
+                className={`max-w-[88%] border-2 px-4 py-3 md:max-w-[78%] ${
+                  message.role === "user"
+                    ? "border-primary/40 bg-primary/[0.06]"
+                    : "border-border/70 bg-background/60"
+                }`}
+              >
+                <span className="font-pixel mb-2 block text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                  {message.role === "user" ? "You" : "AI"}
+                </span>
+                <div className="space-y-3 font-pixel text-sm leading-7 text-foreground">
+                  {message.parts.map((part, index) => {
+                    if (part.type === "text") {
+                      return (
+                        <MemoizedMarkdownRenderer
+                          key={`${message.id}-${index}`}
+                          text={part.text}
+                          streamCodeBlocks={
+                            isBusy &&
+                            message.role === "assistant" &&
+                            message.id === lastAssistantMessageId
+                          }
+                        />
+                      )
+                    }
+
+                    if (isToolUIPart(part)) {
+                      const toolPrefix = "tool-"
+                      const toolName =
+                        part.type === "dynamic-tool"
+                          ? part.toolName
+                          : part.type.startsWith(toolPrefix)
+                            ? part.type.slice(toolPrefix.length)
+                            : part.type
+
+                      if (part.state === "input-available") {
+                        return (
+                          <div
+                            key={`${message.id}-${index}`}
+                            className="flex items-center gap-2 text-muted-foreground"
+                          >
+                            <span className="inline-block h-2 w-2 animate-pulse bg-primary" />
+                            <span className="font-pixel text-[10px] uppercase tracking-[0.2em]">
+                              {toolName}...
+                            </span>
+                          </div>
+                        )
+                      }
+
+                      if (part.state === "output-available") {
+                        return (
+                          <div key={`${message.id}-${index}`}>
+                            <ToolOutputRenderer
+                              toolName={toolName}
+                              output={part.output}
+                            />
+                          </div>
+                        )
+                      }
+
+                      if (part.state === "output-error") {
+                        return (
+                          <div
+                            key={`${message.id}-${index}`}
+                            className="font-pixel text-[10px] uppercase tracking-[0.2em] text-destructive"
+                          >
+                            Error: {part.errorText}
+                          </div>
+                        )
+                      }
+                    }
+
+                    return null
+                  })}
+                </div>
+              </div>
+            </div>
+          ))}
+          {showThinking ? (
+            <div className="flex justify-start">
+              <div className="max-w-[88%] border-2 border-border/70 bg-background/60 px-4 py-3 md:max-w-[78%]">
+                <span className="font-pixel mb-2 block text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                  AI
+                </span>
+                <div className="font-pixel text-sm leading-7 text-muted-foreground">
+                  {loadingLabel}
+                </div>
+              </div>
+            </div>
+          ) : null}
+        </div>
+      )}
+    </div>
+  )
+})
+
+const ChatComposer = React.memo(function ChatComposer({
+  sendMessage,
+  isBusy,
+  error,
+  placeholder,
+  loadingLabel,
+  submitLabel,
+  errorLabel,
+}: {
+  sendMessage: (message: { text: string }) => Promise<void>
+  isBusy: boolean
+  error?: Error | undefined
+  placeholder: string
+  loadingLabel: string
+  submitLabel: string
+  errorLabel: string
+}) {
+  const [input, setInput] = useState("")
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
     const value = input.trim()
@@ -321,6 +455,58 @@ function ChatThreadView({
     textareaRef.current?.focus()
     await sendMessage({ text: value })
   }
+
+  return (
+    <div className="shrink-0 border-t-2 border-border/60 bg-background/80 p-4 md:p-5">
+      <div className="space-y-3">
+        {error ? (
+          <p className="font-pixel text-[10px] uppercase tracking-[0.2em] text-destructive">
+            {errorLabel}
+          </p>
+        ) : null}
+        <form onSubmit={handleSubmit} className="flex items-end gap-3">
+          <Textarea
+            ref={textareaRef}
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder={placeholder}
+            className="min-h-[72px] flex-1 resize-none border-2 border-border/80 bg-background/90 px-4 py-3 text-sm focus-visible:border-primary"
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault()
+                void handleSubmit(e)
+              }
+            }}
+          />
+          <Button
+            type="submit"
+            disabled={!input.trim() || isBusy}
+            className="h-11 shrink-0 px-6"
+          >
+            {isBusy ? loadingLabel : submitLabel}
+          </Button>
+        </form>
+      </div>
+    </div>
+  )
+})
+
+/* ─── Chat thread view (isolated per thread) ─── */
+
+function ChatThreadView({
+  thread,
+  onMessagesChange,
+}: {
+  thread: ChatThread
+  onMessagesChange: (messages: UIMessage[]) => void
+}) {
+  const t = useTranslations("ai")
+
+  const { messages, sendMessage, status, error, isBusy } = useThreadChat({
+    threadId: thread.id,
+    initialMessages: thread.messages,
+    onMessagesPersist: onMessagesChange,
+  })
 
   const lastAssistantMessage = [...messages]
     .reverse()
@@ -339,152 +525,68 @@ function ChatThreadView({
 
   return (
     <div className="flex h-full flex-col overflow-hidden">
-      {/* Message list */}
-      <div
-        ref={scrollViewportRef}
-        className="flex-1 overflow-y-auto p-4 md:p-5"
-      >
-        {messages.length === 0 ? (
-          <div className="flex h-full flex-col items-center justify-center gap-8 px-4 text-center">
-            <div className="font-pixel text-6xl text-primary/30">&gt;_</div>
-            <p className="font-pixel max-w-md text-sm uppercase leading-relaxed tracking-[0.2em] text-muted-foreground/70">
-              {t("empty")}
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-6">
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
-              >
-                <div
-                  className={`max-w-[88%] border-2 px-4 py-3 md:max-w-[78%] ${
-                    message.role === "user"
-                      ? "border-primary/40 bg-primary/[0.06]"
-                      : "border-border/70 bg-background/60"
-                  }`}
-                >
-                  <span className="font-pixel mb-2 block text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-                    {message.role === "user" ? "You" : "AI"}
-                  </span>
-                  <div className="space-y-3 font-pixel text-sm leading-7 text-foreground">
-                    {message.parts.map((part, index) => {
-                      if (part.type === "text") {
-                        return (
-                          <MarkdownRenderer
-                            key={`${message.id}-${index}`}
-                            text={part.text}
-                            streamCodeBlocks={
-                              isBusy &&
-                              message.role === "assistant" &&
-                              message.id === lastAssistantMessageId
-                            }
-                          />
-                        )
-                      }
-
-                      if (isToolUIPart(part)) {
-                        const toolPrefix = "tool-"
-                        const toolName =
-                          part.type === "dynamic-tool"
-                            ? part.toolName
-                            : part.type.startsWith(toolPrefix)
-                              ? part.type.slice(toolPrefix.length)
-                              : part.type
-
-                        if (part.state === "input-available") {
-                          return (
-                            <div
-                              key={`${message.id}-${index}`}
-                              className="flex items-center gap-2 text-muted-foreground"
-                            >
-                              <span className="inline-block h-2 w-2 animate-pulse bg-primary" />
-                              <span className="font-pixel text-[10px] uppercase tracking-[0.2em]">
-                                {toolName}...
-                              </span>
-                            </div>
-                          )
-                        }
-
-                        if (part.state === "output-available") {
-                          return (
-                            <div key={`${message.id}-${index}`}>
-                              <ToolOutputRenderer
-                                toolName={toolName}
-                                output={part.output}
-                              />
-                            </div>
-                          )
-                        }
-
-                        if (part.state === "output-error") {
-                          return (
-                            <div
-                              key={`${message.id}-${index}`}
-                              className="font-pixel text-[10px] uppercase tracking-[0.2em] text-destructive"
-                            >
-                              Error: {part.errorText}
-                            </div>
-                          )
-                        }
-                      }
-
-                      return null
-                    })}
-                  </div>
-                </div>
-              </div>
-            ))}
-            {showThinking ? (
-              <div className="flex justify-start">
-                <div className="max-w-[88%] border-2 border-border/70 bg-background/60 px-4 py-3 md:max-w-[78%]">
-                  <span className="font-pixel mb-2 block text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-                    AI
-                  </span>
-                  <div className="font-pixel text-sm leading-7 text-muted-foreground">
-                    {t("loading")}
-                  </div>
-                </div>
-              </div>
-            ) : null}
-          </div>
-        )}
-      </div>
-
-      {/* Input area */}
-      <div className="shrink-0 border-t-2 border-border/60 bg-background/80 p-4 md:p-5">
-        <div className="space-y-3">
-          {error ? (
-            <p className="font-pixel text-[10px] uppercase tracking-[0.2em] text-destructive">
-              {t("errorGeneric")}
-            </p>
-          ) : null}
-          <form onSubmit={handleSubmit} className="flex items-end gap-3">
-            <Textarea
-              ref={textareaRef}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder={t("textPromptPlaceholder")}
-              className="min-h-[72px] flex-1 resize-none border-2 border-border/80 bg-background/90 px-4 py-3 text-sm focus-visible:border-primary"
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault()
-                  void handleSubmit(e)
-                }
-              }}
-            />
-            <Button
-              type="submit"
-              disabled={!input.trim() || isBusy}
-              className="h-11 shrink-0 px-6"
-            >
-              {isBusy ? t("loading") : t("submit")}
-            </Button>
-          </form>
-        </div>
-      </div>
+      <ChatMessagesViewport
+        messages={messages}
+        isBusy={isBusy}
+        showThinking={showThinking}
+        lastAssistantMessageId={lastAssistantMessageId}
+        loadingLabel={t("loading")}
+        emptyLabel={t("empty")}
+      />
+      <ChatComposer
+        sendMessage={sendMessage}
+        isBusy={isBusy}
+        error={error}
+        placeholder={t("textPromptPlaceholder")}
+        loadingLabel={t("loading")}
+        submitLabel={t("submit")}
+        errorLabel={t("errorGeneric")}
+      />
     </div>
+  )
+}
+
+/* ─── Pixel icons ─── */
+
+function PixelMenuIcon({ isOpen }: { isOpen: boolean }) {
+  return (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 18 18"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      shapeRendering="crispEdges"
+      className="transition-opacity duration-200 ease-out"
+      aria-hidden="true"
+    >
+      {isOpen ? (
+        // Pixel X — 3×3 blocks stepped diagonally
+        <>
+          {/* Top-left → bottom-right */}
+          <rect x="0" y="0" width="3" height="3" fill="currentColor" />
+          <rect x="3" y="3" width="3" height="3" fill="currentColor" />
+          <rect x="6" y="6" width="3" height="3" fill="currentColor" />
+          <rect x="9" y="9" width="3" height="3" fill="currentColor" />
+          <rect x="12" y="12" width="3" height="3" fill="currentColor" />
+          <rect x="15" y="15" width="3" height="3" fill="currentColor" />
+          {/* Top-right → bottom-left */}
+          <rect x="15" y="0" width="3" height="3" fill="currentColor" />
+          <rect x="12" y="3" width="3" height="3" fill="currentColor" />
+          <rect x="9" y="6" width="3" height="3" fill="currentColor" />
+          <rect x="6" y="9" width="3" height="3" fill="currentColor" />
+          <rect x="3" y="12" width="3" height="3" fill="currentColor" />
+          <rect x="0" y="15" width="3" height="3" fill="currentColor" />
+        </>
+      ) : (
+        // Pixel hamburger — chunky 3px bars
+        <>
+          <rect x="2" y="3" width="14" height="3" fill="currentColor" />
+          <rect x="2" y="8" width="14" height="3" fill="currentColor" />
+          <rect x="2" y="13" width="14" height="3" fill="currentColor" />
+        </>
+      )}
+    </svg>
   )
 }
 
@@ -534,7 +636,18 @@ export default function AIPlayground() {
 
   return (
     <section className="mx-auto flex h-[calc(100svh-3.5rem)] max-w-7xl flex-col px-4 pb-4 pt-6 md:px-8 md:pb-6 md:pt-8 lg:max-w-[92vw]">
-      <header className="mb-4 flex items-start justify-between">
+      <header className="mb-4 flex items-center gap-3">
+        {/* Mobile sidebar toggle */}
+        <button
+          onClick={() => setSidebarOpen((s) => !s)}
+          className="flex h-11 w-11 shrink-0 items-center justify-center border-2 border-border/60 bg-background/60 text-foreground transition-colors hover:border-primary/60 hover:bg-primary/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 md:hidden"
+          aria-label={sidebarOpen ? t("closeSidebar") ?? "Close sidebar" : t("openSidebar") ?? "Open sidebar"}
+          aria-expanded={sidebarOpen}
+          aria-controls="chat-sidebar"
+        >
+          <PixelMenuIcon isOpen={sidebarOpen} />
+        </button>
+
         <div className="shrink-0 space-y-1.5">
           <p className="section-kicker">{t("eyebrow")}</p>
           <h1 className="pixel-heading !tracking-[0.01em] text-[clamp(0.9rem,1.6vw,1.2rem)]">
@@ -544,25 +657,19 @@ export default function AIPlayground() {
             {t("description")}
           </p>
         </div>
-
-        {/* Mobile sidebar toggle */}
-        <button
-          onClick={() => setSidebarOpen((s) => !s)}
-          className="shrink-0 border-2 border-border/60 bg-background/60 px-3 py-2 font-pixel text-[10px] uppercase tracking-[0.2em] text-foreground transition-colors hover:border-primary/60 hover:bg-primary/[0.06] md:hidden"
-          aria-label={sidebarOpen ? "Close sidebar" : "Open sidebar"}
-        >
-          {sidebarOpen ? "Close" : "Chats"}
-        </button>
       </header>
 
       <div className="section-shell relative flex flex-1 flex-row overflow-hidden">
         {/* ── Sidebar ── */}
         <aside
-          className={`${
+          id="chat-sidebar"
+          className={cn(
+            "absolute inset-y-0 left-0 z-30 border-r-2 border-border/60 bg-background/95 backdrop-blur-sm transition-all duration-200 ease-out",
+            "w-[min(280px,85vw)] md:static md:inset-auto md:w-[220px] md:translate-x-0 md:opacity-100 lg:w-[260px]",
             sidebarOpen
               ? "translate-x-0 opacity-100"
-              : "-translate-x-full opacity-0"
-          } absolute inset-y-0 left-0 z-30 w-[260px] border-r-2 border-border/60 bg-background/95 backdrop-blur-sm transition-all duration-200 ease-out md:static md:inset-auto md:w-[220px] md:translate-x-0 md:opacity-100 lg:w-[260px]`}
+              : "-translate-x-full opacity-0 md:opacity-100"
+          )}
         >
           <div className="flex h-full flex-col">
             {/* Sidebar header */}
@@ -622,9 +729,21 @@ export default function AIPlayground() {
                           removeChat(thread.id)
                           deleteThread(thread.id)
                         }}
-                        className="absolute right-2 top-1/2 hidden -translate-y-1/2 px-1.5 py-0.5 font-pixel text-sm leading-none text-muted-foreground/40 transition-colors hover:text-destructive group-hover:inline-block"
-                        aria-label="Delete chat"
-                        title="Delete chat"
+                        className="absolute right-2 top-1/2 inline-block -translate-y-1/2 px-1.5 py-0.5 font-pixel text-sm leading-none text-muted-foreground/40 transition-colors hover:text-destructive md:hidden"
+                        aria-label={t("deleteChat") ?? "Delete chat"}
+                        title={t("deleteChat") ?? "Delete chat"}
+                      >
+                        ×
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          removeChat(thread.id)
+                          deleteThread(thread.id)
+                        }}
+                        className="absolute right-2 top-1/2 hidden -translate-y-1/2 px-1.5 py-0.5 font-pixel text-sm leading-none text-muted-foreground/40 transition-colors hover:text-destructive md:group-hover:inline-block"
+                        aria-label={t("deleteChat") ?? "Delete chat"}
+                        title={t("deleteChat") ?? "Delete chat"}
                       >
                         ×
                       </button>
@@ -649,8 +768,9 @@ export default function AIPlayground() {
         {/* Mobile overlay */}
         {sidebarOpen && (
           <div
-            className="absolute inset-0 z-20 bg-background/60 backdrop-blur-[2px] md:hidden"
+            className="absolute inset-0 z-20 touch-none bg-background/80 backdrop-blur-sm transition-opacity duration-200 md:hidden"
             onClick={() => setSidebarOpen(false)}
+            aria-hidden="true"
           />
         )}
 
