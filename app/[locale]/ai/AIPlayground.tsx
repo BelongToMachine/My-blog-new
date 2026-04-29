@@ -16,15 +16,15 @@ import { useTheme } from "@/app/hooks/useTheme"
 import { useChatThreads, type ChatThread } from "@/app/hooks/useChatThreads"
 import { useThreadChat } from "@/app/hooks/useThreadChat"
 import { useGlobalChatRuntime } from "@/app/context/GlobalChatRuntimeContext"
-import { cn } from "@/lib/utils"
 import {
-  ProfileCardBlock,
-  ProjectGridBlock,
-  ArticleSummaryBlock,
-  TimelineBlock,
-  ComparisonTableBlock,
-} from "@/app/components/ai-blocks"
+  useThreadWorkspace,
+  removeWorkspaceForThread,
+} from "@/app/hooks/useThreadWorkspace"
+import { cn } from "@/lib/utils"
 import { ClientComponent } from "@/app/packages/ClientComponent"
+import WorkspacePanel from "@/app/components/ai-workspace/WorkspacePanel"
+import PixelMenuIcon from "@/app/components/system/PixelMenuIcon"
+import type { WorkspaceArtifactPayload } from "@/app/types/ai-workspace"
 
 const useBrowserLayoutEffect =
   typeof window === "undefined" ? useEffect : useLayoutEffect
@@ -37,102 +37,40 @@ const CODE_LANGUAGE_ALIAS_MAP: Record<string, string> = {
   md: "markdown",
 }
 
-/* ─── Generative UI wrapper ─── */
+/* ─── Tool name helper ─── */
 
-function GenerativeUIBorder({
-  label,
-  children,
-}: {
-  label: string
-  children: React.ReactNode
-}) {
-  return (
-    <div className="relative border-l-4 border-l-primary bg-primary/[0.03] py-3 pl-4 pr-3 dark:bg-primary/[0.06]">
-      <p className="font-pixel mb-2 text-[9px] uppercase tracking-[0.2em] text-primary/70">
-        {label}
-      </p>
-      {children}
-    </div>
-  )
+function getToolName(part: { type: string; toolName?: string }): string {
+  const toolPrefix = "tool-"
+  if (part.type === "dynamic-tool" && part.toolName) {
+    return part.toolName
+  }
+  if (part.type.startsWith(toolPrefix)) {
+    return part.type.slice(toolPrefix.length)
+  }
+  return part.type
 }
 
-/* ─── Tool renderer ─── */
+/* ─── Lightweight tool receipt ─── */
 
-function ToolOutputRenderer({
-  toolName,
-  output,
-}: {
-  toolName: string
-  output: unknown
-}) {
+const TOOL_RECEIPTS: Record<string, string> = {
+  get_profile_summary: "Generated profile card",
+  list_projects: "Generated project grid",
+  search_articles: "Generated article summary",
+  build_ui_block: "Generated artifact",
+}
+
+function ToolReceipt({ toolName, output }: { toolName: string; output: unknown }) {
   const data = output as Record<string, unknown>
+  const summary = (data.summary as string) || TOOL_RECEIPTS[toolName] || "Done"
 
-  switch (toolName) {
-    case "get_profile_summary":
-      return (
-        <GenerativeUIBorder label="Generated Profile">
-          <ProfileCardBlock data={data} />
-        </GenerativeUIBorder>
-      )
-    case "list_projects":
-      return (
-        <GenerativeUIBorder label="Generated Projects">
-          <ProjectGridBlock
-            data={{ projects: Array.isArray(output) ? output : [] }}
-          />
-        </GenerativeUIBorder>
-      )
-    case "search_articles":
-      return (
-        <GenerativeUIBorder label="Generated Articles">
-          <ArticleSummaryBlock
-            data={{ articles: Array.isArray(output) ? output : [] }}
-          />
-        </GenerativeUIBorder>
-      )
-    case "build_ui_block": {
-      const blockType = data.blockType as string
-      const blockData = (data.data as Record<string, unknown>) ?? {}
-      const blockTitle = (data.title as string) || undefined
-
-      switch (blockType) {
-        case "profile-card":
-          return (
-            <GenerativeUIBorder label="Generated Profile">
-              <ProfileCardBlock title={blockTitle} data={blockData} />
-            </GenerativeUIBorder>
-          )
-        case "project-grid":
-          return (
-            <GenerativeUIBorder label="Generated Projects">
-              <ProjectGridBlock title={blockTitle} data={blockData} />
-            </GenerativeUIBorder>
-          )
-        case "article-summary":
-          return (
-            <GenerativeUIBorder label="Generated Articles">
-              <ArticleSummaryBlock title={blockTitle} data={blockData} />
-            </GenerativeUIBorder>
-          )
-        case "timeline":
-          return (
-            <GenerativeUIBorder label="Generated Timeline">
-              <TimelineBlock title={blockTitle} data={blockData} />
-            </GenerativeUIBorder>
-          )
-        case "comparison-table":
-          return (
-            <GenerativeUIBorder label="Generated Comparison">
-              <ComparisonTableBlock title={blockTitle} data={blockData} />
-            </GenerativeUIBorder>
-          )
-        default:
-          return null
-      }
-    }
-    default:
-      return null
-  }
+  return (
+    <div className="flex items-center gap-2 py-1 text-primary/80">
+      <span className="inline-block h-2 w-2 bg-primary" />
+      <span className="font-pixel text-[10px] uppercase tracking-[0.2em]">
+        {summary}
+      </span>
+    </div>
+  )
 }
 
 /* ─── Markdown renderer for assistant text ─── */
@@ -246,9 +184,7 @@ function MarkdownRenderer({
         li: ({ children }) => (
           <li className="text-sm leading-7 text-foreground/90">{children}</li>
         ),
-        hr: () => (
-          <hr className="my-4 border-t-2 border-primary/20" />
-        ),
+        hr: () => <hr className="my-4 border-t-2 border-primary/20" />,
         blockquote: ({ children }) => (
           <blockquote className="border-l-2 border-primary/40 bg-primary/[0.04] py-2 pl-3 pr-2 italic text-muted-foreground">
             {children}
@@ -313,10 +249,7 @@ const ChatMessagesViewport = React.memo(function ChatMessagesViewport({
   }, [messages, isBusy])
 
   return (
-    <div
-      ref={scrollViewportRef}
-      className="flex-1 overflow-y-auto p-4 md:p-5"
-    >
+    <div ref={scrollViewportRef} className="flex-1 overflow-y-auto p-4 md:p-5">
       {messages.length === 0 ? (
         <div className="flex h-full flex-col items-center justify-center gap-8 px-4 text-center">
           <div className="font-pixel text-6xl text-primary/30">&gt;_</div>
@@ -358,13 +291,7 @@ const ChatMessagesViewport = React.memo(function ChatMessagesViewport({
                     }
 
                     if (isToolUIPart(part)) {
-                      const toolPrefix = "tool-"
-                      const toolName =
-                        part.type === "dynamic-tool"
-                          ? part.toolName
-                          : part.type.startsWith(toolPrefix)
-                            ? part.type.slice(toolPrefix.length)
-                            : part.type
+                      const toolName = getToolName(part)
 
                       if (part.state === "input-available") {
                         return (
@@ -383,7 +310,7 @@ const ChatMessagesViewport = React.memo(function ChatMessagesViewport({
                       if (part.state === "output-available") {
                         return (
                           <div key={`${message.id}-${index}`}>
-                            <ToolOutputRenderer
+                            <ToolReceipt
                               toolName={toolName}
                               output={part.output}
                             />
@@ -491,14 +418,36 @@ const ChatComposer = React.memo(function ChatComposer({
   )
 })
 
+/* ─── Workspace sync helpers ─── */
+
+function extractArtifactPayload(output: unknown): WorkspaceArtifactPayload | null {
+  const data = output as Record<string, unknown>
+  const artifactType = (data.artifactType || data.blockType) as string
+  if (!artifactType) return null
+
+  return {
+    artifactType: artifactType as WorkspaceArtifactPayload["artifactType"],
+    operation: (data.operation as WorkspaceArtifactPayload["operation"]) || "append",
+    title: (data.title as string) || undefined,
+    summary: (data.summary as string) || undefined,
+    focus: (data.focus as boolean) ?? true,
+    artifactId: (data.artifactId as string) || undefined,
+    data: (data.data as Record<string, unknown>) ?? {},
+  }
+}
+
 /* ─── Chat thread view (isolated per thread) ─── */
 
 function ChatThreadView({
   thread,
   onMessagesChange,
+  workspaceActions,
+  workspaceArtifacts,
 }: {
   thread: ChatThread
   onMessagesChange: (messages: UIMessage[]) => void
+  workspaceActions: ReturnType<typeof useThreadWorkspace>
+  workspaceArtifacts: ReturnType<typeof useThreadWorkspace>["artifacts"]
 }) {
   const t = useTranslations("ai")
 
@@ -517,11 +466,179 @@ function ChatThreadView({
       if (part.type === "text") {
         return part.text.trim().length > 0
       }
-
       return isToolUIPart(part) && part.state !== "input-streaming"
     }),
   )
   const showThinking = isBusy && !lastAssistantHasContent
+
+  /* Sync tool outputs to workspace */
+  const processedRef = useRef<Set<string>>(new Set())
+
+  useEffect(() => {
+    processedRef.current = new Set(
+      workspaceArtifacts
+        .map((a) => a.sourceMessageId)
+        .filter(Boolean) as string[],
+    )
+  }, [thread.id, workspaceArtifacts])
+
+  useEffect(() => {
+    messages.forEach((message) => {
+      if (message.role !== "assistant") return
+      message.parts.forEach((part, partIndex) => {
+        if (!isToolUIPart(part)) return
+        if (part.state !== "output-available") return
+
+        const toolName = getToolName(part)
+        const sourceId = `${message.id}-${partIndex}`
+        if (processedRef.current.has(sourceId)) return
+
+        /* build_ui_block — new protocol */
+        if (toolName === "build_ui_block") {
+          const payload = extractArtifactPayload(part.output)
+          if (!payload) return
+
+          processedRef.current.add(sourceId)
+
+          const artifactBase = {
+            type: payload.artifactType,
+            title: payload.title,
+            data: payload.data,
+            status: "ready" as const,
+            sourceMessageId: sourceId,
+            summary: payload.summary,
+          }
+
+          if (payload.operation === "append") {
+            workspaceActions.addArtifact(artifactBase)
+          } else if (payload.operation === "replace") {
+            const existing = workspaceArtifacts.find(
+              (a) => a.type === payload.artifactType,
+            )
+            if (existing) {
+              workspaceActions.updateArtifact(existing.id, {
+                data: payload.data,
+                title: payload.title ?? existing.title,
+                status: "ready",
+                sourceMessageId: sourceId,
+                summary: payload.summary ?? existing.summary,
+              })
+            } else {
+              workspaceActions.addArtifact(artifactBase)
+            }
+          } else if (payload.operation === "update") {
+            const targetId = payload.artifactId
+            if (targetId) {
+              const existing = workspaceArtifacts.find((a) => a.id === targetId)
+              if (existing) {
+                workspaceActions.updateArtifact(targetId, {
+                  data: payload.data,
+                  title: payload.title ?? existing.title,
+                  status: "ready",
+                  sourceMessageId: sourceId,
+                  summary: payload.summary ?? existing.summary,
+                })
+              } else {
+                workspaceActions.addArtifact(artifactBase)
+              }
+            } else {
+              const existing = workspaceArtifacts.find(
+                (a) => a.type === payload.artifactType,
+              )
+              if (existing) {
+                workspaceActions.updateArtifact(existing.id, {
+                  data: payload.data,
+                  title: payload.title ?? existing.title,
+                  status: "ready",
+                  sourceMessageId: sourceId,
+                  summary: payload.summary ?? existing.summary,
+                })
+              } else {
+                workspaceActions.addArtifact(artifactBase)
+              }
+            }
+          }
+          return
+        }
+
+        /* Legacy tools — route to workspace as artifacts too */
+        if (toolName === "get_profile_summary") {
+          processedRef.current.add(sourceId)
+          const existing = workspaceArtifacts.find((a) => a.type === "profile-card")
+          if (existing) {
+            workspaceActions.updateArtifact(existing.id, {
+              data: part.output as Record<string, unknown>,
+              status: "ready",
+              sourceMessageId: sourceId,
+            })
+          } else {
+            workspaceActions.addArtifact({
+              type: "profile-card",
+              title: "Profile Summary",
+              data: part.output as Record<string, unknown>,
+              status: "ready",
+              sourceMessageId: sourceId,
+              summary: "Generated profile card",
+            })
+          }
+          return
+        }
+
+        if (toolName === "list_projects") {
+          processedRef.current.add(sourceId)
+          const existing = workspaceArtifacts.find((a) => a.type === "project-grid")
+          if (existing) {
+            workspaceActions.updateArtifact(existing.id, {
+              data: { projects: Array.isArray(part.output) ? part.output : [] },
+              status: "ready",
+              sourceMessageId: sourceId,
+            })
+          } else {
+            workspaceActions.addArtifact({
+              type: "project-grid",
+              title: "Projects",
+              data: { projects: Array.isArray(part.output) ? part.output : [] },
+              status: "ready",
+              sourceMessageId: sourceId,
+              summary: "Generated project grid",
+            })
+          }
+          return
+        }
+
+        if (toolName === "search_articles") {
+          processedRef.current.add(sourceId)
+          const existing = workspaceArtifacts.find((a) => a.type === "article-summary")
+          if (existing) {
+            workspaceActions.updateArtifact(existing.id, {
+              data: { articles: Array.isArray(part.output) ? part.output : [] },
+              status: "ready",
+              sourceMessageId: sourceId,
+            })
+          } else {
+            workspaceActions.addArtifact({
+              type: "article-summary",
+              title: "Articles",
+              data: { articles: Array.isArray(part.output) ? part.output : [] },
+              status: "ready",
+              sourceMessageId: sourceId,
+              summary: "Generated article summary",
+            })
+          }
+          return
+        }
+      })
+    })
+  }, [messages, workspaceActions, workspaceArtifacts, thread.id])
+
+  /* Mark artifacts as updating when busy */
+  useEffect(() => {
+    if (!isBusy) return
+    const lastArtifact = workspaceArtifacts[workspaceArtifacts.length - 1]
+    if (!lastArtifact) return
+    if (lastArtifact.status === "updating") return
+    workspaceActions.setArtifactStatus(lastArtifact.id, "updating")
+  }, [isBusy, workspaceActions, workspaceArtifacts])
 
   return (
     <div className="flex h-full flex-col overflow-hidden">
@@ -543,50 +660,6 @@ function ChatThreadView({
         errorLabel={t("errorGeneric")}
       />
     </div>
-  )
-}
-
-/* ─── Pixel icons ─── */
-
-function PixelMenuIcon({ isOpen }: { isOpen: boolean }) {
-  return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 18 18"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      shapeRendering="crispEdges"
-      className="transition-opacity duration-200 ease-out"
-      aria-hidden="true"
-    >
-      {isOpen ? (
-        // Pixel X — 3×3 blocks stepped diagonally
-        <>
-          {/* Top-left → bottom-right */}
-          <rect x="0" y="0" width="3" height="3" fill="currentColor" />
-          <rect x="3" y="3" width="3" height="3" fill="currentColor" />
-          <rect x="6" y="6" width="3" height="3" fill="currentColor" />
-          <rect x="9" y="9" width="3" height="3" fill="currentColor" />
-          <rect x="12" y="12" width="3" height="3" fill="currentColor" />
-          <rect x="15" y="15" width="3" height="3" fill="currentColor" />
-          {/* Top-right → bottom-left */}
-          <rect x="15" y="0" width="3" height="3" fill="currentColor" />
-          <rect x="12" y="3" width="3" height="3" fill="currentColor" />
-          <rect x="9" y="6" width="3" height="3" fill="currentColor" />
-          <rect x="6" y="9" width="3" height="3" fill="currentColor" />
-          <rect x="3" y="12" width="3" height="3" fill="currentColor" />
-          <rect x="0" y="15" width="3" height="3" fill="currentColor" />
-        </>
-      ) : (
-        // Pixel hamburger — chunky 3px bars
-        <>
-          <rect x="2" y="3" width="14" height="3" fill="currentColor" />
-          <rect x="2" y="8" width="14" height="3" fill="currentColor" />
-          <rect x="2" y="13" width="14" height="3" fill="currentColor" />
-        </>
-      )}
-    </svg>
   )
 }
 
@@ -624,14 +697,27 @@ export default function AIPlayground() {
   const { removeChat } = useGlobalChatRuntime()
 
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [mobileTab, setMobileTab] = useState<"chat" | "workspace">("chat")
 
   const activeThread = threads.find((t) => t.id === activeThreadId)
+
+  const workspace = useThreadWorkspace(activeThreadId)
+
   const handleActiveMessagesChange = useCallback(
     (msgs: UIMessage[]) => {
       if (!activeThreadId) return
       updateThreadMessages(activeThreadId, msgs)
     },
     [activeThreadId, updateThreadMessages],
+  )
+
+  const handleDeleteThread = useCallback(
+    (id: string) => {
+      removeChat(id)
+      removeWorkspaceForThread(id)
+      deleteThread(id)
+    },
+    [removeChat, deleteThread],
   )
 
   return (
@@ -641,7 +727,11 @@ export default function AIPlayground() {
         <button
           onClick={() => setSidebarOpen((s) => !s)}
           className="flex h-11 w-11 shrink-0 items-center justify-center border-2 border-border/60 bg-background/60 text-foreground transition-colors hover:border-primary/60 hover:bg-primary/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 md:hidden"
-          aria-label={sidebarOpen ? t("closeSidebar") ?? "Close sidebar" : t("openSidebar") ?? "Open sidebar"}
+          aria-label={
+            sidebarOpen
+              ? t("closeSidebar") ?? "Close sidebar"
+              : t("openSidebar") ?? "Open sidebar"
+          }
           aria-expanded={sidebarOpen}
           aria-controls="chat-sidebar"
         >
@@ -668,7 +758,7 @@ export default function AIPlayground() {
             "w-[min(280px,85vw)] md:static md:inset-auto md:w-[220px] md:translate-x-0 md:opacity-100 lg:w-[260px]",
             sidebarOpen
               ? "translate-x-0 opacity-100"
-              : "-translate-x-full opacity-0 md:opacity-100"
+              : "-translate-x-full opacity-0 md:opacity-100",
           )}
         >
           <div className="flex h-full flex-col">
@@ -711,6 +801,7 @@ export default function AIPlayground() {
                         onClick={() => {
                           setActiveThread(thread.id)
                           setSidebarOpen(false)
+                          setMobileTab("chat")
                         }}
                         className="w-full px-3 py-2.5 text-left"
                       >
@@ -726,8 +817,7 @@ export default function AIPlayground() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation()
-                          removeChat(thread.id)
-                          deleteThread(thread.id)
+                          handleDeleteThread(thread.id)
                         }}
                         className="absolute right-2 top-1/2 inline-block -translate-y-1/2 px-1.5 py-0.5 font-pixel text-sm leading-none text-muted-foreground/40 transition-colors hover:text-destructive md:hidden"
                         aria-label={t("deleteChat") ?? "Delete chat"}
@@ -738,8 +828,7 @@ export default function AIPlayground() {
                       <button
                         onClick={(e) => {
                           e.stopPropagation()
-                          removeChat(thread.id)
-                          deleteThread(thread.id)
+                          handleDeleteThread(thread.id)
                         }}
                         className="absolute right-2 top-1/2 hidden -translate-y-1/2 px-1.5 py-0.5 font-pixel text-sm leading-none text-muted-foreground/40 transition-colors hover:text-destructive md:group-hover:inline-block"
                         aria-label={t("deleteChat") ?? "Delete chat"}
@@ -774,28 +863,102 @@ export default function AIPlayground() {
           />
         )}
 
+        {/* ── Mobile tabs ── */}
+        <div className="absolute left-0 right-0 top-0 z-10 flex border-b-2 border-border/60 bg-background/95 md:hidden">
+          <button
+            onClick={() => setMobileTab("chat")}
+            className={cn(
+              "flex-1 border-b-2 px-3 py-2.5 font-pixel text-[10px] uppercase tracking-[0.16em] transition-colors",
+              mobileTab === "chat"
+                ? "border-primary text-primary"
+                : "border-transparent text-muted-foreground",
+            )}
+          >
+            {t("chatTab") ?? "Chat"}
+          </button>
+          <button
+            onClick={() => setMobileTab("workspace")}
+            className={cn(
+              "flex-1 border-b-2 px-3 py-2.5 font-pixel text-[10px] uppercase tracking-[0.16em] transition-colors",
+              mobileTab === "workspace"
+                ? "border-primary text-primary"
+                : "border-transparent text-muted-foreground",
+            )}
+          >
+            {t("workspaceTab") ?? "Workspace"}
+            {workspace.artifacts.length > 0 ? (
+              <span className="ml-1.5 inline-block h-4 min-w-[16px] bg-primary px-1 text-center text-[9px] leading-4 text-primary-foreground">
+                {workspace.artifacts.length}
+              </span>
+            ) : null}
+          </button>
+        </div>
+
         {/* ── Chat area ── */}
-        <main className="relative flex flex-1 flex-col overflow-hidden">
-          {!hydrated ? (
-            <div className="flex h-full items-center justify-center">
-              <p className="font-pixel text-sm uppercase tracking-[0.2em] text-muted-foreground/40">
-                Loading chats...
-              </p>
-            </div>
-          ) : activeThread ? (
-            <ChatThreadView
-              key={activeThread.id}
-              thread={activeThread}
-              onMessagesChange={handleActiveMessagesChange}
-            />
-          ) : (
-            <div className="flex h-full items-center justify-center">
-              <p className="font-pixel text-sm uppercase tracking-[0.2em] text-muted-foreground/50">
-                {t("noChats") ?? "No conversations yet"}
-              </p>
-            </div>
+        <main
+          className={cn(
+            "relative flex flex-col overflow-hidden md:flex-[5]",
+            mobileTab === "chat" ? "flex" : "hidden md:flex",
           )}
+        >
+          <div className="pt-[44px] md:pt-0 h-full">
+            {!hydrated ? (
+              <div className="flex h-full items-center justify-center">
+                <p className="font-pixel text-sm uppercase tracking-[0.2em] text-muted-foreground/40">
+                  Loading chats...
+                </p>
+              </div>
+            ) : activeThread ? (
+              <ChatThreadView
+                key={activeThread.id}
+                thread={activeThread}
+                onMessagesChange={handleActiveMessagesChange}
+                workspaceActions={workspace}
+                workspaceArtifacts={workspace.artifacts}
+              />
+            ) : (
+              <div className="flex h-full items-center justify-center">
+                <p className="font-pixel text-sm uppercase tracking-[0.2em] text-muted-foreground/50">
+                  {t("noChats") ?? "No conversations yet"}
+                </p>
+              </div>
+            )}
+          </div>
         </main>
+
+        {/* ── Workspace area ── */}
+        <div
+          className={cn(
+            "relative flex-col overflow-hidden md:flex md:flex-[7]",
+            mobileTab === "workspace" ? "flex" : "hidden",
+          )}
+        >
+          <div className="pt-[44px] md:pt-0 h-full">
+            {!hydrated ? (
+              <div className="flex h-full items-center justify-center">
+                <p className="font-pixel text-sm uppercase tracking-[0.2em] text-muted-foreground/40">
+                  Loading workspace...
+                </p>
+              </div>
+            ) : activeThread ? (
+              <WorkspacePanel
+                threadTitle={activeThread.title}
+                artifacts={workspace.artifacts}
+                activeArtifactId={workspace.activeArtifactId}
+                activeArtifact={workspace.activeArtifact}
+                onSelectArtifact={workspace.setActiveArtifact}
+                onClearWorkspace={workspace.clearWorkspace}
+                isBusy={false}
+              />
+            ) : (
+              <div className="flex h-full items-center justify-center">
+                <p className="font-pixel text-sm uppercase tracking-[0.2em] text-muted-foreground/50">
+                  {t("workspaceEmpty") ?? "Workspace is empty"}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </section>
   )
