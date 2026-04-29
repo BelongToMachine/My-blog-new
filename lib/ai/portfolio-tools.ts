@@ -121,30 +121,54 @@ export const searchArticlesTool = tool({
 
 export const buildUiBlockTool = tool({
   description:
-    "Build a structured UI block for the portfolio page. Use this when the user asks to show, display, or generate a visual element like a profile card, project grid, article list, timeline, or comparison table. Returns a structured payload that the frontend renders with a fixed React component.",
+    "Build or update a structured UI artifact in the workspace. Use this when the user asks to show, display, generate, or refine a visual element like a profile card, project grid, article list, timeline, comparison table, or role-fit report. Returns a structured payload that the frontend renders in the workspace panel.",
   inputSchema: z.object({
-    blockType: z
+    artifactType: z
       .enum([
         "profile-card",
         "project-grid",
         "article-summary",
         "timeline",
         "comparison-table",
+        "role-fit-report",
       ])
-      .describe("The type of UI block to generate"),
+      .describe("The type of artifact to generate or update"),
+    operation: z
+      .enum(["append", "replace", "update"])
+      .default("append")
+      .describe(
+        "append = add a new artifact; replace = replace the main artifact of this type; update = update an existing artifact of this type",
+      ),
     title: z
       .string()
       .optional()
-      .describe("Optional heading/title for the block"),
+      .describe("Optional heading/title for the artifact"),
+    summary: z
+      .string()
+      .optional()
+      .describe("Short receipt text shown in chat, e.g. 'Generated project grid'"),
+    focus: z
+      .boolean()
+      .optional()
+      .default(true)
+      .describe("Whether to automatically focus this artifact in the workspace"),
+    artifactId: z
+      .string()
+      .optional()
+      .describe("When operation is update, optional target artifact ID"),
     data: z
       .record(z.unknown())
       .describe(
-        "Structured data payload for the block. Schema depends on blockType.",
+        "Structured data payload for the artifact. Schema depends on artifactType.",
       ),
   }),
   execute: async (input: {
-    blockType: string
+    artifactType: string
+    operation: string
     title?: string
+    summary?: string
+    focus?: boolean
+    artifactId?: string
     data: Record<string, unknown>
   }) => input,
 })
