@@ -31,7 +31,10 @@
     "newChat": "New Chat",
     "noChats": "No conversations yet",
     "chatSingular": "chat",
-    "chatPlural": "chats"
+    "chatPlural": "chats",
+    "openSidebar": "Open sidebar",
+    "closeSidebar": "Close sidebar",
+    "deleteChat": "Delete chat"
   },
   "hero": {
     "greeting": "Heya I'm",

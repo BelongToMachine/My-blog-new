@@ -31,7 +31,10 @@
     "newChat": "新建对话",
     "noChats": "暂无对话",
     "chatSingular": "条对话",
-    "chatPlural": "条对话"
+    "chatPlural": "条对话",
+    "openSidebar": "打开侧边栏",
+    "closeSidebar": "关闭侧边栏",
+    "deleteChat": "删除对话"
   },
   "hero": {
     "greeting": "Heya I'm",
