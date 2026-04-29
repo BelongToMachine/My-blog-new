@@ -27,7 +27,11 @@
     "resultEyebrow": "助手输出",
     "resultTitle": "响应结果",
     "empty": "回答会显示在这里。你可以直接问我是谁、做过什么项目、为什么这样实现，或者这个作品集想传达什么。",
-    "errorGeneric": "连接 AI 助手时发生错误。"
+    "errorGeneric": "连接 AI 助手时发生错误。",
+    "newChat": "新建对话",
+    "noChats": "暂无对话",
+    "chatSingular": "条对话",
+    "chatPlural": "条对话"
   },
   "hero": {
     "greeting": "Heya I'm",

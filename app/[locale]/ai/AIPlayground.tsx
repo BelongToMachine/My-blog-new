@@ -1,6 +1,12 @@
 "use client"
 
-import React, { useEffect, useRef, useState } from "react"
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react"
 import { isToolUIPart, type UIMessage } from "ai"
 import ReactMarkdown from "react-markdown"
 import { Button } from "@/app/components/ui/button"
@@ -10,6 +16,7 @@ import { useTheme } from "@/app/hooks/useTheme"
 import { useChatThreads, type ChatThread } from "@/app/hooks/useChatThreads"
 import { useThreadChat } from "@/app/hooks/useThreadChat"
 import { useGlobalChatRuntime } from "@/app/context/GlobalChatRuntimeContext"
+import { cn } from "@/lib/utils"
 import {
   ProfileCardBlock,
   ProjectGridBlock,
@@ -17,7 +24,18 @@ import {
   TimelineBlock,
   ComparisonTableBlock,
 } from "@/app/components/ai-blocks"
-import { CodeBlocker } from "@/app/packages/Screen"
+import { ClientComponent } from "@/app/packages/ClientComponent"
+
+const useBrowserLayoutEffect =
+  typeof window === "undefined" ? useEffect : useLayoutEffect
+
+const CODE_LANGUAGE_ALIAS_MAP: Record<string, string> = {
+  shell: "bash",
+  zsh: "bash",
+  env: "bash",
+  yml: "yaml",
+  md: "markdown",
+}
 
 /* ─── Generative UI wrapper ─── */
 
@@ -119,7 +137,62 @@ function ToolOutputRenderer({
 
 /* ─── Markdown renderer for assistant text ─── */
 
-function MarkdownRenderer({ text }: { text: string }) {
+function ChatCodeBlock({
+  code,
+  colorMode,
+  language,
+  isStreaming,
+  className,
+}: {
+  code: string
+  colorMode: string
+  language: string
+  isStreaming: boolean
+  className?: string
+}) {
+  const isDark = colorMode === "dark"
+  const taskbarBg = isDark ? "#2d2d2d" : "#f0f0f0"
+  const bodyBg = isDark ? "hsl(265 55% 8%)" : "hsl(215 30% 10%)"
+  const normalizedLanguage =
+    CODE_LANGUAGE_ALIAS_MAP[language.toLowerCase()] ?? language.toLowerCase()
+
+  return (
+    <div className={cn("overflow-hidden border-2 border-border", className)}>
+      <div
+        className="flex h-11 items-center justify-between border-b-2 border-border px-4"
+        style={{ background: taskbarBg }}
+      >
+        <div className="flex items-center gap-1.5">
+          <span className="block h-3 w-3" style={{ background: "#ff5f57" }} />
+          <span className="block h-3 w-3" style={{ background: "#ffbd2e" }} />
+          <span className="block h-3 w-3" style={{ background: "#28c840" }} />
+        </div>
+        <span className="font-pixel text-[9px] uppercase tracking-[0.2em] text-muted-foreground">
+          {language}
+        </span>
+      </div>
+      <div style={{ background: bodyBg }}>
+        {isStreaming ? (
+          <pre className="codeblock-pre m-0 max-h-[420px] w-full overflow-auto whitespace-pre p-4 text-[12px] leading-6 text-[#e7eef5]">
+            <code>{code}</code>
+          </pre>
+        ) : (
+          <ClientComponent lang={normalizedLanguage as any} colorMode={colorMode}>
+            {code}
+          </ClientComponent>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function MarkdownRenderer({
+  text,
+  streamCodeBlocks = false,
+}: {
+  text: string
+  streamCodeBlocks?: boolean
+}) {
   const { colorMode } = useTheme()
 
   return (
@@ -187,9 +260,11 @@ function MarkdownRenderer({ text }: { text: string }) {
 
           if (match) {
             return (
-              <CodeBlocker
+              <ChatCodeBlock
                 code={code}
                 colorMode={colorMode}
+                language={match[1]}
+                isStreaming={streamCodeBlocks}
                 className="my-3"
               />
             )
@@ -229,23 +304,38 @@ function ChatThreadView({
     onMessagesPersist: onMessagesChange,
   })
 
-  useEffect(() => {
+  useBrowserLayoutEffect(() => {
     const viewport = scrollViewportRef.current
     if (!viewport) return
     viewport.scrollTo({
       top: viewport.scrollHeight,
-      behavior: "smooth",
+      behavior: isBusy ? "auto" : "smooth",
     })
-  }, [messages])
+  }, [messages, isBusy])
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
     const value = input.trim()
     if (!value || isBusy) return
-    await sendMessage({ text: value })
     setInput("")
     textareaRef.current?.focus()
+    await sendMessage({ text: value })
   }
+
+  const lastAssistantMessage = [...messages]
+    .reverse()
+    .find((message) => message.role === "assistant")
+  const lastAssistantMessageId = lastAssistantMessage?.id
+  const lastAssistantHasContent = Boolean(
+    lastAssistantMessage?.parts.some((part) => {
+      if (part.type === "text") {
+        return part.text.trim().length > 0
+      }
+
+      return isToolUIPart(part) && part.state !== "input-streaming"
+    }),
+  )
+  const showThinking = isBusy && !lastAssistantHasContent
 
   return (
     <div className="flex h-full flex-col overflow-hidden">
@@ -285,6 +375,11 @@ function ChatThreadView({
                           <MarkdownRenderer
                             key={`${message.id}-${index}`}
                             text={part.text}
+                            streamCodeBlocks={
+                              isBusy &&
+                              message.role === "assistant" &&
+                              message.id === lastAssistantMessageId
+                            }
                           />
                         )
                       }
@@ -341,7 +436,7 @@ function ChatThreadView({
                 </div>
               </div>
             ))}
-            {isBusy ? (
+            {showThinking ? (
               <div className="flex justify-start">
                 <div className="max-w-[88%] border-2 border-border/70 bg-background/60 px-4 py-3 md:max-w-[78%]">
                   <span className="font-pixel mb-2 block text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
@@ -416,6 +511,7 @@ function formatRelativeTime(ts: number): string {
 export default function AIPlayground() {
   const t = useTranslations("ai")
   const {
+    hydrated,
     threads,
     activeThreadId,
     createThread,
@@ -428,6 +524,13 @@ export default function AIPlayground() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const activeThread = threads.find((t) => t.id === activeThreadId)
+  const handleActiveMessagesChange = useCallback(
+    (msgs: UIMessage[]) => {
+      if (!activeThreadId) return
+      updateThreadMessages(activeThreadId, msgs)
+    },
+    [activeThreadId, updateThreadMessages],
+  )
 
   return (
     <section className="mx-auto flex h-[calc(100svh-3.5rem)] max-w-7xl flex-col px-4 pb-4 pt-6 md:px-8 md:pb-6 md:pt-8 lg:max-w-[92vw]">
@@ -478,7 +581,11 @@ export default function AIPlayground() {
 
             {/* Thread list */}
             <div className="flex-1 overflow-y-auto p-2.5 md:p-3">
-              {threads.length === 0 ? (
+              {!hydrated ? (
+                <p className="font-pixel pt-6 text-center text-[10px] uppercase tracking-[0.2em] text-muted-foreground/40">
+                  Loading chats...
+                </p>
+              ) : threads.length === 0 ? (
                 <p className="font-pixel pt-6 text-center text-[10px] uppercase tracking-[0.2em] text-muted-foreground/50">
                   {t("noChats") ?? "No conversations yet"}
                 </p>
@@ -530,7 +637,7 @@ export default function AIPlayground() {
             {/* Thread count footer */}
             <div className="shrink-0 border-t border-border/40 px-3 py-2">
               <p className="font-pixel text-[9px] uppercase tracking-[0.2em] text-muted-foreground/40">
-                {threads.length}{" "}
+                {hydrated ? threads.length : 0}{" "}
                 {threads.length === 1
                   ? t("chatSingular") ?? "chat"
                   : t("chatPlural") ?? "chats"}
@@ -549,13 +656,17 @@ export default function AIPlayground() {
 
         {/* ── Chat area ── */}
         <main className="relative flex flex-1 flex-col overflow-hidden">
-          {activeThread ? (
+          {!hydrated ? (
+            <div className="flex h-full items-center justify-center">
+              <p className="font-pixel text-sm uppercase tracking-[0.2em] text-muted-foreground/40">
+                Loading chats...
+              </p>
+            </div>
+          ) : activeThread ? (
             <ChatThreadView
               key={activeThread.id}
               thread={activeThread}
-              onMessagesChange={(msgs) =>
-                updateThreadMessages(activeThread.id, msgs)
-              }
+              onMessagesChange={handleActiveMessagesChange}
             />
           ) : (
             <div className="flex h-full items-center justify-center">

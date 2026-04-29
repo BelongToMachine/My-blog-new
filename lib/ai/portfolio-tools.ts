@@ -41,11 +41,17 @@ export const listProjectsTool = tool({
       title: "Personal Portfolio & Blog",
       description:
         "A recruiter-facing portfolio with bilingual UX, MDX-based blog, AI playground, and pixel-first retro design system.",
-      tech: ["Next.js 14", "TypeScript", "Tailwind CSS", "Prisma", "Vercel AI SDK"],
+      tech: [
+        "Next.js 14",
+        "TypeScript",
+        "Tailwind CSS",
+        "Prisma",
+        "Vercel AI SDK",
+      ],
       highlights: ["Bilingual i18n", "Dark mode", "AI chatbot", "Responsive"],
     },
     {
-      title: "Issue Tracker / Blog System",
+      title: "Blog System",
       description:
         "A content management surface that blends database-driven blogs with MDX-powered long-form articles.",
       tech: ["Next.js", "Prisma", "PostgreSQL", "MDX", "shadcn/ui"],
@@ -55,8 +61,17 @@ export const listProjectsTool = tool({
       title: "AI Lab (this page)",
       description:
         "An interactive AI playground built with Vercel AI SDK, featuring streaming chat, tool-calling agent, and generative UI blocks.",
-      tech: ["Vercel AI SDK v6", "ToolLoopAgent", "Streaming UI", "Generative UI"],
-      highlights: ["Tool calling", "Structured UI generation", "Streamed responses"],
+      tech: [
+        "Vercel AI SDK v6",
+        "ToolLoopAgent",
+        "Streaming UI",
+        "Generative UI",
+      ],
+      highlights: [
+        "Tool calling",
+        "Structured UI generation",
+        "Streamed responses",
+      ],
     },
   ],
 })
@@ -67,7 +82,9 @@ export const searchArticlesTool = tool({
   inputSchema: z.object({
     query: z
       .string()
-      .describe("Search keyword or topic, e.g. 'React', 'Next.js', 'AI', 'CSS'"),
+      .describe(
+        "Search keyword or topic, e.g. 'React', 'Next.js', 'AI', 'CSS'",
+      ),
     limit: z
       .number()
       .min(1)
@@ -85,7 +102,7 @@ export const searchArticlesTool = tool({
           (a) =>
             a.title.toLowerCase().includes(lowerQuery) ||
             a.description.toLowerCase().includes(lowerQuery) ||
-            a.slug.toLowerCase().includes(lowerQuery)
+            a.slug.toLowerCase().includes(lowerQuery),
         )
         .slice(0, input.limit)
 
@@ -121,7 +138,9 @@ export const buildUiBlockTool = tool({
       .describe("Optional heading/title for the block"),
     data: z
       .record(z.unknown())
-      .describe("Structured data payload for the block. Schema depends on blockType."),
+      .describe(
+        "Structured data payload for the block. Schema depends on blockType.",
+      ),
   }),
   execute: async (input: {
     blockType: string

@@ -4,6 +4,7 @@ import Script from "next/script"
 import "@radix-ui/themes/styles.css"
 import "@pigment-css/react/styles.css"
 import { getLocale } from "next-intl/server"
+import { GlobalChatRuntimeProvider } from "./context/GlobalChatRuntimeContext"
 
 export const metadata: Metadata = {
   title: "Developer — Front-End Developer & AI Prompt Engineer",
@@ -37,7 +38,9 @@ export default async function RootLayout({
       <head>
         <Script id="theme-script" src="/index.js" strategy="beforeInteractive" />
       </head>
-      <body>{children}</body>
+      <body>
+        <GlobalChatRuntimeProvider>{children}</GlobalChatRuntimeProvider>
+      </body>
     </html>
   )
 }
