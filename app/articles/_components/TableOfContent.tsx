@@ -1,17 +1,24 @@
 import React from "react"
 import * as ScrollArea from "@radix-ui/react-scroll-area"
 import { Heading } from "@/app/service/BlogParser"
+import { cn } from "@/lib/utils"
 
-const TableOfContent = ({ headings }: { headings: Heading[] }) => (
+interface TableOfContentProps {
+  headings: Heading[]
+  className?: string
+  viewportClassName?: string
+}
+
+const TableOfContent = ({ headings, className, viewportClassName }: TableOfContentProps) => (
   <ScrollArea.Root
-    className="pixel-toc w-full max-w-[340px]"
+    className={cn("pixel-toc w-full max-w-[340px]", className)}
     style={{ maxHeight: "min(calc(100vh - 9.5rem), 39rem)" }}
   >
     <div className="px-5 py-4">
       <div className="terminal-label">目录</div>
     </div>
     <ScrollArea.Viewport
-      className="w-full"
+      className={cn("w-full", viewportClassName)}
       style={{ maxHeight: "calc(min(100vh - 9.5rem, 39rem) - 3.5rem)" }}
     >
       <div className="px-5 pb-4 pt-2">

@@ -31,28 +31,25 @@ export default function ArticleDetailLayout({ article }: ArticleDetailLayoutProp
       <div className="space-y-6 p-5">
         <ArticleEnhancement slug={article.slug} />
 
-        {/* Mobile TOC toggle */}
-        <div className="flex items-center gap-3 lg:hidden">
+        {/* Mobile TOC toggle — fixed, follows scroll */}
+        <div className="fixed bottom-6 left-6 z-40 lg:hidden">
           <button
             onClick={() => setSidebarOpen((s) => !s)}
-            className="flex h-11 w-11 shrink-0 items-center justify-center border-2 border-border/60 bg-background/60 text-foreground transition-colors hover:border-primary/60 hover:bg-primary/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
+            className="flex h-12 w-12 items-center justify-center border-2 border-border/70 bg-background/90 text-foreground shadow-[var(--shadow-elevated)] backdrop-blur-sm transition-colors hover:border-primary/60 hover:bg-primary/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
             aria-label={sidebarOpen ? "关闭目录" : "打开目录"}
             aria-expanded={sidebarOpen}
             aria-controls="article-toc-sidebar"
           >
             <PixelMenuIcon isOpen={sidebarOpen} />
           </button>
-          <span className="font-pixel text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-            目录
-          </span>
         </div>
 
-        <div className="relative flex flex-row overflow-hidden">
+        <div className="relative flex flex-row">
           {/* Mobile TOC sidebar */}
           <aside
             id="article-toc-sidebar"
             className={cn(
-              "absolute inset-y-0 left-0 z-30 border-r-2 border-border/60 bg-background/95 backdrop-blur-sm transition-all duration-200 ease-out lg:hidden",
+              "fixed inset-y-0 left-0 z-30 border-r-2 border-border/60 bg-background/95 backdrop-blur-sm transition-all duration-200 ease-out lg:hidden",
               "w-[min(280px,85vw)]",
               sidebarOpen
                 ? "translate-x-0 opacity-100"
@@ -60,14 +57,18 @@ export default function ArticleDetailLayout({ article }: ArticleDetailLayoutProp
             )}
           >
             <div className="h-full overflow-y-auto p-4">
-              <TableOfContent headings={article.headings} />
+              <TableOfContent
+                headings={article.headings}
+                className="!max-h-[calc(100dvh-3.5rem)]"
+                viewportClassName="!max-h-full"
+              />
             </div>
           </aside>
 
           {/* Mobile overlay */}
           {sidebarOpen && (
             <div
-              className="absolute inset-0 z-20 touch-none bg-background/80 backdrop-blur-sm transition-opacity duration-200 lg:hidden"
+              className="fixed inset-0 z-20 touch-none bg-background/80 backdrop-blur-sm transition-opacity duration-200 lg:hidden"
               onClick={() => setSidebarOpen(false)}
               aria-hidden="true"
             />

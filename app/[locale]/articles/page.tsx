@@ -17,19 +17,9 @@ export default async function ArticlesPage({ params }: Props) {
       <div className="space-y-8 p-5 pt-10 md:pt-12 lg:pt-12">
         {/* Page Header */}
         <div className="space-y-6 mdx-index-shell">
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="pixel-header-label">
-              {t("mdxEyebrow")}
-            </div>
-            <RetroBadge tone="primary">
-              {articles.length} {params.locale === "zh" ? "篇" : "posts"}
-            </RetroBadge>
-          </div>
-          <div className="pixel-title-wrapper">
-            <h1 className="pixel-title text-foreground">
-              {params.locale === "zh" ? "文章" : "ARTICLES"}
-            </h1>
-          </div>
+          <h1 className="font-pixel text-[clamp(1.8rem,4vw,3rem)] uppercase leading-[1.1] tracking-[0.04em] text-foreground">
+            {params.locale === "zh" ? "文章" : "ARTICLES"}
+          </h1>
           <p className="section-copy mdx-index-copy max-w-2xl">
             {t("mdxListDescription")}
           </p>
