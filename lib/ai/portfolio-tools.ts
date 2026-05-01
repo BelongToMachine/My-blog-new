@@ -1,6 +1,7 @@
 import { tool } from "ai"
 import { z } from "zod"
 import { getMdxArticleList } from "@/app/service/mdxArticles"
+import { workspaceArtifactPayloadSchema } from "@/app/types/ai-workspace"
 
 export const getProfileSummaryTool = tool({
   description:
@@ -121,54 +122,15 @@ export const searchArticlesTool = tool({
 
 export const buildUiBlockTool = tool({
   description:
-    "Build or update a structured UI artifact in the workspace. Use this when the user asks to show, display, generate, or refine a visual element like a profile card, project grid, article list, timeline, comparison table, or role-fit report. Returns a structured payload that the frontend renders in the workspace panel.",
-  inputSchema: z.object({
-    artifactType: z
-      .enum([
-        "profile-card",
-        "project-grid",
-        "article-summary",
-        "timeline",
-        "comparison-table",
-        "role-fit-report",
-      ])
-      .describe("The type of artifact to generate or update"),
-    operation: z
-      .enum(["append", "replace", "update"])
-      .default("append")
-      .describe(
-        "append = add a new artifact; replace = replace the main artifact of this type; update = update an existing artifact of this type",
-      ),
-    title: z
-      .string()
-      .optional()
-      .describe("Optional heading/title for the artifact"),
-    summary: z
-      .string()
-      .optional()
-      .describe("Short receipt text shown in chat, e.g. 'Generated project grid'"),
-    focus: z
-      .boolean()
-      .optional()
-      .default(true)
-      .describe("Whether to automatically focus this artifact in the workspace"),
-    artifactId: z
-      .string()
-      .optional()
-      .describe("When operation is update, optional target artifact ID"),
-    data: z
-      .record(z.unknown())
-      .describe(
-        "Structured data payload for the artifact. Schema depends on artifactType.",
-      ),
-  }),
-  execute: async (input: {
-    artifactType: string
-    operation: string
-    title?: string
-    summary?: string
-    focus?: boolean
-    artifactId?: string
-    data: Record<string, unknown>
-  }) => input,
+    "Build or update a structured UI artifact. Use this ONLY when the user explicitly asks for a visual summary, comparison, timeline, or structured report that is too dense for plain text.\n\n" +
+    "Rules:\n" +
+    "1. Default to text answers. Do NOT use this tool for simple Q&A, brief summaries, or single-item lookups.\n" +
+    "2. Use this tool when the user says: 'show me', 'display', 'generate a table', 'create a timeline', 'compare...'\n" +
+    "3. surface='chat' means the result should stay in the chat stream (default for simple results).\n" +
+    "4. surface='artifact' means the result goes to the workspace panel (for dense structured data).\n" +
+    "5. reveal=true means auto-expand the workspace panel. Only set true when the user explicitly asks to open/show the panel.\n" +
+    "6. priority='high' for: comparison-table, timeline, role-fit-report. priority='low' for: profile-card, project-grid, article-summary.\n" +
+    "7. Low-priority artifacts should usually use surface='chat' unless the user specifically wants them in the panel.",
+  inputSchema: workspaceArtifactPayloadSchema,
+  execute: async (input) => input,
 })
