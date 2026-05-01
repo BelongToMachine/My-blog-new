@@ -34,6 +34,24 @@ export function GlobalChatRuntimeProvider({
         messages: initialMessages,
         transport: new DefaultChatTransport({
           api: "/api/ai/chat",
+          body: { threadId },
+          fetch: async (input, init) => {
+            const res = await fetch(input, init)
+            if (!res.ok) {
+              const text = await res.text()
+              let message = text
+              try {
+                const json = JSON.parse(text) as { error?: string }
+                message = json.error ?? text
+              } catch {
+                // keep raw text
+              }
+              const err = new Error(message)
+              ;(err as unknown as { status: number }).status = res.status
+              throw err
+            }
+            return res
+          },
         }),
       })
 

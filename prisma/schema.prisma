@@ -99,3 +99,22 @@ model Dialog {
   title     String   @db.VarChar(255)
   content   String   @db.Text
 }
+
+model ChatThread {
+  id        String        @id @default(cuid())
+  userId    String?
+  title     String        @default("New Chat") @db.VarChar(255)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  messages  ChatMessage[]
+}
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  threadId  String
+  thread    ChatThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  role      String   @db.VarChar(20)
+  content   String   @db.Text
+  parts     String   @db.Text
+  createdAt DateTime @default(now())
+}
