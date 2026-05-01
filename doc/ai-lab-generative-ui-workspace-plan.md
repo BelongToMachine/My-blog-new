@@ -734,3 +734,314 @@ V1 完成后，应满足：
 - Phase 4 的 sandboxed artifact studio
 
 但这些都应建立在 V1 的 artifact 模型、交互模型、状态模型已经稳定的前提下。
+
+---
+
+## 实施复盘（2026-04-29）
+
+这轮实现已经把 Workspace V1 的主干搭起来了，方向是对的，而且不少关键节点已经落地：
+
+- `app/[locale]/ai/AIPlayground.tsx`
+  - 已完成 desktop 双栏和 mobile tabs
+  - 已把“聊天回执 + 右侧 artifact”产品形态接起来
+- `app/hooks/useThreadWorkspace.ts`
+  - 已有 thread 级 workspace 状态和本地持久化
+- `app/context/GlobalChatRuntimeContext.tsx`
+  - 全局 chat runtime 继续成立，没有破坏前面的 streaming 修复
+- `lib/ai/portfolio-tools.ts`
+  - `build_ui_block` 已升级为 `append / replace / update`
+- `app/components/ai-workspace/RoleFitReportBlock.tsx`
+  - `role-fit-report` 已经有第一版可视化
+
+结论：
+
+- 这次实现已经完成了从“计划”到“可用 V1”的跨越
+- 但当前实现仍然偏“把同步逻辑写进页面组件里”
+- 下一轮最重要的不是再加新 artifact，而是先把 workspace runtime、tool 协议和幂等模型收紧
+
+---
+
+## 当前实现的主要问题
+
+### 1. Tool 输出的幂等模型不稳
+
+当前 `processedRef` 是根据现有 artifact 的 `sourceMessageId` 反推出来的，而不是独立持久化“哪些 tool 输出已经应用过”。
+
+相关位置：
+
+- `app/[locale]/ai/AIPlayground.tsx`
+- `app/hooks/useThreadWorkspace.ts`
+
+这会带来一个结构性问题：
+
+- 如果用户清空 workspace，artifact 会被移除
+- 但聊天消息仍然保留了旧的 tool 输出
+- 下一次同步 effect 重新跑时，旧的输出可能再次被应用
+- 结果就是 artifact 被“回放”出来，清空行为不真正生效
+
+这类问题也会影响：
+
+- 删除单个 artifact
+- 将来做 artifact remove / replace / undo
+- 后续引入版本历史或分享链接
+
+### 2. Workspace 同步逻辑耦合在 `AIPlayground.tsx`
+
+当前页面组件同时承担了这些职责：
+
+- 解析 tool output
+- 兼容 `artifactType / blockType`
+- 兼容 legacy tools
+- 处理 `append / replace / update`
+- 做幂等控制
+- 推测 updating 状态
+
+相关位置：
+
+- `app/[locale]/ai/AIPlayground.tsx`
+
+这使得页面组件过重，也让后续测试和演进都变得困难。只要再加两三个 artifact 类型，这一段逻辑就会明显失控。
+
+### 3. `updating` 状态是“猜”的，不是真正的运行时状态
+
+现在的逻辑是在聊天 busy 时，把最后一个 artifact 标成 `updating`。
+
+相关位置：
+
+- `app/[locale]/ai/AIPlayground.tsx`
+- `app/components/ai-workspace/WorkspacePanel.tsx`
+
+这个策略的问题是：
+
+- 它不知道这次 busy 到底是不是视觉请求
+- 它不知道更新目标是不是“最后一个 artifact”
+- 第一次生成新 artifact 时，没有稳定的 pending 占位
+- `WorkspacePanel` 虽然收了 `isBusy`，但现在没有真正用起来
+
+因此现在的 loading 反馈更像临时补丁，而不是 workspace runtime 的一部分。
+
+### 4. Tool 协议已经扩展，但真正的 targeting 还没闭环
+
+当前 payload 里已经有：
+
+- `operation`
+- `focus`
+- `artifactId`
+
+但前端只真正消费了 `operation` 的一部分，另外两项还没有形成完整能力。
+
+相关位置：
+
+- `app/types/ai-workspace.ts`
+- `lib/ai/portfolio-tools.ts`
+- `app/[locale]/ai/AIPlayground.tsx`
+
+具体问题：
+
+- `focus` 解析了，但没有真正驱动选中状态
+- `artifactId` 理论上可用，但模型当前并不知道有哪些 artifact id，因此很难可靠使用
+- `replace` 现在其实更接近“按 type update”，语义还不够清晰
+
+这说明协议已经开始长大，但 workspace runtime 还没有跟上。
+
+### 5. Artifact schema 过宽，前后端缺少共享校验
+
+现在 `build_ui_block` 的 `data` 仍然是 `Record<string, unknown>`。
+
+相关位置：
+
+- `lib/ai/portfolio-tools.ts`
+- `app/types/ai-workspace.ts`
+- `app/components/ai-workspace/ArtifactRenderer.tsx`
+
+这会带来几个问题：
+
+- 模型容易吐出结构不完整的数据
+- 客户端只能“尽量渲染”，不能在边界处提前失败
+- 新 artifact 越多，脆弱点越多
+- `role-fit-report` 这种新类型会越来越依赖约定，而不是依赖 schema
+
+### 6. i18n 和 UX 元数据还没有收口
+
+Workspace 框架本身已经接上了 `next-intl`，但内部仍然有不少硬编码英文和缺失元数据。
+
+相关位置：
+
+- `app/components/ai-workspace/ArtifactList.tsx`
+- `app/components/ai-workspace/ArtifactRenderer.tsx`
+- `app/components/ai-workspace/RoleFitReportBlock.tsx`
+- `app/[locale]/ai/AIPlayground.tsx`
+
+当前欠缺的部分包括：
+
+- artifact type label 仍是英文常量
+- legacy tool 生成的 title / summary 是英文硬编码
+- `RoleFitReportBlock` 的 section title 仍是英文
+- workspace 没有显示 `summary`、来源消息、更新时间等 metadata
+
+### 7. 当前几乎没有针对 workspace 的测试护栏
+
+当前仓库里没有覆盖这条新链路的应用级测试。
+
+影响最大的是这些行为：
+
+- 同一个 tool output 不应重复应用
+- clear workspace 之后不应自动回放旧 artifact
+- `append / replace / update` 语义必须稳定
+- thread 切换和 hydration 后，active artifact 应保持可预测
+
+这部分如果不补测试，后续每次改同步逻辑都很容易把之前的问题带回来。
+
+---
+
+## 下一轮改进计划
+
+### Phase 1：先把 workspace runtime 收紧
+
+目标：
+
+- 解决“旧 tool 输出被回放”
+- 把 artifact 同步从页面组件中抽离
+- 让 clear / remove / update 语义真正成立
+
+建议动作：
+
+- 在 `ThreadWorkspaceState` 里加入独立的 `appliedToolOutputIds` 或同等 cursor
+- 不再从 `artifacts` 反推哪些输出已经处理过
+- 新增 `useWorkspaceSync(threadId, messages, workspaceState)` 或同等 hook
+- 把 `extractArtifactPayload`、legacy tool 归一化、operation 应用逻辑都迁出去
+- 把“清空工作区”定义成只清空 artifact，不回滚消息，也不重放旧输出
+- 为 remove / clear 预留 tombstone 或 acknowledgement 机制
+
+交付结果：
+
+- workspace 具有稳定的幂等行为
+- 页面组件只负责布局和渲染
+- 同步逻辑可以独立测试
+
+### Phase 2：把 tool 协议做成真正可维护的协议
+
+目标：
+
+- 收紧 payload
+- 让 agent 的 targeting 规则更明确
+- 降低“模型输出刚好符合约定”的侥幸成分
+
+建议动作：
+
+- 把 `build_ui_block` 改成 discriminated union schema，而不是宽泛 `record`
+- 为每种 artifact 定义独立 schema
+- 明确 `replace` 的语义
+- 让 `focus` 真正驱动 active artifact
+- 重新设计 targeting 方式
+- 如果模型端拿不到 `artifactId`，就不要把它作为主要机制
+- 引入更稳定的 `slotKey`、`artifactKey` 或 “update active artifact of this type” 语义
+
+交付结果：
+
+- agent 输出更稳定
+- 前后端对 artifact payload 的理解一致
+- 后续新增 artifact 时不会继续复制粘贴分支逻辑
+
+### Phase 3：补足 loading、metadata 和交互细节
+
+目标：
+
+- 让 workspace 不只是“能用”，而是像真正的工作区
+
+建议动作：
+
+- 用真实的 pending visual intent 替代“把最后一个 artifact 标成 updating”
+- 在 `input-available` 阶段就建立 pending 状态
+- 为 append 和 update 区分不同 loading 表现
+- `WorkspacePanel` 真正消费 `isBusy` 或等价状态
+- 显示 artifact `summary`
+- 显示来源消息或最近更新时间
+- 给 clear workspace 增加确认或 undo
+- ArtifactList 增加状态提示，而不是只有选中态
+
+交付结果：
+
+- 用户能理解 AI 正在更新什么
+- workspace 的状态变化更自然
+- 删除、清空、切换 artifact 的体验更可靠
+
+### Phase 4：收口 i18n 和内容呈现
+
+目标：
+
+- 保证中英文模式下 workspace 体验一致
+- 让 recruiter 场景的 artifact 更有证据感
+
+建议动作：
+
+- 把 artifact label、legacy summary、fallback 文案全部迁到 `next-intl`
+- `RoleFitReportBlock` 补齐中英文标题
+- 给 `matchedProjects`、`matchedArticles` 增加 slug、href 或 source id
+- 让 role-fit-report 不只是“结论卡”，而是“带证据的结论卡”
+
+交付结果：
+
+- 双语体验完整
+- role-fit-report 更贴合 portfolio / recruiter 场景
+- workspace 的 artifact 不只是展示，而是可追溯
+
+### Phase 5：补测试和回归护栏
+
+目标：
+
+- 让这条链路后续可迭代，而不是每次都靠手测
+
+建议动作：
+
+- 给 workspace sync 提炼纯函数或 reducer
+- 为幂等、clear、remove、replace、focus 写单元测试
+- 为 hydration 和 thread 切换写最小集成测试
+- 把当前已修过的 streaming / codeblock 稳定性问题加入回归清单
+
+交付结果：
+
+- 关键行为可验证
+- 后续继续扩展 artifact 类型时更安心
+
+---
+
+## 建议的实施顺序
+
+如果只做一轮高价值迭代，我建议按下面顺序推进：
+
+1. 先做 Phase 1，解决 workspace replay 和同步逻辑收口
+2. 再做 Phase 2，把 schema、focus、targeting 一次性理顺
+3. 然后做 Phase 3，补 pending / metadata / clear UX
+4. 最后做 Phase 4 和 Phase 5，完成 i18n 收口与测试护栏
+
+原因：
+
+- Phase 1 和 Phase 2 解决的是“未来越做越乱”的问题
+- Phase 3 解决的是“用户能不能感知这套系统在稳定工作”的问题
+- Phase 4 和 Phase 5 则是把这套 V1 从 demo 水平推到可持续迭代的水平
+
+---
+
+## 下一轮实施的建议范围
+
+如果下一步准备继续写代码，我建议这一轮只做下面这些，不要同时再加新 artifact：
+
+- 重构 workspace sync runtime
+- 修正 clear / remove 后的 replay 风险
+- 收紧 `build_ui_block` schema
+- 补 `focus` 和 pending visual intent
+- 收口 workspace 内部 i18n
+
+暂时不要做：
+
+- 新的复杂 artifact 类型
+- 数据库存储
+- 分享链接
+- sandbox 执行
+- 多 agent
+
+理由：
+
+- 现在最值钱的是把 V1 的“系统边界”做稳
+- 这些边界一旦稳住，后面的 recruiter copilot、artifact history、sandbox mode 都会容易很多
