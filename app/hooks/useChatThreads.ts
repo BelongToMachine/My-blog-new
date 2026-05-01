@@ -1,10 +1,8 @@
 "use client"
 
 import { useCallback, useEffect, useState } from "react"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import type { UIMessage } from "ai"
-
-const STORAGE_KEY = "jie-ai-chat-threads"
-const ACTIVE_THREAD_KEY = "jie-ai-chat-active-thread"
 
 export interface ChatThread {
   id: string
@@ -12,6 +10,69 @@ export interface ChatThread {
   createdAt: number
   updatedAt: number
   messages: UIMessage[]
+  summary?: string
+}
+
+// ─── LocalStorage fallback for graceful degradation ───
+
+const LS_THREADS_KEY = "jie-ai-chat-threads-v2"
+const LS_ACTIVE_KEY = "jie-ai-chat-active-thread-v2"
+
+function lsLoadThreads(): ChatThread[] {
+  if (typeof window === "undefined") return []
+  try {
+    const raw = window.localStorage.getItem(LS_THREADS_KEY)
+    if (!raw) return []
+    const parsed = JSON.parse(raw) as ChatThread[]
+    return Array.isArray(parsed) ? parsed : []
+  } catch {
+    return []
+  }
+}
+
+function lsSaveThreads(threads: ChatThread[]) {
+  if (typeof window === "undefined") return
+  try {
+    window.localStorage.setItem(LS_THREADS_KEY, JSON.stringify(threads))
+  } catch {
+    // ignore
+  }
+}
+
+function lsLoadActiveId(): string | null {
+  if (typeof window === "undefined") return null
+  try {
+    return window.localStorage.getItem(LS_ACTIVE_KEY)
+  } catch {
+    return null
+  }
+}
+
+function lsSaveActiveId(id: string | null) {
+  if (typeof window === "undefined") return
+  try {
+    if (id) window.localStorage.setItem(LS_ACTIVE_KEY, id)
+    else window.localStorage.removeItem(LS_ACTIVE_KEY)
+  } catch {
+    // ignore
+  }
+}
+
+interface ApiThread {
+  id: string
+  title: string
+  createdAt: string
+  updatedAt: string
+}
+
+interface ApiThreadWithMessages extends ApiThread {
+  messages: Array<{
+    id: string
+    role: string
+    content: string
+    parts: string
+    createdAt: string
+  }>
 }
 
 function generateId(): string {
@@ -25,6 +86,7 @@ function createInitialThread(): ChatThread {
     createdAt: Date.now(),
     updatedAt: Date.now(),
     messages: [],
+    summary: undefined,
   }
 }
 
@@ -40,161 +102,319 @@ function extractTitleFromMessages(messages: UIMessage[]): string {
   return "New Chat"
 }
 
-function loadThreads(): ChatThread[] {
-  if (typeof window === "undefined") return []
+function apiThreadToChatThread(api: ApiThread): ChatThread {
+  return {
+    id: api.id,
+    title: api.title,
+    createdAt: new Date(api.createdAt).getTime(),
+    updatedAt: new Date(api.updatedAt).getTime(),
+    messages: [],
+  }
+}
+
+function apiThreadWithMessagesToChatThread(api: ApiThreadWithMessages): ChatThread {
+  return {
+    id: api.id,
+    title: api.title,
+    createdAt: new Date(api.createdAt).getTime(),
+    updatedAt: new Date(api.updatedAt).getTime(),
+    messages: api.messages.map((msg) => ({
+      id: msg.id,
+      role: msg.role as "user" | "assistant",
+      content: msg.content,
+      parts: JSON.parse(msg.parts) as UIMessage["parts"],
+      createdAt: new Date(msg.createdAt).getTime(),
+    })),
+  }
+}
+
+async function fetchThreads(): Promise<ChatThread[]> {
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY)
-    if (!raw) return []
-    const parsed = JSON.parse(raw) as ChatThread[]
-    return Array.isArray(parsed) ? parsed : []
+    const res = await fetch("/api/ai/threads")
+    if (!res.ok) throw new Error("Failed to load threads")
+    const data = (await res.json()) as ApiThread[]
+    return data.map(apiThreadToChatThread)
   } catch {
+    // API unavailable (no DB / migration not run) → return empty to trigger fallback
     return []
   }
 }
 
-function saveThreads(threads: ChatThread[]) {
-  if (typeof window === "undefined") return
-  try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(threads))
-  } catch {
-    // localStorage might be full; silently fail
+async function fetchThreadWithMessages(id: string): Promise<ChatThread | null> {
+  const res = await fetch(`/api/ai/threads/${id}`)
+  if (!res.ok) {
+    if (res.status === 404) return null
+    throw new Error("Failed to load thread")
   }
+  const data = (await res.json()) as ApiThreadWithMessages
+  return apiThreadWithMessagesToChatThread(data)
 }
 
-function loadActiveThreadId(): string | null {
-  if (typeof window === "undefined") return null
-  try {
-    return window.localStorage.getItem(ACTIVE_THREAD_KEY)
-  } catch {
-    return null
-  }
+async function createThreadApi(): Promise<ChatThread> {
+  const res = await fetch("/api/ai/threads", { method: "POST" })
+  if (!res.ok) throw new Error("Failed to create thread")
+  const data = (await res.json()) as ApiThread
+  return apiThreadToChatThread(data)
 }
 
-function saveActiveThreadId(id: string | null) {
-  if (typeof window === "undefined") return
-  try {
-    if (id) {
-      window.localStorage.setItem(ACTIVE_THREAD_KEY, id)
-    } else {
-      window.localStorage.removeItem(ACTIVE_THREAD_KEY)
-    }
-  } catch {
-    // ignore
-  }
+async function deleteThreadApi(id: string): Promise<void> {
+  const res = await fetch(`/api/ai/threads/${id}`, { method: "DELETE" })
+  if (!res.ok) throw new Error("Failed to delete thread")
 }
+
+async function saveMessagesApi(
+  id: string,
+  messages: UIMessage[],
+  title?: string,
+): Promise<void> {
+  const res = await fetch(`/api/ai/threads/${id}/messages`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      messages: messages.map((msg) => ({
+        id: msg.id,
+        role: msg.role,
+        content:
+          msg.parts.find((p) => p.type === "text") &&
+          "text" in (msg.parts.find((p) => p.type === "text") as { text: string })
+            ? (msg.parts.find((p) => p.type === "text") as { text: string }).text
+            : "",
+        parts: msg.parts,
+      })),
+      title,
+    }),
+  })
+  if (!res.ok) throw new Error("Failed to save messages")
+}
+
+const THREADS_QUERY_KEY = ["ai-threads"]
 
 export function useChatThreads() {
-  const [threads, setThreads] = useState<ChatThread[]>([])
+  const queryClient = useQueryClient()
   const [activeThreadId, setActiveThreadId] = useState<string | null>(null)
+  const [localThreads, setLocalThreads] = useState<ChatThread[]>([])
   const [hydrated, setHydrated] = useState(false)
 
-  useEffect(() => {
-    const persistedThreads = loadThreads()
-    const persistedActiveThreadId = loadActiveThreadId()
+  // Load threads from API
+  const threadsQuery = useQuery({
+    queryKey: THREADS_QUERY_KEY,
+    queryFn: fetchThreads,
+    staleTime: 30000,
+  })
 
-    if (persistedThreads.length > 0) {
-      setThreads(persistedThreads)
-      setActiveThreadId(
-        persistedActiveThreadId &&
-          persistedThreads.some((thread) => thread.id === persistedActiveThreadId)
-          ? persistedActiveThreadId
-          : persistedThreads[0].id,
-      )
-    } else {
-      const initialThread = createInitialThread()
-      setThreads([initialThread])
-      setActiveThreadId(initialThread.id)
+  // Sync API threads to local state on load (with localStorage fallback)
+  useEffect(() => {
+    if (!threadsQuery.isSuccess || hydrated) return
+
+    const apiThreads = threadsQuery.data
+    if (apiThreads.length > 0) {
+      // API returned threads → use them
+      setLocalThreads(apiThreads)
+      setActiveThreadId(apiThreads[0].id)
+      setHydrated(true)
+      return
     }
 
+    // API returned empty → try localStorage fallback
+    const lsThreads = lsLoadThreads()
+    if (lsThreads.length > 0) {
+      setLocalThreads(lsThreads)
+      const activeId = lsLoadActiveId()
+      setActiveThreadId(
+        activeId && lsThreads.some((t) => t.id === activeId)
+          ? activeId
+          : lsThreads[0].id,
+      )
+      setHydrated(true)
+      return
+    }
+
+    // Nothing anywhere → create initial thread
+    const initial = createInitialThread()
+    setLocalThreads([initial])
+    setActiveThreadId(initial.id)
     setHydrated(true)
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [threadsQuery.isSuccess, threadsQuery.data, hydrated])
 
-  // Persist threads whenever they change
-  useEffect(() => {
-    if (!hydrated) return
-    saveThreads(threads)
-  }, [threads, hydrated])
+  const createThreadMut = useMutation({
+    mutationFn: createThreadApi,
+    onSuccess: (newThread) => {
+      queryClient.invalidateQueries({ queryKey: THREADS_QUERY_KEY })
+      setLocalThreads((prev) => {
+        const next = [newThread, ...prev.filter((t) => t.id !== newThread.id)]
+        lsSaveThreads(next)
+        return next
+      })
+      setActiveThreadId(newThread.id)
+    },
+    onError: () => {
+      // API failed → local thread is already in state, just sync LS
+      lsSaveThreads(localThreads)
+    },
+  })
 
-  // Persist active thread id whenever it changes
-  useEffect(() => {
-    if (!hydrated) return
-    saveActiveThreadId(activeThreadId)
-  }, [activeThreadId, hydrated])
+  const deleteThreadMut = useMutation({
+    mutationFn: deleteThreadApi,
+    onSuccess: (_, id) => {
+      queryClient.invalidateQueries({ queryKey: THREADS_QUERY_KEY })
+      setLocalThreads((prev) => {
+        const next = prev.filter((t) => t.id !== id)
+        lsSaveThreads(next)
+        return next
+      })
+      setActiveThreadId((current) => {
+        if (current === id) {
+          const nextId = localThreads.find((t) => t.id !== id)?.id ?? null
+          lsSaveActiveId(nextId)
+          return nextId
+        }
+        return current
+      })
+    },
+    onError: (_, id) => {
+      // API failed → still delete locally and sync LS
+      setLocalThreads((prev) => {
+        const next = prev.filter((t) => t.id !== id)
+        lsSaveThreads(next)
+        return next
+      })
+    },
+  })
+
+  const saveMessagesMut = useMutation({
+    mutationFn: ({
+      id,
+      messages,
+      title,
+    }: {
+      id: string
+      messages: UIMessage[]
+      title?: string
+    }) => saveMessagesApi(id, messages, title),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: THREADS_QUERY_KEY })
+    },
+    onError: () => {
+      // API failed → state is already updated, just sync LS
+      lsSaveThreads(localThreads)
+    },
+  })
 
   const createThread = useCallback(() => {
-    const newThread = createInitialThread()
-    setThreads((prev) => [newThread, ...prev])
-    setActiveThreadId(newThread.id)
-    return newThread.id
-  }, [])
+    const tempThread = createInitialThread()
+    setLocalThreads((prev) => [tempThread, ...prev])
+    setActiveThreadId(tempThread.id)
 
-  const deleteThread = useCallback((id: string) => {
-    setThreads((prev) => prev.filter((thread) => thread.id !== id))
-    setActiveThreadId((current) => {
-      return current === id ? null : current
+    createThreadMut.mutate(undefined, {
+      onSuccess: (serverThread) => {
+        setLocalThreads((prev) =>
+          prev.map((t) => (t.id === tempThread.id ? serverThread : t)),
+        )
+        setActiveThreadId(serverThread.id)
+      },
+      onError: () => {
+        // Keep local thread if API fails
+      },
     })
-  }, [])
+
+    return tempThread.id
+  }, [createThreadMut])
+
+  const deleteThread = useCallback(
+    (id: string) => {
+      setLocalThreads((prev) => prev.filter((t) => t.id !== id))
+      setActiveThreadId((current) => (current === id ? null : current))
+      deleteThreadMut.mutate(id)
+    },
+    [deleteThreadMut],
+  )
 
   const updateThreadMessages = useCallback(
     (id: string, messages: UIMessage[]) => {
-      setThreads((prev) => {
+      const title =
+        messages.length > 0 ? extractTitleFromMessages(messages) : undefined
+
+      setLocalThreads((prev) => {
         const exists = prev.find((t) => t.id === id)
         if (!exists) return prev
 
-        const title =
-          messages.length > 0 ? extractTitleFromMessages(messages) : exists.title
-
         const updated: ChatThread = {
           ...exists,
-          title: exists.title === "New Chat" ? title : exists.title,
+          title: exists.title === "New Chat" ? (title ?? exists.title) : exists.title,
           updatedAt: Date.now(),
-          messages: JSON.parse(JSON.stringify(messages)), // deep clone for safety
+          messages: JSON.parse(JSON.stringify(messages)),
         }
 
-        // Move to top
-        const next = prev.filter((t) => t.id !== id)
-        return [updated, ...next]
+        const next = [updated, ...prev.filter((t) => t.id !== id)]
+        lsSaveThreads(next)
+        return next
       })
+
+      // Persist to server (debounced by caller)
+      saveMessagesMut.mutate({ id, messages, title })
     },
-    [],
+    [saveMessagesMut],
   )
 
   const setActiveThread = useCallback((id: string | null) => {
     setActiveThreadId(id)
+    lsSaveActiveId(id)
   }, [])
 
-  // Ensure there is always at least one thread if none exists
+  // Ensure there is always at least one thread
   useEffect(() => {
     if (!hydrated) return
 
-    if (threads.length === 0) {
-      const fallbackThread = createInitialThread()
-      setThreads([fallbackThread])
-      setActiveThreadId(fallbackThread.id)
+    if (localThreads.length === 0) {
+      createThread()
     }
-  }, [threads.length, hydrated])
+  }, [localThreads.length, hydrated, createThread])
 
   // Ensure active thread is valid
   useEffect(() => {
     if (!hydrated) return
 
-    if (!activeThreadId && threads[0]) {
-      setActiveThreadId(threads[0].id)
+    if (!activeThreadId && localThreads[0]) {
+      setActiveThreadId(localThreads[0].id)
       return
     }
 
-    if (activeThreadId && !threads.find((thread) => thread.id === activeThreadId)) {
-      setActiveThreadId(threads[0]?.id ?? null)
+    if (
+      activeThreadId &&
+      !localThreads.find((thread) => thread.id === activeThreadId)
+    ) {
+      setActiveThreadId(localThreads[0]?.id ?? null)
     }
-  }, [threads, activeThreadId, hydrated])
+  }, [localThreads, activeThreadId, hydrated])
+
+  // Load messages for active thread when switching
+  useEffect(() => {
+    if (!activeThreadId || !hydrated) return
+
+    const thread = localThreads.find((t) => t.id === activeThreadId)
+    if (thread && thread.messages.length === 0) {
+      fetchThreadWithMessages(activeThreadId).then((fullThread) => {
+        if (fullThread && fullThread.messages.length > 0) {
+          setLocalThreads((prev) =>
+            prev.map((t) =>
+              t.id === activeThreadId ? fullThread : t,
+            ),
+          )
+        }
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeThreadId, hydrated])
 
   return {
     hydrated,
-    threads,
+    threads: localThreads,
     activeThreadId,
     createThread,
     deleteThread,
     updateThreadMessages,
     setActiveThread,
+    isLoading: threadsQuery.isLoading || createThreadMut.isLoading,
   }
 }

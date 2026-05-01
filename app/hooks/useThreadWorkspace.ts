@@ -2,12 +2,24 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import type {
+  ThreadWorkspaceState,
   WorkspaceArtifact,
   WorkspaceArtifactStatus,
-  ThreadWorkspaceState,
+  WorkspacePendingIntent,
 } from "@/app/types/ai-workspace"
+import { getEmptyWorkspaceState } from "@/app/types/ai-workspace"
 
 const WORKSPACE_STORAGE_KEY_PREFIX = "jie-ai-workspace"
+const MAX_APPLIED_TOOL_OUTPUT_IDS = 200
+
+type WorkspaceMutationOptions = {
+  focus?: boolean
+}
+
+type NewWorkspaceArtifact = Omit<
+  WorkspaceArtifact,
+  "id" | "threadId" | "createdAt" | "updatedAt"
+>
 
 function getStorageKey(threadId: string): string {
   return `${WORKSPACE_STORAGE_KEY_PREFIX}-${threadId}`
@@ -17,54 +29,93 @@ function generateArtifactId(): string {
   return `art-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
 }
 
+function trimAppliedToolOutputIds(ids: string[]) {
+  if (ids.length <= MAX_APPLIED_TOOL_OUTPUT_IDS) {
+    return ids
+  }
+  return ids.slice(ids.length - MAX_APPLIED_TOOL_OUTPUT_IDS)
+}
+
+function normalizeLoadedState(
+  threadId: string,
+  parsed: Partial<ThreadWorkspaceState> | null | undefined,
+): ThreadWorkspaceState {
+  const fallback = getEmptyWorkspaceState(threadId)
+
+  if (!parsed || parsed.threadId !== threadId) {
+    return fallback
+  }
+
+  const artifacts = Array.isArray(parsed.artifacts)
+    ? parsed.artifacts.map((artifact) => ({
+        ...artifact,
+        status: artifact.status === "error" ? ("error" as const) : ("ready" as const),
+      }))
+    : []
+  const appliedToolOutputIds = Array.isArray(parsed.appliedToolOutputIds)
+    ? parsed.appliedToolOutputIds.filter((id): id is string => typeof id === "string")
+    : artifacts
+        .map((artifact) => artifact.sourceMessageId)
+        .filter((id): id is string => typeof id === "string")
+
+  const pendingIntent =
+    parsed.pendingIntent && typeof parsed.pendingIntent === "object"
+      ? (parsed.pendingIntent as WorkspacePendingIntent)
+      : null
+
+  return {
+    ...fallback,
+    ...parsed,
+    threadId,
+    artifacts,
+    appliedToolOutputIds: trimAppliedToolOutputIds(appliedToolOutputIds),
+    pendingIntent,
+    activeArtifactId:
+      typeof parsed.activeArtifactId === "string" &&
+      artifacts.some((artifact) => artifact.id === parsed.activeArtifactId)
+        ? parsed.activeArtifactId
+        : artifacts[artifacts.length - 1]?.id ?? null,
+  }
+}
+
 function loadState(threadId: string): ThreadWorkspaceState {
   if (typeof window === "undefined") {
-    return {
-      threadId,
-      artifacts: [],
-      activeArtifactId: null,
-      lastUpdatedAt: Date.now(),
-    }
+    return getEmptyWorkspaceState(threadId)
   }
+
   try {
     const raw = window.localStorage.getItem(getStorageKey(threadId))
     if (!raw) {
-      return {
-        threadId,
-        artifacts: [],
-        activeArtifactId: null,
-        lastUpdatedAt: Date.now(),
-      }
+      return getEmptyWorkspaceState(threadId)
     }
-    const parsed = JSON.parse(raw) as ThreadWorkspaceState
-    if (parsed.threadId !== threadId) {
-      return {
-        threadId,
-        artifacts: [],
-        activeArtifactId: null,
-        lastUpdatedAt: Date.now(),
-      }
-    }
-    return {
-      ...parsed,
-      artifacts: Array.isArray(parsed.artifacts) ? parsed.artifacts : [],
-    }
+
+    const parsed = JSON.parse(raw) as Partial<ThreadWorkspaceState>
+    return normalizeLoadedState(threadId, parsed)
   } catch {
-    return {
-      threadId,
-      artifacts: [],
-      activeArtifactId: null,
-      lastUpdatedAt: Date.now(),
-    }
+    return getEmptyWorkspaceState(threadId)
   }
 }
 
 function saveState(state: ThreadWorkspaceState) {
-  if (typeof window === "undefined") return
+  if (typeof window === "undefined" || !state.threadId) return
+
   try {
+    const persistentState: ThreadWorkspaceState = {
+      ...state,
+      pendingIntent: null,
+      artifacts: state.artifacts.map((artifact) =>
+        artifact.status === "updating"
+          ? {
+              ...artifact,
+              status: "ready",
+            }
+          : artifact,
+      ),
+    }
+
     window.localStorage.setItem(
       getStorageKey(state.threadId),
-      JSON.stringify(state),
+      JSON.stringify(persistentState),
     )
   } catch {
     // localStorage might be full; silently fail
@@ -73,6 +124,7 @@ function saveState(state: ThreadWorkspaceState) {
 
 export function removeWorkspaceForThread(threadId: string) {
   if (typeof window === "undefined") return
+
   try {
     window.localStorage.removeItem(getStorageKey(threadId))
   } catch {
@@ -82,30 +134,24 @@ export function removeWorkspaceForThread(threadId: string) {
 
 export function useThreadWorkspace(threadId: string | null) {
   const [state, setState] = useState<ThreadWorkspaceState>(() =>
-    threadId ? loadState(threadId) : {
-      threadId: "",
-      artifacts: [],
-      activeArtifactId: null,
-      lastUpdatedAt: Date.now(),
-    }
+    threadId ? loadState(threadId) : getEmptyWorkspaceState(""),
   )
 
-  // Reset state when threadId changes
+  const latestStateRef = useRef(state)
+  const persistTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    latestStateRef.current = state
+  }, [state])
+
   useEffect(() => {
     if (!threadId) {
-      setState({
-        threadId: "",
-        artifacts: [],
-        activeArtifactId: null,
-        lastUpdatedAt: Date.now(),
-      })
+      setState(getEmptyWorkspaceState(""))
       return
     }
+
     setState(loadState(threadId))
   }, [threadId])
-
-  // Throttled persistence
-  const persistTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     if (!threadId) return
@@ -115,7 +161,7 @@ export function useThreadWorkspace(threadId: string | null) {
     }
 
     persistTimeoutRef.current = setTimeout(() => {
-      saveState(state)
+      saveState(latestStateRef.current)
     }, 300)
 
     return () => {
@@ -125,22 +171,23 @@ export function useThreadWorkspace(threadId: string | null) {
     }
   }, [state, threadId])
 
-  // Force save on unmount
   useEffect(() => {
     return () => {
       if (persistTimeoutRef.current) {
         clearTimeout(persistTimeoutRef.current)
       }
-      if (threadId) {
-        saveState(state)
+
+      const current = latestStateRef.current
+      if (current.threadId) {
+        saveState(current)
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [threadId])
+  }, [])
 
   const addArtifact = useCallback(
-    (partial: Omit<WorkspaceArtifact, "id" | "threadId" | "createdAt" | "updatedAt">) => {
-      if (!threadId) return
+    (partial: NewWorkspaceArtifact, options?: WorkspaceMutationOptions) => {
+      if (!threadId) return null
+
       const now = Date.now()
       const artifact: WorkspaceArtifact = {
         ...partial,
@@ -149,15 +196,17 @@ export function useThreadWorkspace(threadId: string | null) {
         createdAt: now,
         updatedAt: now,
       }
-      setState((prev) => {
-        const next: ThreadWorkspaceState = {
-          ...prev,
-          artifacts: [...prev.artifacts, artifact],
-          activeArtifactId: artifact.id,
-          lastUpdatedAt: now,
-        }
-        return next
-      })
+
+      setState((prev) => ({
+        ...prev,
+        artifacts: [...prev.artifacts, artifact],
+        activeArtifactId:
+          options?.focus === false && prev.activeArtifactId
+            ? prev.activeArtifactId
+            : artifact.id,
+        lastUpdatedAt: now,
+      }))
+
       return artifact.id
     },
     [threadId],
@@ -167,76 +216,39 @@ export function useThreadWorkspace(threadId: string | null) {
     (
       artifactId: string,
       updates: Partial<Omit<WorkspaceArtifact, "id" | "threadId" | "createdAt">>,
+      options?: WorkspaceMutationOptions,
     ) => {
-      if (!threadId) return
+      if (!threadId) return false
+
+      let updatedArtifactId: string | null = null
       const now = Date.now()
+
       setState((prev) => {
-        const index = prev.artifacts.findIndex((a) => a.id === artifactId)
+        const index = prev.artifacts.findIndex((artifact) => artifact.id === artifactId)
         if (index === -1) return prev
+
         const updated: WorkspaceArtifact = {
           ...prev.artifacts[index],
           ...updates,
           updatedAt: now,
         }
+        updatedArtifactId = updated.id
+
         const nextArtifacts = [...prev.artifacts]
         nextArtifacts[index] = updated
+
         return {
           ...prev,
           artifacts: nextArtifacts,
-          activeArtifactId: updated.id,
+          activeArtifactId:
+            options?.focus === false && prev.activeArtifactId
+              ? prev.activeArtifactId
+              : updated.id,
           lastUpdatedAt: now,
         }
       })
-    },
-    [threadId],
-  )
 
-  const updateArtifactByType = useCallback(
-    (
-      type: WorkspaceArtifact["type"],
-      updates: Partial<Omit<WorkspaceArtifact, "id" | "threadId" | "createdAt">>,
-    ) => {
-      if (!threadId) return
-      const now = Date.now()
-      setState((prev) => {
-        const index = prev.artifacts.findIndex((a) => a.type === type)
-        if (index === -1) return prev
-        const updated: WorkspaceArtifact = {
-          ...prev.artifacts[index],
-          ...updates,
-          updatedAt: now,
-        }
-        const nextArtifacts = [...prev.artifacts]
-        nextArtifacts[index] = updated
-        return {
-          ...prev,
-          artifacts: nextArtifacts,
-          activeArtifactId: updated.id,
-          lastUpdatedAt: now,
-        }
-      })
-    },
-    [threadId],
-  )
-
-  const replaceArtifacts = useCallback(
-    (artifacts: Omit<WorkspaceArtifact, "id" | "threadId" | "createdAt" | "updatedAt">[]) => {
-      if (!threadId) return
-      const now = Date.now()
-      const newArtifacts: WorkspaceArtifact[] = artifacts.map((a) => ({
-        ...a,
-        id: generateArtifactId(),
-        threadId,
-        createdAt: now,
-        updatedAt: now,
-      }))
-      setState((prev) => ({
-        ...prev,
-        artifacts: newArtifacts,
-        activeArtifactId: newArtifacts[0]?.id ?? null,
-        lastUpdatedAt: now,
-      }))
-      return newArtifacts.map((a) => a.id)
+      return updatedArtifactId !== null
     },
     [threadId],
   )
@@ -244,8 +256,9 @@ export function useThreadWorkspace(threadId: string | null) {
   const removeArtifact = useCallback(
     (artifactId: string) => {
       if (!threadId) return
+
       setState((prev) => {
-        const filtered = prev.artifacts.filter((a) => a.id !== artifactId)
+        const filtered = prev.artifacts.filter((artifact) => artifact.id !== artifactId)
         return {
           ...prev,
           artifacts: filtered,
@@ -260,6 +273,65 @@ export function useThreadWorkspace(threadId: string | null) {
     [threadId],
   )
 
+  const removeArtifactsByType = useCallback(
+    (
+      type: WorkspaceArtifact["type"],
+      options?: { preserveArtifactId?: string | null },
+    ) => {
+      if (!threadId) return
+
+      setState((prev) => {
+        const filtered = prev.artifacts.filter(
+          (artifact) =>
+            artifact.type !== type ||
+            artifact.id === (options?.preserveArtifactId ?? null),
+        )
+
+        const activeArtifactStillExists =
+          prev.activeArtifactId &&
+          filtered.some((artifact) => artifact.id === prev.activeArtifactId)
+
+        return {
+          ...prev,
+          artifacts: filtered,
+          activeArtifactId: activeArtifactStillExists
+            ? prev.activeArtifactId
+            : filtered[filtered.length - 1]?.id ?? null,
+          lastUpdatedAt: Date.now(),
+        }
+      })
+    },
+    [threadId],
+  )
+
+  const replaceArtifacts = useCallback(
+    (artifacts: NewWorkspaceArtifact[], options?: WorkspaceMutationOptions) => {
+      if (!threadId) return []
+
+      const now = Date.now()
+      const nextArtifacts: WorkspaceArtifact[] = artifacts.map((artifact) => ({
+        ...artifact,
+        id: generateArtifactId(),
+        threadId,
+        createdAt: now,
+        updatedAt: now,
+      }))
+
+      setState((prev) => ({
+        ...prev,
+        artifacts: nextArtifacts,
+        activeArtifactId:
+          options?.focus === false && prev.activeArtifactId
+            ? prev.activeArtifactId
+            : nextArtifacts[0]?.id ?? null,
+        lastUpdatedAt: now,
+      }))
+
+      return nextArtifacts.map((artifact) => artifact.id)
+    },
+    [threadId],
+  )
+
   const setActiveArtifact = useCallback((artifactId: string | null) => {
     setState((prev) => ({
       ...prev,
@@ -269,12 +341,11 @@ export function useThreadWorkspace(threadId: string | null) {
 
   const clearWorkspace = useCallback(() => {
     if (!threadId) return
-    setState({
-      threadId,
-      artifacts: [],
-      activeArtifactId: null,
-      lastUpdatedAt: Date.now(),
-    })
+
+    setState((prev) => ({
+      ...getEmptyWorkspaceState(threadId),
+      appliedToolOutputIds: prev.appliedToolOutputIds,
+    }))
   }, [threadId])
 
   const setArtifactStatus = useCallback(
@@ -284,8 +355,54 @@ export function useThreadWorkspace(threadId: string | null) {
     [updateArtifact],
   )
 
+  const markToolOutputApplied = useCallback((outputId: string) => {
+    setState((prev) => {
+      if (prev.appliedToolOutputIds.includes(outputId)) {
+        return prev
+      }
+
+      return {
+        ...prev,
+        appliedToolOutputIds: trimAppliedToolOutputIds([
+          ...prev.appliedToolOutputIds,
+          outputId,
+        ]),
+      }
+    })
+  }, [])
+
+  const setPendingIntent = useCallback((intent: WorkspacePendingIntent | null) => {
+    setState((prev) => {
+      const nextIntent = intent
+        ? {
+            ...intent,
+            focus: intent.focus ?? true,
+          }
+        : null
+
+      return {
+        ...prev,
+        pendingIntent: nextIntent,
+      }
+    })
+  }, [])
+
+  const clearPendingIntent = useCallback((sourceId?: string) => {
+    setState((prev) => {
+      if (!prev.pendingIntent) return prev
+      if (sourceId && prev.pendingIntent.sourceId !== sourceId) {
+        return prev
+      }
+
+      return {
+        ...prev,
+        pendingIntent: null,
+      }
+    })
+  }, [])
+
   const activeArtifact = state.artifacts.find(
-    (a) => a.id === state.activeArtifactId,
+    (artifact) => artifact.id === state.activeArtifactId,
   )
 
   return useMemo(
@@ -293,27 +410,37 @@ export function useThreadWorkspace(threadId: string | null) {
       artifacts: state.artifacts,
       activeArtifact,
       activeArtifactId: state.activeArtifactId,
+      appliedToolOutputIds: state.appliedToolOutputIds,
+      pendingIntent: state.pendingIntent,
       addArtifact,
       updateArtifact,
-      updateArtifactByType,
       replaceArtifacts,
       removeArtifact,
+      removeArtifactsByType,
       setActiveArtifact,
       clearWorkspace,
       setArtifactStatus,
+      markToolOutputApplied,
+      setPendingIntent,
+      clearPendingIntent,
     }),
     [
       state.artifacts,
       activeArtifact,
       state.activeArtifactId,
+      state.appliedToolOutputIds,
+      state.pendingIntent,
       addArtifact,
       updateArtifact,
-      updateArtifactByType,
       replaceArtifacts,
       removeArtifact,
+      removeArtifactsByType,
       setActiveArtifact,
       clearWorkspace,
       setArtifactStatus,
+      markToolOutputApplied,
+      setPendingIntent,
+      clearPendingIntent,
     ],
   )
 }
