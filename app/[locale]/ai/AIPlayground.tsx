@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useEffect,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
 } from "react"
@@ -11,7 +12,7 @@ import { isToolUIPart, type UIMessage } from "ai"
 import ReactMarkdown from "react-markdown"
 import { Button } from "@/app/components/ui/button"
 import { Textarea } from "@/app/components/ui/textarea"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import { useTheme } from "@/app/hooks/useTheme"
 import { useChatThreads, type ChatThread } from "@/app/hooks/useChatThreads"
 import { useThreadChat } from "@/app/hooks/useThreadChat"
@@ -20,11 +21,17 @@ import {
   useThreadWorkspace,
   removeWorkspaceForThread,
 } from "@/app/hooks/useThreadWorkspace"
+import { getToolName, useWorkspaceSync } from "@/app/hooks/useWorkspaceSync"
 import { cn } from "@/lib/utils"
+import type { TokenEstimate } from "@/lib/ai/token-estimate"
+import { formatTokenCount, getRiskLabel, getRiskLabelEn } from "@/lib/ai/token-estimate"
 import { ClientComponent } from "@/app/packages/ClientComponent"
 import WorkspacePanel from "@/app/components/ai-workspace/WorkspacePanel"
 import PixelMenuIcon from "@/app/components/system/PixelMenuIcon"
-import type { WorkspaceArtifactPayload } from "@/app/types/ai-workspace"
+import {
+  getWorkspaceArtifactLabelKey,
+  safeParseWorkspaceArtifactPayload,
+} from "@/app/types/ai-workspace"
 
 const useBrowserLayoutEffect =
   typeof window === "undefined" ? useEffect : useLayoutEffect
@@ -37,38 +44,66 @@ const CODE_LANGUAGE_ALIAS_MAP: Record<string, string> = {
   md: "markdown",
 }
 
-/* ─── Tool name helper ─── */
-
-function getToolName(part: { type: string; toolName?: string }): string {
-  const toolPrefix = "tool-"
-  if (part.type === "dynamic-tool" && part.toolName) {
-    return part.toolName
-  }
-  if (part.type.startsWith(toolPrefix)) {
-    return part.type.slice(toolPrefix.length)
-  }
-  return part.type
-}
-
 /* ─── Lightweight tool receipt ─── */
 
-const TOOL_RECEIPTS: Record<string, string> = {
-  get_profile_summary: "Generated profile card",
-  list_projects: "Generated project grid",
-  search_articles: "Generated article summary",
-  build_ui_block: "Generated artifact",
-}
-
-function ToolReceipt({ toolName, output }: { toolName: string; output: unknown }) {
+function ToolReceipt({
+  toolName,
+  output,
+  onOpenWorkspace,
+}: {
+  toolName: string
+  output: unknown
+  onOpenWorkspace?: () => void
+}) {
+  const t = useTranslations("ai")
   const data = output as Record<string, unknown>
-  const summary = (data.summary as string) || TOOL_RECEIPTS[toolName] || "Done"
+  const payload =
+    toolName === "build_ui_block"
+      ? safeParseWorkspaceArtifactPayload(output)
+      : null
+
+  let summary = typeof data.summary === "string" ? data.summary : undefined
+  const surface = payload?.surface ?? "chat"
+  const reveal = payload?.reveal ?? false
+
+  if (!summary && payload) {
+    const receiptKey =
+      payload.operation === "append"
+        ? "artifactReceiptAppend"
+        : payload.operation === "replace"
+          ? "artifactReceiptReplace"
+          : "artifactReceiptUpdate"
+    summary = t(receiptKey, {
+      artifact: t(getWorkspaceArtifactLabelKey(payload.artifactType)),
+    })
+  }
+
+  if (!summary) {
+    if (toolName === "get_profile_summary") {
+      summary = t("toolReceiptProfileCard")
+    } else if (toolName === "list_projects") {
+      summary = t("toolReceiptProjectGrid")
+    } else if (toolName === "search_articles") {
+      summary = t("toolReceiptArticleSummary")
+    } else {
+      summary = t("toolReceiptDone")
+    }
+  }
 
   return (
-    <div className="flex items-center gap-2 py-1 text-primary/80">
+    <div className="flex flex-wrap items-center gap-2 py-1">
       <span className="inline-block h-2 w-2 bg-primary" />
-      <span className="font-pixel text-[10px] uppercase tracking-[0.2em]">
+      <span className="font-pixel text-[10px] uppercase tracking-[0.2em] text-primary/80">
         {summary}
       </span>
+      {surface === "artifact" && !reveal && onOpenWorkspace ? (
+        <button
+          onClick={onOpenWorkspace}
+          className="font-pixel text-[10px] uppercase tracking-[0.16em] text-muted-foreground underline underline-offset-2 transition-colors hover:text-primary"
+        >
+          {t("openWorkspaceToView") ?? "Open to view"}
+        </button>
+      ) : null}
     </div>
   )
 }
@@ -212,6 +247,32 @@ function MarkdownRenderer({
             </code>
           )
         },
+        table: ({ children }) => (
+          <div className="my-3 overflow-x-auto">
+            <table className="w-full border-collapse border-2 border-border text-sm">
+              {children}
+            </table>
+          </div>
+        ),
+        thead: ({ children }) => (
+          <thead className="bg-secondary">{children}</thead>
+        ),
+        tbody: ({ children }) => (
+          <tbody className="divide-y divide-border/40">{children}</tbody>
+        ),
+        tr: ({ children }) => (
+          <tr className="border-b border-border/40">{children}</tr>
+        ),
+        th: ({ children }) => (
+          <th className="border border-border/60 px-3 py-2 text-left font-pixel text-[10px] uppercase tracking-[0.16em] text-primary">
+            {children}
+          </th>
+        ),
+        td: ({ children }) => (
+          <td className="border border-border/40 px-3 py-2 text-foreground/90">
+            {children}
+          </td>
+        ),
         pre: ({ children }) => <>{children}</>,
       }}
     >
@@ -229,6 +290,7 @@ const ChatMessagesViewport = React.memo(function ChatMessagesViewport({
   lastAssistantMessageId,
   loadingLabel,
   emptyLabel,
+  onOpenWorkspace,
 }: {
   messages: UIMessage[]
   isBusy: boolean
@@ -236,6 +298,7 @@ const ChatMessagesViewport = React.memo(function ChatMessagesViewport({
   lastAssistantMessageId?: string
   loadingLabel: string
   emptyLabel: string
+  onOpenWorkspace?: () => void
 }) {
   const scrollViewportRef = useRef<HTMLDivElement>(null)
 
@@ -313,6 +376,7 @@ const ChatMessagesViewport = React.memo(function ChatMessagesViewport({
                             <ToolReceipt
                               toolName={toolName}
                               output={part.output}
+                              onOpenWorkspace={onOpenWorkspace}
                             />
                           </div>
                         )
@@ -356,23 +420,43 @@ const ChatMessagesViewport = React.memo(function ChatMessagesViewport({
 
 const ChatComposer = React.memo(function ChatComposer({
   sendMessage,
+  stop,
   isBusy,
+  slowPhase,
+  estimateInputTokens,
   error,
   placeholder,
   loadingLabel,
   submitLabel,
   errorLabel,
+  slowLabel,
+  verySlowLabel,
+  connectingLabel,
+  cancelLabel,
+  locale,
 }: {
   sendMessage: (message: { text: string }) => Promise<void>
+  stop: () => void
   isBusy: boolean
+  slowPhase: "normal" | "slow" | "verySlow"
+  estimateInputTokens: (pendingInput: string) => TokenEstimate
   error?: Error | undefined
   placeholder: string
   loadingLabel: string
   submitLabel: string
   errorLabel: string
+  slowLabel: string
+  verySlowLabel: string
+  connectingLabel: string
+  cancelLabel: string
+  locale: string
 }) {
   const [input, setInput] = useState("")
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const tokenEstimate = useMemo(
+    () => estimateInputTokens(input),
+    [estimateInputTokens, input],
+  )
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -383,13 +467,53 @@ const ChatComposer = React.memo(function ChatComposer({
     await sendMessage({ text: value })
   }
 
+  const handleStop = (e: React.MouseEvent) => {
+    e.preventDefault()
+    stop()
+  }
+
+  // Derive status label
+  let statusLabel = ""
+  if (isBusy) {
+    if (slowPhase === "verySlow") {
+      statusLabel = verySlowLabel
+    } else if (slowPhase === "slow") {
+      statusLabel = slowLabel
+    } else {
+      statusLabel = connectingLabel
+    }
+  }
+
+  // Token estimate display
+  const tokenText = `${formatTokenCount(tokenEstimate.estimatedPromptTokens)} tokens`
+  const riskText = locale === "zh" ? getRiskLabel(tokenEstimate.risk) : getRiskLabelEn(tokenEstimate.risk)
+  const riskColor =
+    tokenEstimate.risk === "high"
+      ? "text-destructive"
+      : tokenEstimate.risk === "medium"
+        ? "text-amber-500"
+        : "text-muted-foreground"
+
   return (
     <div className="shrink-0 border-t-2 border-border/60 bg-background/80 p-4 md:p-5">
       <div className="space-y-3">
-        {error ? (
+        {error && errorLabel ? (
           <p className="font-pixel text-[10px] uppercase tracking-[0.2em] text-destructive">
             {errorLabel}
           </p>
+        ) : null}
+        {statusLabel && !error ? (
+          <div className="flex items-center justify-between">
+            <p className="font-pixel text-[10px] uppercase tracking-[0.2em] text-amber-500">
+              {statusLabel}
+            </p>
+            <button
+              onClick={handleStop}
+              className="font-pixel text-[10px] uppercase tracking-[0.16em] text-muted-foreground underline underline-offset-2 transition-colors hover:text-destructive"
+            >
+              {cancelLabel}
+            </button>
+          </div>
         ) : null}
         <form onSubmit={handleSubmit} className="flex items-end gap-3">
           <Textarea
@@ -413,49 +537,53 @@ const ChatComposer = React.memo(function ChatComposer({
             {isBusy ? loadingLabel : submitLabel}
           </Button>
         </form>
+        <div className="flex items-center justify-between">
+          <p className={cn("font-pixel text-[9px] uppercase tracking-[0.16em]", riskColor)}>
+            {tokenText} | {riskText}
+          </p>
+        </div>
       </div>
     </div>
   )
 })
 
-/* ─── Workspace sync helpers ─── */
-
-function extractArtifactPayload(output: unknown): WorkspaceArtifactPayload | null {
-  const data = output as Record<string, unknown>
-  const artifactType = (data.artifactType || data.blockType) as string
-  if (!artifactType) return null
-
-  return {
-    artifactType: artifactType as WorkspaceArtifactPayload["artifactType"],
-    operation: (data.operation as WorkspaceArtifactPayload["operation"]) || "append",
-    title: (data.title as string) || undefined,
-    summary: (data.summary as string) || undefined,
-    focus: (data.focus as boolean) ?? true,
-    artifactId: (data.artifactId as string) || undefined,
-    data: (data.data as Record<string, unknown>) ?? {},
-  }
-}
-
 /* ─── Chat thread view (isolated per thread) ─── */
+
+function getErrorLabel(
+  error: (Error & { status?: number }) | undefined,
+  t: (key: string) => string,
+): string {
+  if (!error) return ""
+  if (error.status === 413) return t("errorInputTooLong")
+  if (error.status === 423) return t("errorConversationBusy")
+  if (error.status === 429) return t("errorRateLimit")
+  if (error.status === 503) return t("errorServiceUnavailable")
+  if (error.status === 504) return t("errorTimeout")
+  return t("errorGeneric")
+}
 
 function ChatThreadView({
   thread,
   onMessagesChange,
-  workspaceActions,
-  workspaceArtifacts,
+  workspace,
+  onOpenWorkspace,
+  locale,
 }: {
   thread: ChatThread
   onMessagesChange: (messages: UIMessage[]) => void
-  workspaceActions: ReturnType<typeof useThreadWorkspace>
-  workspaceArtifacts: ReturnType<typeof useThreadWorkspace>["artifacts"]
+  workspace: ReturnType<typeof useThreadWorkspace>
+  onOpenWorkspace?: () => void
+  locale: string
 }) {
   const t = useTranslations("ai")
 
-  const { messages, sendMessage, status, error, isBusy } = useThreadChat({
+  const { messages, sendMessage, stop, error, isBusy, slowPhase, estimateInputTokens } = useThreadChat({
     threadId: thread.id,
     initialMessages: thread.messages,
     onMessagesPersist: onMessagesChange,
   })
+
+  const errorLabel = getErrorLabel(error, t)
 
   const lastAssistantMessage = [...messages]
     .reverse()
@@ -471,174 +599,10 @@ function ChatThreadView({
   )
   const showThinking = isBusy && !lastAssistantHasContent
 
-  /* Sync tool outputs to workspace */
-  const processedRef = useRef<Set<string>>(new Set())
-
-  useEffect(() => {
-    processedRef.current = new Set(
-      workspaceArtifacts
-        .map((a) => a.sourceMessageId)
-        .filter(Boolean) as string[],
-    )
-  }, [thread.id, workspaceArtifacts])
-
-  useEffect(() => {
-    messages.forEach((message) => {
-      if (message.role !== "assistant") return
-      message.parts.forEach((part, partIndex) => {
-        if (!isToolUIPart(part)) return
-        if (part.state !== "output-available") return
-
-        const toolName = getToolName(part)
-        const sourceId = `${message.id}-${partIndex}`
-        if (processedRef.current.has(sourceId)) return
-
-        /* build_ui_block — new protocol */
-        if (toolName === "build_ui_block") {
-          const payload = extractArtifactPayload(part.output)
-          if (!payload) return
-
-          processedRef.current.add(sourceId)
-
-          const artifactBase = {
-            type: payload.artifactType,
-            title: payload.title,
-            data: payload.data,
-            status: "ready" as const,
-            sourceMessageId: sourceId,
-            summary: payload.summary,
-          }
-
-          if (payload.operation === "append") {
-            workspaceActions.addArtifact(artifactBase)
-          } else if (payload.operation === "replace") {
-            const existing = workspaceArtifacts.find(
-              (a) => a.type === payload.artifactType,
-            )
-            if (existing) {
-              workspaceActions.updateArtifact(existing.id, {
-                data: payload.data,
-                title: payload.title ?? existing.title,
-                status: "ready",
-                sourceMessageId: sourceId,
-                summary: payload.summary ?? existing.summary,
-              })
-            } else {
-              workspaceActions.addArtifact(artifactBase)
-            }
-          } else if (payload.operation === "update") {
-            const targetId = payload.artifactId
-            if (targetId) {
-              const existing = workspaceArtifacts.find((a) => a.id === targetId)
-              if (existing) {
-                workspaceActions.updateArtifact(targetId, {
-                  data: payload.data,
-                  title: payload.title ?? existing.title,
-                  status: "ready",
-                  sourceMessageId: sourceId,
-                  summary: payload.summary ?? existing.summary,
-                })
-              } else {
-                workspaceActions.addArtifact(artifactBase)
-              }
-            } else {
-              const existing = workspaceArtifacts.find(
-                (a) => a.type === payload.artifactType,
-              )
-              if (existing) {
-                workspaceActions.updateArtifact(existing.id, {
-                  data: payload.data,
-                  title: payload.title ?? existing.title,
-                  status: "ready",
-                  sourceMessageId: sourceId,
-                  summary: payload.summary ?? existing.summary,
-                })
-              } else {
-                workspaceActions.addArtifact(artifactBase)
-              }
-            }
-          }
-          return
-        }
-
-        /* Legacy tools — route to workspace as artifacts too */
-        if (toolName === "get_profile_summary") {
-          processedRef.current.add(sourceId)
-          const existing = workspaceArtifacts.find((a) => a.type === "profile-card")
-          if (existing) {
-            workspaceActions.updateArtifact(existing.id, {
-              data: part.output as Record<string, unknown>,
-              status: "ready",
-              sourceMessageId: sourceId,
-            })
-          } else {
-            workspaceActions.addArtifact({
-              type: "profile-card",
-              title: "Profile Summary",
-              data: part.output as Record<string, unknown>,
-              status: "ready",
-              sourceMessageId: sourceId,
-              summary: "Generated profile card",
-            })
-          }
-          return
-        }
-
-        if (toolName === "list_projects") {
-          processedRef.current.add(sourceId)
-          const existing = workspaceArtifacts.find((a) => a.type === "project-grid")
-          if (existing) {
-            workspaceActions.updateArtifact(existing.id, {
-              data: { projects: Array.isArray(part.output) ? part.output : [] },
-              status: "ready",
-              sourceMessageId: sourceId,
-            })
-          } else {
-            workspaceActions.addArtifact({
-              type: "project-grid",
-              title: "Projects",
-              data: { projects: Array.isArray(part.output) ? part.output : [] },
-              status: "ready",
-              sourceMessageId: sourceId,
-              summary: "Generated project grid",
-            })
-          }
-          return
-        }
-
-        if (toolName === "search_articles") {
-          processedRef.current.add(sourceId)
-          const existing = workspaceArtifacts.find((a) => a.type === "article-summary")
-          if (existing) {
-            workspaceActions.updateArtifact(existing.id, {
-              data: { articles: Array.isArray(part.output) ? part.output : [] },
-              status: "ready",
-              sourceMessageId: sourceId,
-            })
-          } else {
-            workspaceActions.addArtifact({
-              type: "article-summary",
-              title: "Articles",
-              data: { articles: Array.isArray(part.output) ? part.output : [] },
-              status: "ready",
-              sourceMessageId: sourceId,
-              summary: "Generated article summary",
-            })
-          }
-          return
-        }
-      })
-    })
-  }, [messages, workspaceActions, workspaceArtifacts, thread.id])
-
-  /* Mark artifacts as updating when busy */
-  useEffect(() => {
-    if (!isBusy) return
-    const lastArtifact = workspaceArtifacts[workspaceArtifacts.length - 1]
-    if (!lastArtifact) return
-    if (lastArtifact.status === "updating") return
-    workspaceActions.setArtifactStatus(lastArtifact.id, "updating")
-  }, [isBusy, workspaceActions, workspaceArtifacts])
+  useWorkspaceSync({
+    messages,
+    workspace,
+  })
 
   return (
     <div className="flex h-full flex-col overflow-hidden">
@@ -649,15 +613,24 @@ function ChatThreadView({
         lastAssistantMessageId={lastAssistantMessageId}
         loadingLabel={t("loading")}
         emptyLabel={t("empty")}
+        onOpenWorkspace={onOpenWorkspace}
       />
       <ChatComposer
         sendMessage={sendMessage}
+        stop={stop}
         isBusy={isBusy}
+        slowPhase={slowPhase}
+        estimateInputTokens={estimateInputTokens}
         error={error}
         placeholder={t("textPromptPlaceholder")}
         loadingLabel={t("loading")}
         submitLabel={t("submit")}
-        errorLabel={t("errorGeneric")}
+        errorLabel={errorLabel}
+        slowLabel={t("slowRequest")}
+        verySlowLabel={t("verySlowRequest")}
+        connectingLabel={t("connectingModel")}
+        cancelLabel={t("cancel")}
+        locale={locale}
       />
     </div>
   )
@@ -665,17 +638,28 @@ function ChatThreadView({
 
 /* ─── Helpers ─── */
 
-function formatRelativeTime(ts: number): string {
-  const now = Date.now()
-  const diff = now - ts
-  const minutes = Math.floor(diff / 60000)
-  const hours = Math.floor(diff / 3600000)
-  const days = Math.floor(diff / 86400000)
-  if (minutes < 1) return "just now"
-  if (minutes < 60) return `${minutes}m`
-  if (hours < 24) return `${hours}h`
-  if (days < 7) return `${days}d`
-  return new Date(ts).toLocaleDateString(undefined, {
+function formatRelativeTime(ts: number, locale: string): string {
+  const diffMs = ts - Date.now()
+  const absDiffMs = Math.abs(diffMs)
+  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: "auto" })
+
+  if (absDiffMs < 60000) {
+    return rtf.format(0, "minute")
+  }
+
+  if (absDiffMs < 3600000) {
+    return rtf.format(Math.round(diffMs / 60000), "minute")
+  }
+
+  if (absDiffMs < 86400000) {
+    return rtf.format(Math.round(diffMs / 3600000), "hour")
+  }
+
+  if (absDiffMs < 604800000) {
+    return rtf.format(Math.round(diffMs / 86400000), "day")
+  }
+
+  return new Date(ts).toLocaleDateString(locale, {
     month: "short",
     day: "numeric",
   })
@@ -685,6 +669,7 @@ function formatRelativeTime(ts: number): string {
 
 export default function AIPlayground() {
   const t = useTranslations("ai")
+  const locale = useLocale()
   const {
     hydrated,
     threads,
@@ -697,11 +682,23 @@ export default function AIPlayground() {
   const { removeChat } = useGlobalChatRuntime()
 
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [mobileTab, setMobileTab] = useState<"chat" | "workspace">("chat")
+  const [workspaceOpen, setWorkspaceOpen] = useState(false)
+  const [workspaceOpenMobile, setWorkspaceOpenMobile] = useState(false)
 
   const activeThread = threads.find((t) => t.id === activeThreadId)
 
   const workspace = useThreadWorkspace(activeThreadId)
+
+  // Close workspace when switching threads
+  useEffect(() => {
+    setWorkspaceOpen(false)
+    setWorkspaceOpenMobile(false)
+  }, [activeThreadId])
+
+  const handleOpenWorkspace = useCallback(() => {
+    setWorkspaceOpen(true)
+    setWorkspaceOpenMobile(true)
+  }, [])
 
   const handleActiveMessagesChange = useCallback(
     (msgs: UIMessage[]) => {
@@ -719,6 +716,8 @@ export default function AIPlayground() {
     },
     [removeChat, deleteThread],
   )
+
+  const artifactCount = workspace.artifacts.length
 
   return (
     <section className="mx-auto flex h-[calc(100svh-3.5rem)] max-w-7xl flex-col px-4 pb-4 pt-6 md:px-8 md:pb-6 md:pt-8 lg:max-w-[92vw]">
@@ -747,6 +746,29 @@ export default function AIPlayground() {
             {t("description")}
           </p>
         </div>
+
+        {/* Spacer */}
+        <div className="flex-1" />
+
+        {/* Desktop workspace toggle */}
+        <button
+          onClick={() => setWorkspaceOpen((s) => !s)}
+          className="hidden h-10 items-center gap-2 border-2 border-border/60 bg-background/60 px-3 font-pixel text-[10px] uppercase tracking-[0.16em] text-foreground transition-colors hover:border-primary/60 hover:bg-primary/[0.06] md:inline-flex"
+          aria-label={
+            workspaceOpen
+              ? t("closeWorkspace") ?? "Close workspace"
+              : t("openWorkspace") ?? "Open workspace"
+          }
+          aria-expanded={workspaceOpen}
+        >
+          <span className="text-lg leading-none">◈</span>
+          <span>{t("workspaceEyebrow")}</span>
+          {artifactCount > 0 ? (
+            <span className="ml-1 inline-flex h-5 min-w-[20px] items-center justify-center bg-primary px-1.5 font-pixel text-[9px] text-primary-foreground">
+              {artifactCount}
+            </span>
+          ) : null}
+        </button>
       </header>
 
       <div className="section-shell relative flex flex-1 flex-row overflow-hidden">
@@ -801,7 +823,6 @@ export default function AIPlayground() {
                         onClick={() => {
                           setActiveThread(thread.id)
                           setSidebarOpen(false)
-                          setMobileTab("chat")
                         }}
                         className="w-full px-3 py-2.5 text-left"
                       >
@@ -809,7 +830,7 @@ export default function AIPlayground() {
                           {thread.title}
                         </p>
                         <p className="font-pixel mt-1 text-[9px] uppercase tracking-[0.16em] text-muted-foreground/50">
-                          {formatRelativeTime(thread.updatedAt)}
+                          {formatRelativeTime(thread.updatedAt, locale)}
                         </p>
                       </button>
 
@@ -854,7 +875,7 @@ export default function AIPlayground() {
           </div>
         </aside>
 
-        {/* Mobile overlay */}
+        {/* Mobile overlay for sidebar */}
         {sidebarOpen && (
           <div
             className="absolute inset-0 z-20 touch-none bg-background/80 backdrop-blur-sm transition-opacity duration-200 md:hidden"
@@ -863,45 +884,9 @@ export default function AIPlayground() {
           />
         )}
 
-        {/* ── Mobile tabs ── */}
-        <div className="absolute left-0 right-0 top-0 z-10 flex border-b-2 border-border/60 bg-background/95 md:hidden">
-          <button
-            onClick={() => setMobileTab("chat")}
-            className={cn(
-              "flex-1 border-b-2 px-3 py-2.5 font-pixel text-[10px] uppercase tracking-[0.16em] transition-colors",
-              mobileTab === "chat"
-                ? "border-primary text-primary"
-                : "border-transparent text-muted-foreground",
-            )}
-          >
-            {t("chatTab") ?? "Chat"}
-          </button>
-          <button
-            onClick={() => setMobileTab("workspace")}
-            className={cn(
-              "flex-1 border-b-2 px-3 py-2.5 font-pixel text-[10px] uppercase tracking-[0.16em] transition-colors",
-              mobileTab === "workspace"
-                ? "border-primary text-primary"
-                : "border-transparent text-muted-foreground",
-            )}
-          >
-            {t("workspaceTab") ?? "Workspace"}
-            {workspace.artifacts.length > 0 ? (
-              <span className="ml-1.5 inline-block h-4 min-w-[16px] bg-primary px-1 text-center text-[9px] leading-4 text-primary-foreground">
-                {workspace.artifacts.length}
-              </span>
-            ) : null}
-          </button>
-        </div>
-
-        {/* ── Chat area ── */}
-        <main
-          className={cn(
-            "relative flex flex-col overflow-hidden md:flex-[5]",
-            mobileTab === "chat" ? "flex" : "hidden md:flex",
-          )}
-        >
-          <div className="pt-[44px] md:pt-0 h-full">
+        {/* ── Chat area (main, always full width on mobile) ── */}
+        <main className="relative flex flex-1 flex-col overflow-hidden">
+          <div className="h-full">
             {!hydrated ? (
               <div className="flex h-full items-center justify-center">
                 <p className="font-pixel text-sm uppercase tracking-[0.2em] text-muted-foreground/40">
@@ -913,8 +898,9 @@ export default function AIPlayground() {
                 key={activeThread.id}
                 thread={activeThread}
                 onMessagesChange={handleActiveMessagesChange}
-                workspaceActions={workspace}
-                workspaceArtifacts={workspace.artifacts}
+                workspace={workspace}
+                onOpenWorkspace={handleOpenWorkspace}
+                locale={locale}
               />
             ) : (
               <div className="flex h-full items-center justify-center">
@@ -926,40 +912,84 @@ export default function AIPlayground() {
           </div>
         </main>
 
-        {/* ── Workspace area ── */}
-        <div
+        {/* ── Desktop Workspace Panel (collapsible) ── */}
+        <aside
           className={cn(
-            "relative flex-col overflow-hidden md:flex md:flex-[7]",
-            mobileTab === "workspace" ? "flex" : "hidden",
+            "hidden flex-col overflow-hidden border-l-2 border-border/60 bg-background/40 transition-all duration-300 ease-out md:flex",
+            workspaceOpen
+              ? "w-[420px] border-opacity-100 opacity-100"
+              : "w-0 border-opacity-0 opacity-0",
           )}
         >
-          <div className="pt-[44px] md:pt-0 h-full">
-            {!hydrated ? (
-              <div className="flex h-full items-center justify-center">
-                <p className="font-pixel text-sm uppercase tracking-[0.2em] text-muted-foreground/40">
-                  Loading workspace...
-                </p>
-              </div>
-            ) : activeThread ? (
-              <WorkspacePanel
-                threadTitle={activeThread.title}
-                artifacts={workspace.artifacts}
-                activeArtifactId={workspace.activeArtifactId}
-                activeArtifact={workspace.activeArtifact}
-                onSelectArtifact={workspace.setActiveArtifact}
-                onClearWorkspace={workspace.clearWorkspace}
-                isBusy={false}
-              />
-            ) : (
-              <div className="flex h-full items-center justify-center">
-                <p className="font-pixel text-sm uppercase tracking-[0.2em] text-muted-foreground/50">
-                  {t("workspaceEmpty") ?? "Workspace is empty"}
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
+          {workspaceOpen && activeThread ? (
+            <WorkspacePanel
+              threadTitle={activeThread.title}
+              artifacts={workspace.artifacts}
+              activeArtifactId={workspace.activeArtifactId}
+              activeArtifact={workspace.activeArtifact}
+              pendingIntent={workspace.pendingIntent}
+              onSelectArtifact={workspace.setActiveArtifact}
+              onClearWorkspace={workspace.clearWorkspace}
+              isBusy={Boolean(workspace.pendingIntent)}
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center">
+              <p className="font-pixel text-sm uppercase tracking-[0.2em] text-muted-foreground/30">
+                {t("workspaceClosed") ?? "Workspace closed"}
+              </p>
+            </div>
+          )}
+        </aside>
+
+        {/* ── Mobile Workspace Drawer ── */}
+        {workspaceOpenMobile && (
+          <>
+            <div
+              className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm transition-opacity md:hidden"
+              onClick={() => setWorkspaceOpenMobile(false)}
+              aria-hidden="true"
+            />
+            <div className="fixed right-0 top-0 z-50 flex h-svh w-[min(360px,85vw)] flex-col border-l-2 border-border/60 bg-background/95 md:hidden">
+              {activeThread ? (
+                <WorkspacePanel
+                  threadTitle={activeThread.title}
+                  artifacts={workspace.artifacts}
+                  activeArtifactId={workspace.activeArtifactId}
+                  activeArtifact={workspace.activeArtifact}
+                  pendingIntent={workspace.pendingIntent}
+                  onSelectArtifact={workspace.setActiveArtifact}
+                  onClearWorkspace={workspace.clearWorkspace}
+                  isBusy={Boolean(workspace.pendingIntent)}
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center">
+                  <p className="font-pixel text-sm uppercase tracking-[0.2em] text-muted-foreground/50">
+                    {t("workspaceEmpty") ?? "Workspace is empty"}
+                  </p>
+                </div>
+              )}
+            </div>
+          </>
+        )}
       </div>
+
+      {/* ── Mobile workspace floating button ── */}
+      <button
+        onClick={() => setWorkspaceOpenMobile((s) => !s)}
+        className="fixed bottom-6 right-6 z-30 flex h-12 w-12 items-center justify-center border-2 border-border/60 bg-background/90 shadow-lg transition-colors hover:border-primary/60 hover:bg-primary/[0.06] md:hidden"
+        aria-label={
+          workspaceOpenMobile
+            ? t("closeWorkspace") ?? "Close workspace"
+            : t("openWorkspace") ?? "Open workspace"
+        }
+      >
+        <span className="text-xl leading-none">◈</span>
+        {artifactCount > 0 && !workspaceOpenMobile ? (
+          <span className="absolute -right-1 -top-1 flex h-5 min-w-[20px] items-center justify-center bg-primary px-1 font-pixel text-[9px] text-primary-foreground">
+            {artifactCount}
+          </span>
+        ) : null}
+      </button>
     </section>
   )
 }
