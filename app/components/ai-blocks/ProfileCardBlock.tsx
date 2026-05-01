@@ -1,26 +1,16 @@
 "use client"
 
-interface ProfileCardData {
-  name?: string
-  role?: string
-  location?: string
-  experience?: string
-  focus?: string[]
-  productAreas?: string[]
-  contact?: {
-    email?: string
-    github?: string
-    linkedin?: string
-  }
-}
+import { useTranslations } from "next-intl"
+import type { ProfileCardArtifactData } from "@/app/types/ai-workspace"
 
 export default function ProfileCardBlock({
   title,
   data,
 }: {
   title?: string
-  data: ProfileCardData
+  data: ProfileCardArtifactData
 }) {
+  const t = useTranslations("ai")
   const {
     name = "Developer",
     role = "Front-End Developer",
@@ -50,7 +40,7 @@ export default function ProfileCardBlock({
       {experience ? (
         <div>
           <p className="font-pixel mb-1.5 text-[10px] uppercase tracking-[0.24em] text-primary/80">
-            Experience
+            {t("profileExperience")}
           </p>
           <p className="text-sm leading-7 text-foreground/90">{experience}</p>
         </div>
@@ -59,11 +49,11 @@ export default function ProfileCardBlock({
       {focus.length > 0 ? (
         <div>
           <p className="font-pixel mb-1.5 text-[10px] uppercase tracking-[0.24em] text-primary/80">
-            Focus
+            {t("profileFocus")}
           </p>
           <ul className="space-y-1">
-            {focus.map((item, i) => (
-              <li key={i} className="text-sm text-foreground/90">
+            {focus.map((item, index) => (
+              <li key={index} className="text-sm text-foreground/90">
                 {item}
               </li>
             ))}
@@ -74,11 +64,11 @@ export default function ProfileCardBlock({
       {productAreas.length > 0 ? (
         <div>
           <p className="font-pixel mb-1.5 text-[10px] uppercase tracking-[0.24em] text-primary/80">
-            Product Areas
+            {t("profileProductAreas")}
           </p>
           <ul className="space-y-1">
-            {productAreas.map((item, i) => (
-              <li key={i} className="text-sm text-foreground/90">
+            {productAreas.map((item, index) => (
+              <li key={index} className="text-sm text-foreground/90">
                 {item}
               </li>
             ))}
@@ -89,7 +79,7 @@ export default function ProfileCardBlock({
       {contact ? (
         <div>
           <p className="font-pixel mb-1.5 text-[10px] uppercase tracking-[0.24em] text-primary/80">
-            Contact
+            {t("profileContact")}
           </p>
           <div className="space-y-1 text-sm text-foreground/90">
             {contact.email ? <p>{contact.email}</p> : null}

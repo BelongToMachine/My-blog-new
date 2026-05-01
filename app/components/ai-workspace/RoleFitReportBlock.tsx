@@ -1,12 +1,37 @@
 "use client"
 
-interface RoleFitReportData {
-  fitScore?: number
-  strengths?: string[]
-  matchedProjects?: { title: string; reason: string }[]
-  matchedArticles?: { title: string; reason: string }[]
-  possibleRisks?: string[]
-  recommendedTalkingPoints?: string[]
+import Link from "next/link"
+import { useLocale, useTranslations } from "next-intl"
+import type {
+  RoleFitReferenceItem,
+  RoleFitReportArtifactData,
+} from "@/app/types/ai-workspace"
+
+function ReferenceCard({
+  item,
+  fallbackPrefix,
+}: {
+  item: RoleFitReferenceItem
+  fallbackPrefix?: string
+}) {
+  const locale = useLocale()
+  const href =
+    item.href ||
+    (item.slug && fallbackPrefix ? `/${locale}/${fallbackPrefix}/${item.slug}` : null)
+  const titleNode = href ? (
+    <Link href={href} className="transition-colors hover:text-primary">
+      {item.title}
+    </Link>
+  ) : (
+    item.title
+  )
+
+  return (
+    <div className="border-l-2 border-primary/30 bg-primary/[0.04] py-2 pl-3 pr-2">
+      <p className="text-sm font-medium text-foreground">{titleNode}</p>
+      <p className="text-sm leading-6 text-muted-foreground">{item.reason}</p>
+    </div>
+  )
 }
 
 export default function RoleFitReportBlock({
@@ -14,8 +39,9 @@ export default function RoleFitReportBlock({
   data,
 }: {
   title?: string
-  data: RoleFitReportData
+  data: RoleFitReportArtifactData
 }) {
+  const t = useTranslations("ai")
   const {
     fitScore,
     strengths = [],
@@ -36,7 +62,7 @@ export default function RoleFitReportBlock({
       {typeof fitScore === "number" ? (
         <div className="flex items-center gap-3">
           <span className="font-pixel text-[10px] uppercase tracking-[0.2em] text-primary/80">
-            Fit Score
+            {t("roleFitScore")}
           </span>
           <div className="h-2 flex-1 bg-muted">
             <div
@@ -51,16 +77,16 @@ export default function RoleFitReportBlock({
       {strengths.length > 0 ? (
         <div>
           <p className="font-pixel mb-2 text-[10px] uppercase tracking-[0.24em] text-primary/80">
-            Strengths
+            {t("roleFitStrengths")}
           </p>
           <ul className="space-y-1.5">
-            {strengths.map((s, i) => (
+            {strengths.map((strength, index) => (
               <li
-                key={i}
+                key={index}
                 className="flex items-start gap-2 text-sm leading-6 text-foreground/90"
               >
                 <span className="mt-1.5 block h-1.5 w-1.5 shrink-0 bg-primary" />
-                {s}
+                {strength}
               </li>
             ))}
           </ul>
@@ -70,19 +96,14 @@ export default function RoleFitReportBlock({
       {matchedProjects.length > 0 ? (
         <div>
           <p className="font-pixel mb-2 text-[10px] uppercase tracking-[0.24em] text-primary/80">
-            Matched Projects
+            {t("roleFitMatchedProjects")}
           </p>
           <div className="space-y-2">
-            {matchedProjects.map((p, i) => (
-              <div
-                key={i}
-                className="border-l-2 border-primary/30 bg-primary/[0.04] py-2 pl-3 pr-2"
-              >
-                <p className="text-sm font-medium text-foreground">{p.title}</p>
-                <p className="text-sm leading-6 text-muted-foreground">
-                  {p.reason}
-                </p>
-              </div>
+            {matchedProjects.map((project, index) => (
+              <ReferenceCard
+                key={index}
+                item={project}
+              />
             ))}
           </div>
         </div>
@@ -91,19 +112,15 @@ export default function RoleFitReportBlock({
       {matchedArticles.length > 0 ? (
         <div>
           <p className="font-pixel mb-2 text-[10px] uppercase tracking-[0.24em] text-primary/80">
-            Matched Articles
+            {t("roleFitMatchedArticles")}
           </p>
           <div className="space-y-2">
-            {matchedArticles.map((a, i) => (
-              <div
-                key={i}
-                className="border-l-2 border-primary/30 bg-primary/[0.04] py-2 pl-3 pr-2"
-              >
-                <p className="text-sm font-medium text-foreground">{a.title}</p>
-                <p className="text-sm leading-6 text-muted-foreground">
-                  {a.reason}
-                </p>
-              </div>
+            {matchedArticles.map((article, index) => (
+              <ReferenceCard
+                key={index}
+                item={article}
+                fallbackPrefix="articles"
+              />
             ))}
           </div>
         </div>
@@ -112,16 +129,16 @@ export default function RoleFitReportBlock({
       {possibleRisks.length > 0 ? (
         <div>
           <p className="font-pixel mb-2 text-[10px] uppercase tracking-[0.24em] text-primary/80">
-            Possible Risks
+            {t("roleFitPossibleRisks")}
           </p>
           <ul className="space-y-1.5">
-            {possibleRisks.map((r, i) => (
+            {possibleRisks.map((risk, index) => (
               <li
-                key={i}
+                key={index}
                 className="flex items-start gap-2 text-sm leading-6 text-foreground/90"
               >
                 <span className="mt-1.5 block h-1.5 w-1.5 shrink-0 bg-destructive" />
-                {r}
+                {risk}
               </li>
             ))}
           </ul>
@@ -131,16 +148,16 @@ export default function RoleFitReportBlock({
       {recommendedTalkingPoints.length > 0 ? (
         <div>
           <p className="font-pixel mb-2 text-[10px] uppercase tracking-[0.24em] text-primary/80">
-            Recommended Talking Points
+            {t("roleFitRecommendedTalkingPoints")}
           </p>
           <ul className="space-y-1.5">
-            {recommendedTalkingPoints.map((t, i) => (
+            {recommendedTalkingPoints.map((point, index) => (
               <li
-                key={i}
+                key={index}
                 className="flex items-start gap-2 text-sm leading-6 text-foreground/90"
               >
                 <span className="mt-1.5 block h-1.5 w-1.5 shrink-0 bg-primary" />
-                {t}
+                {point}
               </li>
             ))}
           </ul>

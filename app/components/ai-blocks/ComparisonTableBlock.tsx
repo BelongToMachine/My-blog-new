@@ -1,17 +1,16 @@
 "use client"
 
-interface ComparisonRow {
-  label: string
-  values: string[]
-}
+import { useTranslations } from "next-intl"
+import type { ComparisonTableArtifactData } from "@/app/types/ai-workspace"
 
 export default function ComparisonTableBlock({
   title,
   data,
 }: {
   title?: string
-  data: { headers?: string[]; rows?: ComparisonRow[] }
+  data: ComparisonTableArtifactData
 }) {
+  const t = useTranslations("ai")
   const headers = data.headers ?? []
   const rows = data.rows ?? []
 
@@ -28,30 +27,33 @@ export default function ComparisonTableBlock({
           <thead>
             <tr className="border-b-2 border-border">
               <th className="px-3 py-2.5 text-left font-pixel text-[10px] uppercase tracking-[0.2em] text-primary">
-                {headers[0] ?? "Item"}
+                {headers[0] ?? t("comparisonFirstColumn")}
               </th>
-              {headers.slice(1).map((h, i) => (
+              {headers.slice(1).map((header, index) => (
                 <th
-                  key={i}
+                  key={index}
                   className="px-3 py-2.5 text-left font-pixel text-[10px] uppercase tracking-[0.2em] text-primary"
                 >
-                  {h}
+                  {header}
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {rows.map((row, i) => (
+            {rows.map((row, rowIndex) => (
               <tr
-                key={i}
+                key={rowIndex}
                 className="border-b border-border/40 last:border-0"
               >
                 <td className="px-3 py-2.5 font-medium text-foreground">
                   {row.label}
                 </td>
-                {row.values.map((v, j) => (
-                  <td key={j} className="px-3 py-2.5 text-muted-foreground">
-                    {v}
+                {row.values.map((value, valueIndex) => (
+                  <td
+                    key={valueIndex}
+                    className="px-3 py-2.5 text-muted-foreground"
+                  >
+                    {value}
                   </td>
                 ))}
               </tr>

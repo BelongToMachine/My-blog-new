@@ -1,6 +1,15 @@
 "use client"
 
-import type { WorkspaceArtifact } from "@/app/types/ai-workspace"
+import { useTranslations } from "next-intl"
+import type {
+  ArticleSummaryArtifactData,
+  ComparisonTableArtifactData,
+  ProfileCardArtifactData,
+  ProjectGridArtifactData,
+  RoleFitReportArtifactData,
+  TimelineArtifactData,
+  WorkspaceArtifact,
+} from "@/app/types/ai-workspace"
 import {
   ProfileCardBlock,
   ProjectGridBlock,
@@ -15,25 +24,35 @@ interface ArtifactRendererProps {
 }
 
 export default function ArtifactRenderer({ artifact }: ArtifactRendererProps) {
+  const t = useTranslations("ai")
   const { type, data, title } = artifact
 
   switch (type) {
     case "profile-card":
-      return <ProfileCardBlock title={title} data={data} />
+      return <ProfileCardBlock title={title} data={data as ProfileCardArtifactData} />
     case "project-grid":
-      return <ProjectGridBlock title={title} data={data} />
+      return <ProjectGridBlock title={title} data={data as ProjectGridArtifactData} />
     case "article-summary":
-      return <ArticleSummaryBlock title={title} data={data} />
+      return (
+        <ArticleSummaryBlock title={title} data={data as ArticleSummaryArtifactData} />
+      )
     case "timeline":
-      return <TimelineBlock title={title} data={data} />
+      return <TimelineBlock title={title} data={data as TimelineArtifactData} />
     case "comparison-table":
-      return <ComparisonTableBlock title={title} data={data} />
+      return (
+        <ComparisonTableBlock
+          title={title}
+          data={data as ComparisonTableArtifactData}
+        />
+      )
     case "role-fit-report":
-      return <RoleFitReportBlock title={title} data={data} />
+      return (
+        <RoleFitReportBlock title={title} data={data as RoleFitReportArtifactData} />
+      )
     default:
       return (
         <div className="font-pixel text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-          Unknown artifact type
+          {t("unknownArtifactType")}
         </div>
       )
   }
