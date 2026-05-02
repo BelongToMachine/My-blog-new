@@ -17,7 +17,15 @@ const ArticleFooter = ({ initialLikes = 0 }: ArticleFooterProps) => {
 
   return (
     <div className={styles.footerWrapper}>
-      <div className="flex items-center justify-between">
+      {/* Module label + divider */}
+      <div className="mb-8 flex items-center gap-3">
+        <div className="h-px flex-1 bg-border/50" />
+        <span className="terminal-label">ARTICLE REACTION</span>
+        <div className="h-px flex-1 bg-border/50" />
+      </div>
+
+      {/* Reaction controls */}
+      <div className="flex items-center justify-center gap-4">
         <Button
           variant="default"
           size="sm"

@@ -49,7 +49,7 @@
 .footerWrapper {
   max-width: 800px;
   margin: 0 auto;
-  padding: 24px;
+  padding: 40px 0 40px;
 }
 
 .article h1 {
@@ -318,6 +318,11 @@
   min-height: 0;
 }
 
+.article :global(.article-code-shell[data-line-count="1"] .article-code-copy) {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
 .article div code {
   font-family: var(--font-pixel), monospace;
   background-color: color-mix(in srgb, hsl(var(--card)) 86%, transparent);
@@ -387,7 +392,7 @@
 
   .footerWrapper {
     max-width: 100%;
-    padding: 16px;
+    padding: 32px 16px 32px;
   }
 
   .article h1 {
