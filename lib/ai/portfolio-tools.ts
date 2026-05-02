@@ -120,6 +120,31 @@ export const searchArticlesTool = tool({
   },
 })
 
+/* ─── Lenient schema for LLM tool calls ───
+ * Some providers (MiniMax) serialize object parameters as JSON strings.
+ * We accept both object and string, then normalize in execute.
+ */
+
+const buildUiBlockInputSchema = z.object({
+  artifactType: z.enum([
+    "profile-card",
+    "project-grid",
+    "article-summary",
+    "timeline",
+    "comparison-table",
+    "role-fit-report",
+  ]),
+  operation: z.enum(["append", "replace", "update"]).default("append"),
+  title: z.string().optional(),
+  summary: z.string().optional(),
+  focus: z.boolean().default(true),
+  artifactId: z.string().optional(),
+  surface: z.enum(["chat", "artifact"]).default("artifact"),
+  reveal: z.boolean().default(false),
+  priority: z.enum(["low", "high"]).default("low"),
+  data: z.union([z.record(z.unknown()), z.string()]),
+})
+
 export const buildUiBlockTool = tool({
   description:
     "Build or update a structured UI artifact. Use this ONLY when the user explicitly asks for a visual summary, comparison, timeline, or structured report that is too dense for plain text.\n\n" +
@@ -131,6 +156,17 @@ export const buildUiBlockTool = tool({
     "5. reveal=true means auto-expand the workspace panel. Only set true when the user explicitly asks to open/show the panel.\n" +
     "6. priority='high' for: comparison-table, timeline, role-fit-report. priority='low' for: profile-card, project-grid, article-summary.\n" +
     "7. Low-priority artifacts should usually use surface='chat' unless the user specifically wants them in the panel.",
-  inputSchema: workspaceArtifactPayloadSchema,
-  execute: async (input) => input,
+  inputSchema: buildUiBlockInputSchema,
+  execute: async (input) => {
+    // Normalize: parse stringified data if needed
+    let data = input.data
+    if (typeof data === "string") {
+      try {
+        data = JSON.parse(data)
+      } catch {
+        data = {}
+      }
+    }
+    return { ...input, data } as Record<string, unknown>
+  },
 })
