@@ -2,6 +2,7 @@ import matter from "gray-matter"
 import MarkdownIt from "markdown-it"
 import { v4 as uuidv4 } from "uuid"
 import { renderArticleCodeBlock } from "@/app/service/articleCodeHighlight"
+import { toTitleCase } from "@/app/lib/mapper"
 
 export interface ArticleHeader {
   title: string
@@ -33,7 +34,7 @@ function extractHeadings(tokens: MarkdownToken[]) {
 
     const id = uuidv4()
     const inlineToken = tokens[index + 1]
-    const text = inlineToken?.content?.trim()
+    const text = toTitleCase(inlineToken?.content?.trim() ?? "")
 
     token.attrSet("id", id)
 

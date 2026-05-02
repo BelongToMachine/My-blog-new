@@ -2,6 +2,7 @@ import fs from "fs/promises"
 import path from "path"
 import matter from "gray-matter"
 import BlogParser, { Heading } from "@/app/service/BlogParser"
+import { toTitleCase } from "@/app/lib/mapper"
 
 const FALLBACK_ARTICLES_DIR = path.join(process.cwd(), "app/content/mdx")
 const LOCALES = ["zh", "en"] as const
@@ -124,7 +125,7 @@ function normalizeArticleRecord(
 ) {
   return {
     slug: frontmatter.slug ?? record.slug,
-    title: frontmatter.title ?? record.slug,
+    title: toTitleCase(frontmatter.title ?? record.slug),
     description: frontmatter.description ?? "",
     publishedOn: frontmatter.publishedOn ?? "",
     locale: frontmatter.locale ?? record.locale,
