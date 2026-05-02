@@ -279,7 +279,7 @@
   padding: 0.75rem 0 !important;
   font-family: var(--font-mono), monospace;
   font-size: 0.92rem;
-  line-height: 1.3rem;
+  line-height: 1.15rem;
   tab-size: 2;
 }
 
@@ -301,13 +301,13 @@
 
 .article :global(.article-code-shell pre.shiki .line) {
   display: block;
-  min-height: 1.3rem;
+  min-height: 1.15rem;
   padding: 0 1rem;
 }
 
 .article :global(.article-code-shell[data-line-count="1"] pre.shiki) {
   padding: 0.4rem 0 !important;
-  line-height: 1.4rem !important;
+  line-height: 1.2rem !important;
 }
 
 .article :global(.article-code-shell[data-line-count="1"] pre.shiki .line) {
@@ -407,11 +407,11 @@
   .article :global(.article-code-shell pre.shiki) {
     padding: 0.6rem 0 !important;
     font-size: 0.82rem;
-    line-height: 1.25rem;
+    line-height: 1.15rem;
   }
 
   .article :global(.article-code-shell pre.shiki .line) {
-    min-height: 1.25rem;
+    min-height: 1.15rem;
     padding: 0 0.8rem;
   }
 
