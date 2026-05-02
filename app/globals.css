@@ -219,12 +219,117 @@
 
 .wind {
   position: relative;
-  top: -3vh;
+  top: 0;
+  width: 178px;
   height: 130px;
+  flex-shrink: 0;
+  margin-right: -22px;
+  overflow: hidden;
+  contain: layout paint style;
+  isolation: isolate;
+  pointer-events: none;
+}
+
+.wind__lane {
+  position: absolute;
+  left: 0;
+  width: calc(100% + 64px);
+  height: 24px;
   background-image: url("/images/wind.png");
-  background-repeat: repeat;
-  background-size: calc(46vh / 8);
-  will-change: background-position;
+  background-repeat: repeat-x;
+  background-size: 64px 24px;
+  image-rendering: pixelated;
+  opacity: var(--wind-opacity, 0.5);
+  filter: var(--wind-filter, brightness(0));
+  transform: translate3d(0, var(--wind-y, 0), 0);
+  animation: wind-flow var(--wind-duration, 7s) steps(var(--wind-steps, 48), end) infinite;
+  animation-delay: var(--wind-delay, 0s);
+  will-change: transform, opacity;
+}
+
+.wind__lane--top {
+  top: -3px;
+  --wind-duration: 1.9s;
+  --wind-delay: -1.8s;
+  --wind-opacity: 0.42;
+  --wind-opacity-soft: 0.24;
+  --wind-steps: 52;
+  --wind-y: -1px;
+  --wind-mid-y: -3px;
+}
+
+.wind__lane--far {
+  top: 18px;
+  --wind-duration: 1.7s;
+  --wind-delay: -2.4s;
+  --wind-opacity: 0.5;
+  --wind-opacity-soft: 0.29;
+  --wind-steps: 58;
+  --wind-y: -2px;
+  --wind-mid-y: -3px;
+}
+
+.wind__lane--mid {
+  top: 41px;
+  --wind-duration: 1.35s;
+  --wind-delay: -4.1s;
+  --wind-opacity: 0.68;
+  --wind-opacity-soft: 0.42;
+  --wind-steps: 64;
+  --wind-y: 0;
+  --wind-mid-y: 1px;
+}
+
+.wind__lane--near {
+  top: 64px;
+  --wind-duration: 1.15s;
+  --wind-delay: -1.1s;
+  --wind-opacity: 0.82;
+  --wind-opacity-soft: 0.54;
+  --wind-steps: 64;
+  --wind-y: 1px;
+  --wind-mid-y: -1px;
+}
+
+.wind__lane--low {
+  top: 88px;
+  --wind-duration: 1.55s;
+  --wind-delay: -3.3s;
+  --wind-opacity: 0.5;
+  --wind-opacity-soft: 0.29;
+  --wind-steps: 58;
+  --wind-y: 2px;
+  --wind-mid-y: 3px;
+}
+
+html[data-color-mode="dark"] .wind__lane,
+html.dark .wind__lane {
+  --wind-filter: none;
+}
+
+@keyframes wind-flow {
+  0% {
+    opacity: var(--wind-opacity-soft, 0.3);
+    transform: translate3d(0, var(--wind-y, 0), 0);
+  }
+
+  46% {
+    opacity: var(--wind-opacity, 0.5);
+    transform: translate3d(-31px, var(--wind-mid-y, 0), 0);
+  }
+
+  100% {
+    opacity: var(--wind-opacity-soft, 0.3);
+    transform: translate3d(-64px, var(--wind-y, 0), 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wind__lane {
+    animation: none;
+    opacity: var(--wind-opacity-soft, 0.3);
+    transform: translate3d(0, var(--wind-y, 0), 0);
+  }
 }
 
 @layer utilities {

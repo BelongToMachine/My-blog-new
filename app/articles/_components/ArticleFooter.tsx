@@ -26,14 +26,14 @@ const ArticleFooter = ({ initialLikes = 0 }: ArticleFooterProps) => {
           LIKES ({likes})
         </Button>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-0">
           <HoverWrapper>
             <Button variant="destructive" size="sm">
               DISLIKE
             </Button>
             <Wind />
           </HoverWrapper>
-          <Image src={fan} alt="a fan" height={130} width={130} className="pixelated" />
+          <Image src={fan} alt="a fan" height={130} width={130} className="pixelated -ml-5" />
         </div>
       </div>
     </div>

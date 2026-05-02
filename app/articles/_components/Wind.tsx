@@ -1,51 +1,47 @@
 "use client"
 
 import { useDefaultCursorStore, useVirtualCursorStore } from "@/app/service/Store"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
+
+const WIND_PUSH_PX_PER_MS = 0.34
+const WIND_FACE_HEIGHT = 108
+
+function hasWindContact(windRect: DOMRect, cursorRect: DOMRect) {
+  const windStartOffset = windRect.width * 0.28
+  const windFaceBottom = windRect.top + WIND_FACE_HEIGHT
+
+  return (
+    windRect.left + windStartOffset < cursorRect.right &&
+    windRect.right > cursorRect.left &&
+    windRect.top < cursorRect.bottom &&
+    windFaceBottom > cursorRect.top
+  )
+}
 
 const Wind = () => {
   const isMagicCursor = useDefaultCursorStore((state) => state.isMagicCursor)
   const setCursorPosition = useVirtualCursorStore(
     (state) => state.updateCursorPosition
   )
-  const { getState } = useVirtualCursorStore
-  const [windOffsetX, setWindOffsetX] = useState(0)
   const windRef = useRef<HTMLDivElement>(null)
-  const [isOverlapping, setIsOverlapping] = useState(false)
 
   useEffect(() => {
-    const checkOverlap = () => {
-      const cursorRect = getState().cursorRect
-      if (windRef.current && cursorRect) {
-        const movingRect = windRef.current.getBoundingClientRect()
-        const staticRect = cursorRect
-        const overlaps =
-          movingRect.left + 80 < staticRect.right &&
-          movingRect.right > staticRect.left &&
-          movingRect.top < staticRect.bottom &&
-          movingRect.bottom > staticRect.top
-        setIsOverlapping(overlaps)
-      }
-    }
+    if (!isMagicCursor) return
 
-    const interval = setInterval(checkOverlap, 100)
-    return () => clearInterval(interval)
-  }, [getState])
-
-  useEffect(() => {
     let animationFrameId: number
     let prevTime: number | undefined
 
     const step = (currTime: number) => {
       if (!prevTime) prevTime = currTime
-      const timeDelta = Math.min(20, Math.max(10, currTime - prevTime))
+      const timeDelta = Math.min(24, Math.max(8, currTime - prevTime))
       prevTime = currTime
 
-      setWindOffsetX((prev) => prev - 0.6 * timeDelta)
+      const cursorRect = useVirtualCursorStore.getState().cursorRect
+      const windRect = windRef.current?.getBoundingClientRect()
 
-      if (isMagicCursor && isOverlapping) {
+      if (windRect && cursorRect && hasWindContact(windRect, cursorRect)) {
         setCursorPosition((prev) => ({
-          x: Math.max(0, prev.x - 0.6 * timeDelta),
+          x: Math.max(0, prev.x - WIND_PUSH_PX_PER_MS * timeDelta),
           y: prev.y,
         }))
       }
@@ -57,19 +53,16 @@ const Wind = () => {
     return () => {
       if (animationFrameId) window.cancelAnimationFrame(animationFrameId)
     }
-  })
+  }, [isMagicCursor, setCursorPosition])
 
   return (
-    <div
-      ref={windRef}
-      className="wind"
-      style={{
-        top: 0,
-        width: 160,
-        flexShrink: 0,
-        backgroundPositionX: `${windOffsetX}px`,
-      }}
-    />
+    <div ref={windRef} className="wind" aria-hidden="true">
+      <span className="wind__lane wind__lane--top" />
+      <span className="wind__lane wind__lane--far" />
+      <span className="wind__lane wind__lane--mid" />
+      <span className="wind__lane wind__lane--near" />
+      <span className="wind__lane wind__lane--low" />
+    </div>
   )
 }
 
