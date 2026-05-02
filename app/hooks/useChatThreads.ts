@@ -141,13 +141,18 @@ async function fetchThreads(): Promise<ChatThread[]> {
 }
 
 async function fetchThreadWithMessages(id: string): Promise<ChatThread | null> {
-  const res = await fetch(`/api/ai/threads/${id}`)
-  if (!res.ok) {
-    if (res.status === 404) return null
-    throw new Error("Failed to load thread")
+  try {
+    const res = await fetch(`/api/ai/threads/${id}`)
+    if (!res.ok) {
+      if (res.status === 404) return null
+      return null
+    }
+    const data = (await res.json()) as ApiThreadWithMessages
+    return apiThreadWithMessagesToChatThread(data)
+  } catch {
+    // API unavailable (no DB / network error) → return null, use local messages
+    return null
   }
-  const data = (await res.json()) as ApiThreadWithMessages
-  return apiThreadWithMessagesToChatThread(data)
 }
 
 async function createThreadApi(): Promise<ChatThread> {
