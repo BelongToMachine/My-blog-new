@@ -77,8 +77,8 @@ export default function ArticleDetailLayout({ article }: ArticleDetailLayoutProp
           <Grid columns={{ initial: "1", lg: "5" }} gap="5" className="relative flex-1">
             <Box className="min-w-0 lg:col-span-4">
               <div className="mb-10 md:mb-14">
-                <div className="terminal-label mb-3">article detail</div>
-                <h1 className="font-pixel mb-5 text-[clamp(2rem,4vw,3.4rem)] uppercase leading-[1.08] tracking-[0.05em] text-foreground">
+                <div className="terminal-label mb-3">Article Detail</div>
+                <h1 className="font-pixel mb-5 text-[clamp(1.4rem,2.8vw,2.2rem)] uppercase leading-[1.15] tracking-[0.05em] text-foreground">
                   {article.title}
                 </h1>
                 <div className="flex flex-wrap items-center gap-3">

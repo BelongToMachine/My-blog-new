@@ -276,10 +276,10 @@
   margin: 0 !important;
   overflow-x: auto !important;
   background: var(--article-code-content-bg) !important;
-  padding: 0.75rem 0 !important;
+  padding: 0.5rem 0 !important;
   font-family: var(--font-mono), monospace;
   font-size: 0.92rem;
-  line-height: 1.15rem;
+  line-height: 0.98rem;
   tab-size: 2;
 }
 
@@ -301,13 +301,17 @@
 
 .article :global(.article-code-shell pre.shiki .line) {
   display: block;
-  min-height: 1.15rem;
+  min-height: 0.98rem;
   padding: 0 1rem;
 }
 
+.article :global(.article-code-shell pre.shiki .line:empty) {
+  min-height: 0.52rem;
+}
+
 .article :global(.article-code-shell[data-line-count="1"] pre.shiki) {
-  padding: 0.4rem 0 !important;
-  line-height: 1.2rem !important;
+  padding: 0.28rem 0 !important;
+  line-height: 0.98rem !important;
 }
 
 .article :global(.article-code-shell[data-line-count="1"] pre.shiki .line) {
@@ -405,18 +409,22 @@
   }
 
   .article :global(.article-code-shell pre.shiki) {
-    padding: 0.6rem 0 !important;
+    padding: 0.42rem 0 !important;
     font-size: 0.82rem;
-    line-height: 1.15rem;
+    line-height: 0.88rem;
   }
 
   .article :global(.article-code-shell pre.shiki .line) {
-    min-height: 1.15rem;
+    min-height: 0.88rem;
     padding: 0 0.8rem;
   }
 
+  .article :global(.article-code-shell pre.shiki .line:empty) {
+    min-height: 0.42rem;
+  }
+
   .article :global(.article-code-shell[data-line-count="1"] pre.shiki) {
-    padding: 0.35rem 0 !important;
+    padding: 0.24rem 0 !important;
   }
 
   .article :global(.article-code-shell[data-line-count="1"] pre.shiki .line) {

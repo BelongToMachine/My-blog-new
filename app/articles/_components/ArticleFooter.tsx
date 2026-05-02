@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Button } from "@radix-ui/themes"
+import { Button } from "@/app/components/ui/button"
 import Wind from "./Wind"
 import HoverWrapper from "./HoverWrapper"
 import Image from "next/image"
@@ -18,14 +18,18 @@ const ArticleFooter = ({ initialLikes = 0 }: ArticleFooterProps) => {
   return (
     <div className={styles.footerWrapper}>
       <div className="flex items-center justify-between">
-        <Button onClick={() => setLikes((v) => v + 1)}>
-          Likes ({likes})
+        <Button
+          variant="default"
+          size="sm"
+          onClick={() => setLikes((v) => v + 1)}
+        >
+          LIKES ({likes})
         </Button>
 
         <div className="flex items-center gap-2">
           <HoverWrapper>
-            <Button color="red" variant="soft">
-              Dislike
+            <Button variant="destructive" size="sm">
+              DISLIKE
             </Button>
             <Wind />
           </HoverWrapper>
