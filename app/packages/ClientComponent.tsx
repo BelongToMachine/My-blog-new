@@ -1,6 +1,19 @@
 import { JSX, useEffect, useState } from "react"
 import { highlight, ShikiProp } from "./shared"
 
+const resolveInitialTheme = (colorMode: string, initialTheme: string) => {
+  if (typeof window === "undefined") {
+    return colorMode === "dark" ? "vitesse-black" : initialTheme
+  }
+
+  const domMode = document.documentElement.dataset.colorMode
+  const effectiveMode = domMode === "dark" || domMode === "light"
+    ? domMode
+    : colorMode
+
+  return effectiveMode === "dark" ? "vitesse-black" : "vitesse-light"
+}
+
 export const ClientComponent = ({
   children,
   lang,
@@ -8,17 +21,15 @@ export const ClientComponent = ({
   colorMode,
 }: ShikiProp & { initialTheme?: string; colorMode: string }) => {
   const [nodes, setNodes] = useState<JSX.Element>()
-  const [theme, setTheme] = useState(initialTheme)
-  const [isThemeSet, setIsThemeSet] = useState(false)
+  const [theme, setTheme] = useState(() =>
+    resolveInitialTheme(colorMode, initialTheme)
+  )
+  const [isThemeSet, setIsThemeSet] = useState(true)
 
   useEffect(() => {
-    if (colorMode === "dark") {
-      setTheme("vitesse-black")
-    } else {
-      setTheme("vitesse-light")
-    }
+    setTheme(resolveInitialTheme(colorMode, initialTheme))
     setIsThemeSet(true)
-  }, [colorMode])
+  }, [colorMode, initialTheme])
 
   useEffect(() => {
     if (!isThemeSet) return
