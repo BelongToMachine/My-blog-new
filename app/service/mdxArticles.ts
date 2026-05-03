@@ -4,10 +4,8 @@ import matter from "gray-matter"
 import BlogParser, { Heading } from "@/app/service/BlogParser"
 import { toTitleCase } from "@/app/lib/mapper"
 
-const FALLBACK_ARTICLES_DIR = path.join(process.cwd(), "app/content/mdx")
 const LOCALES = ["zh", "en"] as const
 type ArticleLocale = (typeof LOCALES)[number]
-type ContentSourceMode = "private-repo" | "tracked-fallback"
 
 export interface MdxArticleListItem {
   slug: string
@@ -38,11 +36,6 @@ interface ArticleFileRecord {
   locale: ArticleLocale
 }
 
-interface ArticlesRoot {
-  mode: ContentSourceMode
-  root: string
-}
-
 async function pathExists(targetPath: string) {
   try {
     await fs.access(targetPath)
@@ -52,34 +45,27 @@ async function pathExists(targetPath: string) {
   }
 }
 
-async function getArticlesRoot() {
+async function getArticlesRoot(): Promise<string | null> {
   const privatePath = process.env.PRIVATE_BLOG_CONTENT_PATH?.trim()
-
-  if (privatePath && (await pathExists(privatePath))) {
-    return {
-      mode: "private-repo",
-      root: privatePath,
-    } satisfies ArticlesRoot
+  if (!privatePath) {
+    console.warn("[mdxArticles] PRIVATE_BLOG_CONTENT_PATH is not set. Returning empty article list.")
+    return null
   }
-
-  if (privatePath && !(await pathExists(privatePath))) {
-    console.warn(
-      `[mdxArticles] PRIVATE_BLOG_CONTENT_PATH is set but not found: ${privatePath}. Falling back to tracked sample content.`
-    )
-  }
-
-  return {
-    mode: "tracked-fallback",
-    root: FALLBACK_ARTICLES_DIR,
-  } satisfies ArticlesRoot
+  if (await pathExists(privatePath)) return privatePath
+  console.warn(
+    `[mdxArticles] PRIVATE_BLOG_CONTENT_PATH not found: ${privatePath}. Returning empty article list.`
+  )
+  return null
 }
 
 async function listArticleFiles() {
   const articlesRoot = await getArticlesRoot()
+  if (!articlesRoot) return []
+
   const hasLocaleSubdirectories = await Promise.all(
     LOCALES.map(async (locale) => ({
       locale,
-      exists: await pathExists(path.join(articlesRoot.root, locale)),
+      exists: await pathExists(path.join(articlesRoot, locale)),
     }))
   )
 
@@ -88,7 +74,7 @@ async function listArticleFiles() {
       hasLocaleSubdirectories
         .filter((entry): entry is { locale: ArticleLocale; exists: true } => entry.exists)
         .map(async ({ locale }) => {
-          const localeDir = path.join(articlesRoot.root, locale)
+          const localeDir = path.join(articlesRoot, locale)
           const fileNames = await fs.readdir(localeDir)
 
           return fileNames
@@ -104,12 +90,12 @@ async function listArticleFiles() {
     return records.flat()
   }
 
-  const fileNames = await fs.readdir(articlesRoot.root)
+  const fileNames = await fs.readdir(articlesRoot)
 
   return fileNames
     .filter((fileName) => fileName.endsWith(".mdx"))
     .map((fileName) => ({
-      filePath: path.join(articlesRoot.root, fileName),
+      filePath: path.join(articlesRoot, fileName),
       slug: fileName.replace(/\.mdx$/, ""),
       locale: "zh" as const,
     }))
@@ -188,5 +174,5 @@ export async function getMdxArticle(slug: string, locale?: string) {
 
 export async function getMdxArticlesSourceMode() {
   const articlesRoot = await getArticlesRoot()
-  return articlesRoot.mode
+  return articlesRoot ? "private-repo" : "not-configured"
 }

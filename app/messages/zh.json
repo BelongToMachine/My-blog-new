@@ -111,48 +111,12 @@
     "loadingMore": "加载中..."
   },
   "blogs": {
-    "title": "标题",
-    "type": "博客类型",
-    "createdAt": "创建于",
-    "dbTab": "数据库博客",
     "mdxTab": "MDX 实验",
     "mdxEyebrow": "POC 功能",
     "mdxBadge": "MDX 文章",
     "mdxListTitle": "MDX 文章实验区",
     "mdxListDescription": "这里收录的是以 MDX 为核心的长文笔记、组件化内容块与交互式阅读实验。",
-    "filterAll": "全部",
-    "webDev": "Web开发",
-    "tech": "科技类",
-    "nonTech": "非技术类",
-    "filterPlaceholder": "按博客类型分类",
-    "newBlog": "新建博客",
-    "listTitle": "博客列表",
-    "listDescription": "查看我所有的博客文章",
-    "page": "第 {current} 页，共 {total} 页",
-    "edit": "编辑博客",
-    "delete": "删除",
-    "deleteConfirm": "确认删除？",
-    "deleteCancel": "取消",
-    "deleteAction": "确认",
-    "deleteErrorTitle": "错误",
-    "deleteErrorDescription": "无法删除这篇博客。",
-    "assigneePlaceholder": "分配给...",
-    "assigneeSuggestions": "建议",
-    "assigneeUnassigned": "未分配",
-    "assignSaveError": "保存失败",
-    "newDisabled": "当前环境不允许此功能",
-    "detailDescription": "博客 {id} 的详情"
-  },
-  "blogForm": {
-    "titlePlaceholder": "标题",
-    "descriptionPlaceholder": "描述",
-    "submitNew": "提交新博客",
-    "update": "更新博客",
-    "errorMsg": "发生了未知错误",
-    "validation": {
-      "titleRequired": "标题不能为空",
-      "descriptionRequired": "描述不能为空"
-    }
+    "page": "第 {current} 页，共 {total} 页"
   },
   "skills": {
     "heading": "技能",
@@ -176,8 +140,6 @@
     "homeDescription": "开发者（Developer）的作品集，专注于 React、Next.js、TypeScript 和 AI 集成。",
     "aiTitle": "问我 AI 助手",
     "aiDescription": "围绕开发者本人、作品集、前端能力与项目决策的 AI 助手。",
-    "blogsTitle": "博客列表",
-    "blogsDescription": "查看我所有的博客文章",
     "mdxArticlesTitle": "MDX 文章实验区",
     "mdxArticlesDescription": "以 MDX 为核心的长文笔记、组件化内容块与交互式阅读实验。"
   }

@@ -111,48 +111,12 @@
     "loadingMore": "Loading..."
   },
   "blogs": {
-    "title": "Blog Title",
-    "type": "Blog Type",
-    "createdAt": "Created At",
-    "dbTab": "Database Blogs",
     "mdxTab": "MDX Lab",
     "mdxEyebrow": "POC Feature",
     "mdxBadge": "MDX Article",
     "mdxListTitle": "MDX Articles",
     "mdxListDescription": "MDX notes for long-form writing, custom components, and interactive reading experiments.",
-    "filterAll": "All",
-    "webDev": "Web Development",
-    "tech": "Tech",
-    "nonTech": "Non-Tech",
-    "filterPlaceholder": "Filter by Type",
-    "newBlog": "New Blog",
-    "listTitle": "Blogs",
-    "listDescription": "View all of my blogs",
-    "page": "Page {current} of {total}",
-    "edit": "Edit Blog",
-    "delete": "Delete",
-    "deleteConfirm": "Confirm?",
-    "deleteCancel": "Cancel",
-    "deleteAction": "Confirm",
-    "deleteErrorTitle": "Error",
-    "deleteErrorDescription": "Could not delete this blog.",
-    "assigneePlaceholder": "Assign...",
-    "assigneeSuggestions": "Suggestions",
-    "assigneeUnassigned": "Unassigned",
-    "assignSaveError": "Changes could not be saved",
-    "newDisabled": "This functionality is currently not allowed",
-    "detailDescription": "Details of blog {id}"
-  },
-  "blogForm": {
-    "titlePlaceholder": "Title",
-    "descriptionPlaceholder": "Description",
-    "submitNew": "Submit New Blog",
-    "update": "Update Blog",
-    "errorMsg": "An unexpected error occurred.",
-    "validation": {
-      "titleRequired": "Title is required",
-      "descriptionRequired": "Description is required"
-    }
+    "page": "Page {current} of {total}"
   },
   "skills": {
     "heading": "Skill",
@@ -176,8 +140,6 @@
     "homeDescription": "Portfolio of Developer — a front-end developer specializing in React, Next.js, TypeScript, and AI.",
     "aiTitle": "Ask Jie AI",
     "aiDescription": "AI assistant focused on Jie's portfolio, front-end work, and project decisions.",
-    "blogsTitle": "Blogs List",
-    "blogsDescription": "View all of my blogs",
     "mdxArticlesTitle": "MDX Articles",
     "mdxArticlesDescription": "MDX notes focused on long-form writing, custom components, and interactive reading experiments."
   }
