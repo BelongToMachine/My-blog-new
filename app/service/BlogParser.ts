@@ -24,6 +24,51 @@ function createMarkdownParser() {
   })
 }
 
+function transformHeadings(tokens: MarkdownToken[], md: MarkdownIt) {
+  for (let i = 0; i < tokens.length; i++) {
+    const token = tokens[i]
+    if (token.type !== "heading_open") continue
+
+    const inlineToken = tokens[i + 1]
+    if (!inlineToken || inlineToken.type !== "inline") continue
+
+    const original = inlineToken.content.trim()
+
+    // Check if children are all plain text/softbreak
+    const hasComplexChildren = inlineToken.children?.some(
+      (child) => child.type !== "text" && child.type !== "softbreak"
+    )
+
+    if (!hasComplexChildren) {
+      // Plain text heading: transform whole content and re-parse
+      const transformed = toTitleCase(original)
+      if (transformed !== original) {
+        inlineToken.content = transformed
+        inlineToken.children = md.parseInline(transformed, {})
+      }
+    } else if (inlineToken.children) {
+      // Complex heading: transform individual text nodes only
+      // This preserves inline markup (code, links, bold, etc.)
+      let changed = false
+      for (const child of inlineToken.children) {
+        if (child.type === "text") {
+          const transformed = toTitleCase(child.content)
+          if (transformed !== child.content) {
+            child.content = transformed
+            changed = true
+          }
+        }
+      }
+      if (changed) {
+        // Rebuild content approximately for downstream consumers (e.g. TOC extraction)
+        inlineToken.content = inlineToken.children
+          .map((c) => (c.type === "softbreak" ? " " : c.content))
+          .join("")
+      }
+    }
+  }
+}
+
 function extractHeadings(tokens: MarkdownToken[]) {
   const headings: Heading[] = []
 
@@ -34,6 +79,7 @@ function extractHeadings(tokens: MarkdownToken[]) {
 
     const id = uuidv4()
     const inlineToken = tokens[index + 1]
+    // Content already transformed by transformHeadings; apply toTitleCase as a final guard.
     const text = toTitleCase(inlineToken?.content?.trim() ?? "")
 
     token.attrSet("id", id)
@@ -55,6 +101,7 @@ function extractHeadings(tokens: MarkdownToken[]) {
 async function renderMarkdown(content: string) {
   const md = createMarkdownParser()
   const tokens = md.parse(content, {})
+  transformHeadings(tokens, md)
   const headings = extractHeadings(tokens)
   const highlightedBlocks = new Map<number, string>()
   const defaultFenceRenderer = md.renderer.rules.fence

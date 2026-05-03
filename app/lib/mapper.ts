@@ -42,6 +42,13 @@ function titleCaseWord(word: string, isFirst: boolean, isLast: boolean): string 
   if (isAcronym(word)) return word
   if (hasSpecialCasing(word)) return word
 
+  if (word.includes("-")) {
+    const parts = word.split("-")
+    return parts
+      .map((part, i, arr) => titleCaseWord(part, i === 0, i === arr.length - 1))
+      .join("-")
+  }
+
   const lower = word.toLowerCase()
 
   if (isFirst || isLast) {
@@ -56,51 +63,26 @@ function titleCaseWord(word: string, isFirst: boolean, isLast: boolean): string 
 }
 
 function titleCaseSegment(text: string): string {
-  const tokens = text.match(/\S+|\s+/g) ?? [text]
-  const contentIndices: number[] = []
+  // Match English words (including hyphenated and dotted variants) while preserving everything else.
+  const wordRegex = /[A-Za-z][A-Za-z0-9]*(?:[-.][A-Za-z0-9]+)*/g
+  const words = text.match(wordRegex) ?? []
 
-  for (let i = 0; i < tokens.length; i++) {
-    const t = tokens[i]
-    if (t.trim() && !/\s/.test(t) && !isNumericMarker(t)) {
-      contentIndices.push(i)
-    }
+  if (words.length === 0) {
+    return text
   }
 
-  const result: string[] = []
-
-  for (let i = 0; i < tokens.length; i++) {
-    const t = tokens[i]
-    if (/\s/.test(t)) {
-      result.push(t)
-    } else if (t.trim()) {
-      let isFirst = false
-      let isLast = false
-
-      if (isNumericMarker(t)) {
-        isFirst = false
-        isLast = false
-      } else {
-        const pos = contentIndices.indexOf(i)
-        if (pos !== -1) {
-          isFirst = pos === 0
-          isLast = pos === contentIndices.length - 1
-        }
-      }
-
-      result.push(titleCaseWord(t, isFirst, isLast))
-    } else {
-      result.push(t)
-    }
-  }
-
-  return result.join("")
+  let wordIndex = 0
+  return text.replace(wordRegex, (match) => {
+    const isFirst = wordIndex === 0
+    const isLast = wordIndex === words.length - 1
+    wordIndex++
+    return titleCaseWord(match, isFirst, isLast)
+  })
 }
 
 export function toTitleCase(text: string): string {
-  if (isMostlyChinese(text)) return text
-
-  const parts = text.split(/(:\s+)/)
+  const parts = text.split(/(:\s+|—\s+|–\s+)/)
   return parts
-    .map((part) => (/^:\s+$/.test(part) ? part : titleCaseSegment(part)))
+    .map((part) => (/^(?::\s+|[—–]\s+)$/.test(part) ? part : titleCaseSegment(part)))
     .join("")
 }
