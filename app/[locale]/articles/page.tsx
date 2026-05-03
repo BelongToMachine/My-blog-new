@@ -17,8 +17,8 @@ export default async function ArticlesPage({ params }: Props) {
       <div className="space-y-8 p-5 pt-10 md:pt-12 lg:pt-12">
         {/* Page Header */}
         <div className="space-y-6 mdx-index-shell">
-          <h1 className="font-pixel text-[clamp(1.8rem,4vw,3rem)] uppercase leading-[1.1] tracking-[0.04em] text-foreground">
-            {params.locale === "zh" ? "文章" : "ARTICLES"}
+          <h1 className="font-pixel text-[clamp(1.8rem,4vw,3rem)] leading-[1.1] tracking-[0.03em] text-foreground">
+            {params.locale === "zh" ? "文章" : "Articles"}
           </h1>
           <p className="section-copy mdx-index-copy max-w-2xl">
             {t("mdxListDescription")}
@@ -39,7 +39,7 @@ export default async function ArticlesPage({ params }: Props) {
                   <RetroBadge tone="neutral">{article.locale}</RetroBadge>
                   <RetroBadge tone="amber">{article.publishedOn}</RetroBadge>
                 </div>
-                <h2 className="mdx-index-card-title font-pixel text-xl uppercase tracking-[0.08em] text-foreground transition-colors group-hover:text-primary md:text-2xl">
+                <h2 className="mdx-index-card-title font-pixel text-xl tracking-[0.04em] text-foreground transition-colors group-hover:text-primary md:text-2xl">
                   {article.title}
                 </h2>
                 <p className="mdx-index-card-copy max-w-3xl text-sm leading-7 text-foreground/70">

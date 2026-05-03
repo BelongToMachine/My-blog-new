@@ -30,7 +30,7 @@ const TableOfContent = ({ headings, className, viewportClassName }: TableOfConte
           >
             <a
               href={`#${heading.id}`}
-              className="font-pixel text-[11px] uppercase tracking-[0.14em] transition-colors duration-200 hover:text-primary"
+              className="font-pixel text-[11px] tracking-[0.08em] transition-colors duration-200 hover:text-primary"
             >
               {heading.text}
             </a>
