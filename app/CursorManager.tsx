@@ -5,27 +5,44 @@ import {
   useDefaultCursorStore,
   useVirtualCursorStore,
 } from "@/app/service/Store"
-import { Box } from "@radix-ui/themes"
+
+const CURSOR_ASSETS = {
+  arrow: {
+    image: "/images/cursor-macos-arrow-pixel.png",
+    offsetX: 0,
+    offsetY: 0,
+  },
+  pointer: {
+    image: "/images/cursor-macos-pointer-pixel.png",
+    offsetX: -8,
+    offsetY: -4,
+  },
+} as const
 
 const CursorManager = () => {
   const isMagicCursor = useDefaultCursorStore((state) => state.isMagicCursor)
   const position = useVirtualCursorStore((state) => state.position)
+  const cursorVariant = useVirtualCursorStore((state) => state.cursorVariant)
   const setCursorRect = useVirtualCursorStore((state) => state.setCursorRect)
   const cursorRef = useRef<HTMLDivElement>(null)
+  const cursorAsset = CURSOR_ASSETS[cursorVariant]
 
   const virtualCursorStyles: React.CSSProperties = {
-    backgroundImage: `url('/images/cursor.png')`,
+    backgroundImage: `url('${cursorAsset.image}')`,
     position: "fixed",
-    zIndex: 50,
+    left: 0,
+    top: 0,
+    zIndex: 9999,
     width: "32px",
     height: "32px",
-    borderRadius: "50%",
-    backgroundSize: "contain",
+    backgroundRepeat: "no-repeat",
+    backgroundSize: "32px 32px",
+    imageRendering: "pixelated",
+    pointerEvents: "none",
     willChange: "transform",
     transform: position
-      ? `translateX(${position.x}px) translateY(${position.y}px)`
-      : `none`,
-    transition: `transform 0.1s linear`,
+      ? `translate3d(${position.x + cursorAsset.offsetX}px, ${position.y + cursorAsset.offsetY}px, 0)`
+      : `translate3d(-999px, -999px, 0)`,
     display: isMagicCursor ? `block` : `none`,
   }
 
@@ -37,19 +54,24 @@ const CursorManager = () => {
   }, [setCursorRect])
 
   useEffect(() => {
-    const interval = setInterval(updateCursorRect, 100)
-
-    return () => clearInterval(interval)
-  }, [updateCursorRect])
+    window.requestAnimationFrame(updateCursorRect)
+  }, [cursorVariant, position, updateCursorRect])
 
   useEffect(() => {
-    document.body.style.cursor = isMagicCursor ? "none" : "auto"
+    document.body.classList.toggle("magic-cursor-active", isMagicCursor)
+
+    return () => {
+      document.body.classList.remove("magic-cursor-active")
+    }
   }, [isMagicCursor])
 
   return (
-    <Box ref={cursorRef} style={virtualCursorStyles}>
-      {""}
-    </Box>
+    <div
+      ref={cursorRef}
+      aria-hidden="true"
+      className="virtual-cursor"
+      style={virtualCursorStyles}
+    />
   )
 }
 
