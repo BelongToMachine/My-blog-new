@@ -68,11 +68,8 @@
 ## Environment Variables
 Check `.env.example` for the full set. Key ones:
 - `DATABASE_URL`
-- `NEXTAUTH_URL`, `NEXTAUTH_SECRET`
-- `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`
-- `NEXT_PUBLIC_AI_KEY`
-- EmailJS keys (`NEXT_PUBLIC_SERVICE_ID`, `NEXT_PUBLIC_PUBLIC_KEY`, `NEXT_PUBLIC_EMAILJS_TEMPLATE_ID`)
-- `NEXT_PUBLIC_DEV_SECRET_TOKEN`, `PRIVATE_BLOG_CONTENT_PATH`
+- `NEXT_PUBLIC_DEV_SECRET_TOKEN`
+- `PRIVATE_BLOG_CONTENT_PATH` — local dev: absolute path to Private-Blog-Content repo; Vercel: `"private-blog-content"` (cloned during build)
 
 ## Code Conventions
 - TypeScript, strict mode.
