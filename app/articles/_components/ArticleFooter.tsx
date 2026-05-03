@@ -3,7 +3,6 @@
 import { useState } from "react"
 import { Button } from "@/app/components/ui/button"
 import Wind from "./Wind"
-import HoverWrapper from "./HoverWrapper"
 import Image from "next/image"
 import fan from "@/public/images/fan_8bit.png"
 import styles from "@/app/articles/post.module.css"
@@ -25,23 +24,33 @@ const ArticleFooter = ({ initialLikes = 0 }: ArticleFooterProps) => {
       </div>
 
       {/* Reaction controls */}
-      <div className="flex items-center justify-center gap-4">
+      <div className={styles.footerReactions}>
         <Button
           variant="default"
           size="sm"
+          className={styles.likeButton}
           onClick={() => setLikes((v) => v + 1)}
         >
           LIKES ({likes})
         </Button>
 
-        <div className="flex items-center gap-0">
-          <HoverWrapper>
-            <Button variant="destructive" size="sm">
+        <div className={styles.windFanRig}>
+          <Wind className={styles.windTrack}>
+            <Button
+              variant="destructive"
+              size="sm"
+              className={styles.dislikeButton}
+            >
               DISLIKE
             </Button>
-            <Wind />
-          </HoverWrapper>
-          <Image src={fan} alt="a fan" height={130} width={130} className="pixelated -ml-5" />
+          </Wind>
+          <Image
+            src={fan}
+            alt="a fan"
+            height={130}
+            width={130}
+            className={`pixelated ${styles.fanImage}`}
+          />
         </div>
       </div>
     </div>

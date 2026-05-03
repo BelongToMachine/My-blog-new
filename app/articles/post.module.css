@@ -52,6 +52,112 @@
   padding: 40px 0 40px;
 }
 
+.footerReactions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.5rem, 2vw, 1rem);
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.likeButton,
+.dislikeButton {
+  min-height: 44px;
+}
+
+.likeButton {
+  flex: 0 0 auto;
+  min-width: clamp(7rem, 14vw, 10rem);
+}
+
+.windFanRig {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 1 auto;
+  max-width: min(100%, 430px);
+  min-width: 0;
+  overflow: hidden;
+}
+
+.windTrack {
+  width: clamp(220px, 26vw, 280px);
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+.dislikeButton {
+  min-width: clamp(7rem, 12vw, 8.6rem);
+}
+
+.fanImage {
+  width: 130px;
+  height: 130px;
+  flex: 0 0 auto;
+  margin-left: -22px;
+  object-fit: contain;
+}
+
+@media (max-width: 640px) {
+  .footerReactions {
+    justify-content: center;
+    gap: clamp(0.25rem, 1.5vw, 0.5rem);
+  }
+
+  .likeButton {
+    min-width: clamp(6rem, 28vw, 7rem);
+    min-height: 44px;
+    padding-inline: 0.65rem;
+    letter-spacing: 0.18em;
+  }
+
+  .windFanRig {
+    flex: 1 1 auto;
+  }
+
+  .windTrack {
+    width: auto;
+    flex: 1 1 auto;
+    min-width: clamp(6rem, 28vw, 7rem);
+  }
+
+  .dislikeButton {
+    min-width: clamp(6rem, 28vw, 7rem);
+    min-height: 44px;
+    padding-inline: 0.65rem;
+    letter-spacing: 0.18em;
+  }
+
+  .fanImage {
+    width: 101px;
+    height: 101px;
+    margin-left: -18px;
+  }
+}
+
+@media (max-width: 360px) {
+  .likeButton,
+  .dislikeButton {
+    min-width: 5.25rem;
+    padding-inline: 0.55rem;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+  }
+
+  .windTrack {
+    min-width: 5.25rem;
+  }
+
+  .fanImage {
+    width: 86px;
+    height: 86px;
+    margin-left: -14px;
+  }
+}
+
 .article h1 {
   font-family: var(--font-pixel), monospace;
   font-size: clamp(2rem, 4vw, 3.4rem);
@@ -59,8 +165,7 @@
   margin-bottom: 1rem;
   text-align: left;
   line-height: 1.08;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .article h2 {
@@ -70,8 +175,7 @@
   border-top: 1px solid color-mix(in srgb, hsl(var(--border)) 70%, transparent);
   padding-top: 1.4rem;
   font-size: clamp(1.5rem, 2vw, 2rem);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
 .article h3 {
@@ -79,8 +183,7 @@
   margin-top: 1.8rem;
   margin-bottom: 0.8rem;
   font-size: clamp(1.2rem, 1.8vw, 1.5rem);
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
+  letter-spacing: 0.02em;
 }
 
 .article p {
