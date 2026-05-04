@@ -77,7 +77,7 @@ Check `.env.example` for the full set. Key ones:
 - PascalCase for components, camelCase for utilities/hooks.
 - UI is bilingual: Chinese-first (`zh` default) with English where appropriate.
 - Prettier: `semi: false`, `singleQuote: false`, `tabWidth: 2`.
-- Validation: Zod. Client state: Zustand. Server state: TanStack Query v4. Auth: NextAuth.js with Prisma adapter.
+- Validation: Zod. Client state: Zustand. Server state: TanStack Query v4.
 
 ## Git Branch Model
 - `main` — backbone and blog updates. Always keep updated before branching.

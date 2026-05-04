@@ -56,26 +56,6 @@ function getSessionId(
   req: Request,
   fallbackId?: string,
 ): string {
-  const cookie = req.headers.get("cookie")
-  const candidates = [
-    "__Secure-next-auth.session-token",
-    "next-auth.session-token",
-    "__Secure-authjs.session-token",
-    "authjs.session-token",
-  ]
-
-  if (cookie) {
-    for (const cookieName of candidates) {
-      const match = cookie.match(
-        new RegExp(`${cookieName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}=([^;]+)`),
-      )
-
-      if (match?.[1]) {
-        return decodeURIComponent(match[1])
-      }
-    }
-  }
-
   if (fallbackId) {
     return `thread:${fallbackId}`
   }

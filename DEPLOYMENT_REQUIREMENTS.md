@@ -26,10 +26,6 @@
 | **PostgreSQL** | Prisma ORM 持久化存储 | Vercel Postgres / Neon / Supabase Postgres / Railway |
 
 **数据模型**
-- `Issue` — Issue Tracker 核心数据
-- `User` / `Account` / `Session` / `VerificationToken` — NextAuth.js 认证
-- `Project` / `Tag` — 项目展示
-- `Dialog` — 遗留的 AI 对话存档（`app/api/example/route.ts`）
 - `ChatThread` / `ChatMessage` — AI Lab 对话持久化
 
 **部署后必须执行**
@@ -72,18 +68,6 @@ bunx prisma migrate dev --name init
 
 ---
 
-## 5. 认证（必需）
-
-| 服务 | 用途 | 配置方式 |
-|---|---|---|
-| **Google OAuth** | 用户登录（NextAuth.js） | Google Cloud Console 创建 OAuth 2.0 客户端 |
-
-**所需凭据**
-- `GOOGLE_CLIENT_ID`
-- `GOOGLE_CLIENT_SECRET`
-- `NEXTAUTH_URL`（生产域名）
-- `NEXTAUTH_SECRET`（`openssl rand -base64 32` 生成）
-
 ---
 
 ## 6. 静态资源
@@ -102,14 +86,6 @@ bunx prisma migrate dev --name init
 # ─── 数据库 ───
 DATABASE_URL="postgresql://..."
 
-# ─── NextAuth ───
-NEXTAUTH_URL="https://your-domain.vercel.app"
-NEXTAUTH_SECRET="生成随机字符串"
-
-# ─── Google OAuth ───
-GOOGLE_CLIENT_ID="..."
-GOOGLE_CLIENT_SECRET="..."
-
 # ─── AI Provider ───
 AI_PROVIDER="minimax"
 MINIMAX_API_KEY="..."
@@ -120,12 +96,7 @@ AI_THINKING_ENABLED="false"
 UPSTASH_REDIS_REST_URL="https://..."
 UPSTASH_REDIS_REST_TOKEN="..."
 
-# ─── 遗留/可选 ───
-# 以下变量在 .env.example 中存在，但当前代码未实际使用
-# NEXT_PUBLIC_AI_KEY        # 只在 app/api/example/route.ts 遗留路由中使用
-# NEXT_PUBLIC_SERVICE_ID    # EmailJS（未在源码中引用）
-# NEXT_PUBLIC_PUBLIC_KEY    # EmailJS（未在源码中引用）
-# NEXT_PUBLIC_EMAILJS_TEMPLATE_ID  # EmailJS（未在源码中引用）
+# ─── 可选 ───
 # NEXT_PUBLIC_DEV_SECRET_TOKEN
 # PRIVATE_BLOG_CONTENT_PATH
 ```
@@ -138,9 +109,7 @@ UPSTASH_REDIS_REST_TOKEN="..."
 
 | 依赖 | 说明 |
 |---|---|
-| **Supabase** | `@supabase/*` 已安装，但源码中无 `supabase` 引用 |
-| **EmailJS** | `@emailjs/browser` 已安装，但源码中未使用；联系表单为 `mailto:` 链接 |
-| **OpenAI SDK** | `openai` 已安装，但当前 AI Lab 使用 MiniMax；仅 `app/api/example/route.ts` 遗留路由使用旧 key |
+| **OpenAI SDK** | `openai` 已安装，但当前 AI Lab 使用 MiniMax |
 | **文件存储/S3** | 无图片上传或文件托管需求 |
 | **队列系统** | 明确未使用（计划文档建议不上） |
 | **CDN** | Vercel 自带全球 CDN，无需额外配置 |
@@ -152,7 +121,6 @@ UPSTASH_REDIS_REST_TOKEN="..."
 - [ ] 创建 Vercel 项目，绑定代码仓库
 - [ ] 创建 PostgreSQL 数据库并获取连接字符串
 - [ ] 创建 Upstash Redis 实例并获取 REST URL + Token
-- [ ] 在 Google Cloud Console 创建 OAuth 2.0 客户端，配置授权回调 URL
 - [ ] 注册 MiniMax 并获取 API Key
 - [ ] 在 Vercel 项目设置中填入上述所有环境变量
 - [ ] 执行 `bunx prisma migrate deploy`
@@ -170,6 +138,5 @@ UPSTASH_REDIS_REST_TOKEN="..."
 | Vercel Postgres (Hobby) | **免费**（或 Neon/Railway 免费 tier） |
 | Upstash Redis | **免费 tier** 足够 |
 | MiniMax API | 按调用量付费（当前 M2.5 订阅制） |
-| Google OAuth | **免费** |
 
 **结论**: 在 MiniMax 订阅/用量可控的前提下，**零额外基础设施月租**即可上线。

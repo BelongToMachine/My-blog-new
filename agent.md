@@ -2,7 +2,7 @@
 
 ## Identity
 
-You are an AI development assistant for **Jie's personal website** — a portfolio, blog, and skill-showcase platform built with modern web technologies. Jie is a **front-end developer** with **professional experience** working as a developer at **某金融科技公司**. This project serves as a living demonstration that Jie has the skills and knowledge to take on **remote front-end / AI prompt engineering roles from anywhere in the world**.
+You are an AI development assistant for **Jie's personal website** — a portfolio, blog, and skill-showcase platform built with modern web technologies. Jie is a **front-end developer** focused on React, Next.js, TypeScript, and practical AI product integration. This project serves as a living demonstration of independent delivery capability, front-end engineering strength, and AI prompt engineering / product integration skills.
 
 ---
 
@@ -28,10 +28,8 @@ This is NOT a toy project — it is a **professional portfolio** designed to:
 | **State**         | Zustand, React Context (ThemeContext)                                                                  |
 | **Data Fetching** | TanStack React Query v4, Axios                                                                         |
 | **Database**      | PostgreSQL (Supabase-hosted), Prisma ORM                                                               |
-| **Auth**          | NextAuth.js with Prisma Adapter                                                                        |
-| **AI**            | OpenAI API (GPT-3.5-turbo for text, GPT-4-vision for image analysis)                                   |
+| **AI**            | MiniMax API (M2.5 model) via Vercel AI SDK                                                             |
 | **Blog Engine**   | MDX content files + gray-matter frontmatter, Shiki syntax highlighting, markdown-it with TOC & anchors |
-| **Email**         | EmailJS (contact form)                                                                                 |
 | **Forms**         | React Hook Form + Zod validation                                                                       |
 | **Charts**        | Recharts                                                                                               |
 | **Icons**         | Heroicons, React Icons, Lucide React, Radix Icons                                                      |
@@ -44,10 +42,9 @@ This is NOT a toy project — it is a **professional portfolio** designed to:
 ```
 issue_tracker/
 ├── app/
-│   ├── page.tsx                 # Home page — Hero, PostSummary, Contact
+│   ├── page.tsx                 # Home page — Hero, PostSummary
 │   ├── layout.tsx               # Root layout — providers, nav, theme
 │   ├── NavBar.tsx               # Responsive nav (Desktop / Mobile switch)
-│   ├── Contact.tsx              # Email contact form with rate-limiting
 │   ├── projects.tsx             # Projects showcase section
 │   ├── globals.css              # Design tokens, Tailwind layers, custom utilities
 │   │
@@ -77,8 +74,7 @@ issue_tracker/
 │   │   ├── blogs/               # Blog CRUD endpoints
 │   │   ├── projects/            # Projects endpoint
 │   │   ├── usecase/route.ts     # AI chatbot endpoint (text + vision)
-│   │   ├── services/api-client.ts
-│   │   └── auth/                # NextAuth config
+│   │   └── services/api-client.ts
 │   │
 │   ├── service/
 │   │   ├── Store.ts             # Zustand stores
@@ -136,12 +132,9 @@ issue_tracker/
 - All conversations persisted to database (Dialog model)
 - Response rendering with code block parsing and Shiki highlighting
 
-### 5. Contact Form
+### 5. Contact
 
-- EmailJS integration for direct email delivery
-- Zod validation for form fields
-- Rate-limiting: one submission per 24 hours (localStorage)
-- Success/error feedback
+- `mailto:` link in footer for direct email contact
 
 ### 6. Dark Mode / Theming
 
@@ -161,13 +154,8 @@ issue_tracker/
 
 | Model     | Purpose                                           |
 | --------- | ------------------------------------------------- |
-| `Issue`   | Blog posts (title, description, status, likes)    |
-| `Project` | Portfolio projects (title, content, link, tags)   |
-| `Tag`     | Project category tags (many-to-many with Project) |
-| `Dialog`  | AI chatbot conversation history                   |
-| `User`    | Authenticated users (NextAuth)                    |
-| `Account` | OAuth provider accounts                           |
-| `Session` | User sessions                                     |
+| `ChatThread`  | AI conversation threads                     |
+| `ChatMessage` | Individual messages within a thread         |
 
 ---
 
@@ -225,12 +213,9 @@ npx prisma migrate deploy
 
 The app requires the following environment variables (see `.env.example`):
 
-- `DATABASE_URL` — PostgreSQL connection string (Supabase)
-- `NEXTAUTH_URL` — App base URL
-- `NEXTAUTH_SECRET` — NextAuth encryption secret
-- `NEXT_PUBLIC_SERVICE_ID` — EmailJS service ID
-- `NEXT_PUBLIC_PUBLIC_KEY` — EmailJS public key
-- `NEXT_PUBLIC_AI_KEY` — OpenAI API key
+- `DATABASE_URL` — PostgreSQL connection string
+- `MINIMAX_API_KEY` — AI provider API key
+- `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` — Rate limiting Redis
 
 ---
 
@@ -244,8 +229,7 @@ The app requires the following environment variables (see `.env.example`):
 | **Full-stack capability**       | Prisma ORM, PostgreSQL, REST APIs, server actions, database migrations                                         |
 | **AI / Prompt Engineering**     | OpenAI API integration, multi-modal prompts (text + vision), conversation persistence, code generation prompts |
 | **State management**            | Zustand stores, React Context, TanStack Query for async state                                                  |
-| **Authentication**              | NextAuth.js with OAuth, Prisma adapter, session management                                                     |
-| **Form handling & validation**  | React Hook Form + Zod, rate limiting, EmailJS integration                                                      |
+| **Form handling & validation**  | React Hook Form + Zod validation                                                                               |
 | **Responsive design**           | Desktop/mobile nav switch, fluid grids, responsive typography                                                  |
 | **Code quality & architecture** | Clean separation of concerns (service/, hooks/, components/, api/), design system, reusable UI components      |
 | **DevOps awareness**            | Git branching strategy, Prisma migrations, Supabase recovery plan, environment configuration                   |

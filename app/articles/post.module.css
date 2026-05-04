@@ -53,11 +53,14 @@
 }
 
 .footerReactions {
+  --reaction-button-height: 44px;
+  --reaction-center-y: 54px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   gap: clamp(0.5rem, 2vw, 1rem);
   width: 100%;
+  min-height: 130px;
   max-width: 100%;
   min-width: 0;
   overflow: hidden;
@@ -65,19 +68,22 @@
 
 .likeButton,
 .dislikeButton {
-  min-height: 44px;
+  min-height: var(--reaction-button-height);
+  height: var(--reaction-button-height);
 }
 
 .likeButton {
   flex: 0 0 auto;
   min-width: clamp(7rem, 14vw, 10rem);
+  margin-top: calc(var(--reaction-center-y) - (var(--reaction-button-height) / 2));
 }
 
 .windFanRig {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   flex: 0 1 auto;
+  height: 130px;
   max-width: min(100%, 430px);
   min-width: 0;
   overflow: hidden;
@@ -85,6 +91,7 @@
 
 .windTrack {
   width: clamp(220px, 26vw, 280px);
+  height: 130px;
   flex: 0 0 auto;
   min-width: 0;
 }
@@ -105,28 +112,30 @@
   .footerReactions {
     justify-content: center;
     gap: clamp(0.25rem, 1.5vw, 0.5rem);
+    --reaction-center-y: 50.5px;
+    min-height: 101px;
   }
 
   .likeButton {
     min-width: clamp(6rem, 28vw, 7rem);
-    min-height: 44px;
     padding-inline: 0.65rem;
     letter-spacing: 0.18em;
   }
 
   .windFanRig {
     flex: 1 1 auto;
+    height: 101px;
   }
 
   .windTrack {
     width: auto;
+    height: 101px;
     flex: 1 1 auto;
     min-width: clamp(6rem, 28vw, 7rem);
   }
 
   .dislikeButton {
     min-width: clamp(6rem, 28vw, 7rem);
-    min-height: 44px;
     padding-inline: 0.65rem;
     letter-spacing: 0.18em;
   }
@@ -139,6 +148,11 @@
 }
 
 @media (max-width: 360px) {
+  .footerReactions {
+    --reaction-center-y: 43px;
+    min-height: 86px;
+  }
+
   .likeButton,
   .dislikeButton {
     min-width: 5.25rem;
@@ -148,6 +162,7 @@
   }
 
   .windTrack {
+    height: 86px;
     min-width: 5.25rem;
   }
 
@@ -155,6 +170,10 @@
     width: 86px;
     height: 86px;
     margin-left: -14px;
+  }
+
+  .windFanRig {
+    height: 86px;
   }
 }
 

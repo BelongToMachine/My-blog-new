@@ -111,16 +111,6 @@ The site mixes Chinese and English randomly:
 
 ---
 
-### 6. ❌ Hardcoded EmailJS Template ID
-
-**File**: `app/Contact.tsx` (line 37)
-
-```typescript
-"template_02pba33", // template_id — hardcoded!
-```
-
-**Fix**: Move to environment variable `NEXT_PUBLIC_EMAILJS_TEMPLATE_ID`.
-
 ---
 
 ### 7. ❌ Sync Script in Head
@@ -144,7 +134,7 @@ These improvements will significantly boost the impression your site makes.
 
 **What**: Create a `/resume` or `/about` page with:
 - Professional photo
-- Work experience timeline (某金融科技公司 contract, etc.)
+- Work experience timeline
 - Skills radar chart or progress bars
 - Downloadable PDF resume link
 - GitHub / LinkedIn / Email links
@@ -216,7 +206,7 @@ The current `AboutMe.tsx` is a simple list of badges. This should be your **most
 **Suggested improvements**:
 - **Skills with icons**: Show React, Next.js, TypeScript, etc. with their logos, not just text badges
 - **Skill proficiency levels**: Progress bars or a visual rating system
-- **Work experience section**: A timeline showing your 某金融科技公司 experience
+- **Work experience section**: A timeline showing your professional experience
 - **Certifications / achievements**: If any
 - **"What I bring to a remote team" section**: Communication tools you use (Slack, Jira, GitHub), timezone flexibility, async communication skills
 
@@ -359,7 +349,7 @@ Embed your GitHub contribution graph or recent activity to show you're actively 
 
 ### 26. 🟩 Add Testimonials / Recommendations
 
-If you have any recommendations from colleagues at 某金融科技公司, add a testimonials section.
+If you have any recommendations from colleagues, add a testimonials section.
 
 ---
 
@@ -406,7 +396,7 @@ Add the GitHub Actions badges to your README.
 | 1 | Fix metadata in layout.tsx | ✅ Done |
 | 3 | Fix "Eduction" typo | ✅ Done |
 | 4 | Fix stray "Í" character in Hero | ✅ Done |
-| 6 | Move EmailJS template ID to env | ✅ Done |
+| 6 | Remove deprecated contact form integration | ✅ Done |
 | 7 | Fix sync script to use next/script | ✅ Done |
 | 9 | Fix missing commas and hero CTA | 🟠 High |
 | 13 | Fix hardcoded project links | 🟠 High |

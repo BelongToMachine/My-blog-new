@@ -8,11 +8,11 @@ export const getProfileSummaryTool = tool({
     "Get Jie's profile summary including skills, experience, and contact info. Use this when the user asks about Jie's background, skills, experience, or wants a general overview.",
   inputSchema: z.object({}),
   execute: async () => ({
-    name: "Developer / 开发者",
+    name: "Developer",
     role: "Front-End Developer & AI Prompt Engineer",
     location: "Hangzhou, China",
     experience:
-      "~several years professional experience at 某金融科技公司, with strong independent delivery capability",
+      "Professional front-end developer with strong independent delivery capability",
     focus: [
       "React / Next.js / TypeScript",
       "Polished UI engineering & design-system thinking",

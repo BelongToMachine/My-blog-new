@@ -5,13 +5,11 @@ import { cn } from "@/lib/utils"
 import { useEffect, useRef, type MouseEvent, type ReactNode } from "react"
 
 const WIND_TILE_WIDTH = 64
-const WIND_TARGET_FOLLOW_MS = 220
-const FREE_TARGET_FOLLOW_MS = 45
-
-function parseCssSize(value: string, fallback: number) {
-  const parsed = Number.parseFloat(value)
-  return Number.isFinite(parsed) ? parsed : fallback
-}
+const WIND_TARGET_FOLLOW_MS = 240
+const FREE_TARGET_FOLLOW_MS = 42
+const WIND_STRUGGLE_RESPONSE = 0.14
+const WIND_STRUGGLE_DECAY_MS = 110
+const WIND_STRUGGLE_MAX = 3.2
 
 function parseAnimationDurationMs(value: string) {
   const firstDuration = value.split(",")[0]?.trim() ?? ""
@@ -43,17 +41,12 @@ function getWindSpeedPxPerMs(windElement: HTMLDivElement) {
 
 function getWindFieldBounds(windElement: HTMLDivElement) {
   const windRect = windElement.getBoundingClientRect()
-  const styles = window.getComputedStyle(windElement)
-  const fieldHeight = parseCssSize(
-    styles.getPropertyValue("--wind-face-height"),
-    windRect.height
-  )
 
   return {
     left: windRect.left,
     right: windRect.right,
     top: windRect.top,
-    bottom: windRect.top + Math.min(fieldHeight, windRect.height),
+    bottom: windRect.bottom,
   }
 }
 
@@ -93,19 +86,45 @@ const Wind = ({
   const setCursorVariant = useVirtualCursorStore((state) => state.setCursorVariant)
   const windRef = useRef<HTMLDivElement>(null)
   const controlRef = useRef<HTMLDivElement>(null)
+  const lastInputPositionRef = useRef<{ x: number; y: number } | null>(null)
+  const struggleImpulseRef = useRef(0)
 
   const handleMouseEnter = (event: MouseEvent<HTMLDivElement>) => {
     const position = { x: event.clientX, y: event.clientY }
+    lastInputPositionRef.current = position
+    struggleImpulseRef.current = 0
     setCursorPosition(position)
     setCursorVariant("arrow")
     switchMagicCursor(true)
   }
 
   const handleMouseMove = (event: MouseEvent<HTMLDivElement>) => {
-    setCursorTargetPosition({ x: event.clientX, y: event.clientY })
+    const nextPosition = { x: event.clientX, y: event.clientY }
+    const lastInputPosition = lastInputPositionRef.current
+
+    if (lastInputPosition) {
+      const movementX = nextPosition.x - lastInputPosition.x
+
+      if (movementX > 0) {
+        struggleImpulseRef.current = Math.min(
+          WIND_STRUGGLE_MAX,
+          struggleImpulseRef.current + movementX * WIND_STRUGGLE_RESPONSE
+        )
+      } else if (movementX < 0) {
+        struggleImpulseRef.current = Math.max(
+          0,
+          struggleImpulseRef.current + movementX * 0.18
+        )
+      }
+    }
+
+    lastInputPositionRef.current = nextPosition
+    setCursorTargetPosition(nextPosition)
   }
 
   const handleMouseLeave = () => {
+    lastInputPositionRef.current = null
+    struggleImpulseRef.current = 0
     setCursorVariant("arrow")
     switchMagicCursor(false)
   }
@@ -135,29 +154,38 @@ const Wind = ({
         controlRef.current?.querySelector("button")?.getBoundingClientRect() ??
         null
       const currentPosition = cursorState.position ?? targetPosition
-      const isInWindField = isPointInsideRect(currentPosition, windBounds)
+      const isTargetInWindField = isPointInsideRect(targetPosition, windBounds)
+      const isCursorInWindField = isPointInsideRect(currentPosition, windBounds)
+      const isWindActive = isTargetInWindField || isCursorInWindField
       const followFactor = getFollowFactor(
         timeDelta,
-        isInWindField ? WIND_TARGET_FOLLOW_MS : FREE_TARGET_FOLLOW_MS
+        isWindActive ? WIND_TARGET_FOLLOW_MS : FREE_TARGET_FOLLOW_MS
       )
-      const windSpeed = isInWindField ? getWindSpeedPxPerMs(windElement) : 0
+      const windSpeed = isWindActive ? getWindSpeedPxPerMs(windElement) : 0
+      const strugglePushX = struggleImpulseRef.current * (timeDelta / 16)
+      const struggleDecay = Math.exp(-timeDelta / WIND_STRUGGLE_DECAY_MS)
+      const freeFollowX =
+        currentPosition.x + (targetPosition.x - currentPosition.x) * followFactor
+      const blownFollowX =
+        currentPosition.x - windSpeed * timeDelta + strugglePushX
       const nextPosition = {
-        x: Math.max(
-          0,
-          currentPosition.x +
-            (targetPosition.x - currentPosition.x) * followFactor -
-            windSpeed * timeDelta
-        ),
+        x: isWindActive
+          ? Math.max(windBounds.left, blownFollowX)
+          : Math.max(0, freeFollowX),
         y:
           currentPosition.y +
           (targetPosition.y - currentPosition.y) * followFactor,
       }
 
+      struggleImpulseRef.current = isWindActive
+        ? struggleImpulseRef.current * struggleDecay
+        : 0
+
       useVirtualCursorStore.setState({
         position: nextPosition,
         cursorVariant:
           buttonRect &&
-          (isPointInsideRect(targetPosition, buttonRect) ||
+          (isPointInsideRect(currentPosition, buttonRect) ||
             isPointInsideRect(nextPosition, buttonRect))
             ? "pointer"
             : "arrow",
