@@ -128,43 +128,95 @@ function apiThreadWithMessagesToChatThread(api: ApiThreadWithMessages): ChatThre
   }
 }
 
+/* ─── Server persistence circuit breaker ─── */
+// When the server-side DB is down, every chat-stream delta would otherwise
+// fire another failing POST. Trip a 60s breaker on first failure so the
+// console isn't flooded and we silently fall back to localStorage.
+const PERSIST_COOLDOWN_MS = 60_000
+let persistTrippedUntil = 0
+
+function isPersistTripped(): boolean {
+  return Date.now() < persistTrippedUntil
+}
+
+function tripPersist(reason: string) {
+  if (!isPersistTripped()) {
+    console.warn(
+      `[chat] server persistence unavailable (${reason}); using localStorage for ~60s`,
+    )
+  }
+  persistTrippedUntil = Date.now() + PERSIST_COOLDOWN_MS
+}
+
+function resetPersist() {
+  persistTrippedUntil = 0
+}
+
 async function fetchThreads(): Promise<ChatThread[]> {
+  if (isPersistTripped()) return []
   try {
     const res = await fetch("/api/ai/threads")
-    if (!res.ok) throw new Error("Failed to load threads")
+    if (!res.ok) {
+      tripPersist(`GET /threads ${res.status}`)
+      return []
+    }
     const data = (await res.json()) as ApiThread[]
+    resetPersist()
     return data.map(apiThreadToChatThread)
-  } catch {
-    // API unavailable (no DB / migration not run) → return empty to trigger fallback
+  } catch (err) {
+    tripPersist(`GET /threads ${err instanceof Error ? err.message : "network"}`)
     return []
   }
 }
 
 async function fetchThreadWithMessages(id: string): Promise<ChatThread | null> {
+  if (isPersistTripped()) return null
   try {
     const res = await fetch(`/api/ai/threads/${id}`)
     if (!res.ok) {
       if (res.status === 404) return null
+      tripPersist(`GET /threads/:id ${res.status}`)
       return null
     }
     const data = (await res.json()) as ApiThreadWithMessages
+    resetPersist()
     return apiThreadWithMessagesToChatThread(data)
-  } catch {
-    // API unavailable (no DB / network error) → return null, use local messages
+  } catch (err) {
+    tripPersist(`GET /threads/:id ${err instanceof Error ? err.message : "network"}`)
     return null
   }
 }
 
 async function createThreadApi(): Promise<ChatThread> {
-  const res = await fetch("/api/ai/threads", { method: "POST" })
-  if (!res.ok) throw new Error("Failed to create thread")
-  const data = (await res.json()) as ApiThread
-  return apiThreadToChatThread(data)
+  if (isPersistTripped()) throw new Error("persist-tripped")
+  try {
+    const res = await fetch("/api/ai/threads", { method: "POST" })
+    if (!res.ok) {
+      tripPersist(`POST /threads ${res.status}`)
+      throw new Error("persist-tripped")
+    }
+    const data = (await res.json()) as ApiThread
+    resetPersist()
+    return apiThreadToChatThread(data)
+  } catch (err) {
+    if (err instanceof Error && err.message === "persist-tripped") throw err
+    tripPersist(`POST /threads ${err instanceof Error ? err.message : "network"}`)
+    throw new Error("persist-tripped")
+  }
 }
 
 async function deleteThreadApi(id: string): Promise<void> {
-  const res = await fetch(`/api/ai/threads/${id}`, { method: "DELETE" })
-  if (!res.ok) throw new Error("Failed to delete thread")
+  if (isPersistTripped()) return
+  try {
+    const res = await fetch(`/api/ai/threads/${id}`, { method: "DELETE" })
+    if (!res.ok) {
+      tripPersist(`DELETE /threads/:id ${res.status}`)
+      return
+    }
+    resetPersist()
+  } catch (err) {
+    tripPersist(`DELETE /threads/:id ${err instanceof Error ? err.message : "network"}`)
+  }
 }
 
 async function saveMessagesApi(
@@ -172,24 +224,33 @@ async function saveMessagesApi(
   messages: UIMessage[],
   title?: string,
 ): Promise<void> {
-  const res = await fetch(`/api/ai/threads/${id}/messages`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      messages: messages.map((msg) => ({
-        id: msg.id,
-        role: msg.role,
-        content:
-          msg.parts.find((p) => p.type === "text") &&
-          "text" in (msg.parts.find((p) => p.type === "text") as { text: string })
-            ? (msg.parts.find((p) => p.type === "text") as { text: string }).text
-            : "",
-        parts: msg.parts,
-      })),
-      title,
-    }),
-  })
-  if (!res.ok) throw new Error("Failed to save messages")
+  if (isPersistTripped()) return
+  try {
+    const res = await fetch(`/api/ai/threads/${id}/messages`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        messages: messages.map((msg) => ({
+          id: msg.id,
+          role: msg.role,
+          content:
+            msg.parts.find((p) => p.type === "text") &&
+            "text" in (msg.parts.find((p) => p.type === "text") as { text: string })
+              ? (msg.parts.find((p) => p.type === "text") as { text: string }).text
+              : "",
+          parts: msg.parts,
+        })),
+        title,
+      }),
+    })
+    if (!res.ok) {
+      tripPersist(`POST /threads/:id/messages ${res.status}`)
+      return
+    }
+    resetPersist()
+  } catch (err) {
+    tripPersist(`POST /threads/:id/messages ${err instanceof Error ? err.message : "network"}`)
+  }
 }
 
 const THREADS_QUERY_KEY = ["ai-threads"]

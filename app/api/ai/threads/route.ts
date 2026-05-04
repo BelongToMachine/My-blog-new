@@ -10,7 +10,7 @@ export async function GET() {
     })
     return NextResponse.json(threads)
   } catch (error) {
-    console.error("[api/ai/threads] GET error:", error)
+    console.warn("[api/ai/threads] GET failed, client will fall back to localStorage:", error)
     return NextResponse.json(
       { error: "Failed to load threads" },
       { status: 500 },
@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
     })
     return NextResponse.json(thread, { status: 201 })
   } catch (error) {
-    console.error("[api/ai/threads] POST error:", error)
+    console.warn("[api/ai/threads] POST failed, client will keep thread locally:", error)
     return NextResponse.json(
       { error: "Failed to create thread" },
       { status: 500 },

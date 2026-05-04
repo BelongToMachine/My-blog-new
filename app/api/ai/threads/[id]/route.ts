@@ -24,7 +24,7 @@ export async function GET(
 
     return NextResponse.json(thread)
   } catch (error) {
-    console.error("[api/ai/threads/:id] GET error:", error)
+    console.warn("[api/ai/threads/:id] GET failed, client will use localStorage thread:", error)
     return NextResponse.json(
       { error: "Failed to load thread" },
       { status: 500 },
@@ -42,7 +42,10 @@ export async function DELETE(
     })
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error("[api/ai/threads/:id] DELETE error:", error)
+    console.warn(
+      "[api/ai/threads/:id] DELETE failed, client will remove thread locally:",
+      error,
+    )
     return NextResponse.json(
       { error: "Failed to delete thread" },
       { status: 500 },
