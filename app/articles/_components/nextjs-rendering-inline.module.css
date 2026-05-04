@@ -16,7 +16,6 @@
     radial-gradient(circle at top right, color-mix(in srgb, var(--accent) 14%, transparent), transparent 32%),
     radial-gradient(circle at bottom left, color-mix(in srgb, var(--accent) 10%, transparent), transparent 34%),
     linear-gradient(180deg, var(--surface), var(--surface-strong));
-  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.24);
 }
 
 .panelHeader,
@@ -77,8 +76,7 @@
   transition:
     transform 180ms ease,
     border-color 180ms ease,
-    background-color 180ms ease,
-    box-shadow 180ms ease;
+    background-color 180ms ease;
 }
 
 .pill small {
@@ -93,7 +91,6 @@
 .pillActive {
   background: color-mix(in srgb, var(--accent) 11%, hsl(var(--background)));
   border-color: color-mix(in srgb, var(--accent) 42%, hsl(var(--border)));
-  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.18);
 }
 
 .overviewLayout {
@@ -120,8 +117,7 @@
   color: var(--text-main);
   transition:
     transform 180ms ease,
-    border-color 180ms ease,
-    box-shadow 180ms ease;
+    border-color 180ms ease;
 }
 
 .scoreCard:hover {
@@ -130,7 +126,6 @@
 
 .scoreCardActive {
   border-color: color-mix(in srgb, var(--accent) 42%, hsl(var(--border)));
-  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.18);
 }
 
 .scoreCardTop {
