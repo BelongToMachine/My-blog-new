@@ -33,7 +33,7 @@ const MobileNav = () => {
           tone="borderless"
           size="sm"
         >
-          <NextLink href="http://github.com/JieLuis">
+          <NextLink href="https://github.com/BelongToMachine">
             <PixelGithubIcon className="h-5 w-5" />
           </NextLink>
         </ActionIconButton>

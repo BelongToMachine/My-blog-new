@@ -26,8 +26,8 @@ export const getProfileSummaryTool = tool({
       "Responsive design & dark mode",
     ],
     contact: {
-      email: "jie.liao.dev@gmail.com",
-      github: "github.com/JieLuis",
+      email: "lionliao1658@gmail.com",
+      github: "github.com/BelongToMachine",
       linkedin: "linkedin.com/in/jieliao",
     },
   }),

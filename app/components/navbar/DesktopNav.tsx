@@ -26,7 +26,7 @@ const DesktopNav = () => {
           aria-label="Open GitHub profile"
           tone="borderless"
         >
-          <NextLink href="http://github.com/JieLuis">
+          <NextLink href="https://github.com/BelongToMachine">
             <PixelGithubIcon />
           </NextLink>
         </ActionIconButton>
