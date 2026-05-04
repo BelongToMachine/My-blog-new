@@ -5,8 +5,7 @@
   "packageManager": "bun@1.3.11",
   "scripts": {
     "dev": "next dev --hostname 0.0.0.0",
-    "build": "next build",
-    "build:prod": "rm -rf private-blog-content && git clone --depth 1 https://${GITHUB_TOKEN}@github.com/BelongToMachine/Private-Blog-Content.git private-blog-content && next build",
+    "build": "rm -rf private-blog-content && git clone --depth 1 https://${GITHUB_TOKEN}@github.com/BelongToMachine/Private-Blog-Content.git private-blog-content && next build",
     "start": "next start",
     "lint": "next lint",
     "prisma:generate": "prisma generate",

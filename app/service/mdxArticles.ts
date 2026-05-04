@@ -47,14 +47,12 @@ async function pathExists(targetPath: string) {
 
 async function getArticlesRoot(): Promise<string | null> {
   const privatePath = process.env.PRIVATE_BLOG_CONTENT_PATH?.trim()
-  if (!privatePath) {
-    console.warn("[mdxArticles] PRIVATE_BLOG_CONTENT_PATH is not set. Returning empty article list.")
-    return null
-  }
-  if (await pathExists(privatePath)) return privatePath
-  console.warn(
-    `[mdxArticles] PRIVATE_BLOG_CONTENT_PATH not found: ${privatePath}. Returning empty article list.`
-  )
+  if (privatePath && await pathExists(privatePath)) return privatePath
+
+  const fallbackPath = path.join(process.cwd(), "private-blog-content")
+  if (await pathExists(fallbackPath)) return fallbackPath
+
+  console.warn("[mdxArticles] No blog content path found. Returning empty article list.")
   return null
 }
 
