@@ -24,6 +24,11 @@
   --article-code-gutter-color: rgba(95, 119, 145, 0.42);
   --article-code-gutter-border: rgba(95, 119, 145, 0.16);
   --article-code-content-bg: #fff;
+  --article-code-plain-bg:
+    linear-gradient(180deg, rgba(246, 250, 255, 0.98), rgba(236, 244, 252, 0.96)),
+    linear-gradient(to right, rgba(14, 165, 233, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(14, 165, 233, 0.045) 1px, transparent 1px);
+  --article-code-plain-color: #1a2a3a;
 }
 
 :global(html[data-color-mode="dark"]) .article,
@@ -43,7 +48,12 @@
   --article-code-label-color: rgba(174, 223, 233, 0.78);
   --article-code-gutter-color: rgba(173, 194, 214, 0.34);
   --article-code-gutter-border: rgba(173, 194, 214, 0.12);
-  --article-code-content-bg: #000;
+  --article-code-content-bg: rgba(8, 8, 22, 0.82);
+  --article-code-plain-bg:
+    linear-gradient(180deg, rgba(22, 8, 44, 0.98), rgba(10, 8, 25, 0.98)),
+    linear-gradient(to right, rgba(38, 211, 237, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(38, 211, 237, 0.05) 1px, transparent 1px);
+  --article-code-plain-color: oklch(0.94 0.02 255);
 }
 
 .footerWrapper {
@@ -178,8 +188,8 @@
 }
 
 .article h1 {
-  font-family: var(--font-pixel), monospace;
-  font-size: clamp(2rem, 4vw, 3.4rem);
+  font-family: var(--font-reading), monospace;
+  font-size: clamp(2.2rem, 4.5vw, 3.7rem);
   color: hsl(var(--foreground));
   margin-bottom: 1rem;
   text-align: left;
@@ -188,26 +198,26 @@
 }
 
 .article h2 {
-  font-family: var(--font-pixel), monospace;
+  font-family: var(--font-reading), monospace;
   margin-top: 3rem;
   margin-bottom: 1.1rem;
   border-top: 1px solid color-mix(in srgb, hsl(var(--border)) 70%, transparent);
   padding-top: 1.4rem;
-  font-size: clamp(1.5rem, 2vw, 2rem);
+  font-size: clamp(1.7rem, 2.4vw, 2.2rem);
   letter-spacing: 0.03em;
 }
 
 .article h3 {
-  font-family: var(--font-pixel), monospace;
+  font-family: var(--font-reading), monospace;
   margin-top: 1.8rem;
   margin-bottom: 0.8rem;
-  font-size: clamp(1.2rem, 1.8vw, 1.5rem);
+  font-size: clamp(1.35rem, 2vw, 1.65rem);
   letter-spacing: 0.02em;
 }
 
 .article p {
-  font-family: var(--font-pixel), monospace;
-  font-size: 1rem;
+  font-family: var(--font-reading), monospace;
+  font-size: 1.15rem;
   line-height: 1.9;
   color: color-mix(in srgb, hsl(var(--foreground)) 82%, transparent);
   margin-bottom: 1.2rem;
@@ -231,8 +241,8 @@
 }
 
 .article li {
-  font-family: var(--font-pixel), monospace;
-  font-size: 1rem;
+  font-family: var(--font-reading), monospace;
+  font-size: 1.15rem;
   line-height: 1.8;
   margin-bottom: 0.5rem;
 }
@@ -319,19 +329,16 @@
   border-left: 4px solid hsl(var(--primary));
   color: color-mix(in srgb, hsl(var(--foreground)) 82%, transparent);
   border-radius: 0;
-  font-family: var(--font-pixel), monospace;
-  font-size: 1rem;
+  font-family: var(--font-reading), monospace;
+  font-size: 1.15rem;
   line-height: 1.8;
 }
 
 .article div pre:not(.shiki) {
   position: relative;
-  background:
-    linear-gradient(180deg, rgba(8, 16, 24, 0.98), rgba(8, 12, 20, 0.98)),
-    linear-gradient(to right, rgba(38, 211, 237, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(38, 211, 237, 0.05) 1px, transparent 1px);
+  background: var(--article-code-plain-bg);
   background-size: auto, 18px 18px, 18px 18px;
-  color: oklch(0.94 0.02 255);
+  color: var(--article-code-plain-color);
   padding: 1rem 1.1rem;
   border-radius: 0;
   overflow-x: auto;
@@ -362,13 +369,13 @@
   top: 0.5rem;
   right: 0.5rem;
   z-index: 2;
-  font-family: var(--font-pixel), monospace;
-  font-size: 10px;
+  font-family: var(--font-reading), monospace;
+  font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   line-height: 1;
-  padding: 0.25rem 0.6rem;
+  padding: 0.3rem 0.65rem;
   border: 2px solid var(--article-code-gutter-border);
   background: transparent;
   color: var(--article-code-gutter-color);
@@ -397,11 +404,11 @@
 .article :global(.article-code-shell pre.shiki) {
   margin: 0 !important;
   overflow-x: auto !important;
-  background: var(--article-code-content-bg) !important;
+  background: transparent !important;
   padding: 0.5rem 0 !important;
   font-family: var(--font-mono), monospace;
-  font-size: 0.92rem;
-  line-height: 0.98rem;
+  font-size: 1rem;
+  line-height: 1.05rem;
   tab-size: 2;
 }
 
@@ -423,17 +430,17 @@
 
 .article :global(.article-code-shell pre.shiki .line) {
   display: block;
-  min-height: 0.98rem;
+  min-height: 1.05rem;
   padding: 0 1rem;
 }
 
 .article :global(.article-code-shell pre.shiki .line:empty) {
-  min-height: 0.52rem;
+  min-height: 0.55rem;
 }
 
 .article :global(.article-code-shell[data-line-count="1"] pre.shiki) {
   padding: 0.28rem 0 !important;
-  line-height: 0.98rem !important;
+  line-height: 1.05rem !important;
 }
 
 .article :global(.article-code-shell[data-line-count="1"] pre.shiki .line) {
@@ -446,7 +453,7 @@
 }
 
 .article div code {
-  font-family: var(--font-pixel), monospace;
+  font-family: var(--font-reading), monospace;
   background-color: color-mix(in srgb, hsl(var(--card)) 86%, transparent);
   padding: 2px 6px;
   border-radius: 0;
@@ -456,8 +463,8 @@
 
 .article :global(.post-meta) {
   margin-bottom: 2rem;
-  font-family: var(--font-pixel), monospace;
-  font-size: 0.75rem;
+  font-family: var(--font-reading), monospace;
+  font-size: 0.85rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: hsl(var(--muted-foreground));
@@ -479,7 +486,7 @@
   width: 100%;
   overflow-x: auto;
   border-collapse: collapse;
-  font-size: 0.875rem;
+  font-size: 1rem;
   white-space: nowrap;
 }
 
@@ -488,15 +495,15 @@
   padding: 0.5rem 0.75rem;
   border: 1px solid color-mix(in srgb, hsl(var(--border)) 70%, transparent);
   text-align: left;
-  font-family: var(--font-pixel), monospace;
-  font-size: 0.95rem;
+  font-family: var(--font-reading), monospace;
+  font-size: 1.05rem;
   line-height: 1.7;
 }
 
 .article :global(th) {
   background-color: color-mix(in srgb, hsl(var(--card)) 86%, transparent);
-  font-family: var(--font-pixel), monospace;
-  font-size: 0.85rem;
+  font-family: var(--font-reading), monospace;
+  font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
@@ -518,36 +525,36 @@
   }
 
   .article h1 {
-    font-size: 1.6rem;
+    font-size: 1.8rem;
   }
 
   .article h2 {
-    font-size: 1.3rem;
+    font-size: 1.45rem;
   }
 
   .article p,
   .article li {
-    font-size: 1rem;
+    font-size: 1.15rem;
   }
 
   .article div pre {
     padding: 0.75rem;
-    font-size: 0.85rem;
+    font-size: 0.95rem;
   }
 
   .article :global(.article-code-shell pre.shiki) {
     padding: 0.42rem 0 !important;
-    font-size: 0.82rem;
-    line-height: 0.88rem;
+    font-size: 0.92rem;
+    line-height: 0.98rem;
   }
 
   .article :global(.article-code-shell pre.shiki .line) {
-    min-height: 0.88rem;
+    min-height: 0.98rem;
     padding: 0 0.8rem;
   }
 
   .article :global(.article-code-shell pre.shiki .line:empty) {
-    min-height: 0.42rem;
+    min-height: 0.48rem;
   }
 
   .article :global(.article-code-shell[data-line-count="1"] pre.shiki) {

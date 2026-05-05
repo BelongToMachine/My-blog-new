@@ -105,15 +105,16 @@ async function renderMarkdown(content: string) {
   const headings = extractHeadings(tokens)
   const highlightedBlocks = new Map<number, string>()
   const defaultFenceRenderer = md.renderer.rules.fence
+  const defaultCodeBlockRenderer = md.renderer.rules.code_block
 
-  const fenceTokens = tokens
+  const codeBlockTokens = tokens
     .map((token, index) => ({ token, index }))
-    .filter(({ token }) => token.type === "fence")
+    .filter(({ token }) => token.type === "fence" || token.type === "code_block")
 
   const renderedBlocks = await Promise.all(
-    fenceTokens.map(async ({ token, index }) => [
+    codeBlockTokens.map(async ({ token, index }) => [
       index,
-      await renderArticleCodeBlock(token.content, token.info),
+      await renderArticleCodeBlock(token.content, token.type === "fence" ? token.info : ""),
     ] as const)
   )
 
@@ -122,11 +123,15 @@ async function renderMarkdown(content: string) {
   })
 
   md.renderer.rules.fence = (currentTokens, idx, options, env, self) => {
-    return (
-      highlightedBlocks.get(idx) ??
-      defaultFenceRenderer?.(currentTokens, idx, options, env, self) ??
-      self.renderToken(currentTokens, idx, options)
-    )
+    const html = highlightedBlocks.get(idx)
+    if (html) return html
+    return defaultFenceRenderer?.(currentTokens, idx, options, env, self) ?? self.renderToken(currentTokens, idx, options)
+  }
+
+  md.renderer.rules.code_block = (currentTokens, idx, options, env, self) => {
+    const html = highlightedBlocks.get(idx)
+    if (html) return html
+    return defaultCodeBlockRenderer?.(currentTokens, idx, options, env, self) ?? self.renderToken(currentTokens, idx, options)
   }
 
   return {

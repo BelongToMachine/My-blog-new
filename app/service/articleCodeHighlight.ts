@@ -70,13 +70,20 @@ export async function renderArticleCodeBlock(code: string, info: string) {
   const trimmedCode = code.trimEnd()
   const lineCount = trimmedCode.split("\n").length
 
-  const highlightedHtml = highlighter.codeToHtml(trimmedCode, {
+  let highlightedHtml = highlighter.codeToHtml(trimmedCode, {
     lang: language as any,
     themes: {
       light: ARTICLE_CODE_THEMES.light,
       dark: ARTICLE_CODE_THEMES.dark,
     },
   })
+
+  // Override Shiki's background with transparent so the shell grid always shows through.
+  // Inline !important beats both Shiki's inline style and its injected <style> rules.
+  highlightedHtml = highlightedHtml.replace(
+    /(<pre\b[^>]*style=")([^"]*)(")/,
+    '$1$2;background:transparent !important;$3'
+  )
 
   return [
     `<div class="article-code-shell" data-language="${escapeHtml(language)}" data-line-count="${lineCount}"${
