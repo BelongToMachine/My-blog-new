@@ -377,7 +377,48 @@ function SdkStackBlock({ copy }: { copy: LocalizedCopy }) {
                 <em>{layer.short}</em>
               </p>
               <p>{layer.detail}</p>
-              <pre className={styles.sdkLayerCode}>{layer.code}</pre>
+              {(() => {
+                const code = layer.code.trimEnd()
+                const lineCount = code.split("\n").length
+                return (
+                  <div
+                    className="article-code-shell"
+                    data-variant="solid"
+                    data-language="typescript"
+                    data-line-count={lineCount}
+                  >
+                    <button
+                      type="button"
+                      className="article-code-copy"
+                      data-code={code}
+                      onClick={(e) => {
+                        const btn = e.currentTarget
+                        navigator.clipboard
+                          .writeText(btn.dataset.code || "")
+                          .then(() => {
+                            btn.classList.add("is-copied")
+                            setTimeout(
+                              () => btn.classList.remove("is-copied"),
+                              1500,
+                            )
+                          })
+                      }}
+                      aria-label="复制代码"
+                    >
+                      copy
+                    </button>
+                    <pre className="shiki">
+                      <code>
+                        {code.split("\n").map((line, i) => (
+                          <span key={i} className="line">
+                            {line || " "}
+                          </span>
+                        ))}
+                      </code>
+                    </pre>
+                  </div>
+                )
+              })()}
             </div>
             <span className={styles.sdkLayerMeta}>{layer.meta}</span>
           </div>
