@@ -30,6 +30,7 @@ const COLORS_JIE_BLOG_THEME = {
 }
 
 const THEME_STORAGE_KEY = "color-mode"
+const READING_FONT_STORAGE_KEY = "reading-font-mode"
 
 const GET_JIE_BLOG_CSS_PROPERTIES = function (colorMode) {
   const theme = COLORS_JIE_BLOG_THEME[colorMode]
@@ -91,7 +92,14 @@ const initializeTheme = () => {
   applyTheme(colorMode)
 }
 
+const initializeReadingFont = () => {
+  const persistedFontPreference = window.localStorage.getItem(READING_FONT_STORAGE_KEY)
+  const isNormalFont = persistedFontPreference === "normal"
+  document.documentElement.classList.toggle("font-normal-mode", isNormalFont)
+}
+
 window.COLORS_JIE_BLOG_THEME = COLORS_JIE_BLOG_THEME
 window.GET_JIE_BLOG_CSS_PROPERTIES = GET_JIE_BLOG_CSS_PROPERTIES
 
 initializeTheme()
+initializeReadingFont()

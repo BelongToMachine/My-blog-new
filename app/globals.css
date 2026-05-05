@@ -50,9 +50,10 @@
 @layer base {
   :root {
     --font-sans: "Avenir Next", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-    --font-mono: "Monaco", "Menlo", "Consolas", monospace;
+    --font-mono: var(--font-jetbrains-mono), "Monaco", "Menlo", "Consolas", monospace;
     --font-pixel-cjk: "retro-pixel";
     --font-pixel: "retro-pixel", "Monaco", monospace;
+    --font-reading: var(--font-pixel);
     --background: 210 30% 97%;
     --foreground: 210 30% 10%;
 
@@ -433,6 +434,14 @@ html.dark .wind__lane {
     font-family: var(--font-pixel), monospace;
   }
 
+  .font-reading {
+    font-family: var(--font-reading), monospace;
+  }
+
+  .font-normal-mode {
+    --font-reading: var(--font-sans);
+  }
+
   .terminal-label {
     @apply font-pixel text-[11px] uppercase tracking-[0.24em] text-primary;
   }
@@ -739,14 +748,24 @@ html.dark .wind__lane {
 
   .pixel-toc-item {
     position: relative;
-    padding-top: 0.6rem;
-    margin-top: 0.6rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    padding-left: 0.6rem;
+    padding-right: 1.25rem;
+    margin-left: -0.6rem;
+    margin-right: -1.25rem;
     border-top: 1px solid color-mix(in srgb, hsl(var(--border)) 28%, transparent);
+    border-left: 2px solid transparent;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
     animation: fadeInUp 0.3s ease both;
   }
 
+  .pixel-toc-item:hover {
+    border-left-color: hsl(var(--primary) / 0.5);
+    background-color: color-mix(in srgb, hsl(var(--primary)) 10%, transparent);
+  }
+
   .pixel-toc-item:first-of-type {
-    margin-top: 0;
     padding-top: 0;
     border-top: 0;
   }

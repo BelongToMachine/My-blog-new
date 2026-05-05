@@ -30,7 +30,7 @@
 }
 
 .eyebrow {
-  font-family: var(--font-pixel), monospace;
+  font-family: var(--font-reading), monospace;
   font-size: 0.62rem;
   letter-spacing: 0.24em;
   text-transform: uppercase;
@@ -41,7 +41,7 @@
 .inlineTitle {
   margin: 0;
   color: var(--text-main);
-  font-family: var(--font-pixel), monospace;
+  font-family: var(--font-reading), monospace;
   font-size: clamp(1rem, 2vw, 1.4rem);
   line-height: 1.45;
   letter-spacing: 0.05em;
@@ -70,7 +70,7 @@
   padding: 0.72rem 0.95rem;
   text-align: left;
   color: var(--text-main);
-  font-family: var(--font-pixel), monospace;
+  font-family: var(--font-reading), monospace;
   font-size: 0.62rem;
   text-transform: uppercase;
   transition:
@@ -196,7 +196,7 @@
 
 .spotlightLabel,
 .noteLabel {
-  font-family: var(--font-pixel), monospace;
+  font-family: var(--font-reading), monospace;
   font-size: 0.72rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -206,7 +206,7 @@
 .spotlight h4 {
   margin: 0;
   color: var(--text-main);
-  font-family: var(--font-pixel), monospace;
+  font-family: var(--font-reading), monospace;
   font-size: 1.1rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -250,7 +250,7 @@
   background: color-mix(in srgb, hsl(var(--background)) 62%, transparent);
   padding: 0.65rem 0.9rem;
   color: var(--text-main);
-  font-family: var(--font-pixel), monospace;
+  font-family: var(--font-reading), monospace;
   font-size: 0.62rem;
   text-transform: uppercase;
 }
@@ -270,7 +270,7 @@
   display: block;
   margin-bottom: 0.35rem;
   color: var(--text-main);
-  font-family: var(--font-pixel), monospace;
+  font-family: var(--font-reading), monospace;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
@@ -324,7 +324,7 @@
   display: block;
   margin-bottom: 0.25rem;
   color: var(--text-main);
-  font-family: var(--font-pixel), monospace;
+  font-family: var(--font-reading), monospace;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }

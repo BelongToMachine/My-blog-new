@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Box, Container, Grid } from "@radix-ui/themes"
 import { cn } from "@/lib/utils"
 import PixelMenuIcon from "@/app/components/system/PixelMenuIcon"
@@ -10,6 +10,7 @@ import ArticleEnhancement from "@/app/articles/_components/ArticleEnhancement"
 import ArticleBody from "@/app/articles/_components/ArticleBody"
 import ArticleFooter from "@/app/articles/_components/ArticleFooter"
 import type { Heading } from "@/app/service/BlogParser"
+import { useReadingFontStore } from "@/app/service/Store"
 import styles from "@/app/articles/post.module.css"
 
 interface ArticleDetailLayoutProps {
@@ -23,8 +24,50 @@ interface ArticleDetailLayoutProps {
   }
 }
 
+function FontToggle() {
+  const isNormalFont = useReadingFontStore((s) => s.isNormalFont)
+  const setNormalFont = useReadingFontStore((s) => s.setNormalFont)
+
+  return (
+    <div className="flex items-center gap-1 border border-border/70 bg-background/60 p-0.5">
+      <button
+        type="button"
+        onClick={() => setNormalFont(false)}
+        className={cn(
+          "font-pixel flex-1 px-2 py-1.5 text-[11px] uppercase tracking-[0.22em] transition-colors",
+          !isNormalFont
+            ? "bg-primary/10 text-foreground"
+            : "text-muted-foreground hover:text-foreground"
+        )}
+        aria-pressed={!isNormalFont}
+      >
+        Pixel
+      </button>
+      <button
+        type="button"
+        onClick={() => setNormalFont(true)}
+        className={cn(
+          "flex-1 px-2 py-1.5 text-[11px] uppercase tracking-[0.22em] transition-colors",
+          isNormalFont
+            ? "bg-primary/10 text-foreground"
+            : "text-muted-foreground hover:text-foreground"
+        )}
+        aria-pressed={isNormalFont}
+      >
+        Normal
+      </button>
+    </div>
+  )
+}
+
 export default function ArticleDetailLayout({ article }: ArticleDetailLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const setNormalFont = useReadingFontStore((s) => s.setNormalFont)
+
+  useEffect(() => {
+    const stored = localStorage.getItem("reading-font-mode")
+    setNormalFont(stored === "normal")
+  }, [setNormalFont])
 
   return (
     <Container>
@@ -57,8 +100,12 @@ export default function ArticleDetailLayout({ article }: ArticleDetailLayoutProp
             )}
           >
             <div className="h-full overflow-y-auto p-4">
+              <div className="mb-3">
+                <FontToggle />
+              </div>
               <TableOfContent
                 headings={article.headings}
+                locale={article.locale}
                 className="!max-h-[calc(100dvh-3.5rem)]"
                 viewportClassName="!max-h-full"
               />
@@ -78,7 +125,7 @@ export default function ArticleDetailLayout({ article }: ArticleDetailLayoutProp
             <Box className="min-w-0 lg:col-span-4">
               <div className="mb-10 md:mb-14">
                 <div className="terminal-label mb-3">Article Detail</div>
-                <h1 className="font-pixel mb-5 text-[clamp(1.4rem,2.8vw,2.2rem)] leading-[1.15] tracking-[0.04em] text-foreground">
+                <h1 className="font-reading mb-5 text-[clamp(1.65rem,3.2vw,2.5rem)] leading-[1.15] tracking-[0.04em] text-foreground">
                   {article.title}
                 </h1>
                 <div className="flex flex-wrap items-center gap-3">
@@ -98,7 +145,10 @@ export default function ArticleDetailLayout({ article }: ArticleDetailLayoutProp
             </Box>
             <Box className="hidden lg:block lg:col-span-1">
               <div className="lg:sticky lg:top-24">
-                <TableOfContent headings={article.headings} />
+                <div className="mb-3">
+                  <FontToggle />
+                </div>
+                <TableOfContent headings={article.headings} locale={article.locale} />
               </div>
             </Box>
           </Grid>

@@ -5,17 +5,25 @@ import { cn } from "@/lib/utils"
 
 interface TableOfContentProps {
   headings: Heading[]
+  locale?: string
   className?: string
   viewportClassName?: string
 }
 
-const TableOfContent = ({ headings, className, viewportClassName }: TableOfContentProps) => (
+const TOC_LABEL: Record<string, string> = {
+  zh: "目录",
+  en: "On this page",
+}
+
+const TableOfContent = ({ headings, locale = "zh", className, viewportClassName }: TableOfContentProps) => (
   <ScrollArea.Root
     className={cn("pixel-toc w-full max-w-[340px]", className)}
     style={{ maxHeight: "min(calc(100vh - 9.5rem), 39rem)" }}
   >
     <div className="px-5 py-4">
-      <div className="terminal-label">目录</div>
+      <div className="font-pixel text-[14px] font-bold uppercase tracking-[0.24em] text-primary">
+        {TOC_LABEL[locale] ?? TOC_LABEL.zh}
+      </div>
     </div>
     <ScrollArea.Viewport
       className={cn("w-full", viewportClassName)}
@@ -30,7 +38,7 @@ const TableOfContent = ({ headings, className, viewportClassName }: TableOfConte
           >
             <a
               href={`#${heading.id}`}
-              className="font-pixel text-[11px] tracking-[0.08em] transition-colors duration-200 hover:text-primary"
+              className="font-reading text-[14px] tracking-[0.08em] transition-colors duration-200 hover:text-primary"
             >
               {heading.text}
             </a>

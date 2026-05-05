@@ -101,3 +101,18 @@ export const useScrollableStore = create<ScrollableStore>((set) => ({
     set({ isInScrollable: userInputBoolean })
   },
 }))
+
+interface ReadingFontStore {
+  isNormalFont: boolean
+  setNormalFont: (value: boolean) => void
+}
+
+export const useReadingFontStore = create<ReadingFontStore>((set) => ({
+  isNormalFont: false,
+  setNormalFont: (value: boolean) => {
+    const root = document.documentElement
+    root.classList.toggle("font-normal-mode", value)
+    localStorage.setItem("reading-font-mode", value ? "normal" : "pixel")
+    set({ isNormalFont: value })
+  },
+}))
