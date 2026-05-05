@@ -1,3 +1,4 @@
+import AiAgentInlineBlock from "./AiAgentInlineBlock"
 import NextjsRenderingInlineBlock from "./NextjsRenderingInlineBlock"
 import styles from "@/app/articles/post.module.css"
 import type { Heading } from "@/app/service/BlogParser"
@@ -84,6 +85,7 @@ export default function ArticleBody({ slug, htmlContent, headings }: ArticleBody
             dangerouslySetInnerHTML={{ __html: section.html }}
           />
           <NextjsRenderingInlineBlock slug={slug} sectionKey={section.key} headingText={section.headingText} />
+          <AiAgentInlineBlock slug={slug} sectionKey={section.key} headingText={section.headingText} />
         </div>
       ))}
     </div>

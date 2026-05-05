@@ -1,0 +1,312 @@
+.panel {
+  --surface: color-mix(in srgb, hsl(var(--card)) 94%, hsl(var(--background)));
+  --surface-strong: color-mix(in srgb, hsl(var(--card)) 86%, hsl(var(--background)));
+  --border: color-mix(in srgb, hsl(var(--border)) 78%, transparent);
+  --text-main: hsl(var(--foreground));
+  --text-soft: color-mix(in srgb, hsl(var(--foreground)) 78%, transparent);
+  --text-muted: color-mix(in srgb, hsl(var(--foreground)) 58%, transparent);
+  --accent: hsl(var(--primary));
+  --accent-soft: color-mix(in srgb, hsl(var(--primary)) 10%, hsl(var(--background)));
+  position: relative;
+  margin: 1.4rem 0 2rem;
+  overflow: hidden;
+  border-radius: 0;
+  border: 1px solid var(--border);
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--accent) 14%, transparent), transparent 32%),
+    radial-gradient(circle at bottom left, color-mix(in srgb, var(--accent) 10%, transparent), transparent 34%),
+    linear-gradient(180deg, var(--surface), var(--surface-strong));
+}
+
+.panelHeader,
+.inlineHeader {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1.25rem 1.25rem 0;
+}
+
+.inlineHeader {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.eyebrow {
+  font-family: var(--font-reading), monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.panelTitle,
+.inlineTitle {
+  margin: 0;
+  color: var(--text-main);
+  font-family: var(--font-reading), monospace;
+  font-size: clamp(1rem, 2vw, 1.4rem);
+  line-height: 1.45;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.panelLead {
+  margin: 0;
+  color: var(--text-soft);
+  line-height: 1.8;
+}
+
+.spotlight,
+.noteCard,
+.continuumCard,
+.timelineStep,
+.pillarCard,
+.sdkLayer {
+  border-radius: 0;
+  border: 1px solid color-mix(in srgb, var(--accent) 8%, hsl(var(--border)));
+  background: color-mix(in srgb, hsl(var(--background)) 56%, transparent);
+}
+
+.spotlight {
+  display: grid;
+  gap: 0.8rem;
+  align-self: start;
+  padding: 1rem;
+}
+
+.spotlightLabel,
+.noteLabel {
+  font-family: var(--font-reading), monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.spotlight h4 {
+  margin: 0;
+  color: var(--text-main);
+  font-family: var(--font-reading), monospace;
+  font-size: 1.1rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.spotlight p {
+  margin: 0;
+  color: var(--text-soft);
+  line-height: 1.75;
+}
+
+.definitionList {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.definitionList div {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.definitionList dt {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+.definitionList dd {
+  margin: 0;
+  color: var(--text-main);
+}
+
+.timeline {
+  display: grid;
+  gap: 0.8rem;
+  padding: 1rem 1.25rem 1.25rem;
+}
+
+.timelineStep {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.85rem;
+  align-items: start;
+  padding: 0.9rem 1rem;
+}
+
+.stepIndex,
+.continuumIndex,
+.pillarIcon,
+.sdkIndex {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 16%, hsl(var(--background)));
+  color: var(--text-main);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.timelineStep strong,
+.continuumCard strong,
+.pillarCard strong,
+.sdkLayer strong {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: var(--text-main);
+  font-family: var(--font-reading), monospace;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.timelineStep p,
+.continuumCard p,
+.noteCard p,
+.pillarCard p,
+.sdkLayer p {
+  margin: 0;
+  color: var(--text-soft);
+  line-height: 1.75;
+}
+
+.dualPanel {
+  display: grid;
+  gap: 0.85rem;
+  padding: 1rem 1.25rem 1.25rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.noteCard {
+  padding: 1rem;
+}
+
+/* Section 1: PillarsBlock */
+
+.pillarLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(18rem, 0.8fr);
+  gap: 1rem;
+  padding: 1rem 1.25rem 1.25rem;
+}
+
+.pillarGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.8rem;
+}
+
+.pillarCard {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.85rem;
+  align-items: start;
+  padding: 0.95rem 1rem;
+  text-align: left;
+  color: var(--text-main);
+  cursor: pointer;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease;
+}
+
+.pillarCard:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--accent) 36%, hsl(var(--border)));
+}
+
+.pillarCardActive {
+  background: color-mix(in srgb, var(--accent) 11%, hsl(var(--background)));
+  border-color: color-mix(in srgb, var(--accent) 42%, hsl(var(--border)));
+}
+
+.pillarBody {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.pillarBody small {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+/* Section 3: SdkStackBlock */
+
+.sdkStack {
+  display: grid;
+  gap: 0.9rem;
+  padding: 1rem 1.25rem 1.25rem;
+}
+
+.sdkLayer {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.95rem;
+  align-items: start;
+  padding: 1rem;
+}
+
+.sdkLayerBody {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.sdkLayerMeta {
+  display: inline-flex;
+  align-self: start;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent) 18%, hsl(var(--border)));
+  background: color-mix(in srgb, var(--accent) 10%, hsl(var(--background)));
+  padding: 0.32rem 0.68rem;
+  color: var(--text-main);
+  font-family: var(--font-reading), monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.sdkLayerCode {
+  margin: 0.15rem 0 0;
+  padding: 0.55rem 0.7rem;
+  background: color-mix(in srgb, hsl(var(--background)) 70%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 8%, hsl(var(--border)));
+  color: var(--text-soft);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.78rem;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+@media (max-width: 1024px) {
+  .pillarLayout,
+  .dualPanel {
+    grid-template-columns: 1fr;
+  }
+
+  .sdkLayer {
+    grid-template-columns: auto 1fr;
+  }
+
+  .sdkLayer .sdkLayerMeta {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+}
+
+@media (max-width: 768px) {
+  .panelHeader,
+  .inlineHeader,
+  .pillarLayout,
+  .timeline,
+  .dualPanel,
+  .sdkStack {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .panel {
+    margin: 1rem 0 1.5rem;
+    border-radius: 1.4rem;
+  }
+}
