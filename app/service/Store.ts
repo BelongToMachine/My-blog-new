@@ -108,7 +108,7 @@ interface ReadingFontStore {
 }
 
 export const useReadingFontStore = create<ReadingFontStore>((set) => ({
-  isNormalFont: false,
+  isNormalFont: true,
   setNormalFont: (value: boolean) => {
     const root = document.documentElement
     root.classList.toggle("font-normal-mode", value)

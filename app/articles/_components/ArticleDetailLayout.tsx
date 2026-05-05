@@ -32,19 +32,6 @@ function FontToggle() {
     <div className="flex items-center gap-1 border border-border/70 bg-background/60 p-0.5">
       <button
         type="button"
-        onClick={() => setNormalFont(false)}
-        className={cn(
-          "font-pixel flex-1 px-2 py-1.5 text-[11px] uppercase tracking-[0.22em] transition-colors",
-          !isNormalFont
-            ? "bg-primary/10 text-foreground"
-            : "text-muted-foreground hover:text-foreground"
-        )}
-        aria-pressed={!isNormalFont}
-      >
-        Pixel
-      </button>
-      <button
-        type="button"
         onClick={() => setNormalFont(true)}
         className={cn(
           "flex-1 px-2 py-1.5 text-[11px] uppercase tracking-[0.22em] transition-colors",
@@ -56,6 +43,19 @@ function FontToggle() {
       >
         Normal
       </button>
+      <button
+        type="button"
+        onClick={() => setNormalFont(false)}
+        className={cn(
+          "font-pixel flex-1 px-2 py-1.5 text-[11px] uppercase tracking-[0.22em] transition-colors",
+          !isNormalFont
+            ? "bg-primary/10 text-foreground"
+            : "text-muted-foreground hover:text-foreground"
+        )}
+        aria-pressed={!isNormalFont}
+      >
+        Pixel
+      </button>
     </div>
   )
 }
@@ -66,7 +66,7 @@ export default function ArticleDetailLayout({ article }: ArticleDetailLayoutProp
 
   useEffect(() => {
     const stored = localStorage.getItem("reading-font-mode")
-    setNormalFont(stored === "normal")
+    setNormalFont(stored !== "pixel")
   }, [setNormalFont])
 
   return (

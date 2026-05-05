@@ -17,7 +17,7 @@ const TOC_LABEL: Record<string, string> = {
 
 const TableOfContent = ({ headings, locale = "zh", className, viewportClassName }: TableOfContentProps) => (
   <ScrollArea.Root
-    className={cn("pixel-toc w-full max-w-[340px]", className)}
+    className={cn("pixel-toc w-full max-w-[360px]", className)}
     style={{ maxHeight: "min(calc(100vh - 9.5rem), 39rem)" }}
   >
     <div className="px-5 py-4">
@@ -38,7 +38,7 @@ const TableOfContent = ({ headings, locale = "zh", className, viewportClassName 
           >
             <a
               href={`#${heading.id}`}
-              className="font-reading text-[14px] tracking-[0.08em] transition-colors duration-200 hover:text-primary"
+              className="font-reading text-[15px] tracking-[0.08em] transition-colors duration-200 hover:text-primary"
             >
               {heading.text}
             </a>
