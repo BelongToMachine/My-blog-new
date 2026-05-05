@@ -23,8 +23,8 @@ export const CodeBlocker = ({
     ? "var(--codeblock-taskbar-bg, #2d2d2d)"
     : "var(--codeblock-taskbar-bg, #f0f0f0)"
   const bodyBg = isDark
-    ? "var(--codeblock-body-bg, hsl(265 55% 8%))"
-    : "var(--codeblock-body-bg, hsl(215 30% 10%))"
+    ? "var(--codeblock-body-bg, #000000)"
+    : "var(--codeblock-body-bg, #ffffff)"
 
   return (
     <div className={cn("overflow-hidden border-2 border-border", className)}>

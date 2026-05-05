@@ -38,7 +38,7 @@ const GET_JIE_BLOG_CSS_PROPERTIES = function (colorMode) {
   return {
     "--initial-color-mode": colorMode,
     "--codeblock-taskbar-bg": colorMode === "dark" ? "#2d2d2d" : "#f0f0f0",
-    "--codeblock-body-bg": colorMode === "dark" ? "hsl(265 55% 8%)" : "hsl(215 30% 10%)",
+    "--codeblock-body-bg": colorMode === "dark" ? "#000000" : "#ffffff",
     "--text-color": theme.text,
     "--scrollable-background-color": theme.scrollableBackground,
     "--background-color": theme.background,

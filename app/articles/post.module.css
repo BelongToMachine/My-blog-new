@@ -8,10 +8,7 @@
   overflow-wrap: break-word;
   word-break: normal;
   min-width: 0;
-  --article-code-shell-bg:
-    linear-gradient(180deg, rgba(246, 250, 255, 0.98), rgba(236, 244, 252, 0.96)),
-    linear-gradient(to right, rgba(14, 165, 233, 0.045) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(14, 165, 233, 0.045) 1px, transparent 1px);
+  --article-code-shell-bg: #ffffff;
   --article-code-shell-shadow:
     var(--shadow-elevated),
     inset 0 1px 0 rgba(255, 255, 255, 0.7),
@@ -33,10 +30,7 @@
 
 :global(html[data-color-mode="dark"]) .article,
 :global(html.dark) .article {
-  --article-code-shell-bg:
-    linear-gradient(180deg, rgba(22, 8, 44, 0.98), rgba(10, 8, 25, 0.98)),
-    linear-gradient(to right, rgba(38, 211, 237, 0.045) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(38, 211, 237, 0.045) 1px, transparent 1px);
+  --article-code-shell-bg: #000000;
   --article-code-shell-shadow:
     var(--shadow-elevated),
     inset 0 1px 0 rgba(190, 232, 244, 0.08),
@@ -48,7 +42,7 @@
   --article-code-label-color: rgba(174, 223, 233, 0.78);
   --article-code-gutter-color: rgba(173, 194, 214, 0.34);
   --article-code-gutter-border: rgba(173, 194, 214, 0.12);
-  --article-code-content-bg: rgba(8, 8, 22, 0.82);
+  --article-code-content-bg: #000;
   --article-code-plain-bg:
     linear-gradient(180deg, rgba(22, 8, 44, 0.98), rgba(10, 8, 25, 0.98)),
     linear-gradient(to right, rgba(38, 211, 237, 0.05) 1px, transparent 1px),
@@ -189,7 +183,7 @@
 
 .article h1 {
   font-family: var(--font-reading), monospace;
-  font-size: clamp(2.2rem, 4.5vw, 3.7rem);
+  font-size: clamp(2rem, 3.5vw, 2.5rem);
   color: hsl(var(--foreground));
   margin-bottom: 1rem;
   text-align: left;
@@ -203,7 +197,7 @@
   margin-bottom: 1.1rem;
   border-top: 1px solid color-mix(in srgb, hsl(var(--border)) 70%, transparent);
   padding-top: 1.4rem;
-  font-size: clamp(1.7rem, 2.4vw, 2.2rem);
+  font-size: clamp(1.6rem, 2.2vw, 2rem);
   letter-spacing: 0.03em;
 }
 
@@ -211,15 +205,15 @@
   font-family: var(--font-reading), monospace;
   margin-top: 1.8rem;
   margin-bottom: 0.8rem;
-  font-size: clamp(1.35rem, 2vw, 1.65rem);
+  font-size: clamp(1.3rem, 1.8vw, 1.5rem);
   letter-spacing: 0.02em;
 }
 
 .article p {
   font-family: var(--font-reading), monospace;
-  font-size: 1.15rem;
-  line-height: 1.9;
-  color: color-mix(in srgb, hsl(var(--foreground)) 82%, transparent);
+  font-size: 1.125rem;
+  line-height: 1.65;
+  color: hsl(var(--foreground));
   margin-bottom: 1.2rem;
 }
 
@@ -242,9 +236,14 @@
 
 .article li {
   font-family: var(--font-reading), monospace;
-  font-size: 1.15rem;
-  line-height: 1.8;
+  font-size: 1.125rem;
+  line-height: 1.6;
   margin-bottom: 0.5rem;
+}
+
+:global(html.font-normal-mode) .article p,
+:global(html.font-normal-mode) .article li {
+  line-height: 1.75;
 }
 
 .article div a {
@@ -329,7 +328,7 @@
   border-left: 4px solid hsl(var(--primary));
   color: color-mix(in srgb, hsl(var(--foreground)) 82%, transparent);
   border-radius: 0;
-  font-family: var(--font-reading), monospace;
+  font-family: var(--font-sans), sans-serif;
   font-size: 1.15rem;
   line-height: 1.8;
 }
@@ -369,13 +368,18 @@
   top: 0.5rem;
   right: 0.5rem;
   z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.8rem;
+  height: 1.5rem;
   font-family: var(--font-reading), monospace;
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   line-height: 1;
-  padding: 0.3rem 0.65rem;
+  padding: 0;
   border: 2px solid var(--article-code-gutter-border);
   background: transparent;
   color: var(--article-code-gutter-color);
@@ -390,9 +394,36 @@
 }
 
 .article :global(.article-code-copy.is-copied) {
-  color: hsl(var(--signal-green));
-  border-color: hsl(var(--signal-green));
-  background: color-mix(in srgb, hsl(var(--signal-green)) 10%, transparent);
+  color: transparent;
+  border-color: color-mix(in srgb, var(--article-code-label-color) 60%, transparent);
+  background: color-mix(in srgb, var(--article-code-label-color) 12%, transparent);
+}
+
+.article :global(.article-code-copy.is-copied::after) {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: var(--article-code-label-color);
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M3 8.5L6.5 12L13 5' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M3 8.5L6.5 12L13 5' stroke='black' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  -webkit-mask-size: 13px;
+  mask-size: 13px;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  animation: code-copy-tick 0.35s cubic-bezier(0.22, 1.14, 0.36, 1) forwards;
+}
+
+@keyframes code-copy-tick {
+  from {
+    opacity: 0;
+    transform: scale(0.3) rotate(-15deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
 }
 
 .article :global(.article-code-copy:focus-visible) {
@@ -453,7 +484,7 @@
 }
 
 .article div code {
-  font-family: var(--font-reading), monospace;
+  font-family: var(--font-mono), monospace;
   background-color: color-mix(in srgb, hsl(var(--card)) 86%, transparent);
   padding: 2px 6px;
   border-radius: 0;
@@ -496,14 +527,14 @@
   border: 1px solid color-mix(in srgb, hsl(var(--border)) 70%, transparent);
   text-align: left;
   font-family: var(--font-reading), monospace;
-  font-size: 1.05rem;
+  font-size: 1.125rem;
   line-height: 1.7;
 }
 
 .article :global(th) {
   background-color: color-mix(in srgb, hsl(var(--card)) 86%, transparent);
   font-family: var(--font-reading), monospace;
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
@@ -525,16 +556,16 @@
   }
 
   .article h1 {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
   }
 
   .article h2 {
-    font-size: 1.45rem;
+    font-size: 1.35rem;
   }
 
   .article p,
   .article li {
-    font-size: 1.15rem;
+    font-size: 1.05rem;
   }
 
   .article div pre {
