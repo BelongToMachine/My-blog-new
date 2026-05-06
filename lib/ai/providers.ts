@@ -33,10 +33,51 @@ function createMiniMaxModel(): LanguageModel {
   })
 }
 
-/* ─── DeepSeek (placeholder for future migration) ─── */
+/* ─── DeepSeek ─── */
+
+const DEEPSEEK_BASE_URL =
+  process.env.DEEPSEEK_BASE_URL || "https://api.deepseek.com/v1"
+
+const DEEPSEEK_MODEL_ALIASES: Record<string, string> = {
+  "deepseek v3 flash": "deepseek-v4-flash",
+  "deepseek-v3-flash": "deepseek-v4-flash",
+  "deepseek v4 flash": "deepseek-v4-flash",
+  "deepseek v4 pro": "deepseek-v4-pro",
+}
+
+function getDeepSeekModel(): string {
+  const rawModel = process.env.DEEPSEEK_MODEL?.trim() || "deepseek-v4-flash"
+  const normalizedModel =
+    DEEPSEEK_MODEL_ALIASES[rawModel.toLowerCase()] ?? rawModel
+
+  if (normalizedModel !== rawModel) {
+    console.warn(
+      `[ai] Normalized legacy DeepSeek model "${rawModel}" to "${normalizedModel}"`,
+    )
+  }
+
+  return normalizedModel
+}
+
+function getDeepSeekApiKey(): string {
+  const key = process.env.DEEPSEEK_API_KEY
+  if (!key) throw new Error("DEEPSEEK_API_KEY is not configured")
+  return key
+}
 
 function createDeepSeekModel(): LanguageModel {
-  throw new Error("DeepSeek provider is not yet implemented")
+  const deepseek = createOpenAI({
+    name: "deepseek",
+    apiKey: getDeepSeekApiKey(),
+    baseURL: DEEPSEEK_BASE_URL,
+  })
+
+  const baseModel = deepseek.chat(getDeepSeekModel())
+
+  return wrapLanguageModel({
+    model: baseModel,
+    middleware: extractReasoningMiddleware({ tagName: "think" }),
+  })
 }
 
 /* ─── Factory ─── */
