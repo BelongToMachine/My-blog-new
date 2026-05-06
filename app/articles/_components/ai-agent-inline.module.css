@@ -1,6 +1,4 @@
 .panel {
-  --surface: color-mix(in srgb, hsl(var(--card)) 94%, hsl(var(--background)));
-  --surface-strong: color-mix(in srgb, hsl(var(--card)) 86%, hsl(var(--background)));
   --border: color-mix(in srgb, hsl(var(--border)) 78%, transparent);
   --text-main: hsl(var(--foreground));
   --text-soft: color-mix(in srgb, hsl(var(--foreground)) 78%, transparent);
@@ -12,10 +10,7 @@
   overflow: hidden;
   border-radius: 0;
   border: 1px solid var(--border);
-  background:
-    radial-gradient(circle at top right, color-mix(in srgb, var(--accent) 14%, transparent), transparent 32%),
-    radial-gradient(circle at bottom left, color-mix(in srgb, var(--accent) 10%, transparent), transparent 34%),
-    linear-gradient(180deg, var(--surface), var(--surface-strong));
+  background: hsl(var(--card));
 }
 
 .panelHeader,
@@ -62,7 +57,7 @@
 .sdkLayer {
   border-radius: 0;
   border: 1px solid color-mix(in srgb, var(--accent) 8%, hsl(var(--border)));
-  background: color-mix(in srgb, hsl(var(--background)) 56%, transparent);
+  background: hsl(var(--background));
 }
 
 .spotlight {
@@ -204,13 +199,12 @@
   color: var(--text-main);
   cursor: pointer;
   transition:
-    transform 180ms ease,
     border-color 180ms ease,
     background-color 180ms ease;
 }
 
 .pillarCard:hover {
-  transform: translateY(-2px);
+  background-color: color-mix(in srgb, hsl(var(--primary)) 8%, hsl(var(--background)));
   border-color: color-mix(in srgb, var(--accent) 36%, hsl(var(--border)));
 }
 
@@ -268,7 +262,7 @@
 .sdkLayerCode {
   margin: 0.15rem 0 0;
   padding: 0.55rem 0.7rem;
-  background: color-mix(in srgb, hsl(var(--background)) 70%, transparent);
+  background: hsl(var(--background));
   border: 1px solid color-mix(in srgb, var(--accent) 8%, hsl(var(--border)));
   color: var(--text-soft);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;

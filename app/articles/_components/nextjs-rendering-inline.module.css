@@ -1,6 +1,4 @@
 .panel {
-  --surface: color-mix(in srgb, hsl(var(--card)) 94%, hsl(var(--background)));
-  --surface-strong: color-mix(in srgb, hsl(var(--card)) 86%, hsl(var(--background)));
   --border: color-mix(in srgb, hsl(var(--border)) 78%, transparent);
   --text-main: hsl(var(--foreground));
   --text-soft: color-mix(in srgb, hsl(var(--foreground)) 78%, transparent);
@@ -12,10 +10,7 @@
   overflow: hidden;
   border-radius: 0;
   border: 1px solid var(--border);
-  background:
-    radial-gradient(circle at top right, color-mix(in srgb, var(--accent) 14%, transparent), transparent 32%),
-    radial-gradient(circle at bottom left, color-mix(in srgb, var(--accent) 10%, transparent), transparent 34%),
-    linear-gradient(180deg, var(--surface), var(--surface-strong));
+  background: hsl(var(--card));
 }
 
 .panelHeader,
@@ -66,7 +61,7 @@
   gap: 0.15rem;
   border-radius: 0;
   border: 1px solid color-mix(in srgb, var(--accent) 18%, hsl(var(--border)));
-  background: color-mix(in srgb, hsl(var(--background)) 60%, transparent);
+  background: hsl(var(--background));
   padding: 0.72rem 0.95rem;
   text-align: left;
   color: var(--text-main);
@@ -74,7 +69,6 @@
   font-size: 0.62rem;
   text-transform: uppercase;
   transition:
-    transform 180ms ease,
     border-color 180ms ease,
     background-color 180ms ease;
 }
@@ -84,7 +78,7 @@
 }
 
 .pill:hover {
-  transform: translateY(-1px);
+  background-color: color-mix(in srgb, hsl(var(--primary)) 8%, hsl(var(--background)));
   border-color: color-mix(in srgb, var(--accent) 36%, hsl(var(--border)));
 }
 
@@ -111,17 +105,17 @@
   gap: 0.8rem;
   border-radius: 0;
   border: 1px solid color-mix(in srgb, var(--accent) 10%, hsl(var(--border)));
-  background: color-mix(in srgb, hsl(var(--background)) 54%, transparent);
+  background: hsl(var(--background));
   padding: 0.95rem;
   text-align: left;
   color: var(--text-main);
   transition:
-    transform 180ms ease,
-    border-color 180ms ease;
+    border-color 180ms ease,
+    background-color 180ms ease;
 }
 
 .scoreCard:hover {
-  transform: translateY(-2px);
+  background-color: color-mix(in srgb, hsl(var(--primary)) 8%, hsl(var(--background)));
 }
 
 .scoreCardActive {
@@ -170,11 +164,11 @@
 .metricFillAlt {
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 72%, white), color-mix(in srgb, var(--accent) 32%, white));
+  background: hsl(var(--primary));
 }
 
 .metricFillAlt {
-  background: linear-gradient(90deg, color-mix(in srgb, hsl(var(--foreground)) 30%, var(--accent)), color-mix(in srgb, var(--accent) 20%, white));
+  background: color-mix(in srgb, hsl(var(--foreground)) 30%, hsl(var(--primary)));
 }
 
 .spotlight,
@@ -184,7 +178,7 @@
 .timelineStep {
   border-radius: 0;
   border: 1px solid color-mix(in srgb, var(--accent) 8%, hsl(var(--border)));
-  background: color-mix(in srgb, hsl(var(--background)) 56%, transparent);
+  background: hsl(var(--background));
 }
 
 .spotlight {
@@ -247,12 +241,17 @@
 .segmentedButton {
   border-radius: 0;
   border: 1px solid color-mix(in srgb, var(--accent) 18%, hsl(var(--border)));
-  background: color-mix(in srgb, hsl(var(--background)) 62%, transparent);
+  background: hsl(var(--background));
   padding: 0.65rem 0.9rem;
   color: var(--text-main);
   font-family: var(--font-reading), monospace;
   font-size: 0.62rem;
   text-transform: uppercase;
+  transition: background-color 180ms ease, border-color 180ms ease;
+}
+
+.segmentedButton:hover {
+  background-color: color-mix(in srgb, hsl(var(--primary)) 8%, hsl(var(--background)));
 }
 
 .segmentedButtonActive {
