@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import type { UIMessage } from "ai"
 
@@ -367,6 +367,59 @@ export function useChatThreads() {
     },
   })
 
+  const persistInFlightRef = useRef<Set<string>>(new Set())
+  const queuedPersistRef = useRef<
+    Map<
+      string,
+      {
+        messages: UIMessage[]
+        title?: string
+      }
+    >
+  >(new Map())
+
+  const persistLatestMessages = useCallback(
+    ({
+      id,
+      messages,
+      title,
+    }: {
+      id: string
+      messages: UIMessage[]
+      title?: string
+    }) => {
+      if (persistInFlightRef.current.has(id)) {
+        queuedPersistRef.current.set(id, {
+          messages: JSON.parse(JSON.stringify(messages)) as UIMessage[],
+          title,
+        })
+        return
+      }
+
+      persistInFlightRef.current.add(id)
+
+      saveMessagesMut.mutate(
+        { id, messages, title },
+        {
+          onSettled: () => {
+            persistInFlightRef.current.delete(id)
+
+            const queued = queuedPersistRef.current.get(id)
+            if (!queued) return
+
+            queuedPersistRef.current.delete(id)
+            persistLatestMessages({
+              id,
+              messages: queued.messages,
+              title: queued.title,
+            })
+          },
+        },
+      )
+    },
+    [saveMessagesMut],
+  )
+
   const createThread = useCallback(() => {
     const tempThread = createInitialThread()
     setLocalThreads((prev) => [tempThread, ...prev])
@@ -417,10 +470,10 @@ export function useChatThreads() {
         return next
       })
 
-      // Persist to server (debounced by caller)
-      saveMessagesMut.mutate({ id, messages, title })
+      // Persist to server (debounced by caller) while coalescing stream-time updates.
+      persistLatestMessages({ id, messages, title })
     },
-    [saveMessagesMut],
+    [persistLatestMessages],
   )
 
   const setActiveThread = useCallback((id: string | null) => {
