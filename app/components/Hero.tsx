@@ -10,6 +10,7 @@ import { CodeBlocker } from "../packages/index"
 import { useLocale, useTranslations } from "next-intl"
 import { TerminalPill } from "./system/TerminalPill"
 import { FloatingPixelAssistant } from "./PixelAssistantPreview"
+import { Link } from "@/app/i18n/navigation"
 
 const SHOW_FLOATING_ASSISTANT = false
 // TODO: revisit the floating SVG assistant if we decide to keep a mascot in the hero.
@@ -66,6 +67,22 @@ const Hero = () => {
             <p className="font-pixel mb-4 mt-2 max-w-xl text-sm leading-relaxed tracking-wide text-muted-foreground md:text-base">
               {t("shortIntro")}
             </p>
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45, delay: 0.35 }}
+              className="mb-5"
+            >
+              <Link
+                href="/ai"
+                className="group inline-flex items-center gap-2 border-2 border-primary/35 bg-primary/[0.04] px-3.5 py-2 font-pixel text-[11px] uppercase tracking-[0.22em] text-primary transition-all duration-200 hover:border-primary/70 hover:bg-primary/[0.09] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+              >
+                <span>{t("aiCtaLabel")}</span>
+                <span className="transition-transform duration-200 group-hover:translate-x-0.5">
+                  →
+                </span>
+              </Link>
+            </motion.div>
             {SHOW_FLOATING_ASSISTANT ? <FloatingPixelAssistant /> : null}
             <div className="relative mt-5 min-h-[280px] md:min-h-[360px] lg:hidden">
               <div className="relative z-10 w-[90%] md:w-[88%] max-w-[500px] min-w-0 pt-6">
