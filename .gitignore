@@ -53,3 +53,6 @@ research/
 playwright-report/
 test-results/
 .next.corrupt-*
+
+# Private MDX content (copied during build, not committed)
+app/content/mdx/

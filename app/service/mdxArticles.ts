@@ -49,8 +49,13 @@ async function getArticlesRoot(): Promise<string | null> {
   const privatePath = process.env.PRIVATE_BLOG_CONTENT_PATH?.trim()
   if (privatePath && await pathExists(privatePath)) return privatePath
 
-  const fallbackPath = path.join(process.cwd(), "private-blog-content")
-  if (await pathExists(fallbackPath)) return fallbackPath
+  const fallbackPaths = [
+    path.join(process.cwd(), "private-blog-content"),
+    path.join(process.cwd(), "app/content/mdx"),
+  ]
+  for (const p of fallbackPaths) {
+    if (await pathExists(p)) return p
+  }
 
   console.warn("[mdxArticles] No blog content path found. Returning empty article list.")
   return null
