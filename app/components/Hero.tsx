@@ -8,7 +8,6 @@ import { motion } from "framer-motion"
 import { ThemeContext } from "../context/DarkModeContext"
 import { CodeBlocker } from "../packages/index"
 import { useLocale, useTranslations } from "next-intl"
-import { TerminalPill } from "./system/TerminalPill"
 import { FloatingPixelAssistant } from "./PixelAssistantPreview"
 import { Link } from "@/app/i18n/navigation"
 
@@ -31,8 +30,11 @@ const Hero = () => {
   const [typingIndex, setTypingIndex] = useState(0)
   const isEnLongText = locale === "en" && typingIndex === 1
   return (
-    <div className="px-5 pb-12 pt-10 md:px-10 md:pt-12 lg:px-14 lg:pb-12 lg:pt-12" id="about-me-section">
-      <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-8 lg:items-end">
+    <div
+      className="px-5 pb-12 pt-10 md:px-10 md:pt-12 lg:px-14 lg:pb-10 lg:pt-10"
+      id="about-me-section"
+    >
+      <div className="grid grid-cols-1 items-start gap-8 lg:-translate-y-6 lg:grid-cols-12 lg:items-end lg:gap-8 xl:-translate-y-8">
         <motion.div
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -40,11 +42,6 @@ const Hero = () => {
           className="relative z-10 flex w-full justify-center items-start lg:justify-start lg:items-end lg:col-start-2 lg:col-end-7"
         >
           <div className="relative w-full max-w-[800px] min-w-0 lg:mb-14 lg:max-w-[560px]">
-            <div className="mb-5 flex flex-wrap gap-2">
-              <TerminalPill tone="cyan">frontend log</TerminalPill>
-              <TerminalPill tone="amber">next.js</TerminalPill>
-              <TerminalPill tone="rose">ai notes</TerminalPill>
-            </div>
             <h1 className="mb-3 min-h-[5rem] text-left text-[1.75rem] min-[375px]:text-[2rem] md:text-[2.5rem] font-extrabold leading-[1.05] lg:min-h-[7rem] lg:text-5xl xl:min-h-[8rem] xl:text-6xl">
               <span className="font-pixel uppercase tracking-[0.04em] text-primary">
                 {`${t("greeting")} `}
@@ -95,7 +92,7 @@ const Hero = () => {
               </div>
               <div
                 data-mobile-hero-avatar
-                className="absolute -right-2 -top-4 z-20 h-[400px] w-[62%] max-w-[300px] md:h-[540px] md:w-[60%] md:max-w-[340px] md:-right-6 md:-top-32 overflow-visible"
+                className="absolute -right-2 -top-4 z-20 h-[400px] w-[62%] max-w-[300px] min-[720px]:-top-12 md:h-[540px] md:w-[60%] md:max-w-[340px] md:-right-6 md:-top-44 overflow-visible"
               >
                 <Image
                   src={selfie}

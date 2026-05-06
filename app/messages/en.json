@@ -96,7 +96,7 @@
     "name": "Jie",
     "imageAlt": "Jie is standing firm",
     "typeSequence": ["Jie", "a web developer"],
-    "shortIntro": "Frontend developer specializing in robust web architecture and the deep integration of LLMs to build practical AI Agents.",
+    "shortIntro": "Frontend developer building robust web apps and practical AI agents with LLMs.",
     "aiCtaLabel": "Ask my AI about me",
     "code": "const coder = {\n  name: \"Jie\",\n  role: [\"Front-end developer\"],\n  skill: [\"React\", \"Next.js\"],\n  location: \"Hangzhou, China\",\n  problemSolver: true,\n  welcomeMessage: () => {\n    return \"Happy to meet you!\"\n  }\n}"
   },

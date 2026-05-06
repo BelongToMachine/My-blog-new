@@ -20,6 +20,12 @@ interface Props {
 const clamp = (val: number, min = 0, max = 1) =>
   Math.max(min, Math.min(max, val))
 
+const getProgressBetween = (value: number, start: number, end: number) => {
+  if (end <= start) return value >= end ? 1 : 0
+
+  return clamp((value - start) / (end - start))
+}
+
 // Helper function for interpolation (assuming it was defined elsewhere in the original code)
 const getInterpolatedValue = (
   curvyValue: number,
@@ -120,7 +126,9 @@ const DynamicBezierCurve = ({ children }: Props) => {
   const SCROLLABLE_HEIGHT_IN_VH = 100
   const NON_DESKTOP_STICKY_TOP_IN_PX = 56
   const DESKTOP_CURVE_FLATTEN_SCROLL_RATIO = 0.92
-  const HERO_LAYER_HIDE_SCROLL_RATIO = 0.995
+  const DESKTOP_HERO_LAYER_HIDE_SCROLL_RATIO = 0.995
+  const NON_DESKTOP_HERO_LAYER_FADE_START_SCROLL_RATIO = 0.7
+  const NON_DESKTOP_HERO_LAYER_HIDE_SCROLL_RATIO = 0.84
   {
     /* 
   ADJUSTED_SCROLL_COEFFICIENT: assoicate with the curve flaten speed, affect this by
@@ -279,8 +287,17 @@ const DynamicBezierCurve = ({ children }: Props) => {
     secondControlPoint,
     endPoint
   )
-  const shouldShowFixedHero =
-    isInScrollable && scrollRatio < HERO_LAYER_HIDE_SCROLL_RATIO
+  const nonDesktopHeroOpacity =
+    1 -
+    getProgressBetween(
+      scrollRatio,
+      NON_DESKTOP_HERO_LAYER_FADE_START_SCROLL_RATIO,
+      NON_DESKTOP_HERO_LAYER_HIDE_SCROLL_RATIO
+    )
+  const shouldShowFixedNonDesktopHero =
+    isInScrollable && scrollRatio < NON_DESKTOP_HERO_LAYER_HIDE_SCROLL_RATIO
+  const shouldShowFixedDesktopHero =
+    isInScrollable && scrollRatio < DESKTOP_HERO_LAYER_HIDE_SCROLL_RATIO
 
   return (
     <>
@@ -299,7 +316,10 @@ const DynamicBezierCurve = ({ children }: Props) => {
             height: "calc(100svh - 3.5rem)",
             width: "100%",
             backgroundColor: SCROLLABLE_COLOR,
-            visibility: shouldShowFixedHero ? "visible" : "hidden",
+            opacity: nonDesktopHeroOpacity,
+            overflow: "hidden",
+            isolation: "isolate",
+            visibility: shouldShowFixedNonDesktopHero ? "visible" : "hidden",
             zIndex: 0,
           }}
         >
@@ -360,7 +380,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
             backgroundColor: SCROLLABLE_COLOR,
             height: "100vh",
             width: "100%",
-            visibility: shouldShowFixedHero ? "visible" : "hidden",
+            visibility: shouldShowFixedDesktopHero ? "visible" : "hidden",
           }}
         >
           <Container>{children}</Container>
