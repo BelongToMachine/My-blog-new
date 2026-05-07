@@ -51,29 +51,18 @@ export function assembleContextWindow({
 
   if (!summary) return trimmed
 
-  // Inject summary as a pseudo-system/context hint within the first user message
-  // or prepend a lightweight assistant reminder.  Because the agent already has
-  // a fixed system prompt, we fold the summary into the earliest message text
-  // to keep the prefix stable without mutating the system prompt every round.
-  const first = trimmed[0]
-  if (first && first.role === "user") {
-    const summaryPrefix = `[对话摘要] ${summary}\n\n---\n\n`
-    const patched: UIMessage = {
-      ...first,
-      parts: first.parts.map((part) => {
-        if (part.type === "text") {
-          return {
-            ...part,
-            text: summaryPrefix + part.text,
-          }
-        }
-        return part
-      }),
-    }
-    return [patched, ...trimmed.slice(1)]
+  const summaryMessage: UIMessage = {
+    id: `context-summary-${summary.length}`,
+    role: "user",
+    parts: [
+      {
+        type: "text",
+        text: `[对话摘要]\n${summary}`,
+      },
+    ],
   }
 
-  return trimmed
+  return [summaryMessage, ...trimmed]
 }
 
 /* ─── Threshold checks ─── */
