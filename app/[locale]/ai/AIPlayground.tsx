@@ -9,6 +9,7 @@ import React, {
   useState,
 } from "react"
 import { isToolUIPart, type UIMessage } from "ai"
+import { useReducedMotion } from "framer-motion"
 import ReactMarkdown from "react-markdown"
 import { Button } from "@/app/components/ui/button"
 import { Textarea } from "@/app/components/ui/textarea"
@@ -42,6 +43,100 @@ const CODE_LANGUAGE_ALIAS_MAP: Record<string, string> = {
   env: "bash",
   yml: "yaml",
   md: "markdown",
+}
+
+const WORKSPACE_FLOATING_HANDLE_SIZE = 52
+const WORKSPACE_FLOATING_HANDLE_MARGIN = 16
+const WORKSPACE_FLOATING_HANDLE_TOP_CLEARANCE = 84
+const WORKSPACE_FLOATING_HANDLE_BOTTOM_CLEARANCE = 20
+const WORKSPACE_FLOATING_HANDLE_STORAGE_KEY = "ai-playground-workspace-handle-position"
+const WORKSPACE_DESKTOP_MEDIA_QUERY = "(min-width: 1024px)"
+
+type FloatingWorkspacePosition = {
+  x: number
+  y: number
+}
+
+function clampValue(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), max)
+}
+
+function getFloatingWorkspaceBounds(viewportWidth: number, viewportHeight: number) {
+  const minX = WORKSPACE_FLOATING_HANDLE_MARGIN
+  const maxX = Math.max(
+    WORKSPACE_FLOATING_HANDLE_MARGIN,
+    viewportWidth - WORKSPACE_FLOATING_HANDLE_SIZE - WORKSPACE_FLOATING_HANDLE_MARGIN,
+  )
+  const minY = WORKSPACE_FLOATING_HANDLE_TOP_CLEARANCE
+  const maxY = Math.max(
+    WORKSPACE_FLOATING_HANDLE_TOP_CLEARANCE,
+    viewportHeight -
+      WORKSPACE_FLOATING_HANDLE_SIZE -
+      WORKSPACE_FLOATING_HANDLE_BOTTOM_CLEARANCE,
+  )
+
+  return { minX, maxX, minY, maxY }
+}
+
+function clampFloatingWorkspacePosition(
+  position: FloatingWorkspacePosition,
+  viewportWidth: number,
+  viewportHeight: number,
+): FloatingWorkspacePosition {
+  const bounds = getFloatingWorkspaceBounds(viewportWidth, viewportHeight)
+
+  return {
+    x: clampValue(position.x, bounds.minX, bounds.maxX),
+    y: clampValue(position.y, bounds.minY, bounds.maxY),
+  }
+}
+
+function getDefaultFloatingWorkspacePosition(
+  viewportWidth: number,
+  viewportHeight: number,
+): FloatingWorkspacePosition {
+  const bounds = getFloatingWorkspaceBounds(viewportWidth, viewportHeight)
+
+  return {
+    x: bounds.maxX,
+    y: clampValue(viewportHeight * 0.68, bounds.minY, bounds.maxY),
+  }
+}
+
+function getSnappedFloatingWorkspacePosition(
+  position: FloatingWorkspacePosition,
+  viewportWidth: number,
+  viewportHeight: number,
+): FloatingWorkspacePosition {
+  const clamped = clampFloatingWorkspacePosition(position, viewportWidth, viewportHeight)
+  const bounds = getFloatingWorkspaceBounds(viewportWidth, viewportHeight)
+  const anchorX =
+    clamped.x + WORKSPACE_FLOATING_HANDLE_SIZE / 2 < viewportWidth / 2
+      ? bounds.minX
+      : bounds.maxX
+
+  return {
+    x: anchorX,
+    y: clamped.y,
+  }
+}
+
+function readStoredFloatingWorkspacePosition(): FloatingWorkspacePosition | null {
+  if (typeof window === "undefined") return null
+
+  try {
+    const raw = window.localStorage.getItem(WORKSPACE_FLOATING_HANDLE_STORAGE_KEY)
+    if (!raw) return null
+
+    const parsed = JSON.parse(raw) as Partial<FloatingWorkspacePosition>
+    if (typeof parsed.x !== "number" || typeof parsed.y !== "number") {
+      return null
+    }
+
+    return { x: parsed.x, y: parsed.y }
+  } catch {
+    return null
+  }
 }
 
 /* ─── Lightweight tool receipt ─── */
@@ -636,6 +731,217 @@ function ChatThreadView({
   )
 }
 
+function FloatingWorkspaceHandle({
+  isOpen,
+  artifactCount,
+  onToggle,
+  ariaLabel,
+}: {
+  isOpen: boolean
+  artifactCount: number
+  onToggle: () => void
+  ariaLabel: string
+}) {
+  const prefersReducedMotion = useReducedMotion()
+  const [position, setPosition] = useState<FloatingWorkspacePosition | null>(null)
+  const [isDragging, setIsDragging] = useState(false)
+  const suppressClickRef = useRef(false)
+  const dragStateRef = useRef<{
+    pointerId: number
+    startX: number
+    startY: number
+    origin: FloatingWorkspacePosition
+    moved: boolean
+  } | null>(null)
+
+  const syncPositionToViewport = useCallback((nextPosition: FloatingWorkspacePosition) => {
+    return clampFloatingWorkspacePosition(
+      nextPosition,
+      window.innerWidth,
+      window.innerHeight,
+    )
+  }, [])
+
+  useEffect(() => {
+    const storedPosition = readStoredFloatingWorkspacePosition()
+    const initialPosition = syncPositionToViewport(
+      storedPosition ??
+        getDefaultFloatingWorkspacePosition(window.innerWidth, window.innerHeight),
+    )
+
+    setPosition(initialPosition)
+
+    const handleResize = () => {
+      setPosition((current) =>
+        syncPositionToViewport(
+          current ??
+            getDefaultFloatingWorkspacePosition(window.innerWidth, window.innerHeight),
+        ),
+      )
+    }
+
+    window.addEventListener("resize", handleResize)
+
+    return () => {
+      window.removeEventListener("resize", handleResize)
+    }
+  }, [syncPositionToViewport])
+
+  useEffect(() => {
+    if (!position) return
+
+    try {
+      window.localStorage.setItem(
+        WORKSPACE_FLOATING_HANDLE_STORAGE_KEY,
+        JSON.stringify(position),
+      )
+    } catch {
+      // Ignore storage write failures and keep the handle draggable for this session.
+    }
+  }, [position])
+
+  const finishDragging = useCallback(
+    (pointerId: number, target: HTMLButtonElement) => {
+      const dragState = dragStateRef.current
+      if (!dragState) return
+
+      if (target.hasPointerCapture(pointerId)) {
+        target.releasePointerCapture(pointerId)
+      }
+
+      dragStateRef.current = null
+      suppressClickRef.current = dragState.moved
+      setIsDragging(false)
+      setPosition((current) => {
+        if (!current) return current
+
+        return getSnappedFloatingWorkspacePosition(
+          current,
+          window.innerWidth,
+          window.innerHeight,
+        )
+      })
+    },
+    [],
+  )
+
+  const handlePointerDown = useCallback(
+    (event: React.PointerEvent<HTMLButtonElement>) => {
+      if (event.button !== 0 || !position) return
+
+      dragStateRef.current = {
+        pointerId: event.pointerId,
+        startX: event.clientX,
+        startY: event.clientY,
+        origin: position,
+        moved: false,
+      }
+      suppressClickRef.current = false
+      setIsDragging(true)
+      event.currentTarget.setPointerCapture(event.pointerId)
+    },
+    [position],
+  )
+
+  const handlePointerMove = useCallback((event: React.PointerEvent<HTMLButtonElement>) => {
+    const dragState = dragStateRef.current
+    if (!dragState || dragState.pointerId !== event.pointerId) return
+
+    const deltaX = event.clientX - dragState.startX
+    const deltaY = event.clientY - dragState.startY
+
+    if (!dragState.moved && Math.hypot(deltaX, deltaY) > 6) {
+      dragState.moved = true
+    }
+
+    setPosition(
+      clampFloatingWorkspacePosition(
+        {
+          x: dragState.origin.x + deltaX,
+          y: dragState.origin.y + deltaY,
+        },
+        window.innerWidth,
+        window.innerHeight,
+      ),
+    )
+  }, [])
+
+  const handlePointerUp = useCallback(
+    (event: React.PointerEvent<HTMLButtonElement>) => {
+      finishDragging(event.pointerId, event.currentTarget)
+    },
+    [finishDragging],
+  )
+
+  const handlePointerCancel = useCallback(
+    (event: React.PointerEvent<HTMLButtonElement>) => {
+      finishDragging(event.pointerId, event.currentTarget)
+    },
+    [finishDragging],
+  )
+
+  const handleClick = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      if (suppressClickRef.current && event.detail !== 0) {
+        suppressClickRef.current = false
+        return
+      }
+
+      suppressClickRef.current = false
+      onToggle()
+    },
+    [onToggle],
+  )
+
+  if (!position) {
+    return null
+  }
+
+  return (
+    <button
+      type="button"
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerCancel}
+      onClick={handleClick}
+      aria-label={ariaLabel}
+      aria-pressed={isOpen}
+      title={ariaLabel}
+      className={cn(
+        "fixed left-0 top-0 z-30 flex select-none touch-none items-center justify-center border-2 border-border/70 bg-background/92 text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background lg:hidden",
+        "h-[52px] w-[52px]",
+        isDragging
+          ? "cursor-grabbing border-primary/70"
+          : "cursor-grab transition-[border-color,background-color] duration-200 hover:border-primary/60 hover:bg-primary/[0.06]",
+      )}
+      style={{
+        transform: `translate3d(${position.x}px, ${position.y}px, 0)`,
+        transition:
+          isDragging || prefersReducedMotion
+            ? "none"
+            : "transform 340ms cubic-bezier(0.22, 1, 0.36, 1), border-color 200ms ease-out, background-color 200ms ease-out",
+        willChange: isDragging ? "transform" : undefined,
+      }}
+    >
+      <span
+        className={cn(
+          "pointer-events-none flex h-7 w-7 items-center justify-center text-sm leading-none transition-colors duration-200",
+          isOpen ? "text-primary" : "text-foreground",
+        )}
+        aria-hidden="true"
+      >
+        ◈
+      </span>
+      {artifactCount > 0 ? (
+        <span className="absolute -right-1.5 -top-1.5 inline-flex h-5 min-w-[20px] items-center justify-center border border-primary/50 bg-primary px-1 font-pixel text-[9px] text-primary-foreground">
+          {artifactCount > 99 ? "99+" : artifactCount}
+        </span>
+      ) : null}
+    </button>
+  )
+}
+
 /* ─── Helpers ─── */
 
 function formatRelativeTime(ts: number, locale: string): string {
@@ -682,12 +988,37 @@ export default function AIPlayground() {
   const { removeChat } = useGlobalChatRuntime()
 
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [desktopWorkspaceViewport, setDesktopWorkspaceViewport] = useState(false)
   const [workspaceOpen, setWorkspaceOpen] = useState(false)
   const [workspaceOpenMobile, setWorkspaceOpenMobile] = useState(false)
 
   const activeThread = threads.find((t) => t.id === activeThreadId)
 
   const workspace = useThreadWorkspace(activeThreadId)
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia(WORKSPACE_DESKTOP_MEDIA_QUERY)
+    const syncViewportMode = () => {
+      setDesktopWorkspaceViewport(mediaQuery.matches)
+    }
+
+    syncViewportMode()
+
+    mediaQuery.addEventListener("change", syncViewportMode)
+
+    return () => {
+      mediaQuery.removeEventListener("change", syncViewportMode)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (desktopWorkspaceViewport) {
+      setWorkspaceOpenMobile(false)
+      return
+    }
+
+    setWorkspaceOpen(false)
+  }, [desktopWorkspaceViewport])
 
   // Close workspace when switching threads
   useEffect(() => {
@@ -696,8 +1027,16 @@ export default function AIPlayground() {
   }, [activeThreadId])
 
   const handleOpenWorkspace = useCallback(() => {
-    setWorkspaceOpen(true)
+    if (desktopWorkspaceViewport) {
+      setWorkspaceOpen(true)
+      return
+    }
+
     setWorkspaceOpenMobile(true)
+  }, [desktopWorkspaceViewport])
+
+  const handleWorkspaceDrawerToggle = useCallback(() => {
+    setWorkspaceOpenMobile((open) => !open)
   }, [])
 
   const handleActiveMessagesChange = useCallback(
@@ -721,7 +1060,7 @@ export default function AIPlayground() {
 
   return (
     <section className="mx-auto flex h-[calc(100svh-3.5rem)] max-w-7xl flex-col px-4 pb-4 pt-6 md:px-8 md:pb-6 md:pt-8 lg:max-w-[92vw]">
-      <header className="mb-4 flex items-center gap-3">
+      <header className="mb-4 flex items-start gap-3 md:items-center">
         {/* Mobile sidebar toggle */}
         <button
           onClick={() => setSidebarOpen((s) => !s)}
@@ -737,23 +1076,23 @@ export default function AIPlayground() {
           <PixelMenuIcon isOpen={sidebarOpen} />
         </button>
 
-        <div className="shrink-0 space-y-1.5">
+        <div className="min-w-0 flex-1 space-y-1.5 md:flex-none md:shrink-0">
           <p className="section-kicker">{t("eyebrow")}</p>
-          <h1 className="pixel-heading !tracking-[0.01em] text-[clamp(0.9rem,1.6vw,1.2rem)]">
+          <h1 className="pixel-heading max-w-full text-balance break-words !tracking-[0.01em] text-[clamp(0.95rem,4.4vw,1.2rem)] leading-[1.35]">
             {t("title")}
           </h1>
-          <p className="font-pixel text-[13px] leading-7 tracking-[0.04em] text-muted-foreground">
+          <p className="max-w-full font-pixel text-[12px] leading-6 tracking-[0.04em] text-muted-foreground sm:text-[13px] sm:leading-7">
             {t("description")}
           </p>
         </div>
 
         {/* Spacer */}
-        <div className="flex-1" />
+        <div className="hidden flex-1 md:block" />
 
-        {/* Desktop workspace toggle */}
+        {/* Large-screen workspace toggle */}
         <button
           onClick={() => setWorkspaceOpen((s) => !s)}
-          className="hidden h-10 items-center gap-2 border-2 border-border/60 bg-background/60 px-3 font-pixel text-[10px] uppercase tracking-[0.16em] text-foreground transition-colors hover:border-primary/60 hover:bg-primary/[0.06] md:inline-flex"
+          className="hidden h-10 items-center gap-2 border-2 border-border/60 bg-background/60 px-3 font-pixel text-[10px] uppercase tracking-[0.16em] text-foreground transition-colors hover:border-primary/60 hover:bg-primary/[0.06] lg:inline-flex"
           aria-label={
             workspaceOpen
               ? t("closeWorkspace") ?? "Close workspace"
@@ -912,10 +1251,10 @@ export default function AIPlayground() {
           </div>
         </main>
 
-        {/* ── Desktop Workspace Panel (collapsible) ── */}
+        {/* ── Large-screen Workspace Panel (collapsible) ── */}
         <aside
           className={cn(
-            "hidden flex-col overflow-hidden border-l-2 border-border/60 bg-background/40 transition-all duration-300 ease-out md:flex",
+            "hidden flex-col overflow-hidden border-l-2 border-border/60 bg-background/40 transition-all duration-300 ease-out lg:flex",
             workspaceOpen
               ? "w-[420px] border-opacity-100 opacity-100"
               : "w-0 border-opacity-0 opacity-0",
@@ -941,55 +1280,59 @@ export default function AIPlayground() {
           )}
         </aside>
 
-        {/* ── Mobile Workspace Drawer ── */}
+        {/* ── Mobile + Tablet Workspace Drawer ── */}
         {workspaceOpenMobile && (
           <>
             <div
-              className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm transition-opacity md:hidden"
+              className="fixed inset-x-0 bottom-0 top-14 z-40 bg-background/80 backdrop-blur-sm transition-opacity lg:hidden"
               onClick={() => setWorkspaceOpenMobile(false)}
               aria-hidden="true"
             />
-            <div className="fixed right-0 top-0 z-50 flex h-svh w-[min(360px,85vw)] flex-col border-l-2 border-border/60 bg-background/95 md:hidden">
-              {activeThread ? (
-                <WorkspacePanel
-                  threadTitle={activeThread.title}
-                  artifacts={workspace.artifacts}
-                  activeArtifactId={workspace.activeArtifactId}
-                  activeArtifact={workspace.activeArtifact}
-                  pendingIntent={workspace.pendingIntent}
-                  onSelectArtifact={workspace.setActiveArtifact}
-                  onClearWorkspace={workspace.clearWorkspace}
-                  isBusy={Boolean(workspace.pendingIntent)}
-                />
-              ) : (
-                <div className="flex h-full items-center justify-center">
-                  <p className="font-pixel text-sm uppercase tracking-[0.2em] text-muted-foreground/50">
-                    {t("workspaceEmpty") ?? "Workspace is empty"}
-                  </p>
-                </div>
-              )}
+            <div className="fixed right-0 top-14 z-50 flex h-[calc(100svh-3.5rem)] w-[min(420px,88vw)] flex-col border-l-2 border-border/60 bg-background/95 lg:hidden md:w-[min(460px,64vw)]">
+              <button
+                onClick={() => setWorkspaceOpenMobile(false)}
+                className="absolute left-3 top-3 z-10 px-1.5 py-0.5 font-pixel text-sm leading-none text-muted-foreground/40 transition-colors hover:text-destructive"
+                aria-label={t("closeWorkspace") ?? "Close workspace"}
+                title={t("closeWorkspace") ?? "Close workspace"}
+              >
+                ×
+              </button>
+              <div className="box-border h-full pt-10">
+                {activeThread ? (
+                  <WorkspacePanel
+                    threadTitle={activeThread.title}
+                    artifacts={workspace.artifacts}
+                    activeArtifactId={workspace.activeArtifactId}
+                    activeArtifact={workspace.activeArtifact}
+                    pendingIntent={workspace.pendingIntent}
+                    onSelectArtifact={workspace.setActiveArtifact}
+                    onClearWorkspace={workspace.clearWorkspace}
+                    isBusy={Boolean(workspace.pendingIntent)}
+                  />
+                ) : (
+                  <div className="flex h-full items-center justify-center">
+                    <p className="font-pixel text-sm uppercase tracking-[0.2em] text-muted-foreground/50">
+                      {t("workspaceEmpty") ?? "Workspace is empty"}
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
           </>
         )}
       </div>
 
-      {/* ── Mobile workspace floating button ── */}
-      <button
-        onClick={() => setWorkspaceOpenMobile((s) => !s)}
-        className="fixed bottom-6 right-6 z-30 flex h-12 w-12 items-center justify-center border-2 border-border/60 bg-background/90 shadow-lg transition-colors hover:border-primary/60 hover:bg-primary/[0.06] md:hidden"
-        aria-label={
+      {/* ── Mobile + tablet floating workspace handle ── */}
+      <FloatingWorkspaceHandle
+        isOpen={workspaceOpenMobile}
+        artifactCount={artifactCount}
+        onToggle={handleWorkspaceDrawerToggle}
+        ariaLabel={
           workspaceOpenMobile
             ? t("closeWorkspace") ?? "Close workspace"
             : t("openWorkspace") ?? "Open workspace"
         }
-      >
-        <span className="text-xl leading-none">◈</span>
-        {artifactCount > 0 && !workspaceOpenMobile ? (
-          <span className="absolute -right-1 -top-1 flex h-5 min-w-[20px] items-center justify-center bg-primary px-1 font-pixel text-[9px] text-primary-foreground">
-            {artifactCount}
-          </span>
-        ) : null}
-      </button>
+      />
     </section>
   )
 }
