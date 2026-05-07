@@ -3,7 +3,7 @@
 import type { ReactNode } from "react"
 import NextLink from "next/link"
 import { useTranslations } from "next-intl"
-import { Link } from "@/app/i18n/navigation"
+import { Link, usePathname } from "@/app/i18n/navigation"
 import { cn } from "@/lib/utils"
 import PixelGithubIcon from "./navbar/PixelGithubIcon"
 
@@ -44,6 +44,11 @@ interface FooterContactLink extends FooterLink {
 export default function Footer() {
   const t = useTranslations("footer")
   const navT = useTranslations("nav")
+  const pathname = usePathname()
+
+  if (pathname === "/ai") {
+    return null
+  }
 
   const navLinks: FooterLink[] = [
     { label: navT("aboutMe"), href: "/" },

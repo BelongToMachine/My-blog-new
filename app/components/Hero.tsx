@@ -29,6 +29,7 @@ const Hero = () => {
   const code = t.raw("code") as string
   const [typingIndex, setTypingIndex] = useState(0)
   const isEnLongText = locale === "en" && typingIndex === 1
+
   return (
     <div
       className="px-5 pb-12 pt-10 md:px-10 md:pt-12 lg:px-14 lg:pb-10 lg:pt-10"
@@ -82,7 +83,7 @@ const Hero = () => {
             </motion.div>
             {SHOW_FLOATING_ASSISTANT ? <FloatingPixelAssistant /> : null}
             <div className="relative mt-5 min-h-[280px] md:min-h-[360px] lg:hidden">
-              <div className="relative z-10 w-[90%] md:w-[88%] max-w-[500px] min-w-0 pt-6">
+              <div className="relative z-10 w-[90%] md:w-[88%] max-w-[500px] min-w-0 pt-6 bottom-8">
                 <CodeBlocker
                   code={code}
                   colorMode={colorMode}
@@ -92,7 +93,7 @@ const Hero = () => {
               </div>
               <div
                 data-mobile-hero-avatar
-                className="absolute -right-2 -top-4 z-20 h-[400px] w-[62%] max-w-[300px] min-[720px]:-top-12 md:h-[540px] md:w-[60%] md:max-w-[340px] md:-right-6 md:-top-44 overflow-visible"
+                className="absolute -right-8 z-20 h-[400px] w-[62%] max-w-[300px] md:h-[540px] md:w-[60%] md:max-w-[340px] md:-right-6 md:-top-44 overflow-visible max-[480px]:-top-32 min-[420px]:max-[768px]:-top-24"
               >
                 <Image
                   src={selfie}
