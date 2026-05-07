@@ -52,17 +52,6 @@ function getIp(req: Request): string {
   return "unknown"
 }
 
-function getSessionId(
-  req: Request,
-  fallbackId?: string,
-): string {
-  if (fallbackId) {
-    return `thread:${fallbackId}`
-  }
-
-  return `anon:${getIp(req)}`
-}
-
 /* ─── Weighted credit calculator ─── */
 
 export type CreditTier = "short" | "medium" | "long"
@@ -103,25 +92,25 @@ export async function checkIpRateLimit(req: Request): Promise<RateLimitResult> {
       remaining: result.remaining,
       resetAt: result.reset,
     }
-  } catch {
+  } catch (error) {
     // If Redis fails, fail open to avoid blocking legitimate users
+    console.warn("[ai/rate-limit] IP limit failed open:", error)
     return { allowed: true, remaining: 999, resetAt: Date.now() + 60000 }
   }
 }
 
 export async function checkSessionRateLimit(
-  req: Request,
-  fallbackId?: string,
+  sessionId: string,
 ): Promise<RateLimitResult> {
   try {
-    const sessionId = getSessionId(req, fallbackId)
-    const result = await getSessionRatelimit().limit(sessionId)
+    const result = await getSessionRatelimit().limit(`session:${sessionId}`)
     return {
       allowed: result.success,
       remaining: result.remaining,
       resetAt: result.reset,
     }
-  } catch {
+  } catch (error) {
+    console.warn("[ai/rate-limit] Session limit failed open:", error)
     return { allowed: true, remaining: 999, resetAt: Date.now() + 60000 }
   }
 }
@@ -163,7 +152,8 @@ export async function checkWeightedRateLimit(
       remaining: Math.max(0, WEIGHTED_LIMIT_MAX_CREDITS - nextUsed),
       resetAt: Date.now() + currentWindowTtl,
     }
-  } catch {
+  } catch (error) {
+    console.warn("[ai/rate-limit] Weighted limit failed open:", error)
     return { allowed: true, remaining: 999, resetAt: Date.now() + 60000 }
   }
 }
