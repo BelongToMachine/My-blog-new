@@ -56,15 +56,15 @@ bunx prisma migrate dev --name init
 
 | 服务 | 用途 | 配置方式 |
 |---|---|---|
-| **MiniMax** | AI Lab 对话模型（当前默认） | 环境变量 `MINIMAX_API_KEY` |
+| **DeepSeek** | AI Lab 对话模型（固定使用 v4 flash） | 环境变量 `DEEPSEEK_API_KEY` |
 
 **模型配置**
-- 默认模型: `MiniMax-M2.5`
+- 固定模型: `deepseek-v4-flash`
 - Thinking: 默认关闭 (`AI_THINKING_ENABLED=false`)
 - 输出上限: ~1000 tokens
 - 上下文: 最近 12 条消息 + 懒摘要
 
-**注意**: 不需要自建 AI 推理服务器。如果未来迁移到 DeepSeek，只需新增 `lib/ai/deepseek.ts` 并修改 `AI_PROVIDER=deepseek`。
+**注意**: 不需要自建 AI 推理服务器，也不需要配置 `AI_PROVIDER` 或 MiniMax 环境变量。
 
 ---
 
@@ -86,10 +86,8 @@ bunx prisma migrate dev --name init
 # ─── 数据库 ───
 DATABASE_URL="postgresql://..."
 
-# ─── AI Provider ───
-AI_PROVIDER="minimax"
-MINIMAX_API_KEY="..."
-MINIMAX_MODEL="MiniMax-M2.5"
+# ─── AI Model ───
+DEEPSEEK_API_KEY="..."
 AI_THINKING_ENABLED="false"
 
 # ─── Upstash Redis ───
@@ -109,7 +107,7 @@ UPSTASH_REDIS_REST_TOKEN="..."
 
 | 依赖 | 说明 |
 |---|---|
-| **OpenAI SDK** | `openai` 已安装，但当前 AI Lab 使用 MiniMax |
+| **OpenAI SDK** | `openai` 已安装，但当前 AI Lab 使用 `@ai-sdk/openai` 的 OpenAI-compatible DeepSeek 接入 |
 | **文件存储/S3** | 无图片上传或文件托管需求 |
 | **队列系统** | 明确未使用（计划文档建议不上） |
 | **CDN** | Vercel 自带全球 CDN，无需额外配置 |
@@ -121,7 +119,7 @@ UPSTASH_REDIS_REST_TOKEN="..."
 - [ ] 创建 Vercel 项目，绑定代码仓库
 - [ ] 创建 PostgreSQL 数据库并获取连接字符串
 - [ ] 创建 Upstash Redis 实例并获取 REST URL + Token
-- [ ] 注册 MiniMax 并获取 API Key
+- [ ] 注册 DeepSeek 并获取 API Key
 - [ ] 在 Vercel 项目设置中填入上述所有环境变量
 - [ ] 执行 `bunx prisma migrate deploy`
 - [ ] 执行首次部署 `bun run build`
@@ -137,6 +135,6 @@ UPSTASH_REDIS_REST_TOKEN="..."
 | Vercel Hobby | **免费** |
 | Vercel Postgres (Hobby) | **免费**（或 Neon/Railway 免费 tier） |
 | Upstash Redis | **免费 tier** 足够 |
-| MiniMax API | 按调用量付费（当前 M2.5 订阅制） |
+| DeepSeek API | 按调用量付费 |
 
-**结论**: 在 MiniMax 订阅/用量可控的前提下，**零额外基础设施月租**即可上线。
+**结论**: 在 DeepSeek 调用量可控的前提下，**零额外基础设施月租**即可上线。
