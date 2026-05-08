@@ -26,6 +26,7 @@
         "@types/node": "20.11.25",
         "@types/react": "18.2.64",
         "@types/react-dom": "18.2.21",
+        "@vercel/analytics": "^2.0.1",
         "ai": "^6.0.0",
         "autoprefixer": "10.4.18",
         "axios": "^1.6.7",
@@ -586,6 +587,8 @@
     "@typescript-eslint/visitor-keys": ["@typescript-eslint/visitor-keys@6.21.0", "https://registry.npmmirror.com/@typescript-eslint/visitor-keys/-/visitor-keys-6.21.0.tgz", { "dependencies": { "@typescript-eslint/types": "6.21.0", "eslint-visitor-keys": "^3.4.1" } }, "sha512-JJtkDduxLi9bivAB+cYOVMtbkqdPOhZ+ZI5LC47MIRrDV4Yn2o+ZnW10Nkmr28xRpSpdJ6Sm42Hjf2+REYXm0A=="],
 
     "@ungap/structured-clone": ["@ungap/structured-clone@1.2.0", "https://registry.npmmirror.com/@ungap/structured-clone/-/structured-clone-1.2.0.tgz", {}, "sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ=="],
+
+    "@vercel/analytics": ["@vercel/analytics@2.0.1", "", { "peerDependencies": { "@remix-run/react": "^2", "@sveltejs/kit": "^1 || ^2", "next": ">= 13", "nuxt": ">= 3", "react": "^18 || ^19 || ^19.0.0-rc", "svelte": ">= 4", "vue": "^3", "vue-router": "^4" }, "optionalPeers": ["@remix-run/react", "@sveltejs/kit", "next", "nuxt", "react", "svelte", "vue", "vue-router"] }, "sha512-MTQG6V9qQrt1tsDeF+2Uoo5aPjqbVPys1xvnIftXSJYG2SrwXRHnqEvVoYID7BTruDz4lCd2Z7rM1BdkUehk2g=="],
 
     "@vercel/oidc": ["@vercel/oidc@3.2.0", "", {}, "sha512-UycprH3T6n3jH0k44NHMa7pnFHGu/N05MjojYr+Mc6I7obkoLIJujSWwin1pCvdy/eOxrI/l3uDLQsmcrOb4ug=="],
 

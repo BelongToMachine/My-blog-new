@@ -6,6 +6,7 @@ import "@radix-ui/themes/styles.css"
 import "@pigment-css/react/styles.css"
 import { getLocale } from "next-intl/server"
 import { GlobalChatRuntimeProvider } from "./context/GlobalChatRuntimeContext"
+import { Analytics } from "@vercel/analytics/next"
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
@@ -48,6 +49,7 @@ export default async function RootLayout({
       </head>
       <body>
         <GlobalChatRuntimeProvider>{children}</GlobalChatRuntimeProvider>
+        <Analytics />
       </body>
     </html>
   )
