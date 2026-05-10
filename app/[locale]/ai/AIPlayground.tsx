@@ -33,6 +33,11 @@ import {
   getWorkspaceArtifactLabelKey,
   safeParseWorkspaceArtifactPayload,
 } from "@/app/types/ai-workspace"
+import ChatLandingState from "./components/ChatLandingState"
+import CompactChatHeader from "./components/CompactChatHeader"
+import ThreadSidebar from "./components/ThreadSidebar"
+import { getSuggestedPrompts, type SuggestedPrompt } from "./recommendedPrompts"
+import { deriveThreadDisplayTitle } from "./threadDisplay"
 
 const useBrowserLayoutEffect =
   typeof window === "undefined" ? useEffect : useLayoutEffect
@@ -51,6 +56,8 @@ const WORKSPACE_FLOATING_HANDLE_TOP_CLEARANCE = 84
 const WORKSPACE_FLOATING_HANDLE_BOTTOM_CLEARANCE = 20
 const WORKSPACE_FLOATING_HANDLE_STORAGE_KEY = "ai-playground-workspace-handle-position"
 const WORKSPACE_DESKTOP_MEDIA_QUERY = "(min-width: 1024px)"
+const CHAT_TEXTAREA_MIN_HEIGHT = 56
+const CHAT_TEXTAREA_MAX_HEIGHT = 160
 
 type FloatingWorkspacePosition = {
   x: number
@@ -385,6 +392,8 @@ const ChatMessagesViewport = React.memo(function ChatMessagesViewport({
   lastAssistantMessageId,
   loadingLabel,
   emptyLabel,
+  suggestedPrompts,
+  onSuggestedPromptSelect,
   onOpenWorkspace,
 }: {
   messages: UIMessage[]
@@ -393,6 +402,8 @@ const ChatMessagesViewport = React.memo(function ChatMessagesViewport({
   lastAssistantMessageId?: string
   loadingLabel: string
   emptyLabel: string
+  suggestedPrompts: SuggestedPrompt[]
+  onSuggestedPromptSelect: (prompt: SuggestedPrompt) => void | Promise<void>
   onOpenWorkspace?: () => void
 }) {
   const scrollViewportRef = useRef<HTMLDivElement>(null)
@@ -409,12 +420,12 @@ const ChatMessagesViewport = React.memo(function ChatMessagesViewport({
   return (
     <div ref={scrollViewportRef} className="flex-1 overflow-y-auto p-4 md:p-5">
       {messages.length === 0 ? (
-        <div className="flex h-full flex-col items-center justify-center gap-8 px-4 text-center">
-          <div className="font-pixel text-6xl text-primary/30">&gt;_</div>
-          <p className="font-pixel max-w-md text-sm uppercase leading-relaxed tracking-[0.2em] text-muted-foreground/70">
-            {emptyLabel}
-          </p>
-        </div>
+        <ChatLandingState
+          emptyLabel={emptyLabel}
+          prompts={suggestedPrompts}
+          disabled={isBusy}
+          onSelectPrompt={onSuggestedPromptSelect}
+        />
       ) : (
         <div className="space-y-6">
           {messages.map((message) => (
@@ -529,6 +540,7 @@ const ChatComposer = React.memo(function ChatComposer({
   connectingLabel,
   cancelLabel,
   locale,
+  shortcutHint,
 }: {
   sendMessage: (message: { text: string }) => Promise<void>
   stop: () => void
@@ -545,6 +557,7 @@ const ChatComposer = React.memo(function ChatComposer({
   connectingLabel: string
   cancelLabel: string
   locale: string
+  shortcutHint: string
 }) {
   const [input, setInput] = useState("")
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -552,6 +565,25 @@ const ChatComposer = React.memo(function ChatComposer({
     () => estimateInputTokens(input),
     [estimateInputTokens, input],
   )
+
+  const resizeTextarea = useCallback(() => {
+    const textarea = textareaRef.current
+    if (!textarea) return
+
+    textarea.style.height = `${CHAT_TEXTAREA_MIN_HEIGHT}px`
+    const nextHeight = Math.min(
+      Math.max(textarea.scrollHeight, CHAT_TEXTAREA_MIN_HEIGHT),
+      CHAT_TEXTAREA_MAX_HEIGHT,
+    )
+
+    textarea.style.height = `${nextHeight}px`
+    textarea.style.overflowY =
+      textarea.scrollHeight > CHAT_TEXTAREA_MAX_HEIGHT ? "auto" : "hidden"
+  }, [])
+
+  useBrowserLayoutEffect(() => {
+    resizeTextarea()
+  }, [input, resizeTextarea])
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -610,31 +642,36 @@ const ChatComposer = React.memo(function ChatComposer({
             </button>
           </div>
         ) : null}
-        <form onSubmit={handleSubmit} className="flex items-end gap-3">
-          <Textarea
-            ref={textareaRef}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder={placeholder}
-            className="min-h-[72px] flex-1 resize-none border-2 border-border/80 bg-background/90 px-4 py-3 text-sm focus-visible:border-primary"
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault()
-                void handleSubmit(e)
-              }
-            }}
-          />
-          <Button
-            type="submit"
-            disabled={!input.trim() || isBusy}
-            className="h-11 shrink-0 px-6"
-          >
-            {isBusy ? loadingLabel : submitLabel}
-          </Button>
+        <form onSubmit={handleSubmit} className="relative">
+          <div className="relative flex min-h-[78px] items-end border-2 border-border/70 bg-background/88 px-4 py-3 transition-[border-color,background-color,box-shadow] duration-200 focus-within:border-primary/70 focus-within:bg-background/94 focus-within:shadow-[0_0_0_1px_hsl(var(--primary)/0.22)]">
+            <Textarea
+              ref={textareaRef}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder={placeholder}
+              className="min-h-[56px] w-full resize-none border-0 bg-transparent px-0 py-0 pr-28 font-pixel text-[12px] leading-6 tracking-[0.04em] shadow-none focus-visible:border-transparent focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:font-pixel placeholder:text-muted-foreground/55 sm:pr-32"
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault()
+                  void handleSubmit(e)
+                }
+              }}
+            />
+            <Button
+              type="submit"
+              disabled={!input.trim() || isBusy}
+              className="absolute bottom-3 right-3 h-10 shrink-0 px-4"
+            >
+              {isBusy ? loadingLabel : submitLabel}
+            </Button>
+          </div>
         </form>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <p className="font-pixel text-[9px] uppercase tracking-[0.16em] text-muted-foreground/52">
+            {shortcutHint}
+          </p>
           <p className={cn("font-pixel text-[9px] uppercase tracking-[0.16em]", riskColor)}>
-            {tokenText} | {riskText}
+            {tokenText} · {riskText}
           </p>
         </div>
       </div>
@@ -662,15 +699,18 @@ function ChatThreadView({
   onMessagesChange,
   workspace,
   onOpenWorkspace,
+  onConversationStateChange,
   locale,
 }: {
   thread: ChatThread
   onMessagesChange: (messages: UIMessage[]) => void
   workspace: ReturnType<typeof useThreadWorkspace>
   onOpenWorkspace?: () => void
+  onConversationStateChange?: (hasConversation: boolean) => void
   locale: string
 }) {
   const t = useTranslations("ai")
+  const suggestedPrompts = useMemo(() => getSuggestedPrompts(locale), [locale])
 
   const { messages, sendMessage, stop, error, isBusy, slowPhase, estimateInputTokens } = useThreadChat({
     threadId: thread.id,
@@ -693,6 +733,19 @@ function ChatThreadView({
     }),
   )
   const showThinking = isBusy && !lastAssistantHasContent
+  const hasConversation = messages.some((message) => message.role === "user")
+
+  useEffect(() => {
+    onConversationStateChange?.(hasConversation)
+  }, [hasConversation, onConversationStateChange])
+
+  const handleSuggestedPromptSelect = useCallback(
+    async (prompt: SuggestedPrompt) => {
+      if (isBusy) return
+      await sendMessage({ text: prompt.prompt })
+    },
+    [isBusy, sendMessage],
+  )
 
   useWorkspaceSync({
     messages,
@@ -708,6 +761,8 @@ function ChatThreadView({
         lastAssistantMessageId={lastAssistantMessageId}
         loadingLabel={t("loading")}
         emptyLabel={t("empty")}
+        suggestedPrompts={suggestedPrompts}
+        onSuggestedPromptSelect={handleSuggestedPromptSelect}
         onOpenWorkspace={onOpenWorkspace}
       />
       <ChatComposer
@@ -719,13 +774,14 @@ function ChatThreadView({
         error={error}
         placeholder={t("textPromptPlaceholder")}
         loadingLabel={t("loading")}
-        submitLabel={t("submit")}
+        submitLabel={hasConversation ? t("send") : t("submit")}
         errorLabel={errorLabel}
         slowLabel={t("slowRequest")}
         verySlowLabel={t("verySlowRequest")}
         connectingLabel={t("connectingModel")}
         cancelLabel={t("cancel")}
         locale={locale}
+        shortcutHint={t("shortcutHint")}
       />
     </div>
   )
@@ -993,8 +1049,25 @@ export default function AIPlayground() {
   const [workspaceOpenMobile, setWorkspaceOpenMobile] = useState(false)
 
   const activeThread = threads.find((t) => t.id === activeThreadId)
+  const activeThreadDisplayTitle = activeThread
+    ? deriveThreadDisplayTitle(activeThread, {
+        defaultTitle: t("defaultChatTitle"),
+        greetingTitle: t("greetingChatTitle"),
+        aboutJieTitle: t("aboutJieChatTitle"),
+      })
+    : null
+  const persistedHasStartedConversation = Boolean(
+    activeThread?.messages.some((message) => message.role === "user"),
+  )
+  const [liveHasStartedConversation, setLiveHasStartedConversation] = useState(
+    persistedHasStartedConversation,
+  )
 
   const workspace = useThreadWorkspace(activeThreadId)
+
+  useEffect(() => {
+    setLiveHasStartedConversation(persistedHasStartedConversation)
+  }, [activeThreadId, persistedHasStartedConversation])
 
   useEffect(() => {
     const mediaQuery = window.matchMedia(WORKSPACE_DESKTOP_MEDIA_QUERY)
@@ -1057,10 +1130,16 @@ export default function AIPlayground() {
   )
 
   const artifactCount = workspace.artifacts.length
+  const hasStartedConversation = liveHasStartedConversation
 
   return (
     <section className="mx-auto flex h-[calc(100svh-3.5rem)] max-w-7xl flex-col px-4 pb-4 pt-6 md:px-8 md:pb-6 md:pt-8 lg:max-w-[92vw]">
-      <header className="mb-4 flex items-start gap-3 md:items-center">
+      <header
+        className={cn(
+          "flex items-start gap-3 md:items-center",
+          hasStartedConversation ? "mb-3" : "mb-4",
+        )}
+      >
         {/* Mobile sidebar toggle */}
         <button
           onClick={() => setSidebarOpen((s) => !s)}
@@ -1076,15 +1155,23 @@ export default function AIPlayground() {
           <PixelMenuIcon isOpen={sidebarOpen} />
         </button>
 
-        <div className="min-w-0 flex-1 space-y-1.5 md:flex-none md:shrink-0">
-          <p className="section-kicker">{t("eyebrow")}</p>
-          <h1 className="pixel-heading max-w-full text-balance break-words !tracking-[0.01em] text-[clamp(0.95rem,4.4vw,1.2rem)] leading-[1.35]">
-            {t("title")}
-          </h1>
-          <p className="max-w-full font-pixel text-[12px] leading-6 tracking-[0.04em] text-muted-foreground sm:text-[13px] sm:leading-7">
-            {t("description")}
-          </p>
-        </div>
+        {hasStartedConversation ? (
+          <CompactChatHeader
+            eyebrow={t("eyebrow")}
+            title={t("compactTitle")}
+            description={t("compactDescription")}
+          />
+        ) : (
+          <div className="min-w-0 flex-1 space-y-1.5 md:flex-none md:shrink-0">
+            <p className="section-kicker">{t("eyebrow")}</p>
+            <h1 className="pixel-heading max-w-full text-balance break-words !tracking-[0.01em] text-[clamp(0.95rem,4.4vw,1.2rem)] leading-[1.35]">
+              {t("title")}
+            </h1>
+            <p className="max-w-full font-pixel text-[12px] leading-6 tracking-[0.04em] text-muted-foreground sm:text-[13px] sm:leading-7">
+              {t("description")}
+            </p>
+          </div>
+        )}
 
         {/* Spacer */}
         <div className="hidden flex-1 md:block" />
@@ -1122,96 +1209,22 @@ export default function AIPlayground() {
               : "-translate-x-full opacity-0 md:opacity-100",
           )}
         >
-          <div className="flex h-full flex-col">
-            {/* Sidebar header */}
-            <div className="shrink-0 border-b-2 border-border/60 p-3 md:p-4">
-              <button
-                onClick={() => {
-                  createThread()
-                  setSidebarOpen(false)
-                }}
-                className="flex w-full items-center justify-center gap-2 border-2 border-primary/50 bg-primary/[0.06] px-3 py-2.5 font-pixel text-[10px] uppercase tracking-[0.16em] text-primary transition-colors hover:border-primary hover:bg-primary/[0.12]"
-              >
-                <span className="text-lg leading-none">+</span>
-                <span>{t("newChat") ?? "New Chat"}</span>
-              </button>
-            </div>
-
-            {/* Thread list */}
-            <div className="flex-1 overflow-y-auto p-2.5 md:p-3">
-              {!hydrated ? (
-                <p className="font-pixel pt-6 text-center text-[10px] uppercase tracking-[0.2em] text-muted-foreground/40">
-                  Loading chats...
-                </p>
-              ) : threads.length === 0 ? (
-                <p className="font-pixel pt-6 text-center text-[10px] uppercase tracking-[0.2em] text-muted-foreground/50">
-                  {t("noChats") ?? "No conversations yet"}
-                </p>
-              ) : (
-                <div className="space-y-2">
-                  {threads.map((thread) => (
-                    <div
-                      key={thread.id}
-                      className={`group relative border-2 transition-colors ${
-                        thread.id === activeThreadId
-                          ? "border-primary/60 bg-primary/[0.08]"
-                          : "border-border/30 bg-background/30 hover:border-border/60 hover:bg-background/60"
-                      }`}
-                    >
-                      <button
-                        onClick={() => {
-                          setActiveThread(thread.id)
-                          setSidebarOpen(false)
-                        }}
-                        className="w-full px-3 py-2.5 text-left"
-                      >
-                        <p className="font-pixel truncate text-[11px] uppercase tracking-[0.12em] text-foreground">
-                          {thread.title}
-                        </p>
-                        <p className="font-pixel mt-1 text-[9px] uppercase tracking-[0.16em] text-muted-foreground/50">
-                          {formatRelativeTime(thread.updatedAt, locale)}
-                        </p>
-                      </button>
-
-                      {/* Delete button */}
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleDeleteThread(thread.id)
-                        }}
-                        className="absolute right-2 top-1/2 inline-block -translate-y-1/2 px-1.5 py-0.5 font-pixel text-sm leading-none text-muted-foreground/40 transition-colors hover:text-destructive md:hidden"
-                        aria-label={t("deleteChat") ?? "Delete chat"}
-                        title={t("deleteChat") ?? "Delete chat"}
-                      >
-                        ×
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleDeleteThread(thread.id)
-                        }}
-                        className="absolute right-2 top-1/2 hidden -translate-y-1/2 px-1.5 py-0.5 font-pixel text-sm leading-none text-muted-foreground/40 transition-colors hover:text-destructive md:group-hover:inline-block"
-                        aria-label={t("deleteChat") ?? "Delete chat"}
-                        title={t("deleteChat") ?? "Delete chat"}
-                      >
-                        ×
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Thread count footer */}
-            <div className="shrink-0 border-t border-border/40 px-3 py-2">
-              <p className="font-pixel text-[9px] uppercase tracking-[0.2em] text-muted-foreground/40">
-                {hydrated ? threads.length : 0}{" "}
-                {threads.length === 1
-                  ? t("chatSingular") ?? "chat"
-                  : t("chatPlural") ?? "chats"}
-              </p>
-            </div>
-          </div>
+          <ThreadSidebar
+            activeThreadId={activeThreadId}
+            hydrated={hydrated}
+            locale={locale}
+            threads={threads}
+            onCreateThread={() => {
+              createThread()
+              setSidebarOpen(false)
+            }}
+            onDeleteThread={handleDeleteThread}
+            onSelectThread={(threadId) => {
+              setActiveThread(threadId)
+              setSidebarOpen(false)
+            }}
+            formatRelativeTime={formatRelativeTime}
+          />
         </aside>
 
         {/* Mobile overlay for sidebar */}
@@ -1229,7 +1242,7 @@ export default function AIPlayground() {
             {!hydrated ? (
               <div className="flex h-full items-center justify-center">
                 <p className="font-pixel text-sm uppercase tracking-[0.2em] text-muted-foreground/40">
-                  Loading chats...
+                  {t("loadingChats")}
                 </p>
               </div>
             ) : activeThread ? (
@@ -1239,6 +1252,7 @@ export default function AIPlayground() {
                 onMessagesChange={handleActiveMessagesChange}
                 workspace={workspace}
                 onOpenWorkspace={handleOpenWorkspace}
+                onConversationStateChange={setLiveHasStartedConversation}
                 locale={locale}
               />
             ) : (
@@ -1262,7 +1276,7 @@ export default function AIPlayground() {
         >
           {workspaceOpen && activeThread ? (
             <WorkspacePanel
-              threadTitle={activeThread.title}
+              threadTitle={activeThreadDisplayTitle ?? activeThread.title}
               artifacts={workspace.artifacts}
               activeArtifactId={workspace.activeArtifactId}
               activeArtifact={workspace.activeArtifact}
@@ -1300,7 +1314,7 @@ export default function AIPlayground() {
               <div className="box-border h-full pt-10">
                 {activeThread ? (
                   <WorkspacePanel
-                    threadTitle={activeThread.title}
+                    threadTitle={activeThreadDisplayTitle ?? activeThread.title}
                     artifacts={workspace.artifacts}
                     activeArtifactId={workspace.activeArtifactId}
                     activeArtifact={workspace.activeArtifact}
