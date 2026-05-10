@@ -2,6 +2,13 @@ import { NextRequest, NextResponse } from "next/server"
 import { z } from "zod"
 import prisma from "@/prisma/client"
 import {
+  getPrismaBypassReason,
+  isPrismaConnectivityError,
+  markPrismaHealthy,
+  markPrismaUnavailable,
+  shouldBypassPrisma,
+} from "@/prisma/safe"
+import {
   attachAiSessionCookie,
   getAiSession,
 } from "@/lib/ai/session.server"
@@ -28,6 +35,16 @@ export async function POST(
   { params }: { params: { id: string } },
 ) {
   const session = getAiSession(req)
+
+  if (shouldBypassPrisma()) {
+    return attachAiSessionCookie(
+      NextResponse.json(
+        { error: getPrismaBypassReason() },
+        { status: 503 },
+      ),
+      session,
+    )
+  }
 
   let body: unknown
   try {
@@ -122,8 +139,20 @@ export async function POST(
       )
     }
 
+    markPrismaHealthy()
     return attachAiSessionCookie(NextResponse.json({ success: true }), session)
   } catch (error) {
+    if (isPrismaConnectivityError(error)) {
+      markPrismaUnavailable("thread messages POST failed", error)
+      return attachAiSessionCookie(
+        NextResponse.json(
+          { error: "Failed to save messages" },
+          { status: 503 },
+        ),
+        session,
+      )
+    }
+
     console.warn(
       "[api/ai/threads/:id/messages] POST failed, client will persist to localStorage:",
       error,
