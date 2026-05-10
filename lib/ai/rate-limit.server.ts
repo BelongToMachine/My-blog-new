@@ -3,17 +3,62 @@ import { Redis } from "@upstash/redis"
 
 /* ─── Redis client ─── */
 
-function getRedis(): Redis {
+const RATE_LIMIT_BYPASS_MS = 60_000
+
+let _redis: Redis | null = null
+let redisBypassUntil = 0
+let lastRedisNotice = ""
+
+function hasRedisConfig() {
   const url = process.env.UPSTASH_REDIS_REST_URL
   const token = process.env.UPSTASH_REDIS_REST_TOKEN
 
-  if (!url || !token) {
+  if (!url || !token) return false
+  if (!/^https?:\/\//.test(url)) return false
+  return true
+}
+
+function logRedisBypass(reason: string) {
+  if (reason === lastRedisNotice) return
+  lastRedisNotice = reason
+  console.warn(`[ai/rate-limit] bypassing Redis-backed limits: ${reason}`)
+}
+
+function shouldBypassRedis(): boolean {
+  if (!hasRedisConfig()) {
+    logRedisBypass(
+      "UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN are missing or invalid",
+    )
+    return true
+  }
+
+  if (Date.now() < redisBypassUntil) {
+    return true
+  }
+
+  return false
+}
+
+function markRedisUnavailable(error: unknown) {
+  redisBypassUntil = Date.now() + RATE_LIMIT_BYPASS_MS
+  const message = error instanceof Error ? error.message : String(error)
+  logRedisBypass(`${message}; bypassing for 60s`)
+}
+
+function getRedis(): Redis {
+  if (_redis) return _redis
+
+  const url = process.env.UPSTASH_REDIS_REST_URL
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN
+
+  if (!hasRedisConfig() || !url || !token) {
     throw new Error(
       "Upstash Redis is not configured. Set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN.",
     )
   }
 
-  return new Redis({ url, token })
+  _redis = new Redis({ url, token })
+  return _redis
 }
 
 let _ratelimitIp: Ratelimit | null = null
@@ -84,6 +129,10 @@ export interface RateLimitResult {
 }
 
 export async function checkIpRateLimit(req: Request): Promise<RateLimitResult> {
+  if (shouldBypassRedis()) {
+    return { allowed: true, remaining: 999, resetAt: Date.now() + 60000 }
+  }
+
   try {
     const ip = getIp(req)
     const result = await getIpRatelimit().limit(ip)
@@ -94,7 +143,7 @@ export async function checkIpRateLimit(req: Request): Promise<RateLimitResult> {
     }
   } catch (error) {
     // If Redis fails, fail open to avoid blocking legitimate users
-    console.warn("[ai/rate-limit] IP limit failed open:", error)
+    markRedisUnavailable(error)
     return { allowed: true, remaining: 999, resetAt: Date.now() + 60000 }
   }
 }
@@ -102,6 +151,10 @@ export async function checkIpRateLimit(req: Request): Promise<RateLimitResult> {
 export async function checkSessionRateLimit(
   sessionId: string,
 ): Promise<RateLimitResult> {
+  if (shouldBypassRedis()) {
+    return { allowed: true, remaining: 999, resetAt: Date.now() + 60000 }
+  }
+
   try {
     const result = await getSessionRatelimit().limit(`session:${sessionId}`)
     return {
@@ -110,7 +163,7 @@ export async function checkSessionRateLimit(
       resetAt: result.reset,
     }
   } catch (error) {
-    console.warn("[ai/rate-limit] Session limit failed open:", error)
+    markRedisUnavailable(error)
     return { allowed: true, remaining: 999, resetAt: Date.now() + 60000 }
   }
 }
@@ -121,6 +174,10 @@ export async function checkWeightedRateLimit(
 ): Promise<RateLimitResult> {
   const tier = classifyInput(text)
   const cost = getCreditCost(tier)
+
+  if (shouldBypassRedis()) {
+    return { allowed: true, remaining: 999, resetAt: Date.now() + 60000 }
+  }
 
   try {
     const ip = getIp(req)
@@ -153,7 +210,7 @@ export async function checkWeightedRateLimit(
       resetAt: Date.now() + currentWindowTtl,
     }
   } catch (error) {
-    console.warn("[ai/rate-limit] Weighted limit failed open:", error)
+    markRedisUnavailable(error)
     return { allowed: true, remaining: 999, resetAt: Date.now() + 60000 }
   }
 }
