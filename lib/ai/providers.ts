@@ -18,14 +18,43 @@ function getDeepSeekApiKey(): string {
   return key
 }
 
+function createDeepSeekFetch() {
+  return async (input: RequestInfo | URL, init?: RequestInit) => {
+    if (!init?.body || typeof init.body !== "string") {
+      return fetch(input, init)
+    }
+
+    try {
+      const body = JSON.parse(init.body) as Record<string, unknown>
+      body.thinking = { type: THINKING_ENABLED ? "enabled" : "disabled" }
+
+      if (!THINKING_ENABLED) {
+        delete body.reasoning_effort
+      }
+
+      return fetch(input, {
+        ...init,
+        body: JSON.stringify(body),
+      })
+    } catch {
+      return fetch(input, init)
+    }
+  }
+}
+
 function createDeepSeekModel(): LanguageModel {
   const deepseek = createOpenAI({
     name: "deepseek",
     apiKey: getDeepSeekApiKey(),
     baseURL: DEEPSEEK_BASE_URL,
+    fetch: createDeepSeekFetch(),
   })
 
   const baseModel = deepseek.chat(DEEPSEEK_MODEL)
+
+  if (!THINKING_ENABLED) {
+    return baseModel
+  }
 
   return wrapLanguageModel({
     model: baseModel,
