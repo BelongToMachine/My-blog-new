@@ -50,7 +50,7 @@ const CODE_LANGUAGE_ALIAS_MAP: Record<string, string> = {
   md: "markdown",
 }
 
-const WORKSPACE_FLOATING_HANDLE_SIZE = 52
+const WORKSPACE_FLOATING_HANDLE_SIZE = 44
 const WORKSPACE_FLOATING_HANDLE_MARGIN = 16
 const WORKSPACE_FLOATING_HANDLE_TOP_CLEARANCE = 84
 const WORKSPACE_FLOATING_HANDLE_BOTTOM_CLEARANCE = 20
@@ -418,7 +418,10 @@ const ChatMessagesViewport = React.memo(function ChatMessagesViewport({
   }, [messages, isBusy])
 
   return (
-    <div ref={scrollViewportRef} className="flex-1 overflow-y-auto p-4 md:p-5">
+    <div
+      ref={scrollViewportRef}
+      className="ai-lab-messages-viewport flex-1 overflow-y-auto p-4 md:p-5"
+    >
       {messages.length === 0 ? (
         <ChatLandingState
           emptyLabel={emptyLabel}
@@ -434,11 +437,12 @@ const ChatMessagesViewport = React.memo(function ChatMessagesViewport({
               className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
             >
               <div
-                className={`max-w-[88%] border-2 px-4 py-3 md:max-w-[78%] ${
+                className={cn(
+                  "ai-lab-message-card max-w-[88%] border-2 px-4 py-3 md:max-w-[78%]",
                   message.role === "user"
-                    ? "border-primary/40 bg-primary/[0.06]"
-                    : "border-border/70 bg-background/60"
-                }`}
+                    ? "ai-lab-message-card--user"
+                    : "ai-lab-message-card--assistant",
+                )}
               >
                 <span className="font-pixel mb-2 block text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
                   {message.role === "user" ? "You" : "AI"}
@@ -508,7 +512,7 @@ const ChatMessagesViewport = React.memo(function ChatMessagesViewport({
           ))}
           {showThinking ? (
             <div className="flex justify-start">
-              <div className="max-w-[88%] border-2 border-border/70 bg-background/60 px-4 py-3 md:max-w-[78%]">
+              <div className="ai-lab-message-card ai-lab-message-card--thinking max-w-[88%] border-2 px-4 py-3 md:max-w-[78%]">
                 <span className="font-pixel mb-2 block text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
                   AI
                 </span>
@@ -622,7 +626,7 @@ const ChatComposer = React.memo(function ChatComposer({
         : "text-muted-foreground"
 
   return (
-    <div className="shrink-0 border-t-2 border-border/60 bg-background/80 p-4 md:p-5">
+    <div className="ai-lab-composer shrink-0 border-t-2 border-border/60 p-4 md:p-5">
       <div className="space-y-3">
         {error && errorLabel ? (
           <p className="font-pixel text-[10px] uppercase tracking-[0.2em] text-destructive">
@@ -643,7 +647,7 @@ const ChatComposer = React.memo(function ChatComposer({
           </div>
         ) : null}
         <form onSubmit={handleSubmit} className="relative">
-          <div className="relative flex min-h-[78px] items-end border-2 border-border/70 bg-background/88 px-4 py-3 transition-[border-color,background-color,box-shadow] duration-200 focus-within:border-primary/70 focus-within:bg-background/94 focus-within:shadow-[0_0_0_1px_hsl(var(--primary)/0.22)]">
+          <div className="ai-lab-composer-shell relative flex min-h-[78px] items-end border-2 border-border/70 px-4 py-3 transition-[border-color,background-color,box-shadow] duration-200 focus-within:border-primary/70 focus-within:shadow-[0_0_0_1px_hsl(var(--primary)/0.22)]">
             <Textarea
               ref={textareaRef}
               value={input}
@@ -753,7 +757,7 @@ function ChatThreadView({
   })
 
   return (
-    <div className="flex h-full flex-col overflow-hidden">
+    <div className="ai-lab-thread-view flex h-full flex-col overflow-hidden">
       <ChatMessagesViewport
         messages={messages}
         isBusy={isBusy}
@@ -965,11 +969,11 @@ function FloatingWorkspaceHandle({
       aria-pressed={isOpen}
       title={ariaLabel}
       className={cn(
-        "fixed left-0 top-0 z-30 flex select-none touch-none items-center justify-center border-2 border-border/70 bg-background/92 text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background lg:hidden",
-        "h-[52px] w-[52px]",
+        "group fixed left-0 top-0 z-30 flex select-none touch-none items-center justify-center bg-transparent text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background lg:hidden",
+        "h-11 w-11",
         isDragging
-          ? "cursor-grabbing border-primary/70"
-          : "cursor-grab transition-[border-color,background-color] duration-200 hover:border-primary/60 hover:bg-primary/[0.06]",
+          ? "cursor-grabbing"
+          : "cursor-grab",
       )}
       style={{
         transform: `translate3d(${position.x}px, ${position.y}px, 0)`,
@@ -982,15 +986,31 @@ function FloatingWorkspaceHandle({
     >
       <span
         className={cn(
-          "pointer-events-none flex h-7 w-7 items-center justify-center text-sm leading-none transition-colors duration-200",
-          isOpen ? "text-primary" : "text-foreground",
+          "pixel-orb-shape pointer-events-none relative flex h-9 w-9 items-center justify-center shadow-[0_10px_24px_hsl(var(--background)/0.22)] transition-[transform,filter] duration-200",
+          isDragging ? "scale-[0.98]" : "group-hover:-translate-y-px",
+          isOpen ? "bg-primary/70" : "bg-border/70",
         )}
         aria-hidden="true"
       >
-        ◈
+        <span
+          className={cn(
+            "pixel-orb-shape absolute inset-[2px] block",
+            isOpen
+              ? "bg-[linear-gradient(180deg,hsl(var(--primary)/0.22),hsl(var(--background)))]"
+              : "bg-background",
+          )}
+        />
+        <span
+          className={cn(
+            "pointer-events-none relative z-[1] flex h-5 w-5 items-center justify-center text-[11px] leading-none transition-colors duration-200",
+            isOpen ? "text-primary" : "text-foreground",
+          )}
+        >
+          ◈
+        </span>
       </span>
       {artifactCount > 0 ? (
-        <span className="absolute -right-1.5 -top-1.5 inline-flex h-5 min-w-[20px] items-center justify-center border border-primary/50 bg-primary px-1 font-pixel text-[9px] text-primary-foreground">
+        <span className="absolute -right-0.5 -top-0.5 inline-flex h-4 min-w-[18px] items-center justify-center border border-primary/50 bg-primary px-1 font-pixel text-[8px] text-primary-foreground">
           {artifactCount > 99 ? "99+" : artifactCount}
         </span>
       ) : null}
@@ -1197,12 +1217,12 @@ export default function AIPlayground() {
         </button>
       </header>
 
-      <div className="section-shell relative flex flex-1 flex-row overflow-hidden">
+      <div className="section-shell ai-lab-shell relative flex flex-1 flex-row overflow-hidden">
         {/* ── Sidebar ── */}
         <aside
           id="chat-sidebar"
           className={cn(
-            "absolute inset-y-0 left-0 z-30 border-r-2 border-border/60 bg-background/95 backdrop-blur-sm transition-all duration-200 ease-out",
+            "ai-lab-sidebar-pane absolute inset-y-0 left-0 z-30 border-r-2 border-border/60 backdrop-blur-sm transition-all duration-200 ease-out",
             "w-[min(280px,85vw)] md:static md:inset-auto md:w-[220px] md:translate-x-0 md:opacity-100 lg:w-[260px]",
             sidebarOpen
               ? "translate-x-0 opacity-100"
@@ -1237,7 +1257,7 @@ export default function AIPlayground() {
         )}
 
         {/* ── Chat area (main, always full width on mobile) ── */}
-        <main className="relative flex flex-1 flex-col overflow-hidden">
+        <main className="ai-lab-chat-pane relative flex flex-1 flex-col overflow-hidden">
           <div className="h-full">
             {!hydrated ? (
               <div className="flex h-full items-center justify-center">
@@ -1268,7 +1288,7 @@ export default function AIPlayground() {
         {/* ── Large-screen Workspace Panel (collapsible) ── */}
         <aside
           className={cn(
-            "hidden flex-col overflow-hidden border-l-2 border-border/60 bg-background/40 transition-all duration-300 ease-out lg:flex",
+            "ai-lab-workspace-pane hidden flex-col overflow-hidden border-l-2 border-border/60 transition-all duration-300 ease-out lg:flex",
             workspaceOpen
               ? "w-[420px] border-opacity-100 opacity-100"
               : "w-0 border-opacity-0 opacity-0",
@@ -1302,7 +1322,7 @@ export default function AIPlayground() {
               onClick={() => setWorkspaceOpenMobile(false)}
               aria-hidden="true"
             />
-            <div className="fixed right-0 top-14 z-50 flex h-[calc(100svh-3.5rem)] w-[min(420px,88vw)] flex-col border-l-2 border-border/60 bg-background/95 lg:hidden md:w-[min(460px,64vw)]">
+            <div className="ai-lab-workspace-drawer fixed right-0 top-14 z-50 flex h-[calc(100svh-3.5rem)] w-[min(420px,88vw)] flex-col border-l-2 border-border/60 lg:hidden md:w-[min(460px,64vw)]">
               <button
                 onClick={() => setWorkspaceOpenMobile(false)}
                 className="absolute left-3 top-3 z-10 px-1.5 py-0.5 font-pixel text-sm leading-none text-muted-foreground/40 transition-colors hover:text-destructive"

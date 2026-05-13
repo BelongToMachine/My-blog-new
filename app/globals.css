@@ -504,6 +504,200 @@ html.dark .wind__lane {
     @apply panel-grid border border-border/70 bg-background/85 shadow-[var(--shadow-elevated)];
   }
 
+  .ai-lab-shell {
+    position: relative;
+    isolation: isolate;
+    background-color: hsl(var(--background) / 0.92);
+    background-image:
+      radial-gradient(circle at 52% 26%, hsl(var(--primary) / 0.05), transparent 38%),
+      linear-gradient(to right, color-mix(in srgb, hsl(var(--border)) 7%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in srgb, hsl(var(--border)) 7%, transparent) 1px, transparent 1px);
+    background-size:
+      auto,
+      32px 32px,
+      32px 32px;
+  }
+
+  .ai-lab-shell::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      circle at center,
+      transparent 0%,
+      transparent 44%,
+      hsl(var(--background) / 0.2) 100%
+    );
+  }
+
+  .ai-lab-sidebar-pane {
+    background:
+      linear-gradient(180deg, hsl(var(--background) / 0.97), hsl(var(--background) / 0.92)),
+      linear-gradient(to bottom, color-mix(in srgb, hsl(var(--border)) 6%, transparent), transparent 24%);
+  }
+
+  .ai-lab-chat-pane {
+    position: relative;
+    background: linear-gradient(
+      180deg,
+      hsl(var(--background) / 0.22),
+      transparent 16%,
+      transparent 84%,
+      hsl(var(--background) / 0.16)
+    );
+  }
+
+  .ai-lab-chat-pane::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      circle at center,
+      hsl(var(--background) / 0.3) 0%,
+      hsl(var(--background) / 0.14) 38%,
+      transparent 76%
+    );
+  }
+
+  .ai-lab-thread-view {
+    position: relative;
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      hsl(var(--background) / 0.06) 18%,
+      hsl(var(--background) / 0.09) 100%
+    );
+  }
+
+  .ai-lab-messages-viewport {
+    position: relative;
+    scroll-padding-block: 1.5rem;
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      hsl(var(--background) / 0.03) 28%,
+      hsl(var(--background) / 0.08) 100%
+    );
+  }
+
+  .ai-lab-message-card {
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(8px);
+    box-shadow:
+      inset 0 0 0 1px hsl(var(--background) / 0.12),
+      0 10px 30px hsl(var(--background) / 0.08);
+  }
+
+  .ai-lab-message-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      180deg,
+      hsl(var(--background) / 0.08) 0%,
+      transparent 48%,
+      hsl(var(--background) / 0.02) 100%
+    );
+  }
+
+  .ai-lab-message-card--assistant {
+    border-color: hsl(var(--border) / 0.58);
+    background-color: hsl(var(--background) / 0.88);
+  }
+
+  .ai-lab-message-card--user {
+    border-color: hsl(var(--primary) / 0.34);
+    background: linear-gradient(
+      180deg,
+      hsl(var(--primary) / 0.11),
+      hsl(var(--primary) / 0.06)
+    );
+  }
+
+  .ai-lab-message-card--thinking {
+    border-color: hsl(var(--border) / 0.48);
+    background-color: hsl(var(--background) / 0.84);
+  }
+
+  .ai-lab-composer {
+    background: linear-gradient(
+      180deg,
+      hsl(var(--background) / 0.74),
+      hsl(var(--background) / 0.94)
+    );
+  }
+
+  .ai-lab-composer-shell {
+    backdrop-filter: blur(10px);
+    background: linear-gradient(
+      180deg,
+      hsl(var(--background) / 0.97),
+      hsl(var(--background) / 0.91)
+    );
+    box-shadow: 0 14px 34px hsl(var(--background) / 0.12);
+  }
+
+  .ai-lab-landing-panel {
+    border: 2px solid color-mix(in srgb, hsl(var(--border)) 58%, transparent);
+    padding: clamp(1.5rem, 2.5vw, 2.75rem);
+    background:
+      linear-gradient(180deg, hsl(var(--background) / 0.9), hsl(var(--background) / 0.8)),
+      radial-gradient(circle at top, hsl(var(--primary) / 0.05), transparent 55%);
+    box-shadow:
+      inset 0 0 0 1px hsl(var(--background) / 0.18),
+      0 18px 40px hsl(var(--background) / 0.08);
+  }
+
+  .ai-lab-workspace-pane {
+    background:
+      linear-gradient(180deg, hsl(var(--background) / 0.98), hsl(var(--background) / 0.94)),
+      linear-gradient(to bottom, color-mix(in srgb, hsl(var(--border)) 7%, transparent), transparent 18%);
+  }
+
+  .ai-lab-workspace-drawer {
+    background:
+      linear-gradient(180deg, hsl(var(--background) / 0.98), hsl(var(--background) / 0.94)),
+      linear-gradient(to bottom, color-mix(in srgb, hsl(var(--border)) 7%, transparent), transparent 18%);
+    backdrop-filter: blur(12px);
+  }
+
+  .pixel-orb-shape {
+    clip-path: polygon(
+      28% 0%,
+      72% 0%,
+      72% 8%,
+      84% 8%,
+      84% 16%,
+      92% 16%,
+      92% 28%,
+      100% 28%,
+      100% 72%,
+      92% 72%,
+      92% 84%,
+      84% 84%,
+      84% 92%,
+      72% 92%,
+      72% 100%,
+      28% 100%,
+      28% 92%,
+      16% 92%,
+      16% 84%,
+      8% 84%,
+      8% 72%,
+      0% 72%,
+      0% 28%,
+      8% 28%,
+      8% 16%,
+      16% 16%,
+      16% 8%,
+      28% 8%
+    );
+  }
+
   .section-kicker {
     @apply font-pixel text-[10px] uppercase tracking-[0.28em] text-primary/80;
   }

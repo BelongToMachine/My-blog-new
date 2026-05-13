@@ -56,7 +56,7 @@ function PendingArtifactState({
   description: string
 }) {
   return (
-    <div className="space-y-5 border-2 border-dashed border-primary/30 bg-primary/[0.04] p-5">
+    <div className="space-y-5 border-2 border-dashed border-primary/28 bg-background/78 p-5 shadow-[inset_0_0_0_1px_hsl(var(--background)/0.18)]">
       <div className="space-y-2">
         <p className="font-pixel text-[10px] uppercase tracking-[0.2em] text-primary/80">
           {label}
@@ -64,11 +64,11 @@ function PendingArtifactState({
         <p className="text-sm leading-7 text-muted-foreground">{description}</p>
       </div>
       <div className="space-y-3">
-        <div className="h-4 w-1/3 animate-pulse bg-primary/15" />
-        <div className="h-16 animate-pulse bg-background/70" />
+        <div className="h-4 w-1/3 animate-pulse bg-primary/12" />
+        <div className="h-16 animate-pulse bg-background/90" />
         <div className="grid gap-2 sm:grid-cols-2">
-          <div className="h-24 animate-pulse bg-background/60" />
-          <div className="h-24 animate-pulse bg-background/60" />
+          <div className="h-24 animate-pulse bg-background/82" />
+          <div className="h-24 animate-pulse bg-background/82" />
         </div>
       </div>
     </div>
@@ -107,7 +107,7 @@ export default function WorkspacePanel({
     : null
 
   return (
-    <div className="flex h-full flex-col overflow-hidden border-l-2 border-border/60 bg-background/40">
+    <div className="flex h-full flex-col overflow-hidden bg-transparent">
       <WorkspaceHeader
         threadTitle={threadTitle}
         artifactCount={artifacts.length}

@@ -1,8 +1,7 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useMemo } from "react"
 import { useTranslations } from "next-intl"
-import { Input } from "@/app/components/ui/input"
 import type { ChatThread } from "@/app/hooks/useChatThreads"
 import { cn } from "@/lib/utils"
 import { deriveThreadDisplayTitle } from "../threadDisplay"
@@ -18,10 +17,6 @@ interface ThreadSidebarProps {
   formatRelativeTime: (ts: number, locale: string) => string
 }
 
-function normalizeSearchValue(value: string): string {
-  return value.trim().toLowerCase()
-}
-
 export default function ThreadSidebar({
   activeThreadId,
   hydrated,
@@ -33,7 +28,6 @@ export default function ThreadSidebar({
   formatRelativeTime,
 }: ThreadSidebarProps) {
   const t = useTranslations("ai")
-  const [query, setQuery] = useState("")
 
   const displayLabels = useMemo(
     () => ({
@@ -53,22 +47,9 @@ export default function ThreadSidebar({
     [displayLabels, threads],
   )
 
-  const filteredThreads = useMemo(() => {
-    const normalizedQuery = normalizeSearchValue(query)
-    if (!normalizedQuery) return preparedThreads
-
-    return preparedThreads.filter(({ thread, displayTitle }) =>
-      [displayTitle, thread.title, thread.summary]
-        .map((value) => normalizeSearchValue(value ?? ""))
-        .some((value) => value.includes(normalizedQuery)),
-    )
-  }, [preparedThreads, query])
-
-  const showSearch = threads.length >= 6
-
   return (
     <div className="flex h-full flex-col">
-      <div className="shrink-0 space-y-3 border-b-2 border-border/60 p-3 md:p-4">
+      <div className="shrink-0 border-b-2 border-border/60 p-3 md:p-4">
         <button
           onClick={onCreateThread}
           className="flex w-full items-center justify-center gap-2 border-2 border-primary/50 bg-primary/[0.06] px-3 py-2.5 font-pixel text-[10px] uppercase tracking-[0.16em] text-primary transition-colors hover:border-primary hover:bg-primary/[0.12]"
@@ -76,16 +57,6 @@ export default function ThreadSidebar({
           <span className="text-lg leading-none">+</span>
           <span>{t("newChat") ?? "New Chat"}</span>
         </button>
-
-        {showSearch ? (
-          <Input
-            type="search"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder={t("searchChatsPlaceholder")}
-            className="h-10 border-2 border-border/60 bg-background/70 font-pixel text-[10px] tracking-[0.14em] placeholder:font-pixel placeholder:text-muted-foreground/38 focus-visible:ring-0 focus-visible:ring-offset-0"
-          />
-        ) : null}
       </div>
 
       <div className="flex-1 overflow-y-auto p-2.5 md:p-3">
@@ -93,13 +64,13 @@ export default function ThreadSidebar({
           <p className="font-pixel pt-6 text-center text-[10px] uppercase tracking-[0.2em] text-muted-foreground/40">
             {t("loadingChats")}
           </p>
-        ) : filteredThreads.length === 0 ? (
+        ) : preparedThreads.length === 0 ? (
           <p className="font-pixel pt-6 text-center text-[10px] uppercase tracking-[0.2em] text-muted-foreground/50">
-            {query.trim() ? t("noMatchingChats") : t("noChats")}
+            {t("noChats")}
           </p>
         ) : (
           <div className="space-y-2">
-            {filteredThreads.map(({ thread, displayTitle }) => {
+            {preparedThreads.map(({ thread, displayTitle }) => {
               const isActive = thread.id === activeThreadId
 
               return (

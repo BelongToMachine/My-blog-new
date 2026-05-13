@@ -21,7 +21,7 @@ export default function ChatLandingState({
 
   return (
     <div className="flex h-full items-center justify-center px-4 py-10 md:px-6">
-      <div className="mx-auto flex w-full max-w-3xl flex-col items-center gap-7 text-center">
+      <div className="ai-lab-landing-panel mx-auto flex w-full max-w-3xl flex-col items-center gap-7 text-center">
         <div className="space-y-4">
           <p className="section-kicker">{t("suggestedPromptsLabel")}</p>
           <div className="font-pixel text-6xl text-primary/28 md:text-7xl">&gt;_</div>
