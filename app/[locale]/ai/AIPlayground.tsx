@@ -34,7 +34,6 @@ import {
   safeParseWorkspaceArtifactPayload,
 } from "@/app/types/ai-workspace"
 import ChatLandingState from "./components/ChatLandingState"
-import CompactChatHeader from "./components/CompactChatHeader"
 import ThreadSidebar from "./components/ThreadSidebar"
 import { getSuggestedPrompts, type SuggestedPrompt } from "./recommendedPrompts"
 import { deriveThreadDisplayTitle } from "./threadDisplay"
@@ -703,14 +702,12 @@ function ChatThreadView({
   onMessagesChange,
   workspace,
   onOpenWorkspace,
-  onConversationStateChange,
   locale,
 }: {
   thread: ChatThread
   onMessagesChange: (messages: UIMessage[]) => void
   workspace: ReturnType<typeof useThreadWorkspace>
   onOpenWorkspace?: () => void
-  onConversationStateChange?: (hasConversation: boolean) => void
   locale: string
 }) {
   const t = useTranslations("ai")
@@ -738,10 +735,6 @@ function ChatThreadView({
   )
   const showThinking = isBusy && !lastAssistantHasContent
   const hasConversation = messages.some((message) => message.role === "user")
-
-  useEffect(() => {
-    onConversationStateChange?.(hasConversation)
-  }, [hasConversation, onConversationStateChange])
 
   const handleSuggestedPromptSelect = useCallback(
     async (prompt: SuggestedPrompt) => {
@@ -1076,18 +1069,7 @@ export default function AIPlayground() {
         aboutJieTitle: t("aboutJieChatTitle"),
       })
     : null
-  const persistedHasStartedConversation = Boolean(
-    activeThread?.messages.some((message) => message.role === "user"),
-  )
-  const [liveHasStartedConversation, setLiveHasStartedConversation] = useState(
-    persistedHasStartedConversation,
-  )
-
   const workspace = useThreadWorkspace(activeThreadId)
-
-  useEffect(() => {
-    setLiveHasStartedConversation(persistedHasStartedConversation)
-  }, [activeThreadId, persistedHasStartedConversation])
 
   useEffect(() => {
     const mediaQuery = window.matchMedia(WORKSPACE_DESKTOP_MEDIA_QUERY)
@@ -1150,223 +1132,225 @@ export default function AIPlayground() {
   )
 
   const artifactCount = workspace.artifacts.length
-  const hasStartedConversation = liveHasStartedConversation
 
   return (
-    <section className="mx-auto flex h-[calc(100svh-3.5rem)] max-w-7xl flex-col px-4 pb-4 pt-6 md:px-8 md:pb-6 md:pt-8 lg:max-w-[92vw]">
-      <header
-        className={cn(
-          "flex items-start gap-3 md:items-center",
-          hasStartedConversation ? "mb-3" : "mb-4",
-        )}
-      >
-        {/* Mobile sidebar toggle */}
-        <button
-          onClick={() => setSidebarOpen((s) => !s)}
-          className="flex h-11 w-11 shrink-0 items-center justify-center border-2 border-border/60 bg-background/60 text-foreground transition-colors hover:border-primary/60 hover:bg-primary/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 md:hidden"
-          aria-label={
-            sidebarOpen
-              ? t("closeSidebar") ?? "Close sidebar"
-              : t("openSidebar") ?? "Open sidebar"
-          }
-          aria-expanded={sidebarOpen}
-          aria-controls="chat-sidebar"
-        >
-          <PixelMenuIcon isOpen={sidebarOpen} />
-        </button>
+    <div className="relative flex h-[calc(100svh-3.5rem)] w-full flex-row overflow-hidden">
+      {/* ── Desktop Fixed Sidebar ── */}
+      <aside className="ai-lab-sidebar-pane fixed left-0 top-14 z-30 hidden h-[calc(100svh-3.5rem)] w-[260px] flex-col border-r-2 border-border/60 md:flex">
+        <ThreadSidebar
+          activeThreadId={activeThreadId}
+          hydrated={hydrated}
+          locale={locale}
+          threads={threads}
+          onCreateThread={() => {
+            createThread()
+            setSidebarOpen(false)
+          }}
+          onDeleteThread={handleDeleteThread}
+          onSelectThread={(threadId) => {
+            setActiveThread(threadId)
+            setSidebarOpen(false)
+          }}
+          formatRelativeTime={formatRelativeTime}
+        />
+      </aside>
 
-        {hasStartedConversation ? (
-          <CompactChatHeader
-            eyebrow={t("eyebrow")}
-            title={t("compactTitle")}
-            description={t("compactDescription")}
-          />
-        ) : (
-          <div className="min-w-0 flex-1 space-y-1.5 md:flex-none md:shrink-0">
-            <p className="section-kicker">{t("eyebrow")}</p>
-            <h1 className="pixel-heading max-w-full text-balance break-words !tracking-[0.01em] text-[clamp(0.95rem,4.4vw,1.2rem)] leading-[1.35]">
-              {t("title")}
-            </h1>
-            <p className="max-w-full font-pixel text-[12px] leading-6 tracking-[0.04em] text-muted-foreground sm:text-[13px] sm:leading-7">
-              {t("description")}
-            </p>
-          </div>
-        )}
+      {/* ── Main Chat Area ── */}
+      <div className="ai-lab-shell relative flex h-full w-full flex-col overflow-hidden md:ml-[260px]">
+        {/* Minimal toolbar */}
+        <div className="flex shrink-0 items-center justify-between border-b-2 border-border/60 px-3 py-2 md:px-4">
+          <div className="flex items-center gap-2">
+            {/* Mobile sidebar toggle */}
+            <button
+              onClick={() => setSidebarOpen((s) => !s)}
+              className="flex h-9 w-9 shrink-0 items-center justify-center border-2 border-border/60 bg-background/60 text-foreground transition-colors hover:border-primary/60 hover:bg-primary/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 md:hidden"
+              aria-label={
+                sidebarOpen
+                  ? t("closeSidebar") ?? "Close sidebar"
+                  : t("openSidebar") ?? "Open sidebar"
+              }
+              aria-expanded={sidebarOpen}
+              aria-controls="chat-sidebar"
+            >
+              <PixelMenuIcon isOpen={sidebarOpen} />
+            </button>
 
-        {/* Spacer */}
-        <div className="hidden flex-1 md:block" />
-
-        {/* Large-screen workspace toggle */}
-        <button
-          onClick={() => setWorkspaceOpen((s) => !s)}
-          className="hidden h-10 items-center gap-2 border-2 border-border/60 bg-background/60 px-3 font-pixel text-[10px] uppercase tracking-[0.16em] text-foreground transition-colors hover:border-primary/60 hover:bg-primary/[0.06] lg:inline-flex"
-          aria-label={
-            workspaceOpen
-              ? t("closeWorkspace") ?? "Close workspace"
-              : t("openWorkspace") ?? "Open workspace"
-          }
-          aria-expanded={workspaceOpen}
-        >
-          <span className="text-lg leading-none">◈</span>
-          <span>{t("workspaceEyebrow")}</span>
-          {artifactCount > 0 ? (
-            <span className="ml-1 inline-flex h-5 min-w-[20px] items-center justify-center bg-primary px-1.5 font-pixel text-[9px] text-primary-foreground">
-              {artifactCount}
+            <span className="max-w-[200px] truncate font-pixel text-[10px] uppercase tracking-[0.16em] text-muted-foreground md:max-w-[320px]">
+              {activeThreadDisplayTitle ?? t("eyebrow")}
             </span>
-          ) : null}
-        </button>
-      </header>
+          </div>
 
-      <div className="section-shell ai-lab-shell relative flex flex-1 flex-row overflow-hidden">
-        {/* ── Sidebar ── */}
-        <aside
-          id="chat-sidebar"
-          className={cn(
-            "ai-lab-sidebar-pane absolute inset-y-0 left-0 z-30 border-r-2 border-border/60 backdrop-blur-sm transition-all duration-200 ease-out",
-            "w-[min(280px,85vw)] md:static md:inset-auto md:w-[220px] md:translate-x-0 md:opacity-100 lg:w-[260px]",
-            sidebarOpen
-              ? "translate-x-0 opacity-100"
-              : "-translate-x-full opacity-0 md:opacity-100",
+          {/* Large-screen workspace toggle */}
+          <button
+            onClick={() => setWorkspaceOpen((s) => !s)}
+            className="hidden h-9 items-center gap-2 border-2 border-border/60 bg-background/60 px-3 font-pixel text-[10px] uppercase tracking-[0.16em] text-foreground transition-colors hover:border-primary/60 hover:bg-primary/[0.06] md:inline-flex"
+            aria-label={
+              workspaceOpen
+                ? t("closeWorkspace") ?? "Close workspace"
+                : t("openWorkspace") ?? "Open workspace"
+            }
+            aria-expanded={workspaceOpen}
+          >
+            <span className="text-lg leading-none">◈</span>
+            <span>{t("workspaceEyebrow")}</span>
+            {artifactCount > 0 ? (
+              <span className="ml-1 inline-flex h-5 min-w-[20px] items-center justify-center bg-primary px-1.5 font-pixel text-[9px] text-primary-foreground">
+                {artifactCount}
+              </span>
+            ) : null}
+          </button>
+        </div>
+
+        <div className="relative flex flex-1 flex-row overflow-hidden">
+          {/* ── Mobile Sidebar (overlay drawer) ── */}
+          <aside
+            id="chat-sidebar"
+            className={cn(
+              "ai-lab-sidebar-pane absolute inset-y-0 left-0 z-30 border-r-2 border-border/60 backdrop-blur-sm transition-all duration-200 ease-out md:hidden",
+              "w-[min(280px,85vw)]",
+              sidebarOpen
+                ? "translate-x-0 opacity-100"
+                : "-translate-x-full opacity-0",
+            )}
+          >
+            <ThreadSidebar
+              activeThreadId={activeThreadId}
+              hydrated={hydrated}
+              locale={locale}
+              threads={threads}
+              onCreateThread={() => {
+                createThread()
+                setSidebarOpen(false)
+              }}
+              onDeleteThread={handleDeleteThread}
+              onSelectThread={(threadId) => {
+                setActiveThread(threadId)
+                setSidebarOpen(false)
+              }}
+              formatRelativeTime={formatRelativeTime}
+            />
+          </aside>
+
+          {/* Mobile overlay for sidebar */}
+          {sidebarOpen && (
+            <div
+              className="absolute inset-0 z-20 touch-none bg-background/80 backdrop-blur-sm transition-opacity duration-200 md:hidden"
+              onClick={() => setSidebarOpen(false)}
+              aria-hidden="true"
+            />
           )}
-        >
-          <ThreadSidebar
-            activeThreadId={activeThreadId}
-            hydrated={hydrated}
-            locale={locale}
-            threads={threads}
-            onCreateThread={() => {
-              createThread()
-              setSidebarOpen(false)
-            }}
-            onDeleteThread={handleDeleteThread}
-            onSelectThread={(threadId) => {
-              setActiveThread(threadId)
-              setSidebarOpen(false)
-            }}
-            formatRelativeTime={formatRelativeTime}
-          />
-        </aside>
 
-        {/* Mobile overlay for sidebar */}
-        {sidebarOpen && (
-          <div
-            className="absolute inset-0 z-20 touch-none bg-background/80 backdrop-blur-sm transition-opacity duration-200 md:hidden"
-            onClick={() => setSidebarOpen(false)}
-            aria-hidden="true"
-          />
-        )}
+          {/* ── Chat area (main) ── */}
+          <main className="ai-lab-chat-pane relative flex flex-1 flex-col overflow-hidden">
+            <div className="h-full">
+              {!hydrated ? (
+                <div className="flex h-full items-center justify-center">
+                  <p className="font-pixel text-sm uppercase tracking-[0.2em] text-muted-foreground/40">
+                    {t("loadingChats")}
+                  </p>
+                </div>
+              ) : activeThread ? (
+                <ChatThreadView
+                  key={activeThread.id}
+                  thread={activeThread}
+                  onMessagesChange={handleActiveMessagesChange}
+                  workspace={workspace}
+                  onOpenWorkspace={handleOpenWorkspace}
+                  locale={locale}
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center">
+                  <p className="font-pixel text-sm uppercase tracking-[0.2em] text-muted-foreground/50">
+                    {t("noChats") ?? "No conversations yet"}
+                  </p>
+                </div>
+              )}
+            </div>
+          </main>
 
-        {/* ── Chat area (main, always full width on mobile) ── */}
-        <main className="ai-lab-chat-pane relative flex flex-1 flex-col overflow-hidden">
-          <div className="h-full">
-            {!hydrated ? (
-              <div className="flex h-full items-center justify-center">
-                <p className="font-pixel text-sm uppercase tracking-[0.2em] text-muted-foreground/40">
-                  {t("loadingChats")}
-                </p>
-              </div>
-            ) : activeThread ? (
-              <ChatThreadView
-                key={activeThread.id}
-                thread={activeThread}
-                onMessagesChange={handleActiveMessagesChange}
-                workspace={workspace}
-                onOpenWorkspace={handleOpenWorkspace}
-                onConversationStateChange={setLiveHasStartedConversation}
-                locale={locale}
+          {/* ── Large-screen Workspace Panel (collapsible) ── */}
+          <aside
+            className={cn(
+              "ai-lab-workspace-pane hidden flex-col overflow-hidden border-l-2 border-border/60 transition-all duration-300 ease-out lg:flex",
+              workspaceOpen
+                ? "w-[420px] border-opacity-100 opacity-100"
+                : "w-0 border-opacity-0 opacity-0",
+            )}
+          >
+            {workspaceOpen && activeThread ? (
+              <WorkspacePanel
+                threadTitle={activeThreadDisplayTitle ?? activeThread.title}
+                artifacts={workspace.artifacts}
+                activeArtifactId={workspace.activeArtifactId}
+                activeArtifact={workspace.activeArtifact}
+                pendingIntent={workspace.pendingIntent}
+                onSelectArtifact={workspace.setActiveArtifact}
+                onClearWorkspace={workspace.clearWorkspace}
+                isBusy={Boolean(workspace.pendingIntent)}
               />
             ) : (
               <div className="flex h-full items-center justify-center">
-                <p className="font-pixel text-sm uppercase tracking-[0.2em] text-muted-foreground/50">
-                  {t("noChats") ?? "No conversations yet"}
+                <p className="font-pixel text-sm uppercase tracking-[0.2em] text-muted-foreground/30">
+                  {t("workspaceClosed") ?? "Workspace closed"}
                 </p>
               </div>
             )}
-          </div>
-        </main>
+          </aside>
 
-        {/* ── Large-screen Workspace Panel (collapsible) ── */}
-        <aside
-          className={cn(
-            "ai-lab-workspace-pane hidden flex-col overflow-hidden border-l-2 border-border/60 transition-all duration-300 ease-out lg:flex",
-            workspaceOpen
-              ? "w-[420px] border-opacity-100 opacity-100"
-              : "w-0 border-opacity-0 opacity-0",
-          )}
-        >
-          {workspaceOpen && activeThread ? (
-            <WorkspacePanel
-              threadTitle={activeThreadDisplayTitle ?? activeThread.title}
-              artifacts={workspace.artifacts}
-              activeArtifactId={workspace.activeArtifactId}
-              activeArtifact={workspace.activeArtifact}
-              pendingIntent={workspace.pendingIntent}
-              onSelectArtifact={workspace.setActiveArtifact}
-              onClearWorkspace={workspace.clearWorkspace}
-              isBusy={Boolean(workspace.pendingIntent)}
-            />
-          ) : (
-            <div className="flex h-full items-center justify-center">
-              <p className="font-pixel text-sm uppercase tracking-[0.2em] text-muted-foreground/30">
-                {t("workspaceClosed") ?? "Workspace closed"}
-              </p>
-            </div>
-          )}
-        </aside>
-
-        {/* ── Mobile + Tablet Workspace Drawer ── */}
-        {workspaceOpenMobile && (
-          <>
-            <div
-              className="fixed inset-x-0 bottom-0 top-14 z-40 bg-background/80 backdrop-blur-sm transition-opacity lg:hidden"
-              onClick={() => setWorkspaceOpenMobile(false)}
-              aria-hidden="true"
-            />
-            <div className="ai-lab-workspace-drawer fixed right-0 top-14 z-50 flex h-[calc(100svh-3.5rem)] w-[min(420px,88vw)] flex-col border-l-2 border-border/60 lg:hidden md:w-[min(460px,64vw)]">
-              <button
+          {/* ── Mobile + Tablet Workspace Drawer ── */}
+          {workspaceOpenMobile && (
+            <>
+              <div
+                className="fixed inset-x-0 bottom-0 top-14 z-40 bg-background/80 backdrop-blur-sm transition-opacity lg:hidden"
                 onClick={() => setWorkspaceOpenMobile(false)}
-                className="absolute left-3 top-3 z-10 px-1.5 py-0.5 font-pixel text-sm leading-none text-muted-foreground/40 transition-colors hover:text-destructive"
-                aria-label={t("closeWorkspace") ?? "Close workspace"}
-                title={t("closeWorkspace") ?? "Close workspace"}
-              >
-                ×
-              </button>
-              <div className="box-border h-full pt-10">
-                {activeThread ? (
-                  <WorkspacePanel
-                    threadTitle={activeThreadDisplayTitle ?? activeThread.title}
-                    artifacts={workspace.artifacts}
-                    activeArtifactId={workspace.activeArtifactId}
-                    activeArtifact={workspace.activeArtifact}
-                    pendingIntent={workspace.pendingIntent}
-                    onSelectArtifact={workspace.setActiveArtifact}
-                    onClearWorkspace={workspace.clearWorkspace}
-                    isBusy={Boolean(workspace.pendingIntent)}
-                  />
-                ) : (
-                  <div className="flex h-full items-center justify-center">
-                    <p className="font-pixel text-sm uppercase tracking-[0.2em] text-muted-foreground/50">
-                      {t("workspaceEmpty") ?? "Workspace is empty"}
-                    </p>
-                  </div>
-                )}
+                aria-hidden="true"
+              />
+              <div className="ai-lab-workspace-drawer fixed right-0 top-14 z-50 flex h-[calc(100svh-3.5rem)] w-[min(420px,88vw)] flex-col border-l-2 border-border/60 lg:hidden md:w-[min(460px,64vw)]">
+                <button
+                  onClick={() => setWorkspaceOpenMobile(false)}
+                  className="absolute left-3 top-3 z-10 px-1.5 py-0.5 font-pixel text-sm leading-none text-muted-foreground/40 transition-colors hover:text-destructive"
+                  aria-label={t("closeWorkspace") ?? "Close workspace"}
+                  title={t("closeWorkspace") ?? "Close workspace"}
+                >
+                  ×
+                </button>
+                <div className="box-border h-full pt-10">
+                  {activeThread ? (
+                    <WorkspacePanel
+                      threadTitle={activeThreadDisplayTitle ?? activeThread.title}
+                      artifacts={workspace.artifacts}
+                      activeArtifactId={workspace.activeArtifactId}
+                      activeArtifact={workspace.activeArtifact}
+                      pendingIntent={workspace.pendingIntent}
+                      onSelectArtifact={workspace.setActiveArtifact}
+                      onClearWorkspace={workspace.clearWorkspace}
+                      isBusy={Boolean(workspace.pendingIntent)}
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center">
+                      <p className="font-pixel text-sm uppercase tracking-[0.2em] text-muted-foreground/50">
+                        {t("workspaceEmpty") ?? "Workspace is empty"}
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          </>
-        )}
-      </div>
+            </>
+          )}
+        </div>
 
-      {/* ── Mobile + tablet floating workspace handle ── */}
-      <FloatingWorkspaceHandle
-        isOpen={workspaceOpenMobile}
-        artifactCount={artifactCount}
-        onToggle={handleWorkspaceDrawerToggle}
-        ariaLabel={
-          workspaceOpenMobile
-            ? t("closeWorkspace") ?? "Close workspace"
-            : t("openWorkspace") ?? "Open workspace"
-        }
-      />
-    </section>
+        {/* ── Mobile + tablet floating workspace handle ── */}
+        <FloatingWorkspaceHandle
+          isOpen={workspaceOpenMobile}
+          artifactCount={artifactCount}
+          onToggle={handleWorkspaceDrawerToggle}
+          ariaLabel={
+            workspaceOpenMobile
+              ? t("closeWorkspace") ?? "Close workspace"
+              : t("openWorkspace") ?? "Open workspace"
+          }
+        />
+      </div>
+    </div>
   )
 }
