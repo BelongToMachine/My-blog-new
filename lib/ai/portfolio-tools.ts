@@ -41,7 +41,7 @@ export const listProjectsTool = tool({
     {
       title: "Personal Portfolio & Blog",
       description:
-        "A recruiter-facing portfolio with bilingual UX, MDX-based blog, AI playground, and pixel-first retro design system.",
+        "A bilingual portfolio and writing space with an MDX-based blog, AI playground, and a pixel-first retro design system.",
       tech: [
         "Next.js 14",
         "TypeScript",
@@ -151,11 +151,11 @@ export const buildUiBlockTool = tool({
     "Rules:\n" +
     "1. Default to text answers. Do NOT use this tool for simple Q&A, brief summaries, or single-item lookups.\n" +
     "2. Use this tool when the user says: 'show me', 'display', 'generate a table', 'create a timeline', 'compare...'\n" +
-    "3. surface='chat' means the result should stay in the chat stream (default for simple results).\n" +
-    "4. surface='artifact' means the result goes to the workspace panel (for dense structured data).\n" +
-    "5. reveal=true means auto-expand the workspace panel. Only set true when the user explicitly asks to open/show the panel.\n" +
+    "3. Prefer surface='chat' because structured UI blocks now render inline inside the conversation.\n" +
+    "4. surface='artifact' is legacy-compatible, but the UI still presents the result inline in chat.\n" +
+    "5. reveal is optional metadata only. Do not talk about side panels or workspaces in the user-facing answer.\n" +
     "6. priority='high' for: comparison-table, timeline, role-fit-report. priority='low' for: profile-card, project-grid, article-summary.\n" +
-    "7. Low-priority artifacts should usually use surface='chat' unless the user specifically wants them in the panel.",
+    "7. Keep summaries concise and user-friendly.",
   inputSchema: buildUiBlockInputSchema,
   execute: async (input) => {
     // Normalize: parse stringified data if needed
