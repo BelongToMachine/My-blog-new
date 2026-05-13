@@ -49,7 +49,9 @@
 
 @layer base {
   :root {
+    --app-nav-offset: 3.5rem;
     --font-sans: "Avenir Next", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    --font-jetbrains-mono: "Monaco", "Menlo", "Consolas", monospace;
     --font-mono: var(--font-jetbrains-mono), "Monaco", "Menlo", "Consolas", monospace;
     --font-pixel-cjk: "retro-pixel";
     --font-pixel: "retro-pixel", "Monaco", monospace;
@@ -98,6 +100,12 @@
     --motion-duration-fast: 180ms;
     --motion-duration-base: 240ms;
     --motion-duration-slow: 420ms;
+  }
+
+  @media (min-width: 768px) {
+    :root {
+      --app-nav-offset: 4.75rem;
+    }
   }
 
   .dark {
@@ -507,15 +515,13 @@ html.dark .wind__lane {
   .ai-lab-shell {
     position: relative;
     isolation: isolate;
-    background-color: hsl(var(--background) / 0.92);
+    background-color: hsl(var(--background) / 0.96);
     background-image:
-      radial-gradient(circle at 52% 26%, hsl(var(--primary) / 0.05), transparent 38%),
-      linear-gradient(to right, color-mix(in srgb, hsl(var(--border)) 7%, transparent) 1px, transparent 1px),
-      linear-gradient(to bottom, color-mix(in srgb, hsl(var(--border)) 7%, transparent) 1px, transparent 1px);
+      radial-gradient(circle at 48% 14%, hsl(var(--primary) / 0.055), transparent 34%),
+      linear-gradient(180deg, hsl(var(--background) / 0.98), hsl(var(--background) / 0.94));
     background-size:
       auto,
-      32px 32px,
-      32px 32px;
+      auto;
   }
 
   .ai-lab-shell::after {
@@ -523,29 +529,27 @@ html.dark .wind__lane {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background: radial-gradient(
-      circle at center,
-      transparent 0%,
-      transparent 44%,
-      hsl(var(--background) / 0.2) 100%
-    );
+    background:
+      linear-gradient(
+        180deg,
+        hsl(var(--background) / 0.1) 0%,
+        transparent 18%,
+        transparent 82%,
+        hsl(var(--background) / 0.1) 100%
+      );
   }
 
   .ai-lab-sidebar-pane {
-    background:
-      linear-gradient(180deg, hsl(var(--background) / 0.97), hsl(var(--background) / 0.92)),
-      linear-gradient(to bottom, color-mix(in srgb, hsl(var(--border)) 6%, transparent), transparent 24%);
+    background: linear-gradient(
+      180deg,
+      hsl(var(--background) / 0.985),
+      hsl(var(--background) / 0.955)
+    );
   }
 
   .ai-lab-chat-pane {
     position: relative;
-    background: linear-gradient(
-      180deg,
-      hsl(var(--background) / 0.22),
-      transparent 16%,
-      transparent 84%,
-      hsl(var(--background) / 0.16)
-    );
+    background: transparent;
   }
 
   .ai-lab-chat-pane::before {
@@ -555,20 +559,14 @@ html.dark .wind__lane {
     pointer-events: none;
     background: radial-gradient(
       circle at center,
-      hsl(var(--background) / 0.3) 0%,
-      hsl(var(--background) / 0.14) 38%,
-      transparent 76%
+      hsl(var(--background) / 0.14) 0%,
+      transparent 70%
     );
   }
 
   .ai-lab-thread-view {
     position: relative;
-    background: linear-gradient(
-      180deg,
-      transparent 0%,
-      hsl(var(--background) / 0.06) 18%,
-      hsl(var(--background) / 0.09) 100%
-    );
+    background: transparent;
   }
 
   .ai-lab-messages-viewport {
@@ -577,79 +575,66 @@ html.dark .wind__lane {
     background: linear-gradient(
       180deg,
       transparent 0%,
-      hsl(var(--background) / 0.03) 28%,
-      hsl(var(--background) / 0.08) 100%
+      hsl(var(--background) / 0.03) 100%
     );
   }
 
   .ai-lab-message-card {
     position: relative;
     overflow: hidden;
-    backdrop-filter: blur(8px);
-    box-shadow:
-      inset 0 0 0 1px hsl(var(--background) / 0.12),
-      0 10px 30px hsl(var(--background) / 0.08);
-  }
-
-  .ai-lab-message-card::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background: linear-gradient(
-      180deg,
-      hsl(var(--background) / 0.08) 0%,
-      transparent 48%,
-      hsl(var(--background) / 0.02) 100%
-    );
   }
 
   .ai-lab-message-card--assistant {
-    border-color: hsl(var(--border) / 0.58);
-    background-color: hsl(var(--background) / 0.88);
+    background: transparent;
+    box-shadow: none;
   }
 
   .ai-lab-message-card--user {
-    border-color: hsl(var(--primary) / 0.34);
+    border: 1px solid hsl(var(--border) / 0.48);
     background: linear-gradient(
       180deg,
-      hsl(var(--primary) / 0.11),
-      hsl(var(--primary) / 0.06)
+      hsl(var(--background) / 0.96),
+      hsl(var(--background) / 0.9)
     );
+    box-shadow: 0 10px 24px hsl(var(--background) / 0.08);
   }
 
   .ai-lab-message-card--thinking {
-    border-color: hsl(var(--border) / 0.48);
-    background-color: hsl(var(--background) / 0.84);
+    background: transparent;
   }
 
   .ai-lab-composer {
     background: linear-gradient(
       180deg,
-      hsl(var(--background) / 0.74),
-      hsl(var(--background) / 0.94)
+      transparent,
+      hsl(var(--background) / 0.92) 18%,
+      hsl(var(--background) / 0.97)
     );
   }
 
   .ai-lab-composer-shell {
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(12px);
     background: linear-gradient(
       180deg,
-      hsl(var(--background) / 0.97),
-      hsl(var(--background) / 0.91)
+      hsl(var(--background) / 0.92),
+      hsl(var(--background) / 0.86)
     );
-    box-shadow: 0 14px 34px hsl(var(--background) / 0.12);
+    box-shadow: 0 16px 36px hsl(var(--background) / 0.08);
   }
 
   .ai-lab-landing-panel {
-    border: 2px solid color-mix(in srgb, hsl(var(--border)) 58%, transparent);
-    padding: clamp(1.5rem, 2.5vw, 2.75rem);
-    background:
-      linear-gradient(180deg, hsl(var(--background) / 0.9), hsl(var(--background) / 0.8)),
-      radial-gradient(circle at top, hsl(var(--primary) / 0.05), transparent 55%);
-    box-shadow:
-      inset 0 0 0 1px hsl(var(--background) / 0.18),
-      0 18px 40px hsl(var(--background) / 0.08);
+    padding: clamp(1rem, 2vw, 2rem);
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .ai-lab-inline-artifact table {
+    min-width: 100%;
+  }
+
+  .ai-lab-inline-artifact th,
+  .ai-lab-inline-artifact td {
+    line-height: 1.65;
   }
 
   .ai-lab-workspace-pane {

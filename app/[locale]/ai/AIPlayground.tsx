@@ -9,29 +9,33 @@ import React, {
   useState,
 } from "react"
 import { isToolUIPart, type UIMessage } from "ai"
-import { useReducedMotion } from "framer-motion"
 import ReactMarkdown from "react-markdown"
-import { Button } from "@/app/components/ui/button"
 import { Textarea } from "@/app/components/ui/textarea"
 import { useLocale, useTranslations } from "next-intl"
 import { useTheme } from "@/app/hooks/useTheme"
 import { useChatThreads, type ChatThread } from "@/app/hooks/useChatThreads"
 import { useThreadChat } from "@/app/hooks/useThreadChat"
 import { useGlobalChatRuntime } from "@/app/context/GlobalChatRuntimeContext"
+import { removeWorkspaceForThread } from "@/app/hooks/useThreadWorkspace"
 import {
-  useThreadWorkspace,
-  removeWorkspaceForThread,
-} from "@/app/hooks/useThreadWorkspace"
-import { getToolName, useWorkspaceSync } from "@/app/hooks/useWorkspaceSync"
+  getToolName,
+  resolveVisualToolOutputPayload,
+} from "@/app/hooks/useWorkspaceSync"
 import { cn } from "@/lib/utils"
 import type { TokenEstimate } from "@/lib/ai/token-estimate"
-import { formatTokenCount, getRiskLabel, getRiskLabelEn } from "@/lib/ai/token-estimate"
+import {
+  formatTokenCount,
+  getRiskLabel,
+  getRiskLabelEn,
+} from "@/lib/ai/token-estimate"
 import { ClientComponent } from "@/app/packages/ClientComponent"
-import WorkspacePanel from "@/app/components/ai-workspace/WorkspacePanel"
+import ArtifactRenderer from "@/app/components/ai-workspace/ArtifactRenderer"
 import PixelMenuIcon from "@/app/components/system/PixelMenuIcon"
 import {
   getWorkspaceArtifactLabelKey,
   safeParseWorkspaceArtifactPayload,
+  type WorkspaceArtifact,
+  type WorkspaceArtifactPayload,
 } from "@/app/types/ai-workspace"
 import ChatLandingState from "./components/ChatLandingState"
 import ThreadSidebar from "./components/ThreadSidebar"
@@ -49,167 +53,191 @@ const CODE_LANGUAGE_ALIAS_MAP: Record<string, string> = {
   md: "markdown",
 }
 
-const WORKSPACE_FLOATING_HANDLE_SIZE = 44
-const WORKSPACE_FLOATING_HANDLE_MARGIN = 16
-const WORKSPACE_FLOATING_HANDLE_TOP_CLEARANCE = 84
-const WORKSPACE_FLOATING_HANDLE_BOTTOM_CLEARANCE = 20
-const WORKSPACE_FLOATING_HANDLE_STORAGE_KEY = "ai-playground-workspace-handle-position"
-const WORKSPACE_DESKTOP_MEDIA_QUERY = "(min-width: 1024px)"
 const CHAT_TEXTAREA_MIN_HEIGHT = 56
 const CHAT_TEXTAREA_MAX_HEIGHT = 160
 
-type FloatingWorkspacePosition = {
-  x: number
-  y: number
-}
+const LEGACY_VISUAL_TOOL_ARTIFACT_MAP = {
+  get_profile_summary: "profile-card",
+  list_projects: "project-grid",
+  search_articles: "article-summary",
+} as const
 
-function clampValue(value: number, min: number, max: number) {
-  return Math.min(Math.max(value, min), max)
-}
-
-function getFloatingWorkspaceBounds(viewportWidth: number, viewportHeight: number) {
-  const minX = WORKSPACE_FLOATING_HANDLE_MARGIN
-  const maxX = Math.max(
-    WORKSPACE_FLOATING_HANDLE_MARGIN,
-    viewportWidth - WORKSPACE_FLOATING_HANDLE_SIZE - WORKSPACE_FLOATING_HANDLE_MARGIN,
-  )
-  const minY = WORKSPACE_FLOATING_HANDLE_TOP_CLEARANCE
-  const maxY = Math.max(
-    WORKSPACE_FLOATING_HANDLE_TOP_CLEARANCE,
-    viewportHeight -
-      WORKSPACE_FLOATING_HANDLE_SIZE -
-      WORKSPACE_FLOATING_HANDLE_BOTTOM_CLEARANCE,
-  )
-
-  return { minX, maxX, minY, maxY }
-}
-
-function clampFloatingWorkspacePosition(
-  position: FloatingWorkspacePosition,
-  viewportWidth: number,
-  viewportHeight: number,
-): FloatingWorkspacePosition {
-  const bounds = getFloatingWorkspaceBounds(viewportWidth, viewportHeight)
-
-  return {
-    x: clampValue(position.x, bounds.minX, bounds.maxX),
-    y: clampValue(position.y, bounds.minY, bounds.maxY),
+function getFallbackToolSummary(
+  toolName: string,
+  t: ReturnType<typeof useTranslations<"ai">>,
+) {
+  if (toolName === "get_profile_summary") {
+    return t("toolReceiptProfileCard")
   }
-}
-
-function getDefaultFloatingWorkspacePosition(
-  viewportWidth: number,
-  viewportHeight: number,
-): FloatingWorkspacePosition {
-  const bounds = getFloatingWorkspaceBounds(viewportWidth, viewportHeight)
-
-  return {
-    x: bounds.maxX,
-    y: clampValue(viewportHeight * 0.68, bounds.minY, bounds.maxY),
+  if (toolName === "list_projects") {
+    return t("toolReceiptProjectGrid")
   }
-}
-
-function getSnappedFloatingWorkspacePosition(
-  position: FloatingWorkspacePosition,
-  viewportWidth: number,
-  viewportHeight: number,
-): FloatingWorkspacePosition {
-  const clamped = clampFloatingWorkspacePosition(position, viewportWidth, viewportHeight)
-  const bounds = getFloatingWorkspaceBounds(viewportWidth, viewportHeight)
-  const anchorX =
-    clamped.x + WORKSPACE_FLOATING_HANDLE_SIZE / 2 < viewportWidth / 2
-      ? bounds.minX
-      : bounds.maxX
-
-  return {
-    x: anchorX,
-    y: clamped.y,
+  if (toolName === "search_articles") {
+    return t("toolReceiptArticleSummary")
   }
+
+  return t("toolReceiptDone")
 }
 
-function readStoredFloatingWorkspacePosition(): FloatingWorkspacePosition | null {
-  if (typeof window === "undefined") return null
+function getPendingToolLabel(
+  toolName: string,
+  input: unknown,
+  t: ReturnType<typeof useTranslations<"ai">>,
+) {
+  if (toolName === "build_ui_block") {
+    const payload = safeParseWorkspaceArtifactPayload(input)
+    if (!payload) return `${toolName}...`
 
-  try {
-    const raw = window.localStorage.getItem(WORKSPACE_FLOATING_HANDLE_STORAGE_KEY)
-    if (!raw) return null
+    const artifactLabel = payload.title?.trim()
+      ? payload.title
+      : t(getWorkspaceArtifactLabelKey(payload.artifactType))
 
-    const parsed = JSON.parse(raw) as Partial<FloatingWorkspacePosition>
-    if (typeof parsed.x !== "number" || typeof parsed.y !== "number") {
-      return null
-    }
-
-    return { x: parsed.x, y: parsed.y }
-  } catch {
-    return null
+    return payload.operation === "update"
+      ? t("artifactPendingUpdate", { artifact: artifactLabel })
+      : t("artifactPendingAppend", { artifact: artifactLabel })
   }
-}
 
-/* ─── Lightweight tool receipt ─── */
+  if (toolName in LEGACY_VISUAL_TOOL_ARTIFACT_MAP) {
+    const artifactType =
+      LEGACY_VISUAL_TOOL_ARTIFACT_MAP[
+        toolName as keyof typeof LEGACY_VISUAL_TOOL_ARTIFACT_MAP
+      ]
 
-function ToolReceipt({
-  toolName,
-  output,
-  onOpenWorkspace,
-}: {
-  toolName: string
-  output: unknown
-  onOpenWorkspace?: () => void
-}) {
-  const t = useTranslations("ai")
-  const data = output as Record<string, unknown>
-  const payload =
-    toolName === "build_ui_block"
-      ? safeParseWorkspaceArtifactPayload(output)
-      : null
-
-  let summary = typeof data.summary === "string" ? data.summary : undefined
-  const surface = payload?.surface ?? "chat"
-  const reveal = payload?.reveal ?? false
-
-  if (!summary && payload) {
-    const receiptKey =
-      payload.operation === "append"
-        ? "artifactReceiptAppend"
-        : payload.operation === "replace"
-          ? "artifactReceiptReplace"
-          : "artifactReceiptUpdate"
-    summary = t(receiptKey, {
-      artifact: t(getWorkspaceArtifactLabelKey(payload.artifactType)),
+    return t("artifactPendingAppend", {
+      artifact: t(getWorkspaceArtifactLabelKey(artifactType)),
     })
   }
 
-  if (!summary) {
-    if (toolName === "get_profile_summary") {
-      summary = t("toolReceiptProfileCard")
-    } else if (toolName === "list_projects") {
-      summary = t("toolReceiptProjectGrid")
-    } else if (toolName === "search_articles") {
-      summary = t("toolReceiptArticleSummary")
-    } else {
-      summary = t("toolReceiptDone")
-    }
+  return `${toolName}...`
+}
+
+function getToolSummaryLabel(
+  toolName: string,
+  payload: WorkspaceArtifactPayload | null,
+  output: unknown,
+  t: ReturnType<typeof useTranslations<"ai">>,
+) {
+  const data = output as Record<string, unknown>
+
+  if (typeof data.summary === "string" && data.summary.trim()) {
+    return data.summary
   }
 
+  if (!payload) {
+    return getFallbackToolSummary(toolName, t)
+  }
+
+  const receiptKey =
+    payload.operation === "append"
+      ? "artifactReceiptAppend"
+      : payload.operation === "replace"
+        ? "artifactReceiptReplace"
+        : "artifactReceiptUpdate"
+
+  return t(receiptKey, {
+    artifact: t(getWorkspaceArtifactLabelKey(payload.artifactType)),
+  })
+}
+
+function createInlineArtifact(
+  payload: WorkspaceArtifactPayload,
+  sourceId: string,
+): WorkspaceArtifact {
+  const now = Date.now()
+
+  return {
+    id: `inline-${sourceId}`,
+    threadId: "inline-chat",
+    type: payload.artifactType,
+    title: payload.title,
+    data: payload.data,
+    status: "ready",
+    summary: payload.summary,
+    createdAt: now,
+    updatedAt: now,
+  }
+}
+
+function hasRenderableArtifactContent(value: unknown): boolean {
+  if (Array.isArray(value)) {
+    return value.some(hasRenderableArtifactContent)
+  }
+
+  if (typeof value === "number") {
+    return true
+  }
+
+  if (typeof value === "string") {
+    return value.trim().length > 0
+  }
+
+  if (!value || typeof value !== "object") {
+    return false
+  }
+
+  return Object.values(value).some(hasRenderableArtifactContent)
+}
+
+function PendingToolNotice({
+  toolName,
+  input,
+}: {
+  toolName: string
+  input: unknown
+}) {
+  const t = useTranslations("ai")
+
   return (
-    <div className="flex flex-wrap items-center gap-2 py-1">
-      <span className="inline-block h-2 w-2 bg-primary" />
-      <span className="font-pixel text-[10px] uppercase tracking-[0.2em] text-primary/80">
-        {summary}
+    <div className="flex items-center gap-2 py-1 text-muted-foreground">
+      <span className="inline-block h-1.5 w-1.5 animate-pulse bg-primary" />
+      <span className="font-pixel text-[10px] uppercase tracking-[0.12em] text-muted-foreground/86">
+        {getPendingToolLabel(toolName, input, t)}
       </span>
-      {surface === "artifact" && !reveal && onOpenWorkspace ? (
-        <button
-          onClick={onOpenWorkspace}
-          className="font-pixel text-[10px] uppercase tracking-[0.16em] text-muted-foreground underline underline-offset-2 transition-colors hover:text-primary"
-        >
-          {t("openWorkspaceToView") ?? "Open to view"}
-        </button>
-      ) : null}
     </div>
   )
 }
 
-/* ─── Markdown renderer for assistant text ─── */
+function InlineToolResult({
+  toolName,
+  output,
+  sourceId,
+}: {
+  toolName: string
+  output: unknown
+  sourceId: string
+}) {
+  const t = useTranslations("ai")
+  const payload = resolveVisualToolOutputPayload(toolName, output)
+  const summary = getToolSummaryLabel(toolName, payload, output, t)
+
+  if (!payload || !hasRenderableArtifactContent(payload.data)) {
+    return (
+      <div className="flex items-center gap-2 py-1">
+        <span className="inline-block h-1.5 w-1.5 bg-primary" />
+        <span className="font-pixel text-[10px] uppercase tracking-[0.12em] text-primary/88">
+          {summary}
+        </span>
+      </div>
+    )
+  }
+
+  const artifact = createInlineArtifact(payload, sourceId)
+
+  return (
+    <div className="space-y-3 py-1">
+      <div className="flex items-center gap-2">
+        <span className="inline-block h-1.5 w-1.5 bg-primary" />
+        <span className="font-pixel text-[10px] uppercase tracking-[0.12em] text-primary/88">
+          {summary}
+        </span>
+      </div>
+
+      <div className="ai-lab-inline-artifact border border-border/45 bg-background/72 px-4 py-4 shadow-[0_8px_24px_hsl(var(--background)/0.08)] md:px-5 md:py-5">
+        <ArtifactRenderer artifact={artifact} />
+      </div>
+    </div>
+  )
+}
 
 function ChatCodeBlock({
   code,
@@ -231,17 +259,17 @@ function ChatCodeBlock({
     CODE_LANGUAGE_ALIAS_MAP[language.toLowerCase()] ?? language.toLowerCase()
 
   return (
-    <div className={cn("overflow-hidden border-2 border-border", className)}>
+    <div className={cn("overflow-hidden border border-border/70", className)}>
       <div
-        className="flex h-11 items-center justify-between border-b-2 border-border px-4"
+        className="flex h-10 items-center justify-between border-b border-border/70 px-4"
         style={{ background: taskbarBg }}
       >
         <div className="flex items-center gap-1.5">
-          <span className="block h-3 w-3" style={{ background: "#ff5f57" }} />
-          <span className="block h-3 w-3" style={{ background: "#ffbd2e" }} />
-          <span className="block h-3 w-3" style={{ background: "#28c840" }} />
+          <span className="block h-2.5 w-2.5" style={{ background: "#ff5f57" }} />
+          <span className="block h-2.5 w-2.5" style={{ background: "#ffbd2e" }} />
+          <span className="block h-2.5 w-2.5" style={{ background: "#28c840" }} />
         </div>
-        <span className="font-pixel text-[9px] uppercase tracking-[0.2em] text-muted-foreground">
+        <span className="font-pixel text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
           {language}
         </span>
       </div>
@@ -273,14 +301,12 @@ function MarkdownRenderer({
     <ReactMarkdown
       components={{
         p: ({ children }) => (
-          <p className="mb-3 last:mb-0 leading-7">{children}</p>
+          <p className="mb-3 last:mb-0 text-[12px] leading-6 tracking-[0.04em] md:text-[13px] md:leading-7">
+            {children}
+          </p>
         ),
-        strong: ({ children }) => (
-          <strong className="font-bold text-primary">{children}</strong>
-        ),
-        em: ({ children }) => (
-          <em className="italic text-muted-foreground">{children}</em>
-        ),
+        strong: ({ children }) => <strong className="font-bold text-primary">{children}</strong>,
+        em: ({ children }) => <em className="italic text-muted-foreground">{children}</em>,
         a: ({ href, children }) => (
           <a
             href={href}
@@ -292,37 +318,35 @@ function MarkdownRenderer({
           </a>
         ),
         h1: ({ children }) => (
-          <h1 className="font-pixel mb-3 mt-4 text-xs uppercase tracking-[0.22em] text-primary">
+          <h1 className="mb-3 mt-6 text-[1rem] leading-7 tracking-[0.08em] text-foreground md:text-[1.15rem] md:leading-8">
             {children}
           </h1>
         ),
         h2: ({ children }) => (
-          <h2 className="font-pixel mb-2.5 mt-3.5 text-[11px] uppercase tracking-[0.2em] text-primary/90">
+          <h2 className="mb-3 mt-5 text-[0.95rem] leading-7 tracking-[0.08em] text-foreground md:text-[1.05rem]">
             {children}
           </h2>
         ),
         h3: ({ children }) => (
-          <h3 className="font-pixel mb-2 mt-3 text-[10px] uppercase tracking-[0.18em] text-primary/80">
+          <h3 className="mb-2 mt-4 text-[0.9rem] leading-6 tracking-[0.08em] text-foreground md:text-[0.98rem]">
             {children}
           </h3>
         ),
         h4: ({ children }) => (
-          <h4 className="font-pixel mb-1.5 mt-2.5 text-[10px] uppercase tracking-[0.16em] text-primary/70">
+          <h4 className="mb-1.5 mt-3 text-[11px] uppercase tracking-[0.12em] text-foreground/88">
             {children}
           </h4>
         ),
-        ul: ({ children }) => (
-          <ul className="mb-3 list-disc space-y-1 pl-5">{children}</ul>
-        ),
-        ol: ({ children }) => (
-          <ol className="mb-3 list-decimal space-y-1 pl-5">{children}</ol>
-        ),
+        ul: ({ children }) => <ul className="mb-3 list-disc space-y-1 pl-5">{children}</ul>,
+        ol: ({ children }) => <ol className="mb-3 list-decimal space-y-1 pl-5">{children}</ol>,
         li: ({ children }) => (
-          <li className="text-sm leading-7 text-foreground/90">{children}</li>
+          <li className="text-[12px] leading-6 tracking-[0.04em] text-foreground/92 md:text-[13px] md:leading-7">
+            {children}
+          </li>
         ),
-        hr: () => <hr className="my-4 border-t-2 border-primary/20" />,
+        hr: () => <hr className="my-5 border-t border-border/40" />,
         blockquote: ({ children }) => (
-          <blockquote className="border-l-2 border-primary/40 bg-primary/[0.04] py-2 pl-3 pr-2 italic text-muted-foreground">
+          <blockquote className="border-l border-primary/40 bg-primary/[0.04] py-2 pl-3 pr-2 text-[11px] leading-6 tracking-[0.04em] text-muted-foreground md:text-[12px]">
             {children}
           </blockquote>
         ),
@@ -337,40 +361,34 @@ function MarkdownRenderer({
                 colorMode={colorMode}
                 language={match[1]}
                 isStreaming={streamCodeBlocks}
-                className="my-3"
+                className="my-4"
               />
             )
           }
 
           return (
-            <code className="rounded-none border border-border/60 bg-muted/50 px-1.5 py-0.5 font-mono text-[11px] text-primary">
+            <code className="border border-border/60 bg-muted/50 px-1.5 py-0.5 font-mono text-[11px] text-primary">
               {children}
             </code>
           )
         },
         table: ({ children }) => (
-          <div className="my-3 overflow-x-auto">
-            <table className="w-full border-collapse border-2 border-border text-sm">
+          <div className="my-4 overflow-x-auto">
+            <table className="w-full border-collapse border border-border/70 text-[12px] md:text-[13px]">
               {children}
             </table>
           </div>
         ),
-        thead: ({ children }) => (
-          <thead className="bg-secondary">{children}</thead>
-        ),
-        tbody: ({ children }) => (
-          <tbody className="divide-y divide-border/40">{children}</tbody>
-        ),
-        tr: ({ children }) => (
-          <tr className="border-b border-border/40">{children}</tr>
-        ),
+        thead: ({ children }) => <thead className="bg-secondary/80">{children}</thead>,
+        tbody: ({ children }) => <tbody className="divide-y divide-border/40">{children}</tbody>,
+        tr: ({ children }) => <tr className="border-b border-border/40">{children}</tr>,
         th: ({ children }) => (
-          <th className="border border-border/60 px-3 py-2 text-left font-pixel text-[10px] uppercase tracking-[0.16em] text-primary">
+          <th className="border border-border/60 px-3 py-2 text-left font-pixel text-[10px] uppercase tracking-[0.12em] text-foreground/86">
             {children}
           </th>
         ),
         td: ({ children }) => (
-          <td className="border border-border/40 px-3 py-2 text-foreground/90">
+          <td className="border border-border/40 px-3 py-2 text-[12px] leading-6 tracking-[0.04em] text-foreground/90 md:text-[13px]">
             {children}
           </td>
         ),
@@ -393,7 +411,6 @@ const ChatMessagesViewport = React.memo(function ChatMessagesViewport({
   emptyLabel,
   suggestedPrompts,
   onSuggestedPromptSelect,
-  onOpenWorkspace,
 }: {
   messages: UIMessage[]
   isBusy: boolean
@@ -403,13 +420,13 @@ const ChatMessagesViewport = React.memo(function ChatMessagesViewport({
   emptyLabel: string
   suggestedPrompts: SuggestedPrompt[]
   onSuggestedPromptSelect: (prompt: SuggestedPrompt) => void | Promise<void>
-  onOpenWorkspace?: () => void
 }) {
   const scrollViewportRef = useRef<HTMLDivElement>(null)
 
   useBrowserLayoutEffect(() => {
     const viewport = scrollViewportRef.current
     if (!viewport) return
+
     viewport.scrollTo({
       top: viewport.scrollHeight,
       behavior: isBusy ? "auto" : "smooth",
@@ -419,7 +436,7 @@ const ChatMessagesViewport = React.memo(function ChatMessagesViewport({
   return (
     <div
       ref={scrollViewportRef}
-      className="ai-lab-messages-viewport flex-1 overflow-y-auto p-4 md:p-5"
+      className="ai-lab-messages-viewport flex-1 overflow-y-auto px-4 pb-6 pt-5 md:px-8 md:pb-8 md:pt-7"
     >
       {messages.length === 0 ? (
         <ChatLandingState
@@ -429,93 +446,107 @@ const ChatMessagesViewport = React.memo(function ChatMessagesViewport({
           onSelectPrompt={onSuggestedPromptSelect}
         />
       ) : (
-        <div className="space-y-6">
-          {messages.map((message) => (
-            <div
-              key={message.id}
-              className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
-            >
+        <div className="mx-auto flex w-full max-w-[860px] flex-col gap-8 md:gap-10">
+          {messages.map((message) => {
+            const isUser = message.role === "user"
+
+            return (
               <div
-                className={cn(
-                  "ai-lab-message-card max-w-[88%] border-2 px-4 py-3 md:max-w-[78%]",
-                  message.role === "user"
-                    ? "ai-lab-message-card--user"
-                    : "ai-lab-message-card--assistant",
-                )}
+                key={message.id}
+                className={cn("flex", isUser ? "justify-end" : "justify-start")}
               >
-                <span className="font-pixel mb-2 block text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-                  {message.role === "user" ? "You" : "AI"}
-                </span>
-                <div className="space-y-3 font-pixel text-sm leading-7 text-foreground">
-                  {message.parts.map((part, index) => {
-                    if (part.type === "text") {
-                      return (
-                        <MemoizedMarkdownRenderer
-                          key={`${message.id}-${index}`}
-                          text={part.text}
-                          streamCodeBlocks={
-                            isBusy &&
-                            message.role === "assistant" &&
-                            message.id === lastAssistantMessageId
-                          }
-                        />
-                      )
-                    }
+                <div
+                  className={cn(
+                    "ai-lab-message-card",
+                    isUser
+                      ? "ai-lab-message-card--user max-w-[min(100%,36rem)] px-4 py-3.5 md:px-5"
+                      : "ai-lab-message-card--assistant w-full max-w-none px-0 py-0",
+                  )}
+                >
+                  <span
+                    className={cn(
+                      "mb-2 block font-pixel text-[10px] uppercase tracking-[0.16em]",
+                      isUser ? "text-primary/82" : "text-muted-foreground/60",
+                    )}
+                  >
+                    {isUser ? "You" : "AI"}
+                  </span>
 
-                    if (isToolUIPart(part)) {
-                      const toolName = getToolName(part)
-
-                      if (part.state === "input-available") {
+                  <div
+                    className={cn(
+                      "space-y-3",
+                      isUser
+                        ? "text-[12px] leading-7 tracking-[0.04em] text-foreground md:text-[13px]"
+                        : "text-[12px] leading-7 tracking-[0.04em] text-foreground md:text-[13px]",
+                    )}
+                  >
+                    {message.parts.map((part, index) => {
+                      if (part.type === "text") {
                         return (
-                          <div
+                          <MemoizedMarkdownRenderer
                             key={`${message.id}-${index}`}
-                            className="flex items-center gap-2 text-muted-foreground"
-                          >
-                            <span className="inline-block h-2 w-2 animate-pulse bg-primary" />
-                            <span className="font-pixel text-[10px] uppercase tracking-[0.2em]">
-                              {toolName}...
-                            </span>
-                          </div>
+                            text={part.text}
+                            streamCodeBlocks={
+                              isBusy &&
+                              message.role === "assistant" &&
+                              message.id === lastAssistantMessageId
+                            }
+                          />
                         )
                       }
 
-                      if (part.state === "output-available") {
-                        return (
-                          <div key={`${message.id}-${index}`}>
-                            <ToolReceipt
+                      if (isToolUIPart(part)) {
+                        const toolName = getToolName(part)
+                        const sourceId = `${message.id}-${index}`
+
+                        if (part.state === "input-available") {
+                          return (
+                            <PendingToolNotice
+                              key={sourceId}
+                              toolName={toolName}
+                              input={part.input}
+                            />
+                          )
+                        }
+
+                        if (part.state === "output-available") {
+                          return (
+                            <InlineToolResult
+                              key={sourceId}
                               toolName={toolName}
                               output={part.output}
-                              onOpenWorkspace={onOpenWorkspace}
+                              sourceId={sourceId}
                             />
-                          </div>
-                        )
+                          )
+                        }
+
+                        if (part.state === "output-error") {
+                          return (
+                            <div
+                              key={sourceId}
+                              className="font-pixel text-[10px] uppercase tracking-[0.12em] text-destructive"
+                            >
+                              Error: {part.errorText}
+                            </div>
+                          )
+                        }
                       }
 
-                      if (part.state === "output-error") {
-                        return (
-                          <div
-                            key={`${message.id}-${index}`}
-                            className="font-pixel text-[10px] uppercase tracking-[0.2em] text-destructive"
-                          >
-                            Error: {part.errorText}
-                          </div>
-                        )
-                      }
-                    }
-
-                    return null
-                  })}
+                      return null
+                    })}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
+
           {showThinking ? (
             <div className="flex justify-start">
-              <div className="ai-lab-message-card ai-lab-message-card--thinking max-w-[88%] border-2 px-4 py-3 md:max-w-[78%]">
-                <span className="font-pixel mb-2 block text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+              <div className="ai-lab-message-card ai-lab-message-card--assistant w-full max-w-none px-0 py-0">
+                <span className="mb-2 block font-pixel text-[10px] uppercase tracking-[0.16em] text-muted-foreground/60">
                   AI
                 </span>
-                <div className="font-pixel text-sm leading-7 text-muted-foreground">
+                <div className="font-pixel text-[10px] uppercase tracking-[0.12em] text-muted-foreground/84">
                   {loadingLabel}
                 </div>
               </div>
@@ -574,6 +605,7 @@ const ChatComposer = React.memo(function ChatComposer({
     if (!textarea) return
 
     textarea.style.height = `${CHAT_TEXTAREA_MIN_HEIGHT}px`
+
     const nextHeight = Math.min(
       Math.max(textarea.scrollHeight, CHAT_TEXTAREA_MIN_HEIGHT),
       CHAT_TEXTAREA_MAX_HEIGHT,
@@ -592,17 +624,12 @@ const ChatComposer = React.memo(function ChatComposer({
     event.preventDefault()
     const value = input.trim()
     if (!value || isBusy) return
+
     setInput("")
     textareaRef.current?.focus()
     await sendMessage({ text: value })
   }
 
-  const handleStop = (e: React.MouseEvent) => {
-    e.preventDefault()
-    stop()
-  }
-
-  // Derive status label
   let statusLabel = ""
   if (isBusy) {
     if (slowPhase === "verySlow") {
@@ -614,9 +641,9 @@ const ChatComposer = React.memo(function ChatComposer({
     }
   }
 
-  // Token estimate display
   const tokenText = `${formatTokenCount(tokenEstimate.estimatedPromptTokens)} tokens`
-  const riskText = locale === "zh" ? getRiskLabel(tokenEstimate.risk) : getRiskLabelEn(tokenEstimate.risk)
+  const riskText =
+    locale === "zh" ? getRiskLabel(tokenEstimate.risk) : getRiskLabelEn(tokenEstimate.risk)
   const riskColor =
     tokenEstimate.risk === "high"
       ? "text-destructive"
@@ -625,55 +652,65 @@ const ChatComposer = React.memo(function ChatComposer({
         : "text-muted-foreground"
 
   return (
-    <div className="ai-lab-composer shrink-0 border-t-2 border-border/60 p-4 md:p-5">
-      <div className="space-y-3">
+    <div className="ai-lab-composer shrink-0 px-4 pb-4 pt-3 md:px-8 md:pb-6">
+      <div className="mx-auto max-w-[860px] space-y-3">
         {error && errorLabel ? (
-          <p className="font-pixel text-[10px] uppercase tracking-[0.2em] text-destructive">
+          <p className="font-pixel text-[10px] uppercase tracking-[0.12em] text-destructive">
             {errorLabel}
           </p>
         ) : null}
+
         {statusLabel && !error ? (
-          <div className="flex items-center justify-between">
-            <p className="font-pixel text-[10px] uppercase tracking-[0.2em] text-amber-500">
+          <div className="flex items-center justify-between gap-3">
+            <p className="font-pixel text-[10px] uppercase tracking-[0.12em] text-amber-600">
               {statusLabel}
             </p>
             <button
-              onClick={handleStop}
-              className="font-pixel text-[10px] uppercase tracking-[0.16em] text-muted-foreground underline underline-offset-2 transition-colors hover:text-destructive"
+              type="button"
+              onClick={stop}
+              className="font-pixel text-[10px] uppercase tracking-[0.12em] text-muted-foreground transition-colors hover:text-destructive"
             >
               {cancelLabel}
             </button>
           </div>
         ) : null}
-        <form onSubmit={handleSubmit} className="relative">
-          <div className="ai-lab-composer-shell relative flex min-h-[78px] items-end border-2 border-border/70 px-4 py-3 transition-[border-color,background-color,box-shadow] duration-200 focus-within:border-primary/70 focus-within:shadow-[0_0_0_1px_hsl(var(--primary)/0.22)]">
+
+        <form onSubmit={handleSubmit}>
+          <div className="ai-lab-composer-shell flex min-h-[86px] items-end gap-3 border border-border/50 px-4 py-3 transition-[border-color,background-color] duration-200 focus-within:border-primary/45">
             <Textarea
               ref={textareaRef}
               value={input}
-              onChange={(e) => setInput(e.target.value)}
+              onChange={(event) => setInput(event.target.value)}
               placeholder={placeholder}
-              className="min-h-[56px] w-full resize-none border-0 bg-transparent px-0 py-0 pr-28 font-pixel text-[12px] leading-6 tracking-[0.04em] shadow-none focus-visible:border-transparent focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:font-pixel placeholder:text-muted-foreground/55 sm:pr-32"
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault()
-                  void handleSubmit(e)
+              className="min-h-[56px] flex-1 resize-none border-0 bg-transparent p-0 font-pixel text-[12px] leading-7 tracking-[0.05em] shadow-none focus-visible:border-transparent focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:font-pixel placeholder:tracking-[0.05em] placeholder:text-muted-foreground/60"
+              onKeyDown={(event) => {
+                if (event.key === "Enter" && !event.shiftKey) {
+                  event.preventDefault()
+                  void handleSubmit(event)
                 }
               }}
             />
-            <Button
+
+            <button
               type="submit"
               disabled={!input.trim() || isBusy}
-              className="absolute bottom-3 right-3 h-10 shrink-0 px-4"
+              className={cn(
+                "mb-1 inline-flex h-10 min-w-[82px] shrink-0 items-center justify-center border border-border/60 px-4 font-pixel text-[10px] uppercase tracking-[0.14em] transition-[border-color,background-color,color] duration-200",
+                input.trim() && !isBusy
+                  ? "bg-foreground text-background hover:border-primary hover:bg-primary hover:text-primary-foreground"
+                  : "bg-background text-muted-foreground",
+              )}
             >
               {isBusy ? loadingLabel : submitLabel}
-            </Button>
+            </button>
           </div>
         </form>
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <p className="font-pixel text-[9px] uppercase tracking-[0.16em] text-muted-foreground/52">
+
+        <div className="flex flex-wrap items-center justify-between gap-2 px-1">
+          <p className="font-pixel text-[9px] uppercase tracking-[0.12em] text-muted-foreground/68">
             {shortcutHint}
           </p>
-          <p className={cn("font-pixel text-[9px] uppercase tracking-[0.16em]", riskColor)}>
+          <p className={cn("font-pixel text-[9px] uppercase tracking-[0.12em]", riskColor)}>
             {tokenText} · {riskText}
           </p>
         </div>
@@ -681,8 +718,6 @@ const ChatComposer = React.memo(function ChatComposer({
     </div>
   )
 })
-
-/* ─── Chat thread view (isolated per thread) ─── */
 
 function getErrorLabel(
   error: (Error & { status?: number }) | undefined,
@@ -700,24 +735,21 @@ function getErrorLabel(
 function ChatThreadView({
   thread,
   onMessagesChange,
-  workspace,
-  onOpenWorkspace,
   locale,
 }: {
   thread: ChatThread
   onMessagesChange: (messages: UIMessage[]) => void
-  workspace: ReturnType<typeof useThreadWorkspace>
-  onOpenWorkspace?: () => void
   locale: string
 }) {
   const t = useTranslations("ai")
   const suggestedPrompts = useMemo(() => getSuggestedPrompts(locale), [locale])
 
-  const { messages, sendMessage, stop, error, isBusy, slowPhase, estimateInputTokens } = useThreadChat({
-    threadId: thread.id,
-    initialMessages: thread.messages,
-    onMessagesPersist: onMessagesChange,
-  })
+  const { messages, sendMessage, stop, error, isBusy, slowPhase, estimateInputTokens } =
+    useThreadChat({
+      threadId: thread.id,
+      initialMessages: thread.messages,
+      onMessagesPersist: onMessagesChange,
+    })
 
   const errorLabel = getErrorLabel(error, t)
 
@@ -730,6 +762,7 @@ function ChatThreadView({
       if (part.type === "text") {
         return part.text.trim().length > 0
       }
+
       return isToolUIPart(part) && part.state !== "input-streaming"
     }),
   )
@@ -744,11 +777,6 @@ function ChatThreadView({
     [isBusy, sendMessage],
   )
 
-  useWorkspaceSync({
-    messages,
-    workspace,
-  })
-
   return (
     <div className="ai-lab-thread-view flex h-full flex-col overflow-hidden">
       <ChatMessagesViewport
@@ -760,8 +788,8 @@ function ChatThreadView({
         emptyLabel={t("empty")}
         suggestedPrompts={suggestedPrompts}
         onSuggestedPromptSelect={handleSuggestedPromptSelect}
-        onOpenWorkspace={onOpenWorkspace}
       />
+
       <ChatComposer
         sendMessage={sendMessage}
         stop={stop}
@@ -783,235 +811,6 @@ function ChatThreadView({
     </div>
   )
 }
-
-function FloatingWorkspaceHandle({
-  isOpen,
-  artifactCount,
-  onToggle,
-  ariaLabel,
-}: {
-  isOpen: boolean
-  artifactCount: number
-  onToggle: () => void
-  ariaLabel: string
-}) {
-  const prefersReducedMotion = useReducedMotion()
-  const [position, setPosition] = useState<FloatingWorkspacePosition | null>(null)
-  const [isDragging, setIsDragging] = useState(false)
-  const suppressClickRef = useRef(false)
-  const dragStateRef = useRef<{
-    pointerId: number
-    startX: number
-    startY: number
-    origin: FloatingWorkspacePosition
-    moved: boolean
-  } | null>(null)
-
-  const syncPositionToViewport = useCallback((nextPosition: FloatingWorkspacePosition) => {
-    return clampFloatingWorkspacePosition(
-      nextPosition,
-      window.innerWidth,
-      window.innerHeight,
-    )
-  }, [])
-
-  useEffect(() => {
-    const storedPosition = readStoredFloatingWorkspacePosition()
-    const initialPosition = syncPositionToViewport(
-      storedPosition ??
-        getDefaultFloatingWorkspacePosition(window.innerWidth, window.innerHeight),
-    )
-
-    setPosition(initialPosition)
-
-    const handleResize = () => {
-      setPosition((current) =>
-        syncPositionToViewport(
-          current ??
-            getDefaultFloatingWorkspacePosition(window.innerWidth, window.innerHeight),
-        ),
-      )
-    }
-
-    window.addEventListener("resize", handleResize)
-
-    return () => {
-      window.removeEventListener("resize", handleResize)
-    }
-  }, [syncPositionToViewport])
-
-  useEffect(() => {
-    if (!position) return
-
-    try {
-      window.localStorage.setItem(
-        WORKSPACE_FLOATING_HANDLE_STORAGE_KEY,
-        JSON.stringify(position),
-      )
-    } catch {
-      // Ignore storage write failures and keep the handle draggable for this session.
-    }
-  }, [position])
-
-  const finishDragging = useCallback(
-    (pointerId: number, target: HTMLButtonElement) => {
-      const dragState = dragStateRef.current
-      if (!dragState) return
-
-      if (target.hasPointerCapture(pointerId)) {
-        target.releasePointerCapture(pointerId)
-      }
-
-      dragStateRef.current = null
-      suppressClickRef.current = dragState.moved
-      setIsDragging(false)
-      setPosition((current) => {
-        if (!current) return current
-
-        return getSnappedFloatingWorkspacePosition(
-          current,
-          window.innerWidth,
-          window.innerHeight,
-        )
-      })
-    },
-    [],
-  )
-
-  const handlePointerDown = useCallback(
-    (event: React.PointerEvent<HTMLButtonElement>) => {
-      if (event.button !== 0 || !position) return
-
-      dragStateRef.current = {
-        pointerId: event.pointerId,
-        startX: event.clientX,
-        startY: event.clientY,
-        origin: position,
-        moved: false,
-      }
-      suppressClickRef.current = false
-      setIsDragging(true)
-      event.currentTarget.setPointerCapture(event.pointerId)
-    },
-    [position],
-  )
-
-  const handlePointerMove = useCallback((event: React.PointerEvent<HTMLButtonElement>) => {
-    const dragState = dragStateRef.current
-    if (!dragState || dragState.pointerId !== event.pointerId) return
-
-    const deltaX = event.clientX - dragState.startX
-    const deltaY = event.clientY - dragState.startY
-
-    if (!dragState.moved && Math.hypot(deltaX, deltaY) > 6) {
-      dragState.moved = true
-    }
-
-    setPosition(
-      clampFloatingWorkspacePosition(
-        {
-          x: dragState.origin.x + deltaX,
-          y: dragState.origin.y + deltaY,
-        },
-        window.innerWidth,
-        window.innerHeight,
-      ),
-    )
-  }, [])
-
-  const handlePointerUp = useCallback(
-    (event: React.PointerEvent<HTMLButtonElement>) => {
-      finishDragging(event.pointerId, event.currentTarget)
-    },
-    [finishDragging],
-  )
-
-  const handlePointerCancel = useCallback(
-    (event: React.PointerEvent<HTMLButtonElement>) => {
-      finishDragging(event.pointerId, event.currentTarget)
-    },
-    [finishDragging],
-  )
-
-  const handleClick = useCallback(
-    (event: React.MouseEvent<HTMLButtonElement>) => {
-      if (suppressClickRef.current && event.detail !== 0) {
-        suppressClickRef.current = false
-        return
-      }
-
-      suppressClickRef.current = false
-      onToggle()
-    },
-    [onToggle],
-  )
-
-  if (!position) {
-    return null
-  }
-
-  return (
-    <button
-      type="button"
-      onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
-      onPointerCancel={handlePointerCancel}
-      onClick={handleClick}
-      aria-label={ariaLabel}
-      aria-pressed={isOpen}
-      title={ariaLabel}
-      className={cn(
-        "group fixed left-0 top-0 z-30 flex select-none touch-none items-center justify-center bg-transparent text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background lg:hidden",
-        "h-11 w-11",
-        isDragging
-          ? "cursor-grabbing"
-          : "cursor-grab",
-      )}
-      style={{
-        transform: `translate3d(${position.x}px, ${position.y}px, 0)`,
-        transition:
-          isDragging || prefersReducedMotion
-            ? "none"
-            : "transform 340ms cubic-bezier(0.22, 1, 0.36, 1), border-color 200ms ease-out, background-color 200ms ease-out",
-        willChange: isDragging ? "transform" : undefined,
-      }}
-    >
-      <span
-        className={cn(
-          "pixel-orb-shape pointer-events-none relative flex h-9 w-9 items-center justify-center shadow-[0_10px_24px_hsl(var(--background)/0.22)] transition-[transform,filter] duration-200",
-          isDragging ? "scale-[0.98]" : "group-hover:-translate-y-px",
-          isOpen ? "bg-primary/70" : "bg-border/70",
-        )}
-        aria-hidden="true"
-      >
-        <span
-          className={cn(
-            "pixel-orb-shape absolute inset-[2px] block",
-            isOpen
-              ? "bg-[linear-gradient(180deg,hsl(var(--primary)/0.22),hsl(var(--background)))]"
-              : "bg-background",
-          )}
-        />
-        <span
-          className={cn(
-            "pointer-events-none relative z-[1] flex h-5 w-5 items-center justify-center text-[11px] leading-none transition-colors duration-200",
-            isOpen ? "text-primary" : "text-foreground",
-          )}
-        >
-          ◈
-        </span>
-      </span>
-      {artifactCount > 0 ? (
-        <span className="absolute -right-0.5 -top-0.5 inline-flex h-4 min-w-[18px] items-center justify-center border border-primary/50 bg-primary px-1 font-pixel text-[8px] text-primary-foreground">
-          {artifactCount > 99 ? "99+" : artifactCount}
-        </span>
-      ) : null}
-    </button>
-  )
-}
-
-/* ─── Helpers ─── */
 
 function formatRelativeTime(ts: number, locale: string): string {
   const diffMs = ts - Date.now()
@@ -1040,8 +839,6 @@ function formatRelativeTime(ts: number, locale: string): string {
   })
 }
 
-/* ─── Main page ─── */
-
 export default function AIPlayground() {
   const t = useTranslations("ai")
   const locale = useLocale()
@@ -1057,11 +854,8 @@ export default function AIPlayground() {
   const { removeChat } = useGlobalChatRuntime()
 
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const [desktopWorkspaceViewport, setDesktopWorkspaceViewport] = useState(false)
-  const [workspaceOpen, setWorkspaceOpen] = useState(false)
-  const [workspaceOpenMobile, setWorkspaceOpenMobile] = useState(false)
 
-  const activeThread = threads.find((t) => t.id === activeThreadId)
+  const activeThread = threads.find((thread) => thread.id === activeThreadId)
   const activeThreadDisplayTitle = activeThread
     ? deriveThreadDisplayTitle(activeThread, {
         defaultTitle: t("defaultChatTitle"),
@@ -1069,55 +863,11 @@ export default function AIPlayground() {
         aboutJieTitle: t("aboutJieChatTitle"),
       })
     : null
-  const workspace = useThreadWorkspace(activeThreadId)
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia(WORKSPACE_DESKTOP_MEDIA_QUERY)
-    const syncViewportMode = () => {
-      setDesktopWorkspaceViewport(mediaQuery.matches)
-    }
-
-    syncViewportMode()
-
-    mediaQuery.addEventListener("change", syncViewportMode)
-
-    return () => {
-      mediaQuery.removeEventListener("change", syncViewportMode)
-    }
-  }, [])
-
-  useEffect(() => {
-    if (desktopWorkspaceViewport) {
-      setWorkspaceOpenMobile(false)
-      return
-    }
-
-    setWorkspaceOpen(false)
-  }, [desktopWorkspaceViewport])
-
-  // Close workspace when switching threads
-  useEffect(() => {
-    setWorkspaceOpen(false)
-    setWorkspaceOpenMobile(false)
-  }, [activeThreadId])
-
-  const handleOpenWorkspace = useCallback(() => {
-    if (desktopWorkspaceViewport) {
-      setWorkspaceOpen(true)
-      return
-    }
-
-    setWorkspaceOpenMobile(true)
-  }, [desktopWorkspaceViewport])
-
-  const handleWorkspaceDrawerToggle = useCallback(() => {
-    setWorkspaceOpenMobile((open) => !open)
-  }, [])
 
   const handleActiveMessagesChange = useCallback(
-    (msgs: UIMessage[]) => {
+    (messages: UIMessage[]) => {
       if (!activeThreadId) return
-      updateThreadMessages(activeThreadId, msgs)
+      updateThreadMessages(activeThreadId, messages)
     },
     [activeThreadId, updateThreadMessages],
   )
@@ -1131,12 +881,18 @@ export default function AIPlayground() {
     [removeChat, deleteThread],
   )
 
-  const artifactCount = workspace.artifacts.length
-
   return (
-    <div className="relative flex h-[calc(100svh-3.5rem)] w-full flex-row overflow-hidden">
-      {/* ── Desktop Fixed Sidebar ── */}
-      <aside className="ai-lab-sidebar-pane fixed left-0 top-14 z-30 hidden h-[calc(100svh-3.5rem)] w-[260px] flex-col border-r-2 border-border/60 md:flex">
+    <div
+      className="relative flex w-full flex-row overflow-hidden font-pixel"
+      style={{ height: "calc(100svh - var(--app-nav-offset))" }}
+    >
+      <aside
+        className="ai-lab-sidebar-pane fixed left-0 z-30 hidden w-[280px] flex-col border-r border-border/45 md:flex"
+        style={{
+          top: "var(--app-nav-offset)",
+          height: "calc(100svh - var(--app-nav-offset))",
+        }}
+      >
         <ThreadSidebar
           activeThreadId={activeThreadId}
           hydrated={hydrated}
@@ -1155,15 +911,12 @@ export default function AIPlayground() {
         />
       </aside>
 
-      {/* ── Main Chat Area ── */}
-      <div className="ai-lab-shell relative flex h-full w-full flex-col overflow-hidden md:ml-[260px]">
-        {/* Minimal toolbar */}
-        <div className="flex shrink-0 items-center justify-between border-b-2 border-border/60 px-3 py-2 md:px-4">
-          <div className="flex items-center gap-2">
-            {/* Mobile sidebar toggle */}
+      <div className="ai-lab-shell relative flex h-full w-full flex-col overflow-hidden md:ml-[280px]">
+        <div className="flex shrink-0 items-center justify-between gap-4 border-b border-border/45 bg-background/38 px-3 py-3.5 md:px-6 md:py-4">
+          <div className="flex min-w-0 items-center gap-3 md:gap-4">
             <button
-              onClick={() => setSidebarOpen((s) => !s)}
-              className="flex h-9 w-9 shrink-0 items-center justify-center border-2 border-border/60 bg-background/60 text-foreground transition-colors hover:border-primary/60 hover:bg-primary/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 md:hidden"
+              onClick={() => setSidebarOpen((open) => !open)}
+              className="flex h-10 w-10 shrink-0 items-center justify-center border border-border/55 bg-background/80 text-foreground transition-colors hover:border-primary/60 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 md:hidden"
               aria-label={
                 sidebarOpen
                   ? t("closeSidebar") ?? "Close sidebar"
@@ -1175,42 +928,34 @@ export default function AIPlayground() {
               <PixelMenuIcon isOpen={sidebarOpen} />
             </button>
 
-            <span className="max-w-[200px] truncate font-pixel text-[10px] uppercase tracking-[0.16em] text-muted-foreground md:max-w-[320px]">
-              {activeThreadDisplayTitle ?? t("eyebrow")}
-            </span>
+            <div className="min-w-0 space-y-1">
+              <p className="font-pixel text-[9px] uppercase tracking-[0.2em] text-primary/78">
+                AI Lab
+              </p>
+              <p className="truncate font-pixel text-[11px] uppercase tracking-[0.08em] text-foreground/88 md:text-[12px]">
+                {activeThreadDisplayTitle ?? t("compactDescription")}
+              </p>
+            </div>
           </div>
 
-          {/* Large-screen workspace toggle */}
           <button
-            onClick={() => setWorkspaceOpen((s) => !s)}
-            className="hidden h-9 items-center gap-2 border-2 border-border/60 bg-background/60 px-3 font-pixel text-[10px] uppercase tracking-[0.16em] text-foreground transition-colors hover:border-primary/60 hover:bg-primary/[0.06] md:inline-flex"
-            aria-label={
-              workspaceOpen
-                ? t("closeWorkspace") ?? "Close workspace"
-                : t("openWorkspace") ?? "Open workspace"
-            }
-            aria-expanded={workspaceOpen}
+            type="button"
+            onClick={() => {
+              createThread()
+              setSidebarOpen(false)
+            }}
+            className="inline-flex h-9 items-center justify-center border border-border/50 bg-background/72 px-3 font-pixel text-[10px] uppercase tracking-[0.16em] text-foreground transition-colors hover:border-primary/60 hover:text-primary md:hidden"
           >
-            <span className="text-lg leading-none">◈</span>
-            <span>{t("workspaceEyebrow")}</span>
-            {artifactCount > 0 ? (
-              <span className="ml-1 inline-flex h-5 min-w-[20px] items-center justify-center bg-primary px-1.5 font-pixel text-[9px] text-primary-foreground">
-                {artifactCount}
-              </span>
-            ) : null}
+            {t("newChat")}
           </button>
         </div>
 
-        <div className="relative flex flex-1 flex-row overflow-hidden">
-          {/* ── Mobile Sidebar (overlay drawer) ── */}
+        <div className="relative flex flex-1 overflow-hidden">
           <aside
             id="chat-sidebar"
             className={cn(
-              "ai-lab-sidebar-pane absolute inset-y-0 left-0 z-30 border-r-2 border-border/60 backdrop-blur-sm transition-all duration-200 ease-out md:hidden",
-              "w-[min(280px,85vw)]",
-              sidebarOpen
-                ? "translate-x-0 opacity-100"
-                : "-translate-x-full opacity-0",
+              "ai-lab-sidebar-pane absolute inset-y-0 left-0 z-30 w-[min(290px,86vw)] border-r border-border/45 transition-all duration-200 ease-out md:hidden",
+              sidebarOpen ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0",
             )}
           >
             <ThreadSidebar
@@ -1231,125 +976,37 @@ export default function AIPlayground() {
             />
           </aside>
 
-          {/* Mobile overlay for sidebar */}
-          {sidebarOpen && (
+          {sidebarOpen ? (
             <div
-              className="absolute inset-0 z-20 touch-none bg-background/80 backdrop-blur-sm transition-opacity duration-200 md:hidden"
+              className="absolute inset-0 z-20 bg-background/72 backdrop-blur-sm md:hidden"
               onClick={() => setSidebarOpen(false)}
               aria-hidden="true"
             />
-          )}
+          ) : null}
 
-          {/* ── Chat area (main) ── */}
           <main className="ai-lab-chat-pane relative flex flex-1 flex-col overflow-hidden">
-            <div className="h-full">
-              {!hydrated ? (
-                <div className="flex h-full items-center justify-center">
-                  <p className="font-pixel text-sm uppercase tracking-[0.2em] text-muted-foreground/40">
-                    {t("loadingChats")}
-                  </p>
-                </div>
-              ) : activeThread ? (
-                <ChatThreadView
-                  key={activeThread.id}
-                  thread={activeThread}
-                  onMessagesChange={handleActiveMessagesChange}
-                  workspace={workspace}
-                  onOpenWorkspace={handleOpenWorkspace}
-                  locale={locale}
-                />
-              ) : (
-                <div className="flex h-full items-center justify-center">
-                  <p className="font-pixel text-sm uppercase tracking-[0.2em] text-muted-foreground/50">
-                    {t("noChats") ?? "No conversations yet"}
-                  </p>
-                </div>
-              )}
-            </div>
-          </main>
-
-          {/* ── Large-screen Workspace Panel (collapsible) ── */}
-          <aside
-            className={cn(
-              "ai-lab-workspace-pane hidden flex-col overflow-hidden border-l-2 border-border/60 transition-all duration-300 ease-out lg:flex",
-              workspaceOpen
-                ? "w-[420px] border-opacity-100 opacity-100"
-                : "w-0 border-opacity-0 opacity-0",
-            )}
-          >
-            {workspaceOpen && activeThread ? (
-              <WorkspacePanel
-                threadTitle={activeThreadDisplayTitle ?? activeThread.title}
-                artifacts={workspace.artifacts}
-                activeArtifactId={workspace.activeArtifactId}
-                activeArtifact={workspace.activeArtifact}
-                pendingIntent={workspace.pendingIntent}
-                onSelectArtifact={workspace.setActiveArtifact}
-                onClearWorkspace={workspace.clearWorkspace}
-                isBusy={Boolean(workspace.pendingIntent)}
+            {!hydrated ? (
+              <div className="flex h-full items-center justify-center">
+                <p className="font-pixel text-[10px] uppercase tracking-[0.16em] text-muted-foreground/68">
+                  {t("loadingChats")}
+                </p>
+              </div>
+            ) : activeThread ? (
+              <ChatThreadView
+                key={activeThread.id}
+                thread={activeThread}
+                onMessagesChange={handleActiveMessagesChange}
+                locale={locale}
               />
             ) : (
-              <div className="flex h-full items-center justify-center">
-                <p className="font-pixel text-sm uppercase tracking-[0.2em] text-muted-foreground/30">
-                  {t("workspaceClosed") ?? "Workspace closed"}
+              <div className="flex h-full items-center justify-center px-6 text-center">
+                <p className="max-w-2xl font-pixel text-[11px] uppercase leading-7 tracking-[0.08em] text-muted-foreground/72">
+                  {t("noChats") ?? "No conversations yet"}
                 </p>
               </div>
             )}
-          </aside>
-
-          {/* ── Mobile + Tablet Workspace Drawer ── */}
-          {workspaceOpenMobile && (
-            <>
-              <div
-                className="fixed inset-x-0 bottom-0 top-14 z-40 bg-background/80 backdrop-blur-sm transition-opacity lg:hidden"
-                onClick={() => setWorkspaceOpenMobile(false)}
-                aria-hidden="true"
-              />
-              <div className="ai-lab-workspace-drawer fixed right-0 top-14 z-50 flex h-[calc(100svh-3.5rem)] w-[min(420px,88vw)] flex-col border-l-2 border-border/60 lg:hidden md:w-[min(460px,64vw)]">
-                <button
-                  onClick={() => setWorkspaceOpenMobile(false)}
-                  className="absolute left-3 top-3 z-10 px-1.5 py-0.5 font-pixel text-sm leading-none text-muted-foreground/40 transition-colors hover:text-destructive"
-                  aria-label={t("closeWorkspace") ?? "Close workspace"}
-                  title={t("closeWorkspace") ?? "Close workspace"}
-                >
-                  ×
-                </button>
-                <div className="box-border h-full pt-10">
-                  {activeThread ? (
-                    <WorkspacePanel
-                      threadTitle={activeThreadDisplayTitle ?? activeThread.title}
-                      artifacts={workspace.artifacts}
-                      activeArtifactId={workspace.activeArtifactId}
-                      activeArtifact={workspace.activeArtifact}
-                      pendingIntent={workspace.pendingIntent}
-                      onSelectArtifact={workspace.setActiveArtifact}
-                      onClearWorkspace={workspace.clearWorkspace}
-                      isBusy={Boolean(workspace.pendingIntent)}
-                    />
-                  ) : (
-                    <div className="flex h-full items-center justify-center">
-                      <p className="font-pixel text-sm uppercase tracking-[0.2em] text-muted-foreground/50">
-                        {t("workspaceEmpty") ?? "Workspace is empty"}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </>
-          )}
+          </main>
         </div>
-
-        {/* ── Mobile + tablet floating workspace handle ── */}
-        <FloatingWorkspaceHandle
-          isOpen={workspaceOpenMobile}
-          artifactCount={artifactCount}
-          onToggle={handleWorkspaceDrawerToggle}
-          ariaLabel={
-            workspaceOpenMobile
-              ? t("closeWorkspace") ?? "Close workspace"
-              : t("openWorkspace") ?? "Open workspace"
-          }
-        />
       </div>
     </div>
   )

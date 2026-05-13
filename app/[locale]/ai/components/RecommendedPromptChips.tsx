@@ -28,12 +28,11 @@ export default function RecommendedPromptChips({
             void onSelect(prompt)
           }}
           className={cn(
-            "h-auto max-w-full px-3 py-2 text-left text-[9px] uppercase tracking-[0.16em]",
-            "border-primary/35 bg-primary/[0.05] text-primary/90",
-            "hover:border-primary/60 hover:bg-primary/[0.12] hover:text-primary",
+            "h-auto max-w-full border border-border/50 bg-background/76 px-3.5 py-2.5 text-left font-pixel text-[10px] uppercase tracking-[0.12em] text-foreground shadow-none",
+            "hover:border-primary/40 hover:bg-primary/[0.05] hover:text-primary",
           )}
         >
-          <span className="block whitespace-normal leading-5 sm:leading-4">
+          <span className="block whitespace-normal leading-6">
             {prompt.label}
           </span>
         </Button>

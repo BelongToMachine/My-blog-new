@@ -49,10 +49,10 @@ export default function ThreadSidebar({
 
   return (
     <div className="flex h-full flex-col">
-      <div className="shrink-0 border-b-2 border-border/60 p-3 md:p-4">
+      <div className="shrink-0 border-b border-border/35 p-3 md:p-4">
         <button
           onClick={onCreateThread}
-          className="flex w-full items-center justify-center gap-2 border-2 border-primary/50 bg-primary/[0.06] px-3 py-2.5 font-pixel text-[10px] uppercase tracking-[0.16em] text-primary transition-colors hover:border-primary hover:bg-primary/[0.12]"
+          className="flex w-full items-center justify-center gap-2 border border-border/45 bg-background/72 px-3 py-2.5 font-pixel text-[10px] uppercase tracking-[0.16em] text-foreground transition-colors hover:border-primary/55 hover:text-primary"
         >
           <span className="text-lg leading-none">+</span>
           <span>{t("newChat") ?? "New Chat"}</span>
@@ -77,16 +77,16 @@ export default function ThreadSidebar({
                 <div
                   key={thread.id}
                   className={cn(
-                    "group relative overflow-hidden border-2 transition-[border-color,background-color] duration-200",
+                    "group relative overflow-hidden border transition-[border-color,background-color] duration-200",
                     isActive
-                      ? "border-primary/65 bg-primary/[0.1]"
-                      : "border-border/30 bg-background/30 hover:border-border/60 hover:bg-background/60",
+                      ? "border-primary/38 bg-primary/[0.06]"
+                      : "border-transparent bg-transparent hover:border-border/35 hover:bg-background/54",
                   )}
                 >
                   {isActive ? (
                     <span
                       aria-hidden="true"
-                      className="absolute inset-y-0 left-0 w-[3px] bg-primary"
+                      className="absolute inset-y-2 left-0 w-px bg-primary"
                     />
                   ) : null}
 
@@ -97,7 +97,7 @@ export default function ThreadSidebar({
                   >
                     <p
                       className={cn(
-                        "truncate font-pixel text-[11px] tracking-[0.06em]",
+                        "truncate text-sm",
                         isActive ? "text-foreground" : "text-foreground/90",
                       )}
                     >
@@ -105,8 +105,8 @@ export default function ThreadSidebar({
                     </p>
                     <p
                       className={cn(
-                        "mt-1 font-pixel text-[9px] uppercase tracking-[0.16em]",
-                        isActive ? "text-primary/82" : "text-muted-foreground/48",
+                        "mt-1 font-pixel text-[9px] uppercase tracking-[0.14em]",
+                        isActive ? "text-primary/72" : "text-muted-foreground/46",
                       )}
                     >
                       {formatRelativeTime(thread.updatedAt, locale)}
@@ -142,7 +142,7 @@ export default function ThreadSidebar({
         )}
       </div>
 
-      <div className="shrink-0 border-t border-border/40 px-3 py-2">
+      <div className="shrink-0 border-t border-border/35 px-3 py-2">
         <p className="font-pixel text-[9px] uppercase tracking-[0.2em] text-muted-foreground/40">
           {hydrated ? threads.length : 0}{" "}
           {threads.length === 1
