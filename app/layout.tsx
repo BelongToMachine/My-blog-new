@@ -1,19 +1,11 @@
 import "./globals.css"
 import type { Metadata } from "next"
 import Script from "next/script"
-import { JetBrains_Mono } from "next/font/google"
 import "@radix-ui/themes/styles.css"
 import "@pigment-css/react/styles.css"
 import { getLocale } from "next-intl/server"
 import { GlobalChatRuntimeProvider } from "./context/GlobalChatRuntimeContext"
 import { Analytics } from "@vercel/analytics/next"
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-jetbrains-mono",
-  display: "swap",
-  weight: ["400", "500", "600", "700"],
-})
 
 export const metadata: Metadata = {
   title: "Developer — Front-End Developer & AI Prompt Engineer",
@@ -43,7 +35,7 @@ export default async function RootLayout({
   const locale = await getLocale()
 
   return (
-    <html lang={locale} suppressHydrationWarning className={jetbrainsMono.variable}>
+    <html lang={locale} suppressHydrationWarning>
       <head>
         <Script id="theme-script" src="/index.js" strategy="beforeInteractive" />
       </head>

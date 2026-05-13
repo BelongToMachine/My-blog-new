@@ -59,7 +59,7 @@ export default async function LocaleLayout({
             <RadixThemeProvider>
               <NavBar />
               <CursorManager />
-              <main className="pt-14">{children}</main>
+              <main style={{ paddingTop: "var(--app-nav-offset)" }}>{children}</main>
               <Footer />
             </RadixThemeProvider>
             <ReactQueryDevtools />
