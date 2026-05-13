@@ -18,7 +18,7 @@ export default function TimelineBlock({
   return (
     <div className="space-y-4">
       {title ? (
-        <p className="font-pixel text-xs uppercase tracking-[0.22em] text-primary">
+        <p className="font-pixel text-[11px] uppercase tracking-[0.16em] text-primary">
           {title}
         </p>
       ) : null}
@@ -33,13 +33,13 @@ export default function TimelineBlock({
               ) : null}
             </div>
             <div className="pb-5">
-              <span className="font-pixel mb-1 block text-[10px] uppercase tracking-[0.2em] text-primary/80">
+              <span className="mb-1 block font-pixel text-[10px] uppercase tracking-[0.14em] text-primary/78">
                 {item.period}
               </span>
-              <p className="mb-1 text-sm font-medium text-foreground">
+              <p className="mb-1 font-pixel text-[12px] tracking-[0.05em] text-foreground">
                 {item.title}
               </p>
-              <p className="text-sm leading-6 text-muted-foreground">
+              <p className="text-[12px] leading-6 tracking-[0.04em] text-muted-foreground">
                 {item.description}
               </p>
             </div>

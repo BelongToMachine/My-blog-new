@@ -28,8 +28,8 @@ function ReferenceCard({
 
   return (
     <div className="border-l-2 border-primary/30 bg-primary/[0.04] py-2 pl-3 pr-2">
-      <p className="text-sm font-medium text-foreground">{titleNode}</p>
-      <p className="text-sm leading-6 text-muted-foreground">{item.reason}</p>
+      <p className="font-pixel text-[12px] tracking-[0.05em] text-foreground">{titleNode}</p>
+      <p className="text-[12px] leading-6 tracking-[0.04em] text-muted-foreground">{item.reason}</p>
     </div>
   )
 }
@@ -54,14 +54,14 @@ export default function RoleFitReportBlock({
   return (
     <div className="space-y-5">
       {title ? (
-        <p className="font-pixel text-xs uppercase tracking-[0.22em] text-primary">
+        <p className="font-pixel text-[11px] uppercase tracking-[0.16em] text-primary">
           {title}
         </p>
       ) : null}
 
       {typeof fitScore === "number" ? (
         <div className="flex items-center gap-3">
-          <span className="font-pixel text-[10px] uppercase tracking-[0.2em] text-primary/80">
+          <span className="font-pixel text-[10px] uppercase tracking-[0.14em] text-primary/78">
             {t("roleFitScore")}
           </span>
           <div className="h-2 flex-1 bg-muted">
@@ -70,20 +70,22 @@ export default function RoleFitReportBlock({
               style={{ width: `${Math.max(0, Math.min(100, fitScore))}%` }}
             />
           </div>
-          <span className="font-pixel text-xs text-primary">{fitScore}%</span>
+          <span className="font-pixel text-[11px] uppercase tracking-[0.08em] text-primary">
+            {fitScore}%
+          </span>
         </div>
       ) : null}
 
       {strengths.length > 0 ? (
         <div>
-          <p className="font-pixel mb-2 text-[10px] uppercase tracking-[0.24em] text-primary/80">
+          <p className="mb-2 font-pixel text-[10px] uppercase tracking-[0.16em] text-primary/78">
             {t("roleFitStrengths")}
           </p>
           <ul className="space-y-1.5">
             {strengths.map((strength, index) => (
               <li
                 key={index}
-                className="flex items-start gap-2 text-sm leading-6 text-foreground/90"
+                className="flex items-start gap-2 text-[12px] leading-6 tracking-[0.04em] text-foreground/90"
               >
                 <span className="mt-1.5 block h-1.5 w-1.5 shrink-0 bg-primary" />
                 {strength}
@@ -95,7 +97,7 @@ export default function RoleFitReportBlock({
 
       {matchedProjects.length > 0 ? (
         <div>
-          <p className="font-pixel mb-2 text-[10px] uppercase tracking-[0.24em] text-primary/80">
+          <p className="mb-2 font-pixel text-[10px] uppercase tracking-[0.16em] text-primary/78">
             {t("roleFitMatchedProjects")}
           </p>
           <div className="space-y-2">
@@ -111,7 +113,7 @@ export default function RoleFitReportBlock({
 
       {matchedArticles.length > 0 ? (
         <div>
-          <p className="font-pixel mb-2 text-[10px] uppercase tracking-[0.24em] text-primary/80">
+          <p className="mb-2 font-pixel text-[10px] uppercase tracking-[0.16em] text-primary/78">
             {t("roleFitMatchedArticles")}
           </p>
           <div className="space-y-2">
@@ -128,14 +130,14 @@ export default function RoleFitReportBlock({
 
       {possibleRisks.length > 0 ? (
         <div>
-          <p className="font-pixel mb-2 text-[10px] uppercase tracking-[0.24em] text-primary/80">
+          <p className="mb-2 font-pixel text-[10px] uppercase tracking-[0.16em] text-primary/78">
             {t("roleFitPossibleRisks")}
           </p>
           <ul className="space-y-1.5">
             {possibleRisks.map((risk, index) => (
               <li
                 key={index}
-                className="flex items-start gap-2 text-sm leading-6 text-foreground/90"
+                className="flex items-start gap-2 text-[12px] leading-6 tracking-[0.04em] text-foreground/90"
               >
                 <span className="mt-1.5 block h-1.5 w-1.5 shrink-0 bg-destructive" />
                 {risk}
@@ -147,14 +149,14 @@ export default function RoleFitReportBlock({
 
       {recommendedTalkingPoints.length > 0 ? (
         <div>
-          <p className="font-pixel mb-2 text-[10px] uppercase tracking-[0.24em] text-primary/80">
+          <p className="mb-2 font-pixel text-[10px] uppercase tracking-[0.16em] text-primary/78">
             {t("roleFitRecommendedTalkingPoints")}
           </p>
           <ul className="space-y-1.5">
             {recommendedTalkingPoints.map((point, index) => (
               <li
                 key={index}
-                className="flex items-start gap-2 text-sm leading-6 text-foreground/90"
+                className="flex items-start gap-2 text-[12px] leading-6 tracking-[0.04em] text-foreground/90"
               >
                 <span className="mt-1.5 block h-1.5 w-1.5 shrink-0 bg-primary" />
                 {point}

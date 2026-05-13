@@ -24,36 +24,36 @@ export default function ProfileCardBlock({
   return (
     <div className="space-y-4">
       {title ? (
-        <p className="font-pixel text-xs uppercase tracking-[0.22em] text-primary">
+        <p className="font-pixel text-[11px] uppercase tracking-[0.16em] text-primary">
           {title}
         </p>
       ) : null}
 
       <div className="space-y-1">
-        <p className="font-pixel text-lg uppercase tracking-[0.1em] text-foreground">
+        <p className="font-pixel text-[1rem] tracking-[0.06em] text-foreground">
           {name}
         </p>
-        <p className="text-sm text-muted-foreground">{role}</p>
-        <p className="text-sm text-muted-foreground">{location}</p>
+        <p className="text-[12px] leading-6 tracking-[0.04em] text-muted-foreground">{role}</p>
+        <p className="text-[12px] leading-6 tracking-[0.04em] text-muted-foreground">{location}</p>
       </div>
 
       {experience ? (
         <div>
-          <p className="font-pixel mb-1.5 text-[10px] uppercase tracking-[0.24em] text-primary/80">
+          <p className="mb-1.5 font-pixel text-[10px] uppercase tracking-[0.16em] text-primary/76">
             {t("profileExperience")}
           </p>
-          <p className="text-sm leading-7 text-foreground/90">{experience}</p>
+          <p className="text-[12px] leading-6 tracking-[0.04em] text-foreground/90">{experience}</p>
         </div>
       ) : null}
 
       {focus.length > 0 ? (
         <div>
-          <p className="font-pixel mb-1.5 text-[10px] uppercase tracking-[0.24em] text-primary/80">
+          <p className="mb-1.5 font-pixel text-[10px] uppercase tracking-[0.16em] text-primary/76">
             {t("profileFocus")}
           </p>
           <ul className="space-y-1">
             {focus.map((item, index) => (
-              <li key={index} className="text-sm text-foreground/90">
+              <li key={index} className="text-[12px] leading-6 tracking-[0.04em] text-foreground/90">
                 {item}
               </li>
             ))}
@@ -63,12 +63,12 @@ export default function ProfileCardBlock({
 
       {productAreas.length > 0 ? (
         <div>
-          <p className="font-pixel mb-1.5 text-[10px] uppercase tracking-[0.24em] text-primary/80">
+          <p className="mb-1.5 font-pixel text-[10px] uppercase tracking-[0.16em] text-primary/76">
             {t("profileProductAreas")}
           </p>
           <ul className="space-y-1">
             {productAreas.map((item, index) => (
-              <li key={index} className="text-sm text-foreground/90">
+              <li key={index} className="text-[12px] leading-6 tracking-[0.04em] text-foreground/90">
                 {item}
               </li>
             ))}
@@ -78,10 +78,10 @@ export default function ProfileCardBlock({
 
       {contact ? (
         <div>
-          <p className="font-pixel mb-1.5 text-[10px] uppercase tracking-[0.24em] text-primary/80">
+          <p className="mb-1.5 font-pixel text-[10px] uppercase tracking-[0.16em] text-primary/76">
             {t("profileContact")}
           </p>
-          <div className="space-y-1 text-sm text-foreground/90">
+          <div className="space-y-1 text-[12px] leading-6 tracking-[0.04em] text-foreground/90">
             {contact.email ? <p>{contact.email}</p> : null}
             {contact.github ? <p>{contact.github}</p> : null}
             {contact.linkedin ? <p>{contact.linkedin}</p> : null}
