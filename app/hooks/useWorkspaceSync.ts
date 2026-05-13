@@ -161,6 +161,17 @@ function normalizeVisualToolOutput(
   }
 }
 
+export function resolveVisualToolOutputPayload(
+  toolName: string,
+  output: unknown,
+): WorkspaceArtifactPayload | null {
+  if (!isVisualToolName(toolName)) {
+    return null
+  }
+
+  return normalizeVisualToolOutput(toolName, output)
+}
+
 function applyResolvedPayload(
   payload: WorkspaceArtifactPayload,
   sourceId: string,
