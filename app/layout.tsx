@@ -37,6 +37,19 @@ export default async function RootLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <head>
+        <script
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){" +
+              "var m=localStorage.getItem('color-mode');" +
+              "if(m!=='light'&&m!=='dark'){m=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';}" +
+              "document.documentElement.classList.toggle('dark',m==='dark');" +
+              "document.documentElement.dataset.colorMode=m;" +
+              "document.documentElement.style.colorScheme=m;" +
+              "})();",
+          }}
+        />
         <Script id="theme-script" src="/index.js" strategy="beforeInteractive" />
       </head>
       <body>
