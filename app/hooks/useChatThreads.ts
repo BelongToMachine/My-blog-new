@@ -11,6 +11,7 @@ export interface ChatThread {
   updatedAt: number
   messages: UIMessage[]
   summary?: string
+  isStarred?: boolean
 }
 
 // ─── LocalStorage fallback for graceful degradation ───
@@ -24,7 +25,12 @@ function lsLoadThreads(): ChatThread[] {
     const raw = window.localStorage.getItem(LS_THREADS_KEY)
     if (!raw) return []
     const parsed = JSON.parse(raw) as ChatThread[]
-    return Array.isArray(parsed) ? parsed : []
+    return Array.isArray(parsed)
+      ? parsed.map((thread) => ({
+          ...thread,
+          isStarred: Boolean(thread.isStarred),
+        }))
+      : []
   } catch {
     return []
   }
@@ -75,6 +81,43 @@ interface ApiThreadWithMessages extends ApiThread {
   }>
 }
 
+function sortThreads(threads: ChatThread[]): ChatThread[] {
+  return [...threads].sort((a, b) => {
+    if (Boolean(a.isStarred) !== Boolean(b.isStarred)) {
+      return a.isStarred ? -1 : 1
+    }
+
+    return b.updatedAt - a.updatedAt
+  })
+}
+
+function mergeThreadsWithLocalCache(
+  apiThreads: ChatThread[],
+  cachedThreads: ChatThread[],
+): ChatThread[] {
+  const cachedById = new Map(cachedThreads.map((thread) => [thread.id, thread]))
+
+  return apiThreads.map((thread) => {
+    const cached = cachedById.get(thread.id)
+    if (!cached) {
+      return {
+        ...thread,
+        isStarred: Boolean(thread.isStarred),
+      }
+    }
+
+    const preferCached = cached.updatedAt > thread.updatedAt
+
+    return {
+      ...thread,
+      title: preferCached && cached.title ? cached.title : thread.title,
+      messages: preferCached && cached.messages.length > 0 ? cached.messages : thread.messages,
+      summary: preferCached && cached.summary ? cached.summary : thread.summary,
+      isStarred: Boolean(cached.isStarred),
+    }
+  })
+}
+
 function generateId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
 }
@@ -87,6 +130,7 @@ function createInitialThread(): ChatThread {
     updatedAt: Date.now(),
     messages: [],
     summary: undefined,
+    isStarred: false,
   }
 }
 
@@ -109,6 +153,7 @@ function apiThreadToChatThread(api: ApiThread): ChatThread {
     createdAt: new Date(api.createdAt).getTime(),
     updatedAt: new Date(api.updatedAt).getTime(),
     messages: [],
+    isStarred: false,
   }
 }
 
@@ -125,6 +170,7 @@ function apiThreadWithMessagesToChatThread(api: ApiThreadWithMessages): ChatThre
       parts: JSON.parse(msg.parts) as UIMessage["parts"],
       createdAt: new Date(msg.createdAt).getTime(),
     })),
+    isStarred: false,
   }
 }
 
@@ -273,23 +319,30 @@ export function useChatThreads() {
     if (!threadsQuery.isSuccess || hydrated) return
 
     const apiThreads = threadsQuery.data
+    const lsThreads = lsLoadThreads()
+
     if (apiThreads.length > 0) {
-      // API returned threads → use them
-      setLocalThreads(apiThreads)
-      setActiveThreadId(apiThreads[0].id)
+      const mergedThreads = sortThreads(mergeThreadsWithLocalCache(apiThreads, lsThreads))
+      const activeId = lsLoadActiveId()
+      setLocalThreads(mergedThreads)
+      setActiveThreadId(
+        activeId && mergedThreads.some((thread) => thread.id === activeId)
+          ? activeId
+          : mergedThreads[0].id,
+      )
       setHydrated(true)
       return
     }
 
     // API returned empty → try localStorage fallback
-    const lsThreads = lsLoadThreads()
     if (lsThreads.length > 0) {
-      setLocalThreads(lsThreads)
+      const sortedThreads = sortThreads(lsThreads)
+      setLocalThreads(sortedThreads)
       const activeId = lsLoadActiveId()
       setActiveThreadId(
-        activeId && lsThreads.some((t) => t.id === activeId)
+        activeId && sortedThreads.some((t) => t.id === activeId)
           ? activeId
-          : lsThreads[0].id,
+          : sortedThreads[0].id,
       )
       setHydrated(true)
       return
@@ -308,7 +361,7 @@ export function useChatThreads() {
     onSuccess: (newThread) => {
       queryClient.invalidateQueries({ queryKey: THREADS_QUERY_KEY })
       setLocalThreads((prev) => {
-        const next = [newThread, ...prev.filter((t) => t.id !== newThread.id)]
+        const next = sortThreads([newThread, ...prev.filter((t) => t.id !== newThread.id)])
         lsSaveThreads(next)
         return next
       })
@@ -325,7 +378,7 @@ export function useChatThreads() {
     onSuccess: (_, id) => {
       queryClient.invalidateQueries({ queryKey: THREADS_QUERY_KEY })
       setLocalThreads((prev) => {
-        const next = prev.filter((t) => t.id !== id)
+        const next = sortThreads(prev.filter((t) => t.id !== id))
         lsSaveThreads(next)
         return next
       })
@@ -341,7 +394,7 @@ export function useChatThreads() {
     onError: (_, id) => {
       // API failed → still delete locally and sync LS
       setLocalThreads((prev) => {
-        const next = prev.filter((t) => t.id !== id)
+        const next = sortThreads(prev.filter((t) => t.id !== id))
         lsSaveThreads(next)
         return next
       })
@@ -422,14 +475,29 @@ export function useChatThreads() {
 
   const createThread = useCallback(() => {
     const tempThread = createInitialThread()
-    setLocalThreads((prev) => [tempThread, ...prev])
+    setLocalThreads((prev) => {
+      const next = sortThreads([tempThread, ...prev])
+      lsSaveThreads(next)
+      return next
+    })
     setActiveThreadId(tempThread.id)
 
     createThreadMut.mutate(undefined, {
       onSuccess: (serverThread) => {
-        setLocalThreads((prev) =>
-          prev.map((t) => (t.id === tempThread.id ? serverThread : t)),
-        )
+        setLocalThreads((prev) => {
+          const next = sortThreads(
+            prev.map((t) =>
+              t.id === tempThread.id
+                ? {
+                    ...serverThread,
+                    isStarred: t.isStarred,
+                  }
+                : t,
+            ),
+          )
+          lsSaveThreads(next)
+          return next
+        })
         setActiveThreadId(serverThread.id)
       },
       onError: () => {
@@ -442,7 +510,11 @@ export function useChatThreads() {
 
   const deleteThread = useCallback(
     (id: string) => {
-      setLocalThreads((prev) => prev.filter((t) => t.id !== id))
+      setLocalThreads((prev) => {
+        const next = sortThreads(prev.filter((t) => t.id !== id))
+        lsSaveThreads(next)
+        return next
+      })
       setActiveThreadId((current) => (current === id ? null : current))
       deleteThreadMut.mutate(id)
     },
@@ -451,30 +523,79 @@ export function useChatThreads() {
 
   const updateThreadMessages = useCallback(
     (id: string, messages: UIMessage[]) => {
-      const title =
+      const extractedTitle =
         messages.length > 0 ? extractTitleFromMessages(messages) : undefined
+
+      let nextTitle: string | undefined
 
       setLocalThreads((prev) => {
         const exists = prev.find((t) => t.id === id)
         if (!exists) return prev
 
+        nextTitle =
+          exists.title === "New Chat" ? (extractedTitle ?? exists.title) : exists.title
+
         const updated: ChatThread = {
           ...exists,
-          title: exists.title === "New Chat" ? (title ?? exists.title) : exists.title,
+          title: nextTitle,
           updatedAt: Date.now(),
           messages: JSON.parse(JSON.stringify(messages)),
         }
 
-        const next = [updated, ...prev.filter((t) => t.id !== id)]
+        const next = sortThreads([updated, ...prev.filter((t) => t.id !== id)])
         lsSaveThreads(next)
         return next
       })
 
-      // Persist to server (debounced by caller) while coalescing stream-time updates.
-      persistLatestMessages({ id, messages, title })
+      persistLatestMessages({ id, messages, title: nextTitle })
     },
     [persistLatestMessages],
   )
+
+  const renameThread = useCallback(
+    (id: string, title: string) => {
+      const nextTitle = title.trim()
+      if (!nextTitle) return
+
+      let nextMessages: UIMessage[] = []
+
+      setLocalThreads((prev) => {
+        const exists = prev.find((thread) => thread.id === id)
+        if (!exists) return prev
+
+        nextMessages = JSON.parse(JSON.stringify(exists.messages))
+
+        const updated: ChatThread = {
+          ...exists,
+          title: nextTitle,
+          updatedAt: Date.now(),
+        }
+
+        const next = sortThreads([updated, ...prev.filter((thread) => thread.id !== id)])
+        lsSaveThreads(next)
+        return next
+      })
+
+      persistLatestMessages({ id, messages: nextMessages, title: nextTitle })
+    },
+    [persistLatestMessages],
+  )
+
+  const toggleThreadStar = useCallback((id: string) => {
+    setLocalThreads((prev) => {
+      const exists = prev.find((thread) => thread.id === id)
+      if (!exists) return prev
+
+      const updated: ChatThread = {
+        ...exists,
+        isStarred: !exists.isStarred,
+      }
+
+      const next = sortThreads([updated, ...prev.filter((thread) => thread.id !== id)])
+      lsSaveThreads(next)
+      return next
+    })
+  }, [])
 
   const setActiveThread = useCallback((id: string | null) => {
     setActiveThreadId(id)
@@ -515,11 +636,18 @@ export function useChatThreads() {
     if (thread && thread.messages.length === 0) {
       fetchThreadWithMessages(activeThreadId).then((fullThread) => {
         if (fullThread && fullThread.messages.length > 0) {
-          setLocalThreads((prev) =>
-            prev.map((t) =>
-              t.id === activeThreadId ? fullThread : t,
-            ),
-          )
+          setLocalThreads((prev) => {
+            const next = prev.map((t) =>
+              t.id === activeThreadId
+                ? {
+                    ...fullThread,
+                    isStarred: t.isStarred,
+                  }
+                : t,
+            )
+            lsSaveThreads(next)
+            return next
+          })
         }
       })
     }
@@ -532,6 +660,8 @@ export function useChatThreads() {
     activeThreadId,
     createThread,
     deleteThread,
+    renameThread,
+    toggleThreadStar,
     updateThreadMessages,
     setActiveThread,
     isLoading: threadsQuery.isLoading || createThreadMut.isLoading,
