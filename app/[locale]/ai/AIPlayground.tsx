@@ -37,8 +37,11 @@ import {
   type WorkspaceArtifact,
   type WorkspaceArtifactPayload,
 } from "@/app/types/ai-workspace"
-import ChatLandingState from "./components/ChatLandingState"
+import RecommendedPromptChips from "./components/RecommendedPromptChips"
+import ArticlePickerModal from "./components/ArticlePickerModal"
 import ThreadSidebar from "./components/ThreadSidebar"
+import ThreadTitleMenu from "./components/ThreadTitleMenu"
+import { getLandingOpener } from "./landingOpeners"
 import { getSuggestedPrompts, type SuggestedPrompt } from "./recommendedPrompts"
 import { deriveThreadDisplayTitle } from "./threadDisplay"
 
@@ -408,18 +411,12 @@ const ChatMessagesViewport = React.memo(function ChatMessagesViewport({
   showThinking,
   lastAssistantMessageId,
   loadingLabel,
-  emptyLabel,
-  suggestedPrompts,
-  onSuggestedPromptSelect,
 }: {
   messages: UIMessage[]
   isBusy: boolean
   showThinking: boolean
   lastAssistantMessageId?: string
   loadingLabel: string
-  emptyLabel: string
-  suggestedPrompts: SuggestedPrompt[]
-  onSuggestedPromptSelect: (prompt: SuggestedPrompt) => void | Promise<void>
 }) {
   const scrollViewportRef = useRef<HTMLDivElement>(null)
 
@@ -438,15 +435,7 @@ const ChatMessagesViewport = React.memo(function ChatMessagesViewport({
       ref={scrollViewportRef}
       className="ai-lab-messages-viewport flex-1 overflow-y-auto px-4 pb-6 pt-5 md:px-8 md:pb-8 md:pt-7"
     >
-      {messages.length === 0 ? (
-        <ChatLandingState
-          emptyLabel={emptyLabel}
-          prompts={suggestedPrompts}
-          disabled={isBusy}
-          onSelectPrompt={onSuggestedPromptSelect}
-        />
-      ) : (
-        <div className="mx-auto flex w-full max-w-[860px] flex-col gap-8 md:gap-10">
+      <div className="mx-auto flex w-full max-w-[860px] flex-col gap-8 md:gap-10">
           {messages.map((message) => {
             const isUser = message.role === "user"
 
@@ -553,7 +542,6 @@ const ChatMessagesViewport = React.memo(function ChatMessagesViewport({
             </div>
           ) : null}
         </div>
-      )}
     </div>
   )
 })
@@ -652,8 +640,8 @@ const ChatComposer = React.memo(function ChatComposer({
         : "text-muted-foreground"
 
   return (
-    <div className="ai-lab-composer shrink-0 px-4 pb-4 pt-3 md:px-8 md:pb-6">
-      <div className="mx-auto max-w-[860px] space-y-3">
+    <div className="ai-lab-composer w-full shrink-0 px-4 pb-4 pt-3 md:px-8 md:pb-6">
+      <div className="mx-auto max-w-[1120px] space-y-3">
         {error && errorLabel ? (
           <p className="font-pixel text-[10px] uppercase tracking-[0.12em] text-destructive">
             {errorLabel}
@@ -668,7 +656,7 @@ const ChatComposer = React.memo(function ChatComposer({
             <button
               type="button"
               onClick={stop}
-              className="font-pixel text-[10px] uppercase tracking-[0.12em] text-muted-foreground transition-colors hover:text-destructive"
+              className="ai-lab-pixel-button px-3 py-1.5 text-[10px] hover:border-destructive/70 hover:bg-destructive/10 hover:text-destructive"
             >
               {cancelLabel}
             </button>
@@ -676,13 +664,13 @@ const ChatComposer = React.memo(function ChatComposer({
         ) : null}
 
         <form onSubmit={handleSubmit}>
-          <div className="ai-lab-composer-shell flex min-h-[86px] items-end gap-3 border border-border/50 px-4 py-3 transition-[border-color,background-color] duration-200 focus-within:border-primary/45">
+          <div className="ai-lab-composer-shell flex min-h-[104px] items-end gap-4 border-2 border-border px-5 py-4 transition-[border-color,background-color] duration-200 focus-within:border-primary">
             <Textarea
               ref={textareaRef}
               value={input}
               onChange={(event) => setInput(event.target.value)}
               placeholder={placeholder}
-              className="min-h-[56px] flex-1 resize-none border-0 bg-transparent p-0 font-pixel text-[12px] leading-7 tracking-[0.05em] shadow-none focus-visible:border-transparent focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:font-pixel placeholder:tracking-[0.05em] placeholder:text-muted-foreground/60"
+              className="min-h-[64px] flex-1 resize-none border-0 bg-transparent p-0 font-pixel text-[12px] leading-8 tracking-[0.05em] shadow-none focus-visible:border-transparent focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:font-pixel placeholder:tracking-[0.05em] placeholder:text-muted-foreground/60"
               onKeyDown={(event) => {
                 if (event.key === "Enter" && !event.shiftKey) {
                   event.preventDefault()
@@ -695,10 +683,10 @@ const ChatComposer = React.memo(function ChatComposer({
               type="submit"
               disabled={!input.trim() || isBusy}
               className={cn(
-                "mb-1 inline-flex h-10 min-w-[82px] shrink-0 items-center justify-center border border-border/60 px-4 font-pixel text-[10px] uppercase tracking-[0.14em] transition-[border-color,background-color,color] duration-200",
+                "ai-lab-pixel-button mb-1 h-12 min-w-[112px] shrink-0 border-border px-5 text-[10px] text-foreground",
                 input.trim() && !isBusy
-                  ? "bg-foreground text-background hover:border-primary hover:bg-primary hover:text-primary-foreground"
-                  : "bg-background text-muted-foreground",
+                  ? "ai-lab-pixel-button--active"
+                  : "bg-background text-muted-foreground hover:text-foreground",
               )}
             >
               {isBusy ? loadingLabel : submitLabel}
@@ -743,6 +731,12 @@ function ChatThreadView({
 }) {
   const t = useTranslations("ai")
   const suggestedPrompts = useMemo(() => getSuggestedPrompts(locale), [locale])
+  const landingOpener = useMemo(
+    () => getLandingOpener(locale, thread.id),
+    [locale, thread.id],
+  )
+  const [articlePickerOpen, setArticlePickerOpen] = useState(false)
+  const [articleOptions, setArticleOptions] = useState<Array<{ slug: string; title: string }>>([])
 
   const { messages, sendMessage, stop, error, isBusy, slowPhase, estimateInputTokens } =
     useThreadChat({
@@ -772,10 +766,91 @@ function ChatThreadView({
   const handleSuggestedPromptSelect = useCallback(
     async (prompt: SuggestedPrompt) => {
       if (isBusy) return
+
+      if (prompt.mode === "article-picker") {
+        if (articlePickerOpen) {
+          setArticlePickerOpen(false)
+          return
+        }
+
+        if (articleOptions.length === 0) {
+          const response = await fetch(`/api/ai/articles?locale=${encodeURIComponent(locale)}`)
+          if (!response.ok) return
+          const data = (await response.json()) as Array<{ slug: string; title: string }>
+          setArticleOptions(data)
+        }
+
+        setArticlePickerOpen(true)
+        return
+      }
+
+      setArticlePickerOpen(false)
       await sendMessage({ text: prompt.prompt })
     },
-    [isBusy, sendMessage],
+    [articleOptions.length, articlePickerOpen, isBusy, locale, sendMessage],
   )
+
+  const handleArticleSelect = useCallback(
+    async (article: { slug: string; title: string }) => {
+      if (isBusy) return
+
+      setArticlePickerOpen(false)
+      await sendMessage({
+        text: locale.startsWith("zh")
+          ? `请介绍一下这篇 blog《${article.title}》，讲讲它主要写了什么、为什么值得看。`
+          : `Introduce the blog post "${article.title}" and explain what it covers and why it is worth reading.`,
+      })
+    },
+    [isBusy, locale, sendMessage],
+  )
+
+  if (messages.length === 0) {
+    return (
+      <div className="ai-lab-thread-view flex h-full flex-col overflow-hidden">
+        <div className="flex h-full flex-col items-center justify-center overflow-y-auto px-4 py-10 md:px-6 md:py-14">
+          <div className="mx-auto flex w-full max-w-[1120px] flex-col items-center gap-8 text-center">
+            <h1 className="font-pixel text-[clamp(1.3rem,3vw,2.2rem)] leading-[1.3] tracking-[0.06em] text-foreground md:whitespace-nowrap">
+              {landingOpener}
+            </h1>
+
+            <ChatComposer
+              sendMessage={sendMessage}
+              stop={stop}
+              isBusy={isBusy}
+              slowPhase={slowPhase}
+              estimateInputTokens={estimateInputTokens}
+              error={error}
+              placeholder={t("textPromptPlaceholder")}
+              loadingLabel={t("loading")}
+              submitLabel={t("submit")}
+              errorLabel={errorLabel}
+              slowLabel={t("slowRequest")}
+              verySlowLabel={t("verySlowRequest")}
+              connectingLabel={t("connectingModel")}
+              cancelLabel={t("cancel")}
+              locale={locale}
+              shortcutHint={t("shortcutHint")}
+            />
+
+            <RecommendedPromptChips
+              articlePickerOpen={articlePickerOpen}
+              prompts={suggestedPrompts}
+              disabled={isBusy}
+              onSelect={handleSuggestedPromptSelect}
+            />
+
+            <ArticlePickerModal
+              articles={articleOptions}
+              isOpen={articlePickerOpen}
+              locale={locale}
+              onClose={() => setArticlePickerOpen(false)}
+              onSelect={handleArticleSelect}
+            />
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="ai-lab-thread-view flex h-full flex-col overflow-hidden">
@@ -785,9 +860,6 @@ function ChatThreadView({
         showThinking={showThinking}
         lastAssistantMessageId={lastAssistantMessageId}
         loadingLabel={t("loading")}
-        emptyLabel={t("empty")}
-        suggestedPrompts={suggestedPrompts}
-        onSuggestedPromptSelect={handleSuggestedPromptSelect}
       />
 
       <ChatComposer
@@ -799,7 +871,7 @@ function ChatThreadView({
         error={error}
         placeholder={t("textPromptPlaceholder")}
         loadingLabel={t("loading")}
-        submitLabel={hasConversation ? t("send") : t("submit")}
+        submitLabel={t("send")}
         errorLabel={errorLabel}
         slowLabel={t("slowRequest")}
         verySlowLabel={t("verySlowRequest")}
@@ -848,6 +920,8 @@ export default function AIPlayground() {
     activeThreadId,
     createThread,
     deleteThread,
+    renameThread,
+    toggleThreadStar,
     updateThreadMessages,
     setActiveThread,
   } = useChatThreads()
@@ -855,13 +929,18 @@ export default function AIPlayground() {
 
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
+  const threadDisplayLabels = useMemo(
+    () => ({
+      defaultTitle: t("defaultChatTitle"),
+      greetingTitle: t("greetingChatTitle"),
+      aboutJieTitle: t("aboutJieChatTitle"),
+    }),
+    [t],
+  )
+
   const activeThread = threads.find((thread) => thread.id === activeThreadId)
   const activeThreadDisplayTitle = activeThread
-    ? deriveThreadDisplayTitle(activeThread, {
-        defaultTitle: t("defaultChatTitle"),
-        greetingTitle: t("greetingChatTitle"),
-        aboutJieTitle: t("aboutJieChatTitle"),
-      })
+    ? deriveThreadDisplayTitle(activeThread, threadDisplayLabels)
     : null
 
   const handleActiveMessagesChange = useCallback(
@@ -912,44 +991,6 @@ export default function AIPlayground() {
       </aside>
 
       <div className="ai-lab-shell relative flex h-full w-full flex-col overflow-hidden md:ml-[280px]">
-        <div className="flex shrink-0 items-center justify-between gap-4 border-b border-border/45 bg-background/38 px-3 py-3.5 md:px-6 md:py-4">
-          <div className="flex min-w-0 items-center gap-3 md:gap-4">
-            <button
-              onClick={() => setSidebarOpen((open) => !open)}
-              className="flex h-10 w-10 shrink-0 items-center justify-center border border-border/55 bg-background/80 text-foreground transition-colors hover:border-primary/60 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 md:hidden"
-              aria-label={
-                sidebarOpen
-                  ? t("closeSidebar") ?? "Close sidebar"
-                  : t("openSidebar") ?? "Open sidebar"
-              }
-              aria-expanded={sidebarOpen}
-              aria-controls="chat-sidebar"
-            >
-              <PixelMenuIcon isOpen={sidebarOpen} />
-            </button>
-
-            <div className="min-w-0 space-y-1">
-              <p className="font-pixel text-[9px] uppercase tracking-[0.2em] text-primary/78">
-                AI Lab
-              </p>
-              <p className="truncate font-pixel text-[11px] uppercase tracking-[0.08em] text-foreground/88 md:text-[12px]">
-                {activeThreadDisplayTitle ?? t("compactDescription")}
-              </p>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => {
-              createThread()
-              setSidebarOpen(false)
-            }}
-            className="inline-flex h-9 items-center justify-center border border-border/50 bg-background/72 px-3 font-pixel text-[10px] uppercase tracking-[0.16em] text-foreground transition-colors hover:border-primary/60 hover:text-primary md:hidden"
-          >
-            {t("newChat")}
-          </button>
-        </div>
-
         <div className="relative flex flex-1 overflow-hidden">
           <aside
             id="chat-sidebar"
@@ -985,26 +1026,69 @@ export default function AIPlayground() {
           ) : null}
 
           <main className="ai-lab-chat-pane relative flex flex-1 flex-col overflow-hidden">
-            {!hydrated ? (
-              <div className="flex h-full items-center justify-center">
-                <p className="font-pixel text-[10px] uppercase tracking-[0.16em] text-muted-foreground/68">
-                  {t("loadingChats")}
-                </p>
+            <div className="shrink-0 px-4 pb-2 pt-4 md:px-5 md:pb-3 md:pt-5">
+              <div className="flex w-full items-start justify-between gap-3 md:justify-start">
+                <div className="flex min-w-0 items-center gap-3">
+                  <button
+                    onClick={() => setSidebarOpen((open) => !open)}
+                    className="ai-lab-pixel-button h-10 w-10 shrink-0 bg-background text-foreground md:hidden"
+                    aria-label={
+                      sidebarOpen
+                        ? t("closeSidebar") ?? "Close sidebar"
+                        : t("openSidebar") ?? "Open sidebar"
+                    }
+                    aria-expanded={sidebarOpen}
+                    aria-controls="chat-sidebar"
+                  >
+                    <PixelMenuIcon isOpen={sidebarOpen} />
+                  </button>
+
+                  {activeThread && activeThreadDisplayTitle ? (
+                    <ThreadTitleMenu
+                      title={activeThreadDisplayTitle}
+                      isStarred={Boolean(activeThread.isStarred)}
+                      onRename={(nextTitle) => renameThread(activeThread.id, nextTitle)}
+                      onToggleStar={() => toggleThreadStar(activeThread.id)}
+                      onDelete={() => handleDeleteThread(activeThread.id)}
+                    />
+                  ) : null}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    createThread()
+                    setSidebarOpen(false)
+                  }}
+                  className="ai-lab-pixel-button h-9 bg-background px-3 text-[10px] text-foreground md:hidden"
+                >
+                  {t("newChat")}
+                </button>
               </div>
-            ) : activeThread ? (
-              <ChatThreadView
-                key={activeThread.id}
-                thread={activeThread}
-                onMessagesChange={handleActiveMessagesChange}
-                locale={locale}
-              />
-            ) : (
-              <div className="flex h-full items-center justify-center px-6 text-center">
-                <p className="max-w-2xl font-pixel text-[11px] uppercase leading-7 tracking-[0.08em] text-muted-foreground/72">
-                  {t("noChats") ?? "No conversations yet"}
-                </p>
-              </div>
-            )}
+            </div>
+
+            <div className="min-h-0 flex-1">
+              {!hydrated ? (
+                <div className="flex h-full items-center justify-center">
+                  <p className="font-pixel text-[10px] uppercase tracking-[0.16em] text-muted-foreground/68">
+                    {t("loadingChats")}
+                  </p>
+                </div>
+              ) : activeThread ? (
+                <ChatThreadView
+                  key={activeThread.id}
+                  thread={activeThread}
+                  onMessagesChange={handleActiveMessagesChange}
+                  locale={locale}
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center px-6 text-center">
+                  <p className="max-w-2xl font-pixel text-[11px] uppercase leading-7 tracking-[0.08em] text-muted-foreground/72">
+                    {t("noChats") ?? "No conversations yet"}
+                  </p>
+                </div>
+              )}
+            </div>
           </main>
         </div>
       </div>

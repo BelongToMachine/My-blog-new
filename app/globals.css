@@ -152,6 +152,10 @@
 }
 
 @layer base {
+  html {
+    background-color: hsl(var(--background));
+  }
+
   * {
     @apply border-border;
   }
@@ -635,6 +639,105 @@ html.dark .wind__lane {
   .ai-lab-inline-artifact th,
   .ai-lab-inline-artifact td {
     line-height: 1.65;
+  }
+
+  .ai-lab-pixel-button {
+    @apply inline-flex items-center justify-center border-2 border-transparent bg-transparent font-pixel uppercase text-muted-foreground transition-colors duration-200;
+    letter-spacing: 0.18em;
+  }
+
+  .ai-lab-pixel-button:hover {
+    @apply border-border bg-accent/60 text-foreground;
+  }
+
+  .ai-lab-pixel-button:focus-visible {
+    @apply border-border bg-accent/60 text-foreground outline-none ring-0;
+  }
+
+  .ai-lab-pixel-button:disabled {
+    @apply pointer-events-none opacity-50;
+  }
+
+  @keyframes ai-lab-pixel-sparkle {
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 0.88;
+      filter: drop-shadow(0 0 0 hsl(var(--primary) / 0));
+    }
+    50% {
+      transform: scale(1.08);
+      opacity: 1;
+      filter: drop-shadow(0 0 5px hsl(var(--primary) / 0.32));
+    }
+  }
+
+  .ai-lab-featured-chip {
+    position: relative;
+    border-color: transparent;
+    background:
+      linear-gradient(180deg, hsl(var(--background)), hsl(var(--background) / 0.95)),
+      linear-gradient(90deg, hsl(var(--primary) / 0.08), transparent 32%);
+    color: hsl(var(--foreground));
+    box-shadow: none;
+  }
+
+  .ai-lab-featured-chip__sparkle {
+    position: relative;
+    display: inline-block;
+    width: 13px;
+    height: 13px;
+    flex: 0 0 auto;
+  }
+
+  .ai-lab-featured-chip__sparkle::before {
+    content: "";
+    position: absolute;
+    top: 4px;
+    left: 5px;
+    width: 3px;
+    height: 3px;
+    background: hsl(286 30% 94%);
+    box-shadow:
+      0 -4px 0 hsl(190 100% 62%),
+      -2px -2px 0 hsl(190 100% 62%),
+      2px -2px 0 hsl(190 100% 62%),
+      -4px 1px 0 hsl(190 100% 62%),
+      4px 1px 0 hsl(190 100% 62%),
+      -2px 4px 0 hsl(190 100% 62%),
+      2px 4px 0 hsl(190 100% 62%),
+      0 6px 0 hsl(190 100% 62%);
+  }
+
+  .ai-lab-featured-chip:hover .ai-lab-featured-chip__sparkle,
+  .ai-lab-featured-chip:focus-visible .ai-lab-featured-chip__sparkle {
+    animation: ai-lab-pixel-sparkle 1.25s steps(3, end) infinite;
+  }
+
+  .ai-lab-featured-chip:hover,
+  .ai-lab-featured-chip:focus-visible {
+    @apply border-border bg-accent/60 text-foreground;
+  }
+
+  .ai-lab-pixel-button--active {
+    @apply border-primary bg-primary/10 text-foreground;
+  }
+
+  .ai-lab-pixel-button--active:hover,
+  .ai-lab-pixel-button--active:focus-visible {
+    @apply border-primary bg-primary/10 text-foreground;
+  }
+
+  .ai-lab-pixel-menu-item {
+    @apply flex w-full items-center gap-3 border-2 border-transparent bg-transparent px-3 py-2 text-left text-foreground transition-colors duration-200;
+  }
+
+  .ai-lab-pixel-menu-item:hover {
+    @apply border-border bg-accent/60 text-foreground;
+  }
+
+  .ai-lab-pixel-menu-item--danger:hover {
+    @apply border-destructive/70 bg-destructive/10 text-destructive;
   }
 
   .ai-lab-workspace-pane {

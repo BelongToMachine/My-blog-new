@@ -5,12 +5,14 @@ import { cn } from "@/lib/utils"
 import type { SuggestedPrompt } from "../recommendedPrompts"
 
 interface RecommendedPromptChipsProps {
+  articlePickerOpen?: boolean
   prompts: SuggestedPrompt[]
   disabled?: boolean
   onSelect: (prompt: SuggestedPrompt) => void | Promise<void>
 }
 
 export default function RecommendedPromptChips({
+  articlePickerOpen = false,
   prompts,
   disabled = false,
   onSelect,
@@ -28,11 +30,17 @@ export default function RecommendedPromptChips({
             void onSelect(prompt)
           }}
           className={cn(
-            "h-auto max-w-full border border-border/50 bg-background/76 px-3.5 py-2.5 text-left font-pixel text-[10px] uppercase tracking-[0.12em] text-foreground shadow-none",
-            "hover:border-primary/40 hover:bg-primary/[0.05] hover:text-primary",
+            "ai-lab-pixel-button h-auto max-w-full border-border bg-background px-3.5 py-2.5 text-left text-[10px] text-foreground shadow-none",
+            prompt.mode === "article-picker" ? "ai-lab-featured-chip" : "",
+            articlePickerOpen && prompt.mode === "article-picker"
+              ? "ai-lab-pixel-button--active"
+              : "",
           )}
         >
-          <span className="block whitespace-normal leading-6">
+          <span className="inline-flex items-center gap-2 whitespace-normal leading-6">
+            {prompt.mode === "article-picker" ? (
+              <span className="ai-lab-featured-chip__sparkle" aria-hidden="true" />
+            ) : null}
             {prompt.label}
           </span>
         </Button>

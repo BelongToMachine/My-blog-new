@@ -2,6 +2,8 @@
 
 import { useMemo } from "react"
 import { useTranslations } from "next-intl"
+import { motion } from "framer-motion"
+import { Star } from "lucide-react"
 import type { ChatThread } from "@/app/hooks/useChatThreads"
 import { cn } from "@/lib/utils"
 import { deriveThreadDisplayTitle } from "../threadDisplay"
@@ -52,7 +54,7 @@ export default function ThreadSidebar({
       <div className="shrink-0 border-b border-border/35 p-3 md:p-4">
         <button
           onClick={onCreateThread}
-          className="flex w-full items-center justify-center gap-2 border border-border/45 bg-background/72 px-3 py-2.5 font-pixel text-[10px] uppercase tracking-[0.16em] text-foreground transition-colors hover:border-primary/55 hover:text-primary"
+          className="ai-lab-pixel-button w-full gap-2 bg-background px-3 py-2.5 text-[10px] text-foreground"
         >
           <span className="text-lg leading-none">+</span>
           <span>{t("newChat") ?? "New Chat"}</span>
@@ -74,35 +76,36 @@ export default function ThreadSidebar({
               const isActive = thread.id === activeThreadId
 
               return (
-                <div
+                <motion.div
+                  layout
                   key={thread.id}
                   className={cn(
-                    "group relative overflow-hidden border transition-[border-color,background-color] duration-200",
+                    "group relative border-2 transition-colors duration-200",
                     isActive
-                      ? "border-primary/38 bg-primary/[0.06]"
-                      : "border-transparent bg-transparent hover:border-border/35 hover:bg-background/54",
+                      ? "ai-lab-pixel-button--active"
+                      : "border-transparent hover:border-border hover:bg-accent/60",
                   )}
+                  transition={{ layout: { duration: 0.35, ease: [0.16, 1, 0.3, 1] } }}
                 >
-                  {isActive ? (
-                    <span
-                      aria-hidden="true"
-                      className="absolute inset-y-2 left-0 w-px bg-primary"
-                    />
-                  ) : null}
 
                   <button
                     onClick={() => onSelectThread(thread.id)}
                     className="w-full px-4 py-2.5 pr-9 text-left"
                     aria-current={isActive ? "page" : undefined}
                   >
-                    <p
-                      className={cn(
-                        "truncate text-sm",
-                        isActive ? "text-foreground" : "text-foreground/90",
-                      )}
-                    >
-                      {displayTitle}
-                    </p>
+                    <div className="flex items-center gap-2">
+                      {thread.isStarred ? (
+                        <Star className="h-3.5 w-3.5 shrink-0 fill-current text-amber-500" />
+                      ) : null}
+                      <p
+                        className={cn(
+                          "truncate text-sm",
+                          isActive ? "text-foreground" : "text-foreground/90",
+                        )}
+                      >
+                        {displayTitle}
+                      </p>
+                    </div>
                     <p
                       className={cn(
                         "mt-1 font-pixel text-[9px] uppercase tracking-[0.14em]",
@@ -118,7 +121,7 @@ export default function ThreadSidebar({
                       event.stopPropagation()
                       onDeleteThread(thread.id)
                     }}
-                    className="absolute right-2 top-1/2 inline-block -translate-y-1/2 px-1.5 py-0.5 font-pixel text-sm leading-none text-muted-foreground/40 transition-colors hover:text-destructive md:hidden"
+                    className="absolute right-2 top-1/2 inline-block -translate-y-1/2 px-2 py-1 font-pixel text-base leading-none text-muted-foreground/40 transition-colors hover:bg-transparent hover:text-destructive md:hidden"
                     aria-label={t("deleteChat") ?? "Delete chat"}
                     title={t("deleteChat") ?? "Delete chat"}
                   >
@@ -129,13 +132,13 @@ export default function ThreadSidebar({
                       event.stopPropagation()
                       onDeleteThread(thread.id)
                     }}
-                    className="absolute right-2 top-1/2 hidden -translate-y-1/2 px-1.5 py-0.5 font-pixel text-sm leading-none text-muted-foreground/40 transition-colors hover:text-destructive md:group-hover:inline-block"
+                    className="absolute right-2 top-1/2 hidden -translate-y-1/2 px-2 py-1 font-pixel text-base leading-none text-muted-foreground/40 transition-colors hover:bg-transparent hover:text-destructive md:group-hover:inline-block"
                     aria-label={t("deleteChat") ?? "Delete chat"}
                     title={t("deleteChat") ?? "Delete chat"}
                   >
                     ×
                   </button>
-                </div>
+                </motion.div>
               )
             })}
           </div>

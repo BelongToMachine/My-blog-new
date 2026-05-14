@@ -21,19 +21,17 @@ export default function ChatLandingState({
 
   return (
     <div className="flex h-full items-center justify-center px-4 py-10 md:px-6 md:py-14">
-      <div className="ai-lab-landing-panel mx-auto flex w-full max-w-4xl flex-col items-center gap-9 text-center">
+      <div className="ai-lab-landing-panel mx-auto flex w-full max-w-4xl flex-col items-center gap-8 text-center">
         <div className="space-y-5">
           <p className="font-pixel text-[10px] uppercase tracking-[0.24em] text-primary/78">
             {t("eyebrow")}
           </p>
-          <div className="space-y-4">
-            <h1 className="max-w-[12ch] font-pixel text-[clamp(2.3rem,4.8vw,4rem)] leading-[1.28] tracking-[0.08em] text-foreground">
-              {t("landingTitle")}
-            </h1>
-            <p className="mx-auto max-w-[42rem] font-pixel text-[12px] leading-8 tracking-[0.06em] text-muted-foreground/92 md:text-[13px]">
-              {emptyLabel}
-            </p>
-          </div>
+          <h1 className="font-pixel text-[clamp(1.3rem,3vw,2.2rem)] leading-[1.3] tracking-[0.06em] text-foreground md:whitespace-nowrap">
+            {t("landingTitle")}
+          </h1>
+          <p className="mx-auto max-w-[42rem] font-pixel text-[12px] leading-8 tracking-[0.06em] text-muted-foreground/92 md:text-[13px]">
+            {emptyLabel}
+          </p>
         </div>
 
         <div className="space-y-4">
