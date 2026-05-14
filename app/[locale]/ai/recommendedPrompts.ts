@@ -1,4 +1,4 @@
-export type SuggestedPromptMode = "send" | "fill"
+export type SuggestedPromptMode = "send" | "fill" | "article-picker"
 
 export interface SuggestedPrompt {
   id: string
@@ -9,6 +9,12 @@ export interface SuggestedPrompt {
 
 const zhPrompts: SuggestedPrompt[] = [
   {
+    id: "portfolio-decisions",
+    label: "介绍一篇 blog",
+    prompt: "",
+    mode: "article-picker",
+  },
+  {
     id: "ai-lab-build",
     label: "这个 AI Lab 是怎么做的？",
     prompt: "请拆解一下这个 AI Lab 的实现思路，包括聊天、工具调用和界面设计取舍。",
@@ -18,12 +24,6 @@ const zhPrompts: SuggestedPrompt[] = [
     id: "representative-project",
     label: "挑一个代表项目讲讲",
     prompt: "请挑一个最能代表 Jie 的项目，讲讲它解决了什么问题，以及为什么值得看。",
-    mode: "send",
-  },
-  {
-    id: "portfolio-decisions",
-    label: "这个作品集为什么这样设计？",
-    prompt: "请解释这个作品集为什么会采用现在这种视觉和交互方向，背后的考虑是什么？",
     mode: "send",
   },
   {
@@ -42,6 +42,12 @@ const zhPrompts: SuggestedPrompt[] = [
 
 const enPrompts: SuggestedPrompt[] = [
   {
+    id: "portfolio-decisions",
+    label: "Introduce a blog post",
+    prompt: "",
+    mode: "article-picker",
+  },
+  {
     id: "ai-lab-build",
     label: "How is this AI Lab built?",
     prompt: "Break down how this AI Lab works, including the chat flow, tool calling, and UI decisions.",
@@ -51,12 +57,6 @@ const enPrompts: SuggestedPrompt[] = [
     id: "representative-project",
     label: "Show me a representative project",
     prompt: "Pick one project that best represents Jie and explain why it matters.",
-    mode: "send",
-  },
-  {
-    id: "portfolio-decisions",
-    label: "Why is the portfolio designed this way?",
-    prompt: "Explain the thinking behind this portfolio's visual and interaction direction.",
     mode: "send",
   },
   {
