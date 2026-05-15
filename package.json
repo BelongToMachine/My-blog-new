@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "next dev --hostname 0.0.0.0",
     "build": "next build",
-    "build:prod": "next build",
+    "build:prod": "if [ -n \"$VERCEL\" ]; then [ -d private-blog-content ] || git clone --depth 1 \"https://x-access-token:${GITHUB_TOKEN}@github.com/BelongToMachine/Private-Blog-Content.git\" private-blog-content; fi && next build",
     "start": "next start",
     "lint": "next lint",
     "prisma:generate": "prisma generate",
