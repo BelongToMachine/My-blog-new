@@ -5,8 +5,7 @@
   "packageManager": "bun@1.3.11",
   "scripts": {
     "dev": "next dev --hostname 0.0.0.0",
-    "build": "next build",
-    "build:prod": "if [ -n \"$VERCEL\" ]; then [ -d private-blog-content ] || git clone --depth 1 \"https://x-access-token:${GITHUB_TOKEN}@github.com/BelongToMachine/Private-Blog-Content.git\" private-blog-content; fi && next build",
+    "build": "if [ -n \"$VERCEL\" ]; then [ -d private-blog-content ] || git clone --depth 1 \"https://x-access-token:${GITHUB_TOKEN}@github.com/BelongToMachine/Private-Blog-Content.git\" private-blog-content; fi && next build",
     "start": "next start",
     "lint": "next lint",
     "prisma:generate": "prisma generate",
@@ -72,6 +71,7 @@
     "react-simplemde-editor": "^5.2.0",
     "react-type-animation": "^3.2.0",
     "recharts": "^2.8.0",
+    "remark-gfm": "^4.0.1",
     "shiki": "^3.2.1",
     "styled-components": "^6.1.17",
     "tailwind-merge": "^3.4.0",
