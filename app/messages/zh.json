@@ -112,7 +112,7 @@
     "greeting": "Heya I'm",
     "name": "开发者",
     "imageAlt": "Jie 站在这里",
-    "typeSequence": ["Jie", "前端开发者"],
+    "typeSequence": ["Jie", "前端开发者", "an AI product developer"],
     "shortIntro": "专注构建稳健 Web 应用与实用 AI Agents，擅长 LLM 集成落地。",
     "aiCtaLabel": "向 AI 了解我",
     "code": "const coder = {\n  name: \"开发者\",\n  role: [\"前端开发工程师\"],\n  skill: [\"React\", \"Next.js\"],\n  location: \"中国杭州\",\n  problemSolver: true,\n  welcomeMessage: () => {\n    return \"很高兴认识你！\"\n  }\n}"
