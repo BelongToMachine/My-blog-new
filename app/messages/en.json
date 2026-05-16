@@ -121,8 +121,8 @@
     "blogSummary": "My Blog Summary",
     "webDev": "Web Development",
     "webDevShort": "Web Dev",
-    "tech": "Tech",
-    "techShort": "Tech",
+    "ai": "AI",
+    "aiShort": "AI",
     "nonTech": "Non-Tech",
     "nonTechShort": "Non-Tech",
     "latestBlogs": "Latest Blogs",
@@ -134,7 +134,12 @@
     "mdxBadge": "MDX Article",
     "mdxListTitle": "MDX Articles",
     "mdxListDescription": "MDX notes for long-form writing, custom components, and interactive reading experiments.",
-    "page": "Page {current} of {total}"
+    "page": "Page {current} of {total}",
+    "category": {
+      "webDev": "Web Dev",
+      "ai": "AI",
+      "nonTech": "Non Tech"
+    }
   },
   "skills": {
     "heading": "Skill",
@@ -143,7 +148,7 @@
   },
   "status": {
     "FINISHED": "Web Development",
-    "IN_PROGRESS": "Tech",
+    "IN_PROGRESS": "AI",
     "CLOSED": "Non-Tech"
   },
   "footer": {

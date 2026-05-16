@@ -159,7 +159,7 @@ const ChartInner = ({ open, inProgress, closed }: Props) => {
       value: open,
     },
     {
-      label: isMobileViewport ? t("techShort") : t("tech"),
+      label: isMobileViewport ? t("aiShort") : t("ai"),
       value: inProgress,
     },
     {

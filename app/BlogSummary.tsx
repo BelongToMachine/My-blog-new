@@ -5,9 +5,12 @@ import { RetroStatCard } from "./components/system/RetroStatCard"
 
 interface Props {
   total: number
+  webDev: number
+  ai: number
+  nonTech: number
 }
 
-const BlogSummary = ({ total }: Props) => {
+const BlogSummary = ({ total, webDev, ai, nonTech }: Props) => {
   const t = useTranslations("home")
 
   return (
@@ -15,7 +18,7 @@ const BlogSummary = ({ total }: Props) => {
       <RetroStatCard
         className="min-h-[7.5rem] min-w-0 basis-0 flex-1 px-2 py-3 sm:min-h-[8rem] sm:px-3 sm:py-4 md:min-h-[9rem] md:px-4 md:py-5"
         label={t("webDev")}
-        value={total}
+        value={webDev}
         hint={
           <RetroBadge
             tone="primary"
@@ -27,8 +30,8 @@ const BlogSummary = ({ total }: Props) => {
       />
       <RetroStatCard
         className="min-h-[7.5rem] min-w-0 basis-0 flex-1 px-2 py-3 sm:min-h-[8rem] sm:px-3 sm:py-4 md:min-h-[9rem] md:px-4 md:py-5"
-        label={t("tech")}
-        value={0}
+        label={t("ai")}
+        value={ai}
         hint={
           <RetroBadge
             tone="amber"
@@ -41,7 +44,7 @@ const BlogSummary = ({ total }: Props) => {
       <RetroStatCard
         className="min-h-[7.5rem] min-w-0 basis-0 flex-1 px-2 py-3 sm:min-h-[8rem] sm:px-3 sm:py-4 md:min-h-[9rem] md:px-4 md:py-5"
         label={t("nonTech")}
-        value={0}
+        value={nonTech}
         hint={
           <RetroBadge
             tone="neutral"

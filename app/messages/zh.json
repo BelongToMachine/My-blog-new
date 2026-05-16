@@ -121,8 +121,8 @@
     "blogSummary": "我的博客总结",
     "webDev": "Web开发",
     "webDevShort": "Web开发",
-    "tech": "科技类",
-    "techShort": "科技",
+    "ai": "AI",
+    "aiShort": "AI",
     "nonTech": "非技术类",
     "nonTechShort": "非技术",
     "latestBlogs": "最近的博客",
@@ -134,7 +134,12 @@
     "mdxBadge": "MDX 文章",
     "mdxListTitle": "MDX 文章实验区",
     "mdxListDescription": "这里收录的是以 MDX 为核心的长文笔记、组件化内容块与交互式阅读实验。",
-    "page": "第 {current} 页，共 {total} 页"
+    "page": "第 {current} 页，共 {total} 页",
+    "category": {
+      "webDev": "Web开发",
+      "ai": "AI",
+      "nonTech": "非技术类"
+    }
   },
   "skills": {
     "heading": "技能",
@@ -143,7 +148,7 @@
   },
   "status": {
     "FINISHED": "Web开发",
-    "IN_PROGRESS": "科技类",
+    "IN_PROGRESS": "AI",
     "CLOSED": "非技术类"
   },
   "footer": {

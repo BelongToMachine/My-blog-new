@@ -14,6 +14,7 @@ export interface MdxArticleListItem {
   publishedOn: string
   locale: ArticleLocale
   source: "private-mdx"
+  category?: string
 }
 
 export interface MdxArticle extends MdxArticleListItem {
@@ -28,6 +29,7 @@ interface Frontmatter {
   locale?: ArticleLocale
   slug?: string
   isPublished?: boolean
+  category?: string
 }
 
 interface ArticleFileRecord {
@@ -119,6 +121,7 @@ function normalizeArticleRecord(
     publishedOn: frontmatter.publishedOn ?? "",
     locale: frontmatter.locale ?? record.locale,
     source: "private-mdx" as const,
+    category: frontmatter.category,
   }
 }
 

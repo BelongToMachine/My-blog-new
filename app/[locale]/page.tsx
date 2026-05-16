@@ -33,6 +33,10 @@ export async function generateMetadata({
 export default async function Home({ params }: Props) {
   const articles = await getMdxArticleList(params.locale)
 
+  const webDevCount = articles.filter((a) => a.category === "webDev").length
+  const aiCount = articles.filter((a) => a.category === "ai").length
+  const nonTechCount = articles.filter((a) => a.category === "nonTech").length
+
   return (
     <>
       <DynamicBezierCurve>
@@ -40,7 +44,12 @@ export default async function Home({ params }: Props) {
       </DynamicBezierCurve>
       <Container className="relative z-40 -mt-[78px] px-3 pb-16 sm:px-4 md:px-6 md:pb-20 lg:px-8 xl:px-10">
         <SummaryHeader />
-        <PostSummary total={articles.length} />
+        <PostSummary
+          total={articles.length}
+          webDev={webDevCount}
+          ai={aiCount}
+          nonTech={nonTechCount}
+        />
       </Container>
     </>
   )

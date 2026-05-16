@@ -35,7 +35,9 @@ export default async function ArticlesPage({ params }: Props) {
             >
               <div className="flex flex-col gap-4">
                 <div className="flex flex-wrap items-center gap-3">
-                  <RetroBadge tone="primary">{t("mdxBadge")}</RetroBadge>
+                  <RetroBadge tone="primary">
+                    {article.category ? t(`category.${article.category}`) : t("mdxBadge")}
+                  </RetroBadge>
                   <RetroBadge tone="neutral">{article.locale}</RetroBadge>
                   <RetroBadge tone="amber">{article.publishedOn}</RetroBadge>
                 </div>

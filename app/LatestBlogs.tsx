@@ -8,6 +8,7 @@ import { RetroBadge } from "./components/system/RetroBadge"
 const LatestBlogs = async () => {
   const locale = await getLocale()
   const t = await getTranslations("home")
+  const tBlog = await getTranslations("blogs")
   const articles = await getMdxArticleList(locale).catch(() => [])
 
   const recent = articles.slice(0, 5)
@@ -48,7 +49,7 @@ const LatestBlogs = async () => {
                 tone="primary"
                 className="px-2 text-[9px] tracking-[0.16em] md:px-2.5 md:text-[10px] md:tracking-[0.22em]"
               >
-                MDX
+                {article.category ? tBlog(`category.${article.category}`) : "MDX"}
               </RetroBadge>
               <RetroBadge
                 tone="neutral"
