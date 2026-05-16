@@ -89,7 +89,7 @@ export function formatTokenCount(n: number): string {
 export function getRiskLabel(risk: TokenRisk): string {
   switch (risk) {
     case "low":
-      return "预估成本偏低"
+      return "偏低"
     case "medium":
       return "接近上限，建议开始新对话"
     case "high":
@@ -100,7 +100,7 @@ export function getRiskLabel(risk: TokenRisk): string {
 export function getRiskLabelEn(risk: TokenRisk): string {
   switch (risk) {
     case "low":
-      return "Low estimated cost"
+      return "Low"
     case "medium":
       return "Near limit — consider starting a new chat"
     case "high":
