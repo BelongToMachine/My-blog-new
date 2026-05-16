@@ -8,8 +8,10 @@ import React, {
   useRef,
   useState,
 } from "react"
+import { AnimatePresence, motion } from "framer-motion"
 import { isToolUIPart, type UIMessage } from "ai"
 import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
 import { Textarea } from "@/app/components/ui/textarea"
 import { useLocale, useTranslations } from "next-intl"
 import { useTheme } from "@/app/hooks/useTheme"
@@ -23,11 +25,7 @@ import {
 } from "@/app/hooks/useWorkspaceSync"
 import { cn } from "@/lib/utils"
 import type { TokenEstimate } from "@/lib/ai/token-estimate"
-import {
-  formatTokenCount,
-  getRiskLabel,
-  getRiskLabelEn,
-} from "@/lib/ai/token-estimate"
+import { formatTokenCount } from "@/lib/ai/token-estimate"
 import { ClientComponent } from "@/app/packages/ClientComponent"
 import ArtifactRenderer from "@/app/components/ai-workspace/ArtifactRenderer"
 import PixelMenuIcon from "@/app/components/system/PixelMenuIcon"
@@ -291,6 +289,46 @@ function ChatCodeBlock({
   )
 }
 
+function looksLikeMarkdownTableSeparator(line: string) {
+  return /^\s*\|?(?:\s*:?-{3,}:?\s*\|)+\s*:?-{3,}:?\s*\|?\s*$/.test(line)
+}
+
+function looksLikePseudoDiagramBlock(lines: string[]) {
+  if (lines.length < 2) return false
+
+  const hasBoxDrawing = lines.some((line) => /[┌┐└┘├┤┬┴┼│─═╭╮╯╰]/u.test(line))
+  const hasPipeLayout = lines.some((line) => (line.match(/\|/g) ?? []).length >= 2)
+  const hasConnectorLine = lines.some((line) => /[-=]{4,}|[▼▲◀▶]{2,}/u.test(line))
+
+  if (!hasBoxDrawing && !(hasPipeLayout && hasConnectorLine)) {
+    return false
+  }
+
+  const [firstLine = "", secondLine = ""] = lines
+  if (firstLine.includes("|") && looksLikeMarkdownTableSeparator(secondLine)) {
+    return false
+  }
+
+  return true
+}
+
+function normalizeChatMarkdown(text: string) {
+  const blocks = text.split(/\n{2,}/)
+
+  return blocks
+    .map((block) => {
+      if (block.includes("```")) return block
+
+      const lines = block.split("\n").filter((line) => line.trim().length > 0)
+      if (!looksLikePseudoDiagramBlock(lines)) {
+        return block
+      }
+
+      return ["```text", ...block.split("\n"), "```"].join("\n")
+    })
+    .join("\n\n")
+}
+
 function MarkdownRenderer({
   text,
   streamCodeBlocks = false,
@@ -299,9 +337,11 @@ function MarkdownRenderer({
   streamCodeBlocks?: boolean
 }) {
   const { colorMode } = useTheme()
+  const normalizedText = useMemo(() => normalizeChatMarkdown(text), [text])
 
   return (
     <ReactMarkdown
+      remarkPlugins={[remarkGfm]}
       components={{
         p: ({ children }) => (
           <p className="mb-3 last:mb-0 text-[12px] leading-6 tracking-[0.04em] md:text-[13px] md:leading-7">
@@ -353,7 +393,8 @@ function MarkdownRenderer({
             {children}
           </blockquote>
         ),
-        code: ({ className, children }) => {
+        code: ({ className, children, ...props }) => {
+          const inline = "inline" in props ? Boolean(props.inline) : false
           const match = /language-(\w+)/.exec(className || "")
           const code = String(children).replace(/\n$/, "")
 
@@ -366,6 +407,14 @@ function MarkdownRenderer({
                 isStreaming={streamCodeBlocks}
                 className="my-4"
               />
+            )
+          }
+
+          if (!inline) {
+            return (
+              <pre className="my-4 overflow-x-auto border border-border/70 bg-muted/35 p-4 font-mono text-[12px] leading-6 text-foreground">
+                <code>{code}</code>
+              </pre>
             )
           }
 
@@ -398,7 +447,7 @@ function MarkdownRenderer({
         pre: ({ children }) => <>{children}</>,
       }}
     >
-      {text}
+      {normalizedText}
     </ReactMarkdown>
   )
 }
@@ -630,14 +679,6 @@ const ChatComposer = React.memo(function ChatComposer({
   }
 
   const tokenText = `${formatTokenCount(tokenEstimate.estimatedPromptTokens)} tokens`
-  const riskText =
-    locale === "zh" ? getRiskLabel(tokenEstimate.risk) : getRiskLabelEn(tokenEstimate.risk)
-  const riskColor =
-    tokenEstimate.risk === "high"
-      ? "text-destructive"
-      : tokenEstimate.risk === "medium"
-        ? "text-amber-500"
-        : "text-muted-foreground"
 
   return (
     <div className="ai-lab-composer w-full shrink-0 px-4 pb-4 pt-3 md:px-8 md:pb-6">
@@ -698,8 +739,8 @@ const ChatComposer = React.memo(function ChatComposer({
           <p className="font-pixel text-[9px] uppercase tracking-[0.12em] text-muted-foreground/68">
             {shortcutHint}
           </p>
-          <p className={cn("font-pixel text-[9px] uppercase tracking-[0.12em]", riskColor)}>
-            {tokenText} · {riskText}
+          <p className="font-pixel text-[9px] uppercase tracking-[0.12em] text-muted-foreground">
+            {tokenText}
           </p>
         </div>
       </div>
@@ -807,37 +848,39 @@ function ChatThreadView({
   if (messages.length === 0) {
     return (
       <div className="ai-lab-thread-view flex h-full flex-col overflow-hidden">
-        <div className="flex h-full flex-col items-center justify-center overflow-y-auto px-4 py-10 md:px-6 md:py-14">
+        <div className="flex h-full flex-col items-center justify-start overflow-y-auto px-4 pb-10 pt-[12vh] md:px-6 md:pb-14 md:pt-[14vh]">
           <div className="mx-auto flex w-full max-w-[1120px] flex-col items-center gap-8 text-center">
             <h1 className="font-pixel text-[clamp(1.3rem,3vw,2.2rem)] leading-[1.3] tracking-[0.06em] text-foreground md:whitespace-nowrap">
               {landingOpener}
             </h1>
 
-            <ChatComposer
-              sendMessage={sendMessage}
-              stop={stop}
-              isBusy={isBusy}
-              slowPhase={slowPhase}
-              estimateInputTokens={estimateInputTokens}
-              error={error}
-              placeholder={t("textPromptPlaceholder")}
-              loadingLabel={t("loading")}
-              submitLabel={t("submit")}
-              errorLabel={errorLabel}
-              slowLabel={t("slowRequest")}
-              verySlowLabel={t("verySlowRequest")}
-              connectingLabel={t("connectingModel")}
-              cancelLabel={t("cancel")}
-              locale={locale}
-              shortcutHint={t("shortcutHint")}
-            />
+            <div className="flex w-full flex-col items-center gap-8">
+              <ChatComposer
+                sendMessage={sendMessage}
+                stop={stop}
+                isBusy={isBusy}
+                slowPhase={slowPhase}
+                estimateInputTokens={estimateInputTokens}
+                error={error}
+                placeholder={t("textPromptPlaceholder")}
+                loadingLabel={t("loading")}
+                submitLabel={t("submit")}
+                errorLabel={errorLabel}
+                slowLabel={t("slowRequest")}
+                verySlowLabel={t("verySlowRequest")}
+                connectingLabel={t("connectingModel")}
+                cancelLabel={t("cancel")}
+                locale={locale}
+                shortcutHint={t("shortcutHint")}
+              />
 
-            <RecommendedPromptChips
-              articlePickerOpen={articlePickerOpen}
-              prompts={suggestedPrompts}
-              disabled={isBusy}
-              onSelect={handleSuggestedPromptSelect}
-            />
+              <RecommendedPromptChips
+                articlePickerOpen={articlePickerOpen}
+                prompts={suggestedPrompts}
+                disabled={isBusy}
+                onSelect={handleSuggestedPromptSelect}
+              />
+            </div>
 
             <ArticlePickerModal
               articles={articleOptions}
@@ -1006,7 +1049,6 @@ export default function AIPlayground() {
               threads={threads}
               onCreateThread={() => {
                 createThread()
-                setSidebarOpen(false)
               }}
               onDeleteThread={handleDeleteThread}
               onSelectThread={(threadId) => {
@@ -1058,7 +1100,6 @@ export default function AIPlayground() {
                   type="button"
                   onClick={() => {
                     createThread()
-                    setSidebarOpen(false)
                   }}
                   className="ai-lab-pixel-button h-9 bg-background px-3 text-[10px] text-foreground md:hidden"
                 >
@@ -1074,19 +1115,38 @@ export default function AIPlayground() {
                     {t("loadingChats")}
                   </p>
                 </div>
-              ) : activeThread ? (
-                <ChatThreadView
-                  key={activeThread.id}
-                  thread={activeThread}
-                  onMessagesChange={handleActiveMessagesChange}
-                  locale={locale}
-                />
               ) : (
-                <div className="flex h-full items-center justify-center px-6 text-center">
-                  <p className="max-w-2xl font-pixel text-[11px] uppercase leading-7 tracking-[0.08em] text-muted-foreground/72">
-                    {t("noChats") ?? "No conversations yet"}
-                  </p>
-                </div>
+                <AnimatePresence mode="wait">
+                  {activeThread ? (
+                    <motion.div
+                      key={activeThread.id}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.12 }}
+                      className="h-full"
+                    >
+                      <ChatThreadView
+                        thread={activeThread}
+                        onMessagesChange={handleActiveMessagesChange}
+                        locale={locale}
+                      />
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="empty"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.12 }}
+                      className="flex h-full items-center justify-center px-6 text-center"
+                    >
+                      <p className="max-w-2xl font-pixel text-[11px] uppercase leading-7 tracking-[0.08em] text-muted-foreground/72">
+                        {t("noChats") ?? "No conversations yet"}
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               )}
             </div>
           </main>

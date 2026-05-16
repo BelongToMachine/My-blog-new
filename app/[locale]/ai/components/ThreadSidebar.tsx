@@ -2,7 +2,7 @@
 
 import { useMemo } from "react"
 import { useTranslations } from "next-intl"
-import { motion } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion"
 import { Star } from "lucide-react"
 import type { ChatThread } from "@/app/hooks/useChatThreads"
 import { cn } from "@/lib/utils"
@@ -72,6 +72,7 @@ export default function ThreadSidebar({
           </p>
         ) : (
           <div className="space-y-2">
+            <AnimatePresence initial={false}>
             {preparedThreads.map(({ thread, displayTitle }) => {
               const isActive = thread.id === activeThreadId
 
@@ -79,13 +80,19 @@ export default function ThreadSidebar({
                 <motion.div
                   layout
                   key={thread.id}
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
                   className={cn(
                     "group relative border-2 transition-colors duration-200",
                     isActive
                       ? "ai-lab-pixel-button--active"
                       : "border-transparent hover:border-border hover:bg-accent/60",
                   )}
-                  transition={{ layout: { duration: 0.35, ease: [0.16, 1, 0.3, 1] } }}
+                  transition={{
+                    layout: { duration: 0.35, ease: [0.16, 1, 0.3, 1] },
+                    opacity: { duration: 0.12 },
+                  }}
                 >
 
                   <button
@@ -141,6 +148,7 @@ export default function ThreadSidebar({
                 </motion.div>
               )
             })}
+            </AnimatePresence>
           </div>
         )}
       </div>

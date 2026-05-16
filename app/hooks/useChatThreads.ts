@@ -535,6 +535,12 @@ export function useChatThreads() {
         nextTitle =
           exists.title === "New Chat" ? (extractedTitle ?? exists.title) : exists.title
 
+        // 如果消息内容和标题都没有变化，不触发更新和排序
+        const messagesUnchanged =
+          JSON.stringify(exists.messages) === JSON.stringify(messages)
+        const titleUnchanged = exists.title === nextTitle
+        if (messagesUnchanged && titleUnchanged) return prev
+
         const updated: ChatThread = {
           ...exists,
           title: nextTitle,
@@ -547,7 +553,9 @@ export function useChatThreads() {
         return next
       })
 
-      persistLatestMessages({ id, messages, title: nextTitle })
+      if (nextTitle !== undefined) {
+        persistLatestMessages({ id, messages, title: nextTitle })
+      }
     },
     [persistLatestMessages],
   )
