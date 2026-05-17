@@ -1,8 +1,8 @@
 "use client"
 import React, { useContext, useState } from "react"
 import { cn } from "@/lib/utils"
-import selfie from "@/public/images/me2.png"
 import Image from "next/image"
+import selfie from "@/public/images/selfie-no-background.png"
 import { TypeAnimation } from "react-type-animation"
 import { motion } from "framer-motion"
 import { ThemeContext } from "../context/DarkModeContext"
@@ -13,6 +13,8 @@ import { Link } from "@/app/i18n/navigation"
 
 const SHOW_FLOATING_ASSISTANT = false
 // TODO: revisit the floating SVG assistant if we decide to keep a mascot in the hero.
+const PIXEL_CIRCLE_CLIP_PATH =
+  "polygon(20% 0%, 80% 0%, 80% 4%, 88% 4%, 88% 8%, 92% 8%, 92% 12%, 96% 12%, 96% 20%, 100% 20%, 100% 80%, 96% 80%, 96% 88%, 92% 88%, 92% 92%, 88% 92%, 88% 96%, 80% 96%, 80% 100%, 20% 100%, 20% 96%, 12% 96%, 12% 92%, 8% 92%, 8% 88%, 4% 88%, 4% 80%, 0% 80%, 0% 20%, 4% 20%, 4% 12%, 8% 12%, 8% 8%, 12% 8%, 12% 4%, 20% 4%)"
 
 const Hero = () => {
   const t = useTranslations("hero")
@@ -24,6 +26,22 @@ const Hero = () => {
   }
 
   const { colorMode } = themeContext
+  const isLightMode = colorMode !== "dark"
+  const heroPortrait = selfie
+  const portraitImageClass =
+    "h-full w-full object-contain object-bottom scale-[1.08]"
+  const portraitFrameStyle = {
+    clipPath: PIXEL_CIRCLE_CLIP_PATH,
+    backgroundColor: isLightMode
+      ? "rgba(22, 154, 191, 0.28)"
+      : "rgba(92, 225, 255, 0.22)",
+  }
+  const portraitInsetStyle = {
+    clipPath: PIXEL_CIRCLE_CLIP_PATH,
+    backgroundColor: isLightMode
+      ? "rgba(243, 248, 252, 0.98)"
+      : "rgba(18, 13, 29, 0.94)",
+  }
 
   const typeSequence = t.raw("typeSequence") as string[]
   const code = t.raw("code") as string
@@ -32,17 +50,25 @@ const Hero = () => {
 
   return (
     <div
-      className="px-5 pb-12 pt-10 md:px-10 md:pt-12 lg:px-14 lg:pb-10 lg:pt-10"
+      className="relative px-5 pb-12 pt-10 md:px-10 md:pt-12 lg:px-14 lg:pb-10 lg:pt-10"
       id="about-me-section"
     >
-      <div className="grid grid-cols-1 items-start gap-8 lg:-translate-y-6 lg:grid-cols-12 lg:items-end lg:gap-8 xl:-translate-y-8">
+      {/* Back to Index */}
+      <Link
+        href="/"
+        className="absolute -left-1 top-3 z-30 inline-flex items-center gap-1.5 border-2 border-primary/30 bg-background/80 px-2.5 py-1.5 font-pixel text-[10px] uppercase tracking-[0.2em] text-primary backdrop-blur-sm transition-all duration-200 hover:border-primary/60 hover:bg-background hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 md:-left-1 md:top-5"
+      >
+        <span>←</span>
+        <span>{t("backToNav")}</span>
+      </Link>
+      <div className="grid grid-cols-1 items-start gap-8 lg:-translate-y-4 lg:grid-cols-12 lg:items-start lg:gap-x-4 xl:-translate-y-6 xl:gap-x-8">
         <motion.div
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="relative z-10 flex w-full justify-center items-start lg:justify-start lg:items-end lg:col-start-2 lg:col-end-7"
+          className="relative z-10 flex w-full items-start justify-center lg:col-start-2 lg:col-end-8 lg:justify-start"
         >
-          <div className="relative w-full max-w-[800px] min-w-0 lg:mb-14 lg:max-w-[560px]">
+          <div className="relative w-full min-w-0 max-w-[800px] lg:max-w-[620px] xl:max-w-[680px]">
             <h1 className="mb-3 min-h-[5rem] text-left text-[1.75rem] min-[375px]:text-[2rem] md:text-[2.5rem] font-extrabold leading-[1.05] lg:min-h-[7rem] lg:text-5xl xl:min-h-[8rem] xl:text-6xl">
               <span className="font-pixel uppercase tracking-[0.04em] text-primary">
                 {`${t("greeting")} `}
@@ -51,14 +77,14 @@ const Hero = () => {
                 sequence={typeSequence.flatMap((value, index) => [
                   () => setTypingIndex(index),
                   value,
-                  1500
+                  1500,
                 ])}
                 wrapper="div"
                 speed={50}
                 repeat={Infinity}
                 className={cn(
                   "font-pixel mt-1 block whitespace-nowrap min-h-[1.1em] text-left uppercase tracking-[0.04em] text-foreground transition-all duration-300",
-                  isEnLongText && "lg:text-[0.55em]"
+                  isEnLongText && "lg:text-[0.55em]",
                 )}
               />
             </h1>
@@ -83,7 +109,7 @@ const Hero = () => {
             </motion.div>
             {SHOW_FLOATING_ASSISTANT ? <FloatingPixelAssistant /> : null}
             <div className="relative mt-5 min-h-[280px] md:min-h-[360px] lg:hidden">
-              <div className="relative z-10 w-[90%] md:w-[88%] max-w-[500px] min-w-0 pt-6 bottom-8">
+              <div className="relative z-10 w-full max-w-[500px] min-w-0 pt-6">
                 <CodeBlocker
                   code={code}
                   colorMode={colorMode}
@@ -91,21 +117,8 @@ const Hero = () => {
                   className="hero-codeblock-mobile h-full"
                 />
               </div>
-              <div
-                data-mobile-hero-avatar
-                className="absolute -right-8 z-20 h-[400px] w-[62%] max-w-[300px] md:h-[540px] md:w-[60%] md:max-w-[340px] md:-right-6 md:-top-44 overflow-visible max-[480px]:-top-32 min-[420px]:max-[768px]:-top-24"
-              >
-                <Image
-                  src={selfie}
-                  alt={t("imageAlt")}
-                  fill
-                  sizes="50vw"
-                  className="object-contain object-bottom"
-                  priority
-                />
-              </div>
             </div>
-            <div className="mt-6 hidden w-full max-w-[520px] min-w-0 lg:block">
+            <div className="mt-6 hidden w-full min-w-0 max-w-[560px] lg:block xl:max-w-[600px]">
               <CodeBlocker code={code} colorMode={colorMode} />
             </div>
           </div>
@@ -114,17 +127,30 @@ const Hero = () => {
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
-          className="relative z-0 hidden lg:col-start-7 lg:col-end-12 lg:flex lg:items-center lg:justify-end"
+          className="relative z-20 hidden lg:col-start-8 lg:col-end-12 lg:flex lg:items-start lg:justify-start"
         >
-          <div className="relative w-full max-w-[272px] lg:max-w-[380px]">
-            <Image
-              src={selfie}
-              alt={t("imageAlt")}
-              width={350}
-              height={300}
-              className="ml-auto h-auto w-full pixelated"
-              priority
-            />
+          <div className="relative ml-2 mt-32 w-full max-w-[340px] lg:mt-36 lg:-translate-x-3 xl:ml-0 xl:mt-32 xl:max-w-[380px] xl:translate-x-0">
+            <div className="relative aspect-square w-[276px] lg:w-[304px] xl:w-[344px]">
+              <div className="absolute inset-0" style={portraitFrameStyle} />
+              <div
+                className="absolute inset-[10px]"
+                style={portraitInsetStyle}
+              />
+              <div
+                className="absolute inset-[18px]"
+                style={{ clipPath: PIXEL_CIRCLE_CLIP_PATH }}
+              >
+                <Image
+                  src={heroPortrait}
+                  alt={t("imageAlt")}
+                  fill
+                  sizes="(min-width: 1280px) 308px, 272px"
+                  className={portraitImageClass}
+                  style={{ imageRendering: "pixelated" }}
+                  priority
+                />
+              </div>
+            </div>
           </div>
         </motion.div>
       </div>
