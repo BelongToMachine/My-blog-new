@@ -1,0 +1,58 @@
+import { Container } from "@radix-ui/themes"
+import { getTranslations } from "next-intl/server"
+import { getMdxArticleList } from "@/app/service/mdxArticles"
+import Hero from "../../components/Hero"
+import SummaryHeader from "../../SummaryHeader"
+import DynamicBezierCurve from "../../components/navbar/DynamicBezierCurve"
+import PostSummary from "../../PostSummary"
+import ProjectsSection from "../../components/projects/ProjectsSection"
+
+interface Props {
+  params: { locale: string }
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: { locale: string }
+}) {
+  const t = await getTranslations({ locale: params.locale, namespace: "meta" })
+
+  return {
+    title: t("homeTitle"),
+    description: t("homeDescription"),
+    alternates: {
+      canonical: `/${params.locale}/about`,
+      languages: {
+        en: "/en/about",
+        zh: "/zh/about",
+      },
+    },
+  }
+}
+
+export default async function AboutPage({ params }: Props) {
+  const articles = await getMdxArticleList(params.locale)
+
+  const webDevCount = articles.filter((a) => a.category === "webDev").length
+  const aiCount = articles.filter((a) => a.category === "ai").length
+  const nonTechCount = articles.filter((a) => a.category === "nonTech").length
+
+  return (
+    <>
+      <DynamicBezierCurve>
+        <Hero />
+      </DynamicBezierCurve>
+      <Container className="relative z-40 -mt-[78px] px-3 pb-16 sm:px-4 md:px-6 md:pb-20 lg:px-8 xl:px-10">
+        <ProjectsSection />
+        <SummaryHeader />
+        <PostSummary
+          total={articles.length}
+          webDev={webDevCount}
+          ai={aiCount}
+          nonTech={nonTechCount}
+        />
+      </Container>
+    </>
+  )
+}
