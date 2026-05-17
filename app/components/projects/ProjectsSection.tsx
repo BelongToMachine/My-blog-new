@@ -36,7 +36,7 @@ export default async function ProjectsSection() {
 
   return (
     <section className="mb-6 space-y-4 md:mb-8 md:space-y-5">
-      <div data-projects-heading-anchor>
+      <div data-curve-target-anchor data-projects-heading-anchor>
         <SectionHeading
           title={t("heading")}
           description={t("description")}

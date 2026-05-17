@@ -60,3 +60,4 @@ app/content/mdx/
 .env.vercel
 *.patch
 public/images/73ff6451-1525-47ce-a846-79e5eb4a9b34.png
+*-check.png

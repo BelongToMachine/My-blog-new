@@ -169,16 +169,18 @@ const DynamicBezierCurve = ({ children }: Props) => {
         return
       }
 
-      const summaryHeadingAnchor = document.querySelector<HTMLElement>(
-        "[data-summary-heading-anchor]"
-      )
+      // Follow the first section after the hero so adding new blocks above the
+      // summary doesn't delay the curve handoff on tablet/mobile.
+      const curveTargetAnchor =
+        document.querySelector<HTMLElement>("[data-curve-target-anchor]") ??
+        document.querySelector<HTMLElement>("[data-summary-heading-anchor]")
 
-      if (summaryHeadingAnchor) {
-        const rect = summaryHeadingAnchor.getBoundingClientRect()
-        const summaryAnchorTopInDocument = window.scrollY + rect.top
+      if (curveTargetAnchor) {
+        const rect = curveTargetAnchor.getBoundingClientRect()
+        const curveTargetTopInDocument = window.scrollY + rect.top
 
         nonDesktopCurveTargetScrollRef.current = Math.max(
-          summaryAnchorTopInDocument - NON_DESKTOP_STICKY_TOP_IN_PX,
+          curveTargetTopInDocument - NON_DESKTOP_STICKY_TOP_IN_PX,
           1
         )
         return
