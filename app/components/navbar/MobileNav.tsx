@@ -10,17 +10,19 @@ import { useTranslations } from "next-intl"
 import { NavItem } from "../system/NavItem"
 import { cn } from "@/lib/utils"
 
-const MobileNav = () => {
+const MobileNav = ({ indexMode = false }: { indexMode?: boolean }) => {
   const t = useTranslations("nav")
   const currentPath = usePathname()
   const links = useMemo(
     () => [
-      { label: t("aboutMe"), href: "/" },
+      { label: t("aboutMe"), href: "/about" },
       { label: t("blogs"), href: "/articles" },
       { label: t("ai"), href: "/ai" },
     ],
     [t]
   )
+
+  const indexClass = indexMode ? "text-white hover:text-white/80" : undefined
 
   return (
     <div className="flex items-center justify-between gap-2 px-4 py-2.5">
@@ -29,7 +31,7 @@ const MobileNav = () => {
         <ActionIconButton
           asChild
           aria-label="Open GitHub profile"
-          className="shrink-0 self-center"
+          className={cn("shrink-0 self-center", indexClass)}
           tone="borderless"
           size="sm"
         >
@@ -48,8 +50,11 @@ const MobileNav = () => {
               >
                 <Link
                   className={cn(
-                    "whitespace-nowrap text-muted-foreground hover:text-foreground",
-                    link.href === currentPath && "text-foreground"
+                    "whitespace-nowrap",
+                    indexMode
+                      ? "text-white/80 hover:text-white"
+                      : "text-muted-foreground hover:text-foreground",
+                    link.href === currentPath && (indexMode ? "text-white" : "text-foreground")
                   )}
                   href={link.href}
                 >
@@ -63,8 +68,8 @@ const MobileNav = () => {
 
       {/* Right: Controls */}
       <div className="flex items-center gap-1">
-        <LanguageToggle />
-        <ThemeToggle />
+        <LanguageToggle className={indexClass} />
+        <ThemeToggle className={indexClass} />
       </div>
     </div>
   )

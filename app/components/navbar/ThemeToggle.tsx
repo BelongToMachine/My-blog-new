@@ -53,7 +53,11 @@ const PixelMoon = () => (
   </svg>
 )
 
-const ThemeToggle = () => {
+interface ThemeToggleProps {
+  className?: string
+}
+
+const ThemeToggle = ({ className }: ThemeToggleProps) => {
   const { colorMode, setColorMode } = useTheme()
   const nextMode = colorMode === "light" ? "dark" : "light"
 
@@ -63,6 +67,7 @@ const ThemeToggle = () => {
       onClick={() => setColorMode(nextMode)}
       type="button"
       tone="borderless"
+      className={className}
     >
       {colorMode === "light"
         ? <PixelSun />
