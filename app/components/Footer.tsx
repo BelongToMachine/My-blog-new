@@ -46,12 +46,12 @@ export default function Footer() {
   const navT = useTranslations("nav")
   const pathname = usePathname()
 
-  if (pathname === "/ai") {
+  if (pathname === "/ai" || pathname === "/") {
     return null
   }
 
   const navLinks: FooterLink[] = [
-    { label: navT("aboutMe"), href: "/" },
+    { label: navT("aboutMe"), href: "/about" },
     { label: navT("blogs"), href: "/articles" },
     { label: navT("ai"), href: "/ai" },
   ]
@@ -65,8 +65,8 @@ export default function Footer() {
     },
     {
       label: "LinkedIn",
-      href: "https://www.linkedin.com/in/jieliao",
-      detail: "linkedin.com/in/jieliao",
+      href: "https://www.linkedin.com/in/yongjie-liao-070162296/",
+      detail: "linkedin.com/in/yongjie-liao-070162296",
       icon: <PixelLinkedInIcon className="h-5 w-5 sm:h-6 sm:w-6" />,
     },
   ]
