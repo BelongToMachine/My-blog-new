@@ -115,6 +115,7 @@
     "typeSequence": ["Jie", "前端开发者", "AI product dev"],
     "shortIntro": "构建生产级 Web 应用与 AI 产品功能，基于 React、Next.js、PostgreSQL、Prisma、Redis 和 LLM API。",
     "aiCtaLabel": "向 AI 了解我",
+    "backToNav": "返回导航页",
     "code": "const coder = {\n  name: \"开发者\",\n  role: [\"前端开发工程师\"],\n  skill: [\"React\", \"Next.js\"],\n  location: \"中国杭州\",\n  problemSolver: true,\n  welcomeMessage: () => {\n    return \"很高兴认识你！\"\n  }\n}"
   },
   "home": {
