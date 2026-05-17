@@ -112,8 +112,8 @@
     "greeting": "Heya I'm",
     "name": "开发者",
     "imageAlt": "Jie 站在这里",
-    "typeSequence": ["Jie", "前端开发者", "an AI product developer"],
-    "shortIntro": "专注构建稳健 Web 应用与实用 AI Agents，擅长 LLM 集成落地。",
+    "typeSequence": ["Jie", "前端开发者", "AI product dev"],
+    "shortIntro": "构建生产级 Web 应用与 AI 产品功能，基于 React、Next.js、PostgreSQL、Prisma、Redis 和 LLM API。",
     "aiCtaLabel": "向 AI 了解我",
     "code": "const coder = {\n  name: \"开发者\",\n  role: [\"前端开发工程师\"],\n  skill: [\"React\", \"Next.js\"],\n  location: \"中国杭州\",\n  problemSolver: true,\n  welcomeMessage: () => {\n    return \"很高兴认识你！\"\n  }\n}"
   },
@@ -127,6 +127,35 @@
     "nonTechShort": "非技术",
     "latestBlogs": "最近的博客",
     "loadingMore": "加载中..."
+  },
+  "projects": {
+    "heading": "项目成果",
+    "description": "参与或主导过的项目，涵盖金融系统、电商平台和 AI 应用。",
+    "roles": {
+      "frontend": "前端开发",
+      "fullstack": "全栈工程师"
+    },
+    "financial": {
+      "title": "交易管理系统 · State Street Corporation",
+      "description": "参与道富银行内部 B 端交易管理系统的遗留系统重构，将单体应用拆分为多个可独立开发的功能域。自研可拖拽数据看板，搭建统一请求处理层与测试策略，保障系统稳定性。",
+      "highlight1": "Webpack Module Federation 拆分 5+ Domain，各 Domain 独立开发部署",
+      "highlight2": "自研可拖拽 Monitor / Dashboard，支持响应式布局与本地持久化",
+      "highlight3": "Vitest + React Testing Library 实现低耦合、高覆盖的单元测试"
+    },
+    "uxAgent": {
+      "title": "UX Agent · State Street Corporation",
+      "description": "为道富银行设计并实现了一款 AI 驱动的 UX Agent 工具。产品经理只需用自然语言描述界面需求，即可自动生成符合公司规范的 React 页面代码。同时设计了组件库迁移方案与 Agent 编排平台，提升团队的 AI 工程化效率。",
+      "highlight1": "GitHub Copilot 自定义范式约束 + CLI 脚手架 + 多套预设模板，确保 AI 输出一致性",
+      "highlight2": "运行时 Wrapper 兼容层，对外暴露旧 API 保证调用方零改动，实现新老组件库并行运行",
+      "highlight3": "驱动 AI 批量将 50+ 自研组件迁移至 MUI，业务方无感知渐进式替换"
+    },
+    "aiChat": {
+      "title": "AI Agent 对话应用",
+      "description": "基于 OpenAI API 构建的智能对话助手，支持多轮上下文理解与工具调用。",
+      "highlight1": "ToolLoopAgent 架构，支持多轮自主决策与工具调用",
+      "highlight2": "SSE 流式响应 + 生成式 UI，实时渲染结构化组件",
+      "highlight3": "3 层 Redis 限流 + Thread 级并发锁保障系统稳定性"
+    }
   },
   "blogs": {
     "mdxTab": "MDX 实验",

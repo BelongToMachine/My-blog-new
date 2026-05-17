@@ -112,8 +112,8 @@
     "greeting": "Heya I'm",
     "name": "Jie",
     "imageAlt": "Jie is standing firm",
-    "typeSequence": ["Jie", "a web developer", "an AI product developer"],
-    "shortIntro": "Frontend developer building robust web apps and practical AI agents with LLMs.",
+    "typeSequence": ["Jie", "a web developer", "AI product dev"],
+    "shortIntro": "I build production-ready web apps and AI product features with React, Next.js, PostgreSQL, Prisma, Redis, and LLM APIs.",
     "aiCtaLabel": "Ask my AI about me",
     "code": "const coder = {\n  name: \"Jie\",\n  role: [\"Front-end developer\"],\n  skill: [\"React\", \"Next.js\"],\n  location: \"Hangzhou, China\",\n  problemSolver: true,\n  welcomeMessage: () => {\n    return \"Happy to meet you!\"\n  }\n}"
   },
@@ -127,6 +127,35 @@
     "nonTechShort": "Non-Tech",
     "latestBlogs": "Latest Blogs",
     "loadingMore": "Loading..."
+  },
+  "projects": {
+    "heading": "Projects",
+    "description": "Projects I've contributed to or led, spanning financial systems, e-commerce platforms, and AI applications.",
+    "roles": {
+      "frontend": "Frontend",
+      "fullstack": "Fullstack"
+    },
+    "financial": {
+      "title": "Trading Management System · State Street Corporation",
+      "description": "Led the frontend architecture upgrade for State Street's internal B2B trading management system, refactoring a legacy monolith into independently deployable domains. Built a draggable data dashboard with unified request handling and testing strategies for system stability.",
+      "highlight1": "Webpack Module Federation splitting 5+ domains for independent dev and deploy",
+      "highlight2": "Draggable Monitor/Dashboard with responsive layout and local persistence",
+      "highlight3": "Vitest + React Testing Library for decoupled, high-coverage unit testing"
+    },
+    "uxAgent": {
+      "title": "UX Agent · State Street Corporation",
+      "description": "Designed and built an AI-powered UX Agent tool for State Street internal use. Product managers can generate spec-compliant React pages by describing the UI in natural language. Also engineered a component migration solution and an agent orchestration platform.",
+      "highlight1": "GitHub Copilot custom paradigm constraints + CLI scaffold + preset templates for consistent AI output",
+      "highlight2": "Runtime wrapper compatibility layer exposing legacy API with zero caller changes for parallel library coexistence",
+      "highlight3": "AI-powered batch migration of 50+ custom components to MUI with seamless progressive replacement"
+    },
+    "aiChat": {
+      "title": "AI Agent Chat Application",
+      "description": "Intelligent conversational assistant powered by OpenAI API with multi-turn context understanding and tool-calling support.",
+      "highlight1": "ToolLoopAgent architecture for multi-turn autonomous tool-calling",
+      "highlight2": "SSE streaming + generative UI for real-time structured component rendering",
+      "highlight3": "3-tier Redis rate-limiting with thread-level concurrency lock"
+    }
   },
   "blogs": {
     "mdxTab": "MDX Lab",

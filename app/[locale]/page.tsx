@@ -5,6 +5,7 @@ import Hero from "../components/Hero"
 import SummaryHeader from "../SummaryHeader"
 import DynamicBezierCurve from "../components/navbar/DynamicBezierCurve"
 import PostSummary from "../PostSummary"
+import ProjectsSection from "../components/projects/ProjectsSection"
 
 interface Props {
   params: { locale: string }
@@ -43,6 +44,7 @@ export default async function Home({ params }: Props) {
         <Hero />
       </DynamicBezierCurve>
       <Container className="relative z-40 -mt-[78px] px-3 pb-16 sm:px-4 md:px-6 md:pb-20 lg:px-8 xl:px-10">
+        <ProjectsSection />
         <SummaryHeader />
         <PostSummary
           total={articles.length}
