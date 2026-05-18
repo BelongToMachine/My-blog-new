@@ -13,6 +13,7 @@ interface Props {
   sectionId?: string
   showBackLink?: boolean
   showBezierCurve?: boolean
+  heroVariant?: "default" | "spotlight"
 }
 
 export default async function AboutSections({
@@ -21,6 +22,7 @@ export default async function AboutSections({
   sectionId,
   showBackLink = true,
   showBezierCurve = false,
+  heroVariant = "default",
 }: Props) {
   const articles = await getMdxArticleList(locale)
 
@@ -48,7 +50,7 @@ export default async function AboutSections({
 
   if (showBezierCurve) {
     return (
-      <AboutClientShell hero={<Hero showBackLink={showBackLink} />}>
+      <AboutClientShell hero={<Hero showBackLink={showBackLink} variant={heroVariant} />}>
         {content}
       </AboutClientShell>
     )
@@ -61,7 +63,7 @@ export default async function AboutSections({
     >
       <div className="bg-muted">
         <Container className="pb-14 md:pb-20">
-          <Hero showBackLink={showBackLink} />
+          <Hero showBackLink={showBackLink} variant={heroVariant} />
         </Container>
       </div>
       {content}

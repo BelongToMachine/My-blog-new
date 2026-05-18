@@ -114,7 +114,7 @@
     "imageAlt": "Jie is standing firm",
     "typeSequence": ["Jie", "a web developer", "AI product dev"],
     "shortIntro": "I build production-ready web apps and AI product features with React, Next.js, PostgreSQL, Prisma, Redis, and LLM APIs.",
-    "aiCtaLabel": "Ask my AI about me",
+    "aiCtaLabel": "Ask AI about me",
     "backToNav": "Back to Home",
     "code": "const coder = {\n  name: \"Jie\",\n  role: [\"Front-end developer\"],\n  skill: [\"React\", \"Next.js\"],\n  location: \"Hangzhou, China\",\n  problemSolver: true,\n  welcomeMessage: () => {\n    return \"Happy to meet you!\"\n  }\n}"
   },

@@ -26,5 +26,5 @@ export async function generateMetadata({
 }
 
 export default async function AboutPage({ params }: Props) {
-  return <AboutSections locale={params.locale} showBezierCurve />
+  return <AboutSections locale={params.locale} showBezierCurve heroVariant="spotlight" />
 }
