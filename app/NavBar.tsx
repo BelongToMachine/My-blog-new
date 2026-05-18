@@ -13,6 +13,7 @@ const NavBar = () => {
   const isInScrollable = useScrollableStore((state) => state.isInScrollable)
   const pathname = usePathname()
   const isIndexPage = pathname === "/"
+  const isIndexMode = isIndexPage && isInScrollable
 
   const updateWindowValue = useCallback(() => {
     setWindowWidth(window.innerWidth)
@@ -28,7 +29,7 @@ const NavBar = () => {
   }, [updateWindowValue])
 
   useEffect(() => {
-    if (!isIndexPage) {
+    if (!isIndexMode) {
       setScrolled(false)
       return
     }
@@ -38,7 +39,7 @@ const NavBar = () => {
     handleScroll()
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
-  }, [isIndexPage])
+  }, [isIndexMode])
 
   if (windowWidth === 0) {
     return null
@@ -46,11 +47,11 @@ const NavBar = () => {
 
   return (
     <nav
-      data-index-nav={isIndexPage || undefined}
+      data-index-nav={isIndexMode || undefined}
       data-scrolled={scrolled || undefined}
       className={cn(
         "!fixed inset-x-0 top-0 z-[1200] border-b transition-all duration-300",
-        isIndexPage
+        isIndexMode
           ? scrolled
             ? "border-white/10 bg-white/10 backdrop-blur-md shadow-none"
             : "border-transparent bg-transparent shadow-none"
@@ -60,9 +61,9 @@ const NavBar = () => {
       )}
     >
       {isDesktopViewport(windowWidth) ? (
-        <DesktopNav indexMode={isIndexPage} />
+        <DesktopNav indexMode={isIndexMode} />
       ) : (
-        <MobileNav indexMode={isIndexPage} />
+        <MobileNav indexMode={isIndexMode} />
       )}
     </nav>
   )
