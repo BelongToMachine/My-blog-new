@@ -12,11 +12,12 @@ import { FloatingPixelAssistant } from "./PixelAssistantPreview"
 import { Link } from "@/app/i18n/navigation"
 
 const SHOW_FLOATING_ASSISTANT = false
-// TODO: revisit the floating SVG assistant if we decide to keep a mascot in the hero.
-const PIXEL_CIRCLE_CLIP_PATH =
-  "polygon(20% 0%, 80% 0%, 80% 4%, 88% 4%, 88% 8%, 92% 8%, 92% 12%, 96% 12%, 96% 20%, 100% 20%, 100% 80%, 96% 80%, 96% 88%, 92% 88%, 92% 92%, 88% 92%, 88% 96%, 80% 96%, 80% 100%, 20% 100%, 20% 96%, 12% 96%, 12% 92%, 8% 92%, 8% 88%, 4% 88%, 4% 80%, 0% 80%, 0% 20%, 4% 20%, 4% 12%, 8% 12%, 8% 8%, 12% 8%, 12% 4%, 20% 4%)"
 
-const Hero = () => {
+interface Props {
+  showBackLink?: boolean
+}
+
+const Hero = ({ showBackLink = true }: Props) => {
   const t = useTranslations("hero")
   const locale = useLocale()
   const themeContext = useContext(ThemeContext)
@@ -26,22 +27,9 @@ const Hero = () => {
   }
 
   const { colorMode } = themeContext
-  const isLightMode = colorMode !== "dark"
   const heroPortrait = selfie
   const portraitImageClass =
     "h-full w-full object-contain object-bottom scale-[1.08]"
-  const portraitFrameStyle = {
-    clipPath: PIXEL_CIRCLE_CLIP_PATH,
-    backgroundColor: isLightMode
-      ? "rgba(22, 154, 191, 0.28)"
-      : "rgba(92, 225, 255, 0.22)",
-  }
-  const portraitInsetStyle = {
-    clipPath: PIXEL_CIRCLE_CLIP_PATH,
-    backgroundColor: isLightMode
-      ? "rgba(243, 248, 252, 0.98)"
-      : "rgba(18, 13, 29, 0.94)",
-  }
 
   const typeSequence = t.raw("typeSequence") as string[]
   const code = t.raw("code") as string
@@ -54,13 +42,15 @@ const Hero = () => {
       id="about-me-section"
     >
       {/* Back to Index */}
-      <Link
-        href="/"
-        className="absolute -left-1 top-3 z-30 inline-flex items-center gap-1.5 border-2 border-primary/30 bg-background/80 px-2.5 py-1.5 font-pixel text-[10px] uppercase tracking-[0.2em] text-primary backdrop-blur-sm transition-all duration-200 hover:border-primary/60 hover:bg-background hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 md:-left-1 md:top-5"
-      >
-        <span>←</span>
-        <span>{t("backToNav")}</span>
-      </Link>
+      {showBackLink ? (
+        <Link
+          href="/"
+          className="absolute -left-1 top-3 z-30 inline-flex items-center gap-1.5 border-2 border-primary/30 bg-background/80 px-2.5 py-1.5 font-pixel text-[10px] uppercase tracking-[0.2em] text-primary backdrop-blur-sm transition-all duration-200 hover:border-primary/60 hover:bg-background hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 md:-left-1 md:top-5"
+        >
+          <span>←</span>
+          <span>{t("backToNav")}</span>
+        </Link>
+      ) : null}
       <div className="grid grid-cols-1 items-start gap-8 lg:-translate-y-4 lg:grid-cols-12 lg:items-start lg:gap-x-4 xl:-translate-y-6 xl:gap-x-8">
         <motion.div
           initial={{ opacity: 0, scale: 0.5 }}
@@ -131,25 +121,14 @@ const Hero = () => {
         >
           <div className="relative ml-2 mt-32 w-full max-w-[340px] lg:mt-36 lg:-translate-x-3 xl:ml-0 xl:mt-32 xl:max-w-[380px] xl:translate-x-0">
             <div className="relative aspect-square w-[276px] lg:w-[304px] xl:w-[344px]">
-              <div className="absolute inset-0" style={portraitFrameStyle} />
-              <div
-                className="absolute inset-[10px]"
-                style={portraitInsetStyle}
-              />
-              <div
-                className="absolute inset-[18px]"
-                style={{ clipPath: PIXEL_CIRCLE_CLIP_PATH }}
-              >
                 <Image
                   src={heroPortrait}
                   alt={t("imageAlt")}
                   fill
                   sizes="(min-width: 1280px) 308px, 272px"
                   className={portraitImageClass}
-                  style={{ imageRendering: "pixelated" }}
                   priority
                 />
-              </div>
             </div>
           </div>
         </motion.div>
