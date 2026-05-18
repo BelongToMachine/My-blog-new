@@ -46,7 +46,7 @@ export default function Footer() {
   const navT = useTranslations("nav")
   const pathname = usePathname()
 
-  if (pathname === "/ai" || pathname === "/") {
+  if (pathname === "/ai") {
     return null
   }
 
