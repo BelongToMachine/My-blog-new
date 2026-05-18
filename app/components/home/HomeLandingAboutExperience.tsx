@@ -7,6 +7,7 @@ import { useScrollableStore } from "@/app/service/Store"
 import style from "@/app/service/ThemeService"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
+import localFont from "next/font/local"
 import React, {
   ReactNode,
   useContext,
@@ -39,6 +40,11 @@ const NON_DESKTOP_OVERLAY_FADE_START_SCROLL_RATIO = 0.7
 const NON_DESKTOP_OVERLAY_HIDE_SCROLL_RATIO = 0.84
 const DESKTOP_CURVE_SCROLL_SLOWER = 0.35
 const CURVE_ENTRANCE_DISTANCE_IN_PX = 180
+
+const bebasNeue = localFont({
+  src: "../../../public/fonts/bebas-neue/BebasNeue-Regular.woff2",
+  display: "swap",
+})
 
 const clamp01 = (value: number) => Math.min(Math.max(value, 0), 1)
 const easeOutQuint = (value: number) => 1 - Math.pow(1 - value, 5)
@@ -462,11 +468,16 @@ export default function HomeLandingAboutExperience({ children }: Props) {
               willChange: "transform, opacity",
             }}
           >
-            <span className="inline-flex items-baseline justify-center gap-[0.14em] whitespace-nowrap font-sans tracking-[-0.04em] [font-kerning:normal]">
-              <span className="inline-block origin-center scale-x-[0.9]">How</span>
-              <span className="inline-block origin-center scale-x-[0.9]">high</span>
-              <span className="inline-block origin-center scale-x-[0.9]">does</span>
-              <span className="inline-block origin-center scale-x-[0.9]">it?</span>
+            <span
+              className={cn(
+                bebasNeue.className,
+                "inline-flex items-baseline justify-center gap-[0.12em] whitespace-nowrap tracking-[0.01em] [font-kerning:normal]",
+              )}
+            >
+              <span className="inline-block">How</span>
+              <span className="inline-block">high</span>
+              <span className="inline-block">does</span>
+              <span className="inline-block">it?</span>
             </span>
           </h1>
 
