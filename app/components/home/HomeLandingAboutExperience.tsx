@@ -451,7 +451,7 @@ export default function HomeLandingAboutExperience({ children }: Props) {
           <h1
             ref={artTextRef}
             className={cn(
-              "flicker text-center text-6xl min-[375px]:text-7xl md:text-8xl lg:text-9xl",
+              "text-center text-[2.65rem] font-extrabold leading-[0.88] tracking-[-0.06em] min-[375px]:text-[3.25rem] md:text-[4.4rem] lg:text-[5.6rem]",
               isDark
                 ? "text-white/95 drop-shadow-[0_4px_40px_rgba(255,255,255,0.12)]"
                 : "text-white drop-shadow-[0_4px_32px_rgba(0,0,0,0.5)]"
@@ -462,7 +462,12 @@ export default function HomeLandingAboutExperience({ children }: Props) {
               willChange: "transform, opacity",
             }}
           >
-            How high does it?
+            <span className="inline-flex items-baseline justify-center gap-[0.14em] whitespace-nowrap font-sans tracking-[-0.04em] [font-kerning:normal]">
+              <span className="inline-block origin-center scale-x-[0.9]">How</span>
+              <span className="inline-block origin-center scale-x-[0.9]">high</span>
+              <span className="inline-block origin-center scale-x-[0.9]">does</span>
+              <span className="inline-block origin-center scale-x-[0.9]">it?</span>
+            </span>
           </h1>
 
           <div
@@ -495,44 +500,45 @@ export default function HomeLandingAboutExperience({ children }: Props) {
 
             <div className="flex items-end gap-4 min-[375px]:gap-5 md:gap-8">
               <div className="flex flex-col items-end gap-3 md:gap-4">
-              <Link
-                href="/about"
-                className={cn(
-                  "group inline-flex min-w-[9.75rem] items-center justify-between gap-2 border-2 px-4 py-2.5 font-pixel text-[10px] uppercase tracking-[0.18em] text-white backdrop-blur-sm transition-all duration-200 hover:text-black focus-visible:outline-none focus-visible:ring-2 min-[375px]:min-w-[10.75rem] min-[375px]:px-5 min-[375px]:text-[11px]",
-                  isDark
-                    ? "border-white/50 bg-black/40 shadow-[0_0_20px_rgba(255,255,255,0.05)] hover:border-white/90 hover:bg-white/85 focus-visible:ring-white/60"
-                    : "border-white/40 bg-black/20 hover:border-white/80 hover:bg-white/90 focus-visible:ring-white/50"
-                )}
-                style={{
-                  transform: `translateY(${firstButtonY}px)`,
-                  opacity: firstButtonProgress,
-                  willChange: "transform, opacity",
-                }}
-              >
-                <span>Get to know me</span>
-                <span className="transition-transform duration-200 group-hover:translate-x-0.5">
-                  →
-                </span>
-              </Link>
-              <Link
-                href="/ai"
-                className={cn(
-                  "group inline-flex min-w-[9.75rem] items-center justify-between gap-2 border-2 px-4 py-2.5 font-pixel text-[10px] uppercase tracking-[0.18em] text-white backdrop-blur-sm transition-all duration-200 hover:text-black focus-visible:outline-none focus-visible:ring-2 min-[375px]:min-w-[10.75rem] min-[375px]:px-5 min-[375px]:text-[11px]",
-                  isDark
-                    ? "border-white/50 bg-black/40 shadow-[0_0_20px_rgba(255,255,255,0.05)] hover:border-white/90 hover:bg-white/85 focus-visible:ring-white/60"
-                    : "border-white/40 bg-black/20 hover:border-white/80 hover:bg-white/90 focus-visible:ring-white/50"
-                )}
-                style={{
-                  transform: `translateY(${secondButtonY}px)`,
-                  opacity: secondButtonProgress,
-                  willChange: "transform, opacity",
-                }}
-              >
-                <span>Get AI solution</span>
-                <span className="transition-transform duration-200 group-hover:translate-x-0.5">
-                  →
-                </span>
-              </Link>
+                <Link
+                  href="/about"
+                  className={cn(
+                    "group inline-flex min-w-[9.75rem] items-center justify-between gap-2 border-2 px-4 py-2.5 font-pixel text-[10px] uppercase tracking-[0.18em] text-white backdrop-blur-sm transition-all duration-200 hover:text-black focus-visible:outline-none focus-visible:ring-2 min-[375px]:min-w-[10.75rem] min-[375px]:px-5 min-[375px]:text-[11px]",
+                    isDark
+                      ? "border-white/50 bg-black/40 shadow-[0_0_20px_rgba(255,255,255,0.05)] hover:border-white/90 hover:bg-white/85 focus-visible:ring-white/60"
+                      : "border-white/40 bg-black/20 hover:border-white/80 hover:bg-white/90 focus-visible:ring-white/50"
+                  )}
+                  style={{
+                    transform: `translateY(${firstButtonY}px)`,
+                    opacity: firstButtonProgress,
+                    willChange: "transform, opacity",
+                  }}
+                >
+                  <span>Get to know me</span>
+                  <span className="transition-transform duration-200 group-hover:translate-x-0.5">
+                    →
+                  </span>
+                </Link>
+                <Link
+                  href="/ai"
+                  className={cn(
+                    "group inline-flex min-w-[9.75rem] items-center justify-between gap-2 border-2 px-4 py-2.5 font-pixel text-[10px] uppercase tracking-[0.18em] text-white backdrop-blur-sm transition-all duration-200 hover:text-black focus-visible:outline-none focus-visible:ring-2 min-[375px]:min-w-[10.75rem] min-[375px]:px-5 min-[375px]:text-[11px]",
+                    isDark
+                      ? "border-white/50 bg-black/40 shadow-[0_0_20px_rgba(255,255,255,0.05)] hover:border-white/90 hover:bg-white/85 focus-visible:ring-white/60"
+                      : "border-white/40 bg-black/20 hover:border-white/80 hover:bg-white/90 focus-visible:ring-white/50"
+                  )}
+                  style={{
+                    transform: `translateY(${secondButtonY}px)`,
+                    opacity: secondButtonProgress,
+                    willChange: "transform, opacity",
+                  }}
+                >
+                  <span>Get AI solution</span>
+                  <span className="transition-transform duration-200 group-hover:translate-x-0.5">
+                    →
+                  </span>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -576,42 +582,17 @@ export default function HomeLandingAboutExperience({ children }: Props) {
           >
             <path
               d={curveInstructions}
-              fill={style.background as string}
+              fill={style.scrollable as string}
               stroke="hsl(var(--border))"
               strokeWidth={0}
               vectorEffect="non-scaling-stroke"
-              style={{
-                filter:
-                  "drop-shadow(0 -3px 8px rgba(0,0,0,0.35)) drop-shadow(0 -12px 32px rgba(0,0,0,0.18))",
-              }}
             />
           </svg>
         </div>
       ) : null}
 
       <div aria-hidden className="h-[100svh]" />
-      <div className="relative z-40">
-        {/* Permanent curve divider: top-left → bottom-right */}
-        <div
-          className="pointer-events-none absolute -top-[80px] left-0 right-0 h-[80px] md:-top-[120px] md:h-[120px]"
-          aria-hidden
-        >
-          <svg
-            viewBox="0 0 1440 120"
-            preserveAspectRatio="none"
-            className="h-full w-full"
-            style={{
-              filter: "drop-shadow(0 -8px 24px rgba(0,0,0,0.12))",
-            }}
-          >
-            <path
-              d="M 0,20 C 400,20 1000,95 1440,95 L 1440,120 L 0,120 Z"
-              fill="hsl(var(--background))"
-            />
-          </svg>
-        </div>
-        {children}
-      </div>
+      <div className="relative z-40">{children}</div>
     </>
   )
 }

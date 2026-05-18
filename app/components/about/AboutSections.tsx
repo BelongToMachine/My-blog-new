@@ -59,9 +59,11 @@ export default async function AboutSections({
       id={sectionId}
       className={cn("relative z-40 bg-background", overlapTop && "-mt-[78px]")}
     >
-      <Container className="pb-14 md:pb-20">
-        <Hero showBackLink={showBackLink} />
-      </Container>
+      <div className="bg-muted">
+        <Container className="pb-14 md:pb-20">
+          <Hero showBackLink={showBackLink} />
+        </Container>
+      </div>
       {content}
     </section>
   )
