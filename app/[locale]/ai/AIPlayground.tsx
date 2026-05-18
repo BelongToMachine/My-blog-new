@@ -255,7 +255,7 @@ function ChatCodeBlock({
 }) {
   const isDark = colorMode === "dark"
   const taskbarBg = isDark ? "#2d2d2d" : "#f0f0f0"
-  const bodyBg = isDark ? "hsl(265 55% 8%)" : "hsl(215 30% 10%)"
+  const bodyBg = isDark ? "hsl(220 18% 8%)" : "hsl(215 30% 10%)"
   const normalizedLanguage =
     CODE_LANGUAGE_ALIAS_MAP[language.toLowerCase()] ?? language.toLowerCase()
 

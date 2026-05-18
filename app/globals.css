@@ -109,39 +109,39 @@
   }
 
   .dark {
-    --background: 265 55% 10%;
-    --foreground: 286 30% 94%;
+    --background: 220 18% 9%;
+    --foreground: 220 15% 94%;
 
-    --card: 264 48% 13%;
-    --card-foreground: 286 30% 94%;
+    --card: 220 15% 12%;
+    --card-foreground: 220 15% 94%;
 
-    --popover: 264 48% 13%;
-    --popover-foreground: 286 30% 94%;
+    --popover: 220 15% 12%;
+    --popover-foreground: 220 15% 94%;
 
     --primary: 190 100% 62%;
-    --primary-foreground: 262 50% 10%;
+    --primary-foreground: 220 20% 10%;
 
     --secondary: 43 100% 61%;
-    --secondary-foreground: 262 50% 10%;
+    --secondary-foreground: 220 20% 10%;
 
-    --muted: 263 30% 19%;
-    --muted-foreground: 286 16% 74%;
+    --muted: 220 12% 17%;
+    --muted-foreground: 220 10% 70%;
 
-    --accent: 282 30% 19%;
-    --accent-foreground: 286 30% 94%;
+    --accent: 220 12% 17%;
+    --accent-foreground: 220 15% 94%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 265 26% 31%;
-    --input: 265 26% 31%;
+    --border: 220 11% 26%;
+    --input: 220 11% 26%;
     --ring: 190 100% 62%;
 
-    --surface-muted: 263 30% 19%;
-    --surface-elevated: 264 48% 13%;
-    --surface-overlay: 264 48% 13%;
-    --text-strong: 286 30% 94%;
-    --text-soft: 286 16% 74%;
+    --surface-muted: 220 12% 17%;
+    --surface-elevated: 220 15% 12%;
+    --surface-overlay: 220 15% 12%;
+    --text-strong: 220 15% 94%;
+    --text-soft: 220 10% 70%;
     --text-link: 190 100% 62%;
     --signal-amber: 43 100% 61%;
     --signal-rose: 327 95% 65%;
@@ -697,7 +697,7 @@ html.dark .wind__lane {
     left: 5px;
     width: 3px;
     height: 3px;
-    background: hsl(286 30% 94%);
+    background: hsl(var(--foreground));
     box-shadow:
       0 -4px 0 hsl(190 100% 62%),
       -2px -2px 0 hsl(190 100% 62%),
