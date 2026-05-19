@@ -11,9 +11,11 @@ const NavBar = () => {
   const [windowWidth, setWindowWidth] = useState<number>(0)
   const [scrolled, setScrolled] = useState(false)
   const isInScrollable = useScrollableStore((state) => state.isInScrollable)
+  const scrollableSources = useScrollableStore((state) => state.scrollableSources)
   const pathname = usePathname()
   const isIndexPage = pathname === "/"
-  const isIndexMode = isIndexPage && isInScrollable
+  const isIndexMode = isIndexPage && Boolean(scrollableSources["home-landing"])
+  const isIndexContentMode = isIndexPage && !isIndexMode
 
   const updateWindowValue = useCallback(() => {
     setWindowWidth(window.innerWidth)
@@ -53,8 +55,10 @@ const NavBar = () => {
         "!fixed inset-x-0 top-0 z-[1200] border-b transition-all duration-300",
         isIndexMode
           ? scrolled
-            ? "border-sky-100/15 bg-sky-950/15 backdrop-blur-xl shadow-none"
+            ? "border-sky-100/25 bg-sky-900/78 backdrop-blur-xl shadow-none"
             : "border-transparent bg-transparent shadow-none"
+          : isIndexContentMode
+            ? "pixel-panel border-border/70 bg-background"
           : isInScrollable
             ? "pixel-panel border-border bg-card"
             : "pixel-panel border-border/70 bg-background"

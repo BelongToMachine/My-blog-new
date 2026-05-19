@@ -1,16 +1,21 @@
 import { useEffect } from "react"
 import { useScrollableStore } from "../service/Store"
 
-const useIsInScrollable = (scrolledInVH: number, SCROLLABLE_HEIGHT_IN_VH: number) => {
-  const setIsInScrollable = useScrollableStore((state) => state.setIsInScrollable)
+const useIsInScrollable = (
+  scrolledInVH: number,
+  SCROLLABLE_HEIGHT_IN_VH: number,
+  source = "dynamic-bezier"
+) => {
+  const setScrollableSource = useScrollableStore((state) => state.setScrollableSource)
+  const clearScrollableSource = useScrollableStore((state) => state.clearScrollableSource)
 
   useEffect(() => {
-    setIsInScrollable(scrolledInVH < SCROLLABLE_HEIGHT_IN_VH)
+    setScrollableSource(source, scrolledInVH < SCROLLABLE_HEIGHT_IN_VH)
 
     return () => {
-      setIsInScrollable(false)
+      clearScrollableSource(source)
     }
-  }, [SCROLLABLE_HEIGHT_IN_VH, scrolledInVH, setIsInScrollable])
+  }, [SCROLLABLE_HEIGHT_IN_VH, clearScrollableSource, scrolledInVH, setScrollableSource, source])
 }
 
 export default useIsInScrollable

@@ -96,7 +96,8 @@ export default function HomeLandingAboutExperience({ children }: Props) {
   const t = useTranslations("hero")
   const { colorMode } = useContext(ThemeContext) ?? { colorMode: "light" }
   const isDark = colorMode === "dark"
-  const setIsInScrollable = useScrollableStore((state) => state.setIsInScrollable)
+  const setScrollableSource = useScrollableStore((state) => state.setScrollableSource)
+  const clearScrollableSource = useScrollableStore((state) => state.clearScrollableSource)
 
   const [released, setReleased] = useState(false)
   const [displayProgress, setDisplayProgress] = useState(0)
@@ -371,12 +372,12 @@ export default function HomeLandingAboutExperience({ children }: Props) {
     curveProgress < overlayHideThreshold
 
   useEffect(() => {
-    setIsInScrollable(landingNavMode)
+    setScrollableSource("home-landing", landingNavMode)
 
     return () => {
-      setIsInScrollable(false)
+      clearScrollableSource("home-landing")
     }
-  }, [landingNavMode, setIsInScrollable])
+  }, [clearScrollableSource, landingNavMode, setScrollableSource])
 
   const artProgress = prefersReducedMotion ? 1 : clamp01(displayProgress / ART_REVEAL_END)
   const firstButtonProgress = prefersReducedMotion
@@ -462,12 +463,6 @@ export default function HomeLandingAboutExperience({ children }: Props) {
               isDark
                 ? landingStyles.skyOverlayDark
                 : landingStyles.skyOverlayLight
-            )}
-          />
-          <div
-            className={cn(
-              "absolute inset-x-0 bottom-0 h-[32svh]",
-              isDark ? landingStyles.skyBridgeDark : landingStyles.skyBridgeLight
             )}
           />
         </div>

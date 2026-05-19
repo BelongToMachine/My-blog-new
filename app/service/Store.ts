@@ -39,7 +39,10 @@ interface VirtualCursorStore {
 
 interface ScrollableStore {
   isInScrollable: boolean
+  scrollableSources: Record<string, boolean>
   setIsInScrollable: (param: boolean) => void
+  setScrollableSource: (source: string, param: boolean) => void
+  clearScrollableSource: (source: string) => void
 }
 
 export const useDefaultCursorStore = create<CursorStateStore>((set) => ({
@@ -95,10 +98,60 @@ export const useVirtualCursorStore = create<VirtualCursorStore>((set) => ({
     }),
 }))
 
+const getIsInScrollable = (scrollableSources: Record<string, boolean>) =>
+  Object.values(scrollableSources).some(Boolean)
+
 export const useScrollableStore = create<ScrollableStore>((set) => ({
   isInScrollable: true,
+  scrollableSources: { __boot: true },
   setIsInScrollable: (userInputBoolean) => {
-    set({ isInScrollable: userInputBoolean })
+    set((state) => {
+      const nextScrollableSources = { ...state.scrollableSources }
+
+      delete nextScrollableSources.__boot
+
+      if (userInputBoolean) {
+        nextScrollableSources.legacy = true
+      } else {
+        delete nextScrollableSources.legacy
+      }
+
+      return {
+        scrollableSources: nextScrollableSources,
+        isInScrollable: getIsInScrollable(nextScrollableSources),
+      }
+    })
+  },
+  setScrollableSource: (source, userInputBoolean) => {
+    set((state) => {
+      const nextScrollableSources = { ...state.scrollableSources }
+
+      delete nextScrollableSources.__boot
+
+      if (userInputBoolean) {
+        nextScrollableSources[source] = true
+      } else {
+        delete nextScrollableSources[source]
+      }
+
+      return {
+        scrollableSources: nextScrollableSources,
+        isInScrollable: getIsInScrollable(nextScrollableSources),
+      }
+    })
+  },
+  clearScrollableSource: (source) => {
+    set((state) => {
+      const nextScrollableSources = { ...state.scrollableSources }
+
+      delete nextScrollableSources.__boot
+      delete nextScrollableSources[source]
+
+      return {
+        scrollableSources: nextScrollableSources,
+        isInScrollable: getIsInScrollable(nextScrollableSources),
+      }
+    })
   },
 }))
 

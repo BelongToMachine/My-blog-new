@@ -10,9 +10,10 @@ export default function IndexPage({ params }: Props) {
     <HomeLandingAboutExperience>
       <AboutSections
         locale={params.locale}
-        overlapTop
         sectionId="home-about-section"
         showBackLink={false}
+        showBezierCurve
+        heroVariant="spotlight"
       />
     </HomeLandingAboutExperience>
   )

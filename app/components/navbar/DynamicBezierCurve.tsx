@@ -1,5 +1,4 @@
 "use client"
-import { useScrollableStore } from "@/app/service/Store"
 import React, {
   useState,
   useEffect,
@@ -117,11 +116,12 @@ const getPixelCurveInstructions = (
 const DynamicBezierCurve = ({ children }: Props) => {
   const [scrollRatio, setScrollRatio] = useState(0)
   const [scrolledInVH, setScrolledInVh] = useState(0)
+  const [hasReachedCurveStart, setHasReachedCurveStart] = useState(false)
   const nodeRef = useRef(null)
+  const rootAnchorRef = useRef<HTMLDivElement>(null)
   const nonDesktopCurveTargetScrollRef = useRef<number | null>(null)
-  const isInScrollable = useScrollableStore((state) => state.isInScrollable)
   const BACKGROUND_COLOR = style.background
-  const SCROLLABLE_COLOR = style.scrollable
+  const HERO_SURFACE_COLOR = "hsl(var(--home-about-bridge))"
 
   const SCROLLABLE_HEIGHT_IN_VH = 100
   const NON_DESKTOP_STICKY_TOP_IN_PX = 56
@@ -143,7 +143,21 @@ const DynamicBezierCurve = ({ children }: Props) => {
   }
   const SLOWER = 0.35
 
-  useIsInScrollable(scrolledInVH, SCROLLABLE_HEIGHT_IN_VH)
+  useIsInScrollable(
+    hasReachedCurveStart ? scrolledInVH : SCROLLABLE_HEIGHT_IN_VH,
+    SCROLLABLE_HEIGHT_IN_VH,
+    "dynamic-bezier"
+  )
+  const isCurveScrollable =
+    hasReachedCurveStart && scrolledInVH < SCROLLABLE_HEIGHT_IN_VH
+
+  const getComponentTopInDocument = () => {
+    const anchorRect = rootAnchorRef.current?.getBoundingClientRect()
+
+    if (!anchorRect) return 0
+
+    return window.scrollY + anchorRect.top
+  }
 
   useEffect(() => {
     const handleScroll = (event: WheelEvent) => {
@@ -156,11 +170,11 @@ const DynamicBezierCurve = ({ children }: Props) => {
       })
     }
 
-    if (isInScrollable) {
+    if (isCurveScrollable) {
       window.addEventListener("wheel", handleScroll, { passive: false })
       return () => window.removeEventListener("wheel", handleScroll)
     }
-  }, [isInScrollable])
+  }, [isCurveScrollable])
 
   useEffect(() => {
     const captureNonDesktopCurveTarget = () => {
@@ -168,6 +182,8 @@ const DynamicBezierCurve = ({ children }: Props) => {
         nonDesktopCurveTargetScrollRef.current = null
         return
       }
+
+      const componentTopInDocument = getComponentTopInDocument()
 
       // Follow the first section after the hero so adding new blocks above the
       // summary doesn't delay the curve handoff on tablet/mobile.
@@ -180,7 +196,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
         const curveTargetTopInDocument = window.scrollY + rect.top
 
         nonDesktopCurveTargetScrollRef.current = Math.max(
-          curveTargetTopInDocument - NON_DESKTOP_STICKY_TOP_IN_PX,
+          curveTargetTopInDocument - componentTopInDocument - NON_DESKTOP_STICKY_TOP_IN_PX,
           1
         )
         return
@@ -195,7 +211,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
         const avatarBottomInDocument = window.scrollY + rect.bottom
 
         nonDesktopCurveTargetScrollRef.current = Math.max(
-          avatarBottomInDocument - NON_DESKTOP_STICKY_TOP_IN_PX,
+          avatarBottomInDocument - componentTopInDocument - NON_DESKTOP_STICKY_TOP_IN_PX,
           1
         )
         return
@@ -220,9 +236,19 @@ const DynamicBezierCurve = ({ children }: Props) => {
       if (!nodeRef.current) return
 
       const windowHeight = window.innerHeight
-      const pixelsScrolled = Math.abs(window.scrollY)
+      const componentTopInDocument = getComponentTopInDocument()
+      const componentEntranceScroll =
+        componentTopInDocument - NON_DESKTOP_STICKY_TOP_IN_PX
+      const hasEnteredCurve = window.scrollY >= componentEntranceScroll
+      const pixelsScrolled = hasEnteredCurve
+        ? Math.max(window.scrollY - componentTopInDocument, 0)
+        : 0
       const isDesktop = isDesktopViewport(window.innerWidth)
       let ratio = 0
+
+      setHasReachedCurveStart((previousValue) =>
+        previousValue !== hasEnteredCurve ? hasEnteredCurve : previousValue
+      )
 
       if (!isDesktop) {
         const nonDesktopTargetScroll =
@@ -297,18 +323,36 @@ const DynamicBezierCurve = ({ children }: Props) => {
       NON_DESKTOP_HERO_LAYER_HIDE_SCROLL_RATIO
     )
   const shouldShowFixedNonDesktopHero =
-    isInScrollable && scrollRatio < NON_DESKTOP_HERO_LAYER_HIDE_SCROLL_RATIO
+    isCurveScrollable && scrollRatio < NON_DESKTOP_HERO_LAYER_HIDE_SCROLL_RATIO
   const shouldShowFixedDesktopHero =
-    isInScrollable && scrollRatio < DESKTOP_HERO_LAYER_HIDE_SCROLL_RATIO
+    isCurveScrollable && scrollRatio < DESKTOP_HERO_LAYER_HIDE_SCROLL_RATIO
+  const shouldShowPreviewHero = !hasReachedCurveStart
 
   return (
     <>
+      <div ref={rootAnchorRef} aria-hidden className="h-0" />
       <section
         className="relative lg:hidden"
         style={{
-          backgroundColor: SCROLLABLE_COLOR,
+          backgroundColor: HERO_SURFACE_COLOR,
         }}
       >
+        <div
+          aria-hidden
+          style={{
+            position: "absolute",
+            inset: 0,
+            backgroundColor: HERO_SURFACE_COLOR,
+            overflow: "hidden",
+            isolation: "isolate",
+            opacity: shouldShowPreviewHero ? 1 : 0,
+            pointerEvents: "none",
+            transition: "opacity 180ms ease-out",
+            zIndex: 0,
+          }}
+        >
+          <Container>{children}</Container>
+        </div>
         <div
           style={{
             position: "fixed",
@@ -317,7 +361,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
             right: 0,
             height: "calc(100svh - 3.5rem)",
             width: "100%",
-            backgroundColor: SCROLLABLE_COLOR,
+            backgroundColor: HERO_SURFACE_COLOR,
             opacity: nonDesktopHeroOpacity,
             overflow: "hidden",
             isolation: "isolate",
@@ -337,6 +381,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
             height: "calc(100svh - 3.5rem)",
             pointerEvents: "none",
             zIndex: 30,
+            visibility: hasReachedCurveStart ? "visible" : "hidden",
           }}
         >
           <div
@@ -375,11 +420,29 @@ const DynamicBezierCurve = ({ children }: Props) => {
           }}
         ></div>
       </section>
-      <div className="hidden lg:block">
+      <div className="relative hidden lg:block">
+        <div
+          aria-hidden
+          style={{
+            position: "absolute",
+            inset: 0,
+            height: "100vh",
+            backgroundColor: HERO_SURFACE_COLOR,
+            overflow: "hidden",
+            opacity: shouldShowPreviewHero ? 1 : 0,
+            pointerEvents: "none",
+            transition: "opacity 180ms ease-out",
+            zIndex: 0,
+          }}
+        >
+          <Container>{children}</Container>
+        </div>
         <div
           style={{
             position: "fixed",
-            backgroundColor: SCROLLABLE_COLOR,
+            top: 0,
+            left: 0,
+            backgroundColor: HERO_SURFACE_COLOR,
             height: "100vh",
             width: "100%",
             visibility: shouldShowFixedDesktopHero ? "visible" : "hidden",
@@ -394,7 +457,10 @@ const DynamicBezierCurve = ({ children }: Props) => {
             width: "100%",
             height: "100vh",
             position: "fixed",
+            top: 0,
+            left: 0,
             pointerEvents: "none",
+            visibility: hasReachedCurveStart ? "visible" : "hidden",
           }}
           shapeRendering="crispEdges"
           preserveAspectRatio="none"
