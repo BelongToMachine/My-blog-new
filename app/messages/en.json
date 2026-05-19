@@ -116,6 +116,12 @@
     "shortIntro": "I build production-ready web apps and AI product features with React, Next.js, PostgreSQL, Prisma, Redis, and LLM APIs.",
     "aiCtaLabel": "Ask AI about me",
     "backToNav": "Back to Home",
+    "landingTitle1": "I'm Jie, a full-stack TypeScript developer based in Hangzhou, China.",
+    "landingTitle2": "I build production-ready web apps and AI product features with React, Next.js, PostgreSQL, Prisma, Redis, and LLM APIs.",
+    "landingStatus": "Always open to good conversations.",
+    "ctaAbout": "Get to know me",
+    "ctaAi": "Get AI solution",
+    "scrollDown": "Scroll down",
     "code": "const coder = {\n  name: \"Jie\",\n  role: [\"Front-end developer\"],\n  skill: [\"React\", \"Next.js\"],\n  location: \"Hangzhou, China\",\n  problemSolver: true,\n  welcomeMessage: () => {\n    return \"Happy to meet you!\"\n  }\n}"
   },
   "home": {

@@ -113,9 +113,15 @@
     "name": "开发者",
     "imageAlt": "Jie 站在这里",
     "typeSequence": ["Jie", "前端开发者", "AI product dev"],
-    "shortIntro": "构建生产级 Web 应用与 AI 产品功能，基于 React、Next.js、PostgreSQL、Prisma、Redis 和 LLM API。",
+    "shortIntro": "基于 React、Next.js、PostgreSQL、Prisma、Redis 及 LLM API，构建生产级 Web 应用与 AI 产品功能。",
     "aiCtaLabel": "向 AI 了解我",
     "backToNav": "返回导航页",
+    "landingTitle1": "我是 Jie，一名base杭州的全栈 TypeScript 开发者。",
+    "landingTitle2": "用 React、Next.js、PostgreSQL、Prisma、Redis 和 LLM API 构建生产级 Web 应用与 AI 产品功能。",
+    "landingStatus": "期待值得一聊的机会。",
+    "ctaAbout": "认识我",
+    "ctaAi": "AI 解决方案",
+    "scrollDown": "向下滚动",
     "code": "const coder = {\n  name: \"开发者\",\n  role: [\"前端开发工程师\"],\n  skill: [\"React\", \"Next.js\"],\n  location: \"中国杭州\",\n  problemSolver: true,\n  welcomeMessage: () => {\n    return \"很高兴认识你！\"\n  }\n}"
   },
   "home": {
