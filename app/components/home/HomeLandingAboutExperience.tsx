@@ -2,6 +2,7 @@
 
 import { ThemeContext } from "@/app/context/DarkModeContext"
 import { Link } from "@/app/i18n/navigation"
+import { useTranslations } from "next-intl"
 import { isDesktopViewport } from "@/app/lib/responsive"
 import { useScrollableStore } from "@/app/service/Store"
 import style from "@/app/service/ThemeService"
@@ -85,6 +86,7 @@ const getNavOffsetInPixels = () => {
 }
 
 export default function HomeLandingAboutExperience({ children }: Props) {
+  const t = useTranslations("hero")
   const { colorMode } = useContext(ThemeContext) ?? { colorMode: "light" }
   const isDark = colorMode === "dark"
   const setIsInScrollable = useScrollableStore((state) => state.setIsInScrollable)
@@ -443,15 +445,15 @@ export default function HomeLandingAboutExperience({ children }: Props) {
             className={cn(
               "absolute inset-0",
               isDark
-                ? "bg-gradient-to-b from-black/50 via-transparent to-black/60"
-                : "bg-gradient-to-b from-black/10 via-transparent to-black/40"
+                ? "bg-gradient-to-b from-sky-950/40 via-sky-900/10 to-sky-950/70"
+                : "bg-gradient-to-b from-sky-800/5 via-transparent to-sky-900/45"
             )}
           />
         </div>
 
         <div
           ref={heroFrameRef}
-          className="fixed inset-x-0 z-10 flex flex-col items-center"
+          className="pointer-events-auto fixed inset-x-0 z-10 flex flex-col items-center"
           style={{ top: "calc(var(--app-nav-offset) + 1.5rem)" }}
         >
           <h1
@@ -459,8 +461,8 @@ export default function HomeLandingAboutExperience({ children }: Props) {
             className={cn(
               "text-center text-[2.65rem] font-extrabold leading-[0.88] tracking-[-0.06em] min-[375px]:text-[3.25rem] md:text-[4.4rem] lg:text-[5.6rem]",
               isDark
-                ? "text-white/95 drop-shadow-[0_4px_40px_rgba(255,255,255,0.12)]"
-                : "text-white drop-shadow-[0_4px_32px_rgba(0,0,0,0.5)]"
+                ? "text-white/95 drop-shadow-[0_4px_40px_rgba(120,160,255,0.2)]"
+                : "text-white drop-shadow-[0_6px_40px_rgba(7,60,120,0.4)]"
             )}
             style={{
               transform: `translateY(${artTextY}px) scale(${artTextScale})`,
@@ -482,74 +484,66 @@ export default function HomeLandingAboutExperience({ children }: Props) {
           </h1>
 
           <div
-            className="mt-7 flex flex-col items-end gap-6 self-end pr-6 md:mt-12 md:pr-16"
+            className="mt-7 flex flex-col items-center md:mt-12"
             style={{
               transform: `translateY(${introCopyY}px)`,
               opacity: introCopyProgress,
               willChange: "transform, opacity",
             }}
           >
-            <div
-              className="flex max-w-[50rem] flex-col items-end text-right"
-            >
-              <p
-                className="max-w-[46rem] text-right font-pixel text-base font-medium leading-relaxed text-white [text-shadow:0_10px_30px_rgba(0,0,0,0.2)] min-[375px]:text-lg md:text-[1.35rem] md:leading-9"
-              >
-                I&apos;m Jie, a full-stack TypeScript developer based in Hangzhou.
+            {/* Intro copy right-aligned */}
+            <div className="flex flex-col items-end text-right px-6 md:px-16">
+              <p className="max-w-[46rem] font-pixel text-base font-medium leading-relaxed text-white [text-shadow:0_8px_28px_rgba(7,60,120,0.35)] min-[375px]:text-lg md:text-[1.35rem] md:leading-9">
+                {t("landingTitle1")}
               </p>
-              <p
-                className="mt-2 max-w-[44rem] text-right font-pixel text-[12px] leading-6 text-white/70 [text-shadow:0_8px_24px_rgba(0,0,0,0.16)] min-[375px]:text-[13px] md:mt-3 md:text-[14px]"
-              >
-                I build production-ready web apps and AI product features with React, Next.js, PostgreSQL, Prisma, Redis, and LLM APIs.
+              <p className="mt-2 max-w-[44rem] font-pixel text-[12px] leading-6 text-white/75 [text-shadow:0_6px_22px_rgba(7,60,120,0.3)] min-[375px]:text-[13px] md:mt-3 md:text-[14px]">
+                {t("landingTitle2")}
               </p>
-              <p
-                className="mt-2 max-w-[44rem] text-right font-pixel text-[12px] leading-6 text-white/70 [text-shadow:0_8px_24px_rgba(0,0,0,0.16)] min-[375px]:text-[13px] md:mt-3 md:text-[14px]"
-              >
-                Open to remote contractor roles.
+              <p className="mt-2 max-w-[44rem] font-pixel text-[12px] leading-6 text-white/75 [text-shadow:0_6px_22px_rgba(7,60,120,0.3)] min-[375px]:text-[13px] md:mt-3 md:text-[14px]">
+                {t("landingStatus")}
               </p>
             </div>
 
-            <div className="flex items-end gap-4 min-[375px]:gap-5 md:gap-8">
-              <div className="flex flex-col items-end gap-3 md:gap-4">
-                <Link
-                  href="/about"
-                  className={cn(
-                    "group inline-flex min-w-[9.75rem] items-center justify-between gap-2 border-2 px-4 py-2.5 font-pixel text-[10px] uppercase tracking-[0.18em] text-white backdrop-blur-sm transition-all duration-200 hover:text-black focus-visible:outline-none focus-visible:ring-2 min-[375px]:min-w-[10.75rem] min-[375px]:px-5 min-[375px]:text-[11px]",
-                    isDark
-                      ? "border-white/50 bg-black/40 shadow-[0_0_20px_rgba(255,255,255,0.05)] hover:border-white/90 hover:bg-white/85 focus-visible:ring-white/60"
-                      : "border-white/40 bg-black/20 hover:border-white/80 hover:bg-white/90 focus-visible:ring-white/50"
-                  )}
-                  style={{
-                    transform: `translateY(${firstButtonY}px)`,
-                    opacity: firstButtonProgress,
-                    willChange: "transform, opacity",
-                  }}
-                >
-                  <span>Get to know me</span>
-                  <span className="transition-transform duration-200 group-hover:translate-x-0.5">
-                    →
-                  </span>
-                </Link>
-                <Link
-                  href="/ai"
-                  className={cn(
-                    "group inline-flex min-w-[9.75rem] items-center justify-between gap-2 border-2 px-4 py-2.5 font-pixel text-[10px] uppercase tracking-[0.18em] text-white backdrop-blur-sm transition-all duration-200 hover:text-black focus-visible:outline-none focus-visible:ring-2 min-[375px]:min-w-[10.75rem] min-[375px]:px-5 min-[375px]:text-[11px]",
-                    isDark
-                      ? "border-white/50 bg-black/40 shadow-[0_0_20px_rgba(255,255,255,0.05)] hover:border-white/90 hover:bg-white/85 focus-visible:ring-white/60"
-                      : "border-white/40 bg-black/20 hover:border-white/80 hover:bg-white/90 focus-visible:ring-white/50"
-                  )}
-                  style={{
-                    transform: `translateY(${secondButtonY}px)`,
-                    opacity: secondButtonProgress,
-                    willChange: "transform, opacity",
-                  }}
-                >
-                  <span>Get AI solution</span>
-                  <span className="transition-transform duration-200 group-hover:translate-x-0.5">
-                    →
-                  </span>
-                </Link>
-              </div>
+            {/* Buttons centered below intro */}
+            <div className="mt-6 flex flex-col items-center gap-3 md:mt-8 md:gap-4">
+              <Link
+                href="/about"
+                className={cn(
+                  "group inline-flex min-w-[9.75rem] items-center justify-between gap-2 border-2 px-4 py-2.5 font-pixel text-[10px] uppercase tracking-[0.18em] text-white backdrop-blur-sm transition-all duration-200 hover:text-black focus-visible:outline-none focus-visible:ring-2 min-[375px]:min-w-[10.75rem] min-[375px]:px-5 min-[375px]:text-[11px]",
+                  isDark
+                    ? "border-indigo-300/40 bg-indigo-950/40 shadow-[0_0_24px_rgba(120,160,255,0.08)] hover:border-indigo-200/80 hover:bg-white/85 focus-visible:ring-white/60"
+                    : "border-sky-200/35 bg-sky-950/15 hover:border-sky-100/80 hover:bg-white/85 focus-visible:ring-white/50"
+                )}
+                style={{
+                  transform: `translateY(${firstButtonY}px)`,
+                  opacity: firstButtonProgress,
+                  willChange: "transform, opacity",
+                }}
+              >
+                <span>{t("ctaAbout")}</span>
+                <span className="transition-transform duration-200 group-hover:translate-x-0.5">
+                  →
+                </span>
+              </Link>
+              <Link
+                href="/ai"
+                className={cn(
+                  "group inline-flex min-w-[9.75rem] items-center justify-between gap-2 border-2 px-4 py-2.5 font-pixel text-[10px] uppercase tracking-[0.18em] text-white backdrop-blur-sm transition-all duration-200 hover:text-black focus-visible:outline-none focus-visible:ring-2 min-[375px]:min-w-[10.75rem] min-[375px]:px-5 min-[375px]:text-[11px]",
+                  isDark
+                    ? "border-indigo-300/40 bg-indigo-950/40 shadow-[0_0_24px_rgba(120,160,255,0.08)] hover:border-indigo-200/80 hover:bg-white/85 focus-visible:ring-white/60"
+                    : "border-sky-200/35 bg-sky-950/15 hover:border-sky-100/80 hover:bg-white/85 focus-visible:ring-white/50"
+                )}
+                style={{
+                  transform: `translateY(${secondButtonY}px)`,
+                  opacity: secondButtonProgress,
+                  willChange: "transform, opacity",
+                }}
+              >
+                <span>{t("ctaAi")}</span>
+                <span className="transition-transform duration-200 group-hover:translate-x-0.5">
+                  →
+                </span>
+              </Link>
             </div>
           </div>
         </div>
@@ -557,7 +551,7 @@ export default function HomeLandingAboutExperience({ children }: Props) {
         <div
           className={cn(
             "pointer-events-none fixed bottom-10 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-2 font-pixel text-[11px] uppercase tracking-[0.26em] md:bottom-12",
-            isDark ? "text-white/90" : "text-white/80"
+            isDark ? "text-indigo-200/85" : "text-white/85"
           )}
           style={{
             transform: `translateX(-50%) translateY(${scrollHintY}px)`,
@@ -566,7 +560,7 @@ export default function HomeLandingAboutExperience({ children }: Props) {
           }}
         >
           <span className="text-base leading-none">↓</span>
-          <span>Scroll down</span>
+          <span>{t("scrollDown")}</span>
         </div>
       </div>
 
