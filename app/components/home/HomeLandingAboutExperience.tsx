@@ -106,6 +106,7 @@ export default function HomeLandingAboutExperience({ children }: Props) {
   const [curveProgress, setCurveProgress] = useState(0)
   const [pageScrollY, setPageScrollY] = useState(0)
   const [viewportWidth, setViewportWidth] = useState(0)
+  const [landingReserveHeight, setLandingReserveHeight] = useState<number | null>(null)
 
   const progressRef = useRef(0)
   const targetRef = useRef(0)
@@ -264,14 +265,27 @@ export default function HomeLandingAboutExperience({ children }: Props) {
 
   useEffect(() => {
     const captureCurveTarget = () => {
+      if (isDesktopViewport(window.innerWidth)) {
+        setLandingReserveHeight(
+          window.innerHeight *
+            DESKTOP_CURVE_FLATTEN_SCROLL_RATIO *
+            DESKTOP_OVERLAY_HIDE_SCROLL_RATIO
+        )
+        return
+      }
+
       const targetAnchor =
         document.querySelector<HTMLElement>("[data-curve-target-anchor]") ??
         document.querySelector<HTMLElement>("[data-summary-heading-anchor]")
 
       if (!targetAnchor) {
-        curveTargetScrollRef.current = Math.max(
+        const fallbackTargetScroll = Math.max(
           window.innerHeight - getNavOffsetInPixels(),
           1
+        )
+        curveTargetScrollRef.current = fallbackTargetScroll
+        setLandingReserveHeight(
+          fallbackTargetScroll * NON_DESKTOP_OVERLAY_HIDE_SCROLL_RATIO
         )
         return
       }
@@ -279,10 +293,12 @@ export default function HomeLandingAboutExperience({ children }: Props) {
       const rect = targetAnchor.getBoundingClientRect()
       const anchorTopInDocument = window.scrollY + rect.top
 
-      curveTargetScrollRef.current = Math.max(
+      const nextTargetScroll = Math.max(
         anchorTopInDocument - getNavOffsetInPixels(),
         1
       )
+      curveTargetScrollRef.current = nextTargetScroll
+      setLandingReserveHeight(nextTargetScroll * NON_DESKTOP_OVERLAY_HIDE_SCROLL_RATIO)
     }
 
     captureCurveTarget()
@@ -621,7 +637,15 @@ export default function HomeLandingAboutExperience({ children }: Props) {
         </div>
       ) : null}
 
-      <div aria-hidden className="h-[100svh]" />
+      <div
+        aria-hidden
+        style={{
+          height:
+            landingReserveHeight !== null
+              ? `${landingReserveHeight}px`
+              : "100svh",
+        }}
+      />
       <div className="relative z-40">{children}</div>
     </>
   )
