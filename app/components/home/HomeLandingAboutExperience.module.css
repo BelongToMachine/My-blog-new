@@ -1,0 +1,41 @@
+.skyOverlayLight {
+  background:
+    radial-gradient(circle at 22% 18%, rgba(154, 208, 255, 0.18) 0%, transparent 28%),
+    radial-gradient(circle at 82% 30%, rgba(242, 247, 255, 0.22) 0%, transparent 24%),
+    linear-gradient(
+      180deg,
+      rgba(7, 52, 125, 0.16) 0%,
+      rgba(10, 89, 176, 0.08) 42%,
+      rgba(171, 212, 241, 0.3) 100%
+    );
+}
+
+.skyOverlayDark {
+  background:
+    radial-gradient(circle at 20% 18%, rgba(104, 146, 235, 0.16) 0%, transparent 28%),
+    radial-gradient(circle at 80% 28%, rgba(177, 205, 255, 0.16) 0%, transparent 22%),
+    linear-gradient(
+      180deg,
+      rgba(7, 28, 74, 0.46) 0%,
+      rgba(9, 45, 102, 0.18) 44%,
+      rgba(59, 92, 146, 0.34) 100%
+    );
+}
+
+.skyBridgeLight {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(102, 168, 220, 0.1) 44%,
+    rgba(212, 229, 242, 0.42) 100%
+  );
+}
+
+.skyBridgeDark {
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(50, 88, 148, 0.16) 42%,
+    rgba(108, 135, 176, 0.28) 100%
+  );
+}
