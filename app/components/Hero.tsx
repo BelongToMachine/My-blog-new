@@ -85,7 +85,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
               <h1
                 className={cn(
                   bebasNeue.className,
-                  "whitespace-nowrap text-[clamp(3.6rem,7vw,6.3rem)] font-black uppercase leading-[0.92] tracking-[0.03em] text-foreground",
+                  "whitespace-nowrap text-[clamp(4.4rem,9vw,8rem)] font-black uppercase leading-[0.92] tracking-[0.03em] text-foreground",
                 )}
               >
                 I&apos;M JIE

@@ -53,7 +53,7 @@ const NavBar = () => {
         "!fixed inset-x-0 top-0 z-[1200] border-b transition-all duration-300",
         isIndexMode
           ? scrolled
-            ? "border-white/10 bg-white/10 backdrop-blur-md shadow-none"
+            ? "border-sky-100/15 bg-sky-950/15 backdrop-blur-xl shadow-none"
             : "border-transparent bg-transparent shadow-none"
           : isInScrollable
             ? "pixel-panel border-border bg-card"

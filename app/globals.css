@@ -92,6 +92,7 @@
     --text-strong: 210 30% 10%;
     --text-soft: 212 18% 34%;
     --text-link: 191 92% 36%;
+    --home-about-bridge: 200 46% 84%;
     --signal-amber: 36 95% 54%;
     --signal-rose: 344 88% 58%;
     --signal-green: 147 60% 42%;
@@ -143,6 +144,7 @@
     --text-strong: 220 15% 94%;
     --text-soft: 220 10% 70%;
     --text-link: 190 100% 62%;
+    --home-about-bridge: 217 24% 18%;
     --signal-amber: 43 100% 61%;
     --signal-rose: 327 95% 65%;
     --signal-green: 141 74% 56%;
@@ -526,6 +528,11 @@ html.dark .wind__lane {
     background-size:
       auto,
       auto;
+  }
+
+  .home-about-bridge {
+    position: relative;
+    background-color: hsl(var(--home-about-bridge));
   }
 
   .ai-lab-shell::after {

@@ -5,8 +5,8 @@ import { Link } from "@/app/i18n/navigation"
 import { useTranslations } from "next-intl"
 import { isDesktopViewport } from "@/app/lib/responsive"
 import { useScrollableStore } from "@/app/service/Store"
-import style from "@/app/service/ThemeService"
 import { cn } from "@/lib/utils"
+import landingStyles from "./HomeLandingAboutExperience.module.css"
 import Image from "next/image"
 import localFont from "next/font/local"
 import React, {
@@ -67,6 +67,13 @@ const getCurveInstructions = (
   endPoint: number
 ) =>
   `M 0,${startPoint} C 30,${firstControlPoint} 50,${secondControlPoint} 100,${endPoint} L 100,100 L 0,100 Z`
+
+const getCurveEdgeInstructions = (
+  startPoint: number,
+  firstControlPoint: number,
+  secondControlPoint: number,
+  endPoint: number
+) => `M 0,${startPoint} C 30,${firstControlPoint} 50,${secondControlPoint} 100,${endPoint}`
 
 const getNavOffsetInPixels = () => {
   const root = document.documentElement
@@ -409,8 +416,16 @@ export default function HomeLandingAboutExperience({ children }: Props) {
     mix(100, targetSecondControlPoint, curveEntranceProgress),
     mix(100, targetEndPoint, curveEntranceProgress)
   )
+  const curveEdgeInstructions = getCurveEdgeInstructions(
+    mix(100, targetStartPoint, curveEntranceProgress),
+    mix(100, targetFirstControlPoint, curveEntranceProgress),
+    mix(100, targetSecondControlPoint, curveEntranceProgress),
+    mix(100, targetEndPoint, curveEntranceProgress)
+  )
 
   const curveOverlayTranslateY = (1 - curveEntranceProgress) * 16
+  const curveEdgeColor = "hsl(var(--home-about-bridge))"
+  const curveFillColor = "hsl(var(--home-about-bridge))"
 
   return (
     <>
@@ -445,8 +460,14 @@ export default function HomeLandingAboutExperience({ children }: Props) {
             className={cn(
               "absolute inset-0",
               isDark
-                ? "bg-gradient-to-b from-sky-950/40 via-sky-900/10 to-sky-950/70"
-                : "bg-gradient-to-b from-sky-800/5 via-transparent to-sky-900/45"
+                ? landingStyles.skyOverlayDark
+                : landingStyles.skyOverlayLight
+            )}
+          />
+          <div
+            className={cn(
+              "absolute inset-x-0 bottom-0 h-[32svh]",
+              isDark ? landingStyles.skyBridgeDark : landingStyles.skyBridgeLight
             )}
           />
         </div>
@@ -586,8 +607,17 @@ export default function HomeLandingAboutExperience({ children }: Props) {
             preserveAspectRatio="none"
           >
             <path
+              d={curveEdgeInstructions}
+              fill="none"
+              stroke={curveEdgeColor}
+              strokeWidth={2.4}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              vectorEffect="non-scaling-stroke"
+            />
+            <path
               d={curveInstructions}
-              fill={style.scrollable as string}
+              fill={curveFillColor}
               stroke="hsl(var(--border))"
               strokeWidth={0}
               vectorEffect="non-scaling-stroke"
