@@ -12,6 +12,7 @@ export default function IndexPage({ params }: Props) {
         locale={params.locale}
         sectionId="home-about-section"
         showBackLink={false}
+        showInlinePixelBezier
         heroVariant="spotlight"
       />
     </HomeLandingAboutExperience>

@@ -6,6 +6,7 @@ import ProjectsSection from "../projects/ProjectsSection"
 import SummaryHeader from "@/app/SummaryHeader"
 import PostSummary from "@/app/PostSummary"
 import AboutClientShell from "@/app/[locale]/about/AboutClientShell"
+import HomeInlinePixelBezier from "../home/HomeInlinePixelBezier"
 
 interface Props {
   locale: string
@@ -13,6 +14,7 @@ interface Props {
   sectionId?: string
   showBackLink?: boolean
   showBezierCurve?: boolean
+  showInlinePixelBezier?: boolean
   heroVariant?: "default" | "spotlight"
 }
 
@@ -22,6 +24,7 @@ export default async function AboutSections({
   sectionId,
   showBackLink = true,
   showBezierCurve = false,
+  showInlinePixelBezier = false,
   heroVariant = "default",
 }: Props) {
   const articles = await getMdxArticleList(locale)
@@ -56,6 +59,12 @@ export default async function AboutSections({
     )
   }
 
+  const contentWithInlineCurve = showInlinePixelBezier ? (
+    <HomeInlinePixelBezier>{content}</HomeInlinePixelBezier>
+  ) : (
+    content
+  )
+
   return (
     <section
       id={sectionId}
@@ -66,7 +75,7 @@ export default async function AboutSections({
           <Hero showBackLink={showBackLink} variant={heroVariant} />
         </Container>
       </div>
-      {content}
+      {contentWithInlineCurve}
     </section>
   )
 }
