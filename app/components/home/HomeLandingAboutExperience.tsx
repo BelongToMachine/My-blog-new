@@ -543,7 +543,7 @@ export default function HomeLandingAboutExperience({ children }: Props) {
                 className={cn(
                   "group inline-flex min-w-[9.75rem] items-center justify-between gap-2 border-2 px-4 py-2.5 font-pixel text-[10px] uppercase tracking-[0.18em] text-white backdrop-blur-sm transition-all duration-200 hover:text-black focus-visible:outline-none focus-visible:ring-2 min-[375px]:min-w-[10.75rem] min-[375px]:px-5 min-[375px]:text-[11px]",
                   isDark
-                    ? "border-indigo-300/40 bg-indigo-950/40 shadow-[0_0_24px_rgba(120,160,255,0.08)] hover:border-indigo-200/80 hover:bg-white/85 focus-visible:ring-white/60"
+                    ? "border-slate-300/40 bg-slate-900/50 shadow-[0_0_24px_rgba(148,163,184,0.08)] hover:border-slate-200/80 hover:bg-white/85 focus-visible:ring-white/60"
                     : "border-sky-200/35 bg-sky-950/15 hover:border-sky-100/80 hover:bg-white/85 focus-visible:ring-white/50"
                 )}
                 style={{
@@ -562,7 +562,7 @@ export default function HomeLandingAboutExperience({ children }: Props) {
                 className={cn(
                   "group inline-flex min-w-[9.75rem] items-center justify-between gap-2 border-2 px-4 py-2.5 font-pixel text-[10px] uppercase tracking-[0.18em] text-white backdrop-blur-sm transition-all duration-200 hover:text-black focus-visible:outline-none focus-visible:ring-2 min-[375px]:min-w-[10.75rem] min-[375px]:px-5 min-[375px]:text-[11px]",
                   isDark
-                    ? "border-indigo-300/40 bg-indigo-950/40 shadow-[0_0_24px_rgba(120,160,255,0.08)] hover:border-indigo-200/80 hover:bg-white/85 focus-visible:ring-white/60"
+                    ? "border-slate-300/40 bg-slate-900/50 shadow-[0_0_24px_rgba(148,163,184,0.08)] hover:border-slate-200/80 hover:bg-white/85 focus-visible:ring-white/60"
                     : "border-sky-200/35 bg-sky-950/15 hover:border-sky-100/80 hover:bg-white/85 focus-visible:ring-white/50"
                 )}
                 style={{

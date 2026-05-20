@@ -18,6 +18,9 @@ interface Props {
 // specific range (inclusive, between min and max).
 const clamp = (val: number, min = 0, max = 1) =>
   Math.max(min, Math.min(max, val))
+const easeOutQuint = (value: number) => 1 - Math.pow(1 - value, 5)
+const mix = (from: number, to: number, progress: number) =>
+  from * (1 - progress) + to * progress
 
 const getProgressBetween = (value: number, start: number, end: number) => {
   if (end <= start) return value >= end ? 1 : 0
@@ -131,6 +134,8 @@ const DynamicBezierCurve = ({ children }: Props) => {
   const DESKTOP_HERO_LAYER_HIDE_SCROLL_RATIO = 0.995
   const NON_DESKTOP_HERO_LAYER_FADE_START_SCROLL_RATIO = 0.7
   const NON_DESKTOP_HERO_LAYER_HIDE_SCROLL_RATIO = 0.84
+  const CURVE_ENTRANCE_DISTANCE_IN_PX = 180
+  const CURVE_ENTRANCE_TRANSLATE_Y_IN_PX = 16
   {
     /* 
   ADJUSTED_SCROLL_COEFFICIENT: assoicate with the curve flaten speed, affect this by
@@ -258,12 +263,14 @@ const DynamicBezierCurve = ({ children }: Props) => {
       const revealViewportSpan = isDesktop
         ? windowHeight
         : Math.max(windowHeight - NON_DESKTOP_STICKY_TOP_IN_PX, 1)
-      const revealDistance = revealViewportSpan * (isDesktop ? 0.08 : 0.07)
-      const revealTravel = revealViewportSpan * (isDesktop ? 0.3 : 0.22)
-      const nextCurveRevealProgress = getProgressBetween(
-        curveEnteredPixels,
-        0,
-        revealDistance
+      const revealDistance = isDesktop
+        ? CURVE_ENTRANCE_DISTANCE_IN_PX
+        : CURVE_ENTRANCE_DISTANCE_IN_PX * 0.78
+      const revealTravel = isDesktop
+        ? CURVE_ENTRANCE_TRANSLATE_Y_IN_PX
+        : CURVE_ENTRANCE_TRANSLATE_Y_IN_PX * 0.75
+      const nextCurveRevealProgress = easeOutQuint(
+        clamp(curveEnteredPixels / revealDistance)
       )
       let ratio = 0
 
@@ -316,19 +323,19 @@ const DynamicBezierCurve = ({ children }: Props) => {
 
   // Use our `getInterpolatedValue` function to figure out the values for
   // the start point and the control points.
-  const startPoint = getInterpolatedValue(
+  const targetStartPoint = getInterpolatedValue(
     90, // curvy value
     0, // flat value
     scrollRatio
   )
 
-  const firstControlPoint = getInterpolatedValue(
+  const targetFirstControlPoint = getInterpolatedValue(
     60, // curvy value
     0, // flat value
     scrollRatio
   )
 
-  const secondControlPoint = getInterpolatedValue(
+  const targetSecondControlPoint = getInterpolatedValue(
     100, // curvy value
     0, // flat value
     scrollRatio
@@ -336,13 +343,13 @@ const DynamicBezierCurve = ({ children }: Props) => {
 
   // Unlike the other 3 points, the `endPoint` is
   // constant, and doesn't need interpolation.
-  const endPoint = getInterpolatedValue(80, 0, scrollRatio)
+  const targetEndPoint = getInterpolatedValue(80, 0, scrollRatio)
 
   const pixelInstructions = getPixelCurveInstructions(
-    startPoint,
-    firstControlPoint,
-    secondControlPoint,
-    endPoint
+    mix(100, targetStartPoint, curveRevealProgress),
+    mix(100, targetFirstControlPoint, curveRevealProgress),
+    mix(100, targetSecondControlPoint, curveRevealProgress),
+    mix(100, targetEndPoint, curveRevealProgress)
   )
   const nonDesktopHeroOpacity =
     1 -

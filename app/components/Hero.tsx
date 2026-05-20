@@ -24,17 +24,6 @@ interface Props {
   variant?: "default" | "spotlight"
 }
 
-type SpotlightAction = {
-  label: string
-  href?: string
-}
-
-const spotlightActions: SpotlightAction[] = [
-  { label: "CHAT WITH MY AI", href: "/ai" },
-  { label: "PLACEHOLDER 01" },
-  { label: "PLACEHOLDER 02" },
-]
-
 const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
   const t = useTranslations("hero")
   const locale = useLocale()
@@ -103,14 +92,6 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
                     →
                   </span>
                 </Link>
-                {spotlightActions.slice(1).map((action) => (
-                  <span
-                    key={action.label}
-                    className="inline-flex items-center border-2 border-border/80 bg-background/75 px-3.5 py-2 font-pixel text-[10px] uppercase tracking-[0.22em] text-foreground/70"
-                  >
-                    {action.label}
-                  </span>
-                ))}
               </div>
             </div>
           </motion.div>
