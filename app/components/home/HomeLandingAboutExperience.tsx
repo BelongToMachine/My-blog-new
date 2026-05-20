@@ -525,13 +525,13 @@ export default function HomeLandingAboutExperience({ children }: Props) {
           >
             {/* Intro copy right-aligned */}
             <div className="flex flex-col items-end text-right px-6 md:px-16">
-              <p className="max-w-[46rem] font-pixel text-base font-medium leading-relaxed text-white [text-shadow:0_8px_28px_rgba(7,60,120,0.35)] min-[375px]:text-lg md:text-[1.35rem] md:leading-9">
+              <p className="max-w-[60rem] font-pixel text-base font-medium leading-relaxed text-white [text-shadow:0_8px_28px_rgba(7,60,120,0.35)] min-[375px]:text-lg md:text-[1.35rem] md:leading-9">
                 {t("landingTitle1")}
               </p>
-              <p className="mt-2 max-w-[44rem] font-pixel text-[12px] leading-6 text-white/75 [text-shadow:0_6px_22px_rgba(7,60,120,0.3)] min-[375px]:text-[13px] md:mt-3 md:text-[14px]">
+              <p className="mt-0 max-w-[58rem] font-pixel text-[12px] leading-6 text-white/75 [text-shadow:0_6px_22px_rgba(7,60,120,0.3)] min-[375px]:text-[13px] md:mt-1 md:text-[14px]">
                 {t("landingTitle2")}
               </p>
-              <p className="mt-2 max-w-[44rem] font-pixel text-[12px] leading-6 text-white/75 [text-shadow:0_6px_22px_rgba(7,60,120,0.3)] min-[375px]:text-[13px] md:mt-3 md:text-[14px]">
+              <p className="mt-2 max-w-[58rem] font-pixel text-[12px] leading-6 text-white/75 [text-shadow:0_6px_22px_rgba(7,60,120,0.3)] min-[375px]:text-[13px] md:mt-3 md:text-[14px]">
                 {t("landingStatus")}
               </p>
             </div>

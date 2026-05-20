@@ -248,10 +248,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
       const heroEntranceScroll = isDesktop
         ? componentTopInDocument
         : componentTopInDocument - NON_DESKTOP_STICKY_TOP_IN_PX
-      const desktopEntranceDelay = isDesktop ? Math.round(windowHeight * 0.16) : 0
-      const curveRevealStartScroll = isDesktop
-        ? componentTopInDocument + desktopEntranceDelay
-        : heroEntranceScroll
+      const curveRevealStartScroll = heroEntranceScroll
       const hasEnteredCurve = window.scrollY >= heroEntranceScroll
       const curveEnteredPixels = Math.max(
         window.scrollY - curveRevealStartScroll,
