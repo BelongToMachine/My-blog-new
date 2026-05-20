@@ -132,18 +132,32 @@ const getNavOffsetInPixels = () => {
 export default function HomeInlinePixelBezier({ children }: Props) {
   const rootRef = useRef<HTMLDivElement>(null)
   const [scrollRatio, setScrollRatio] = useState(0)
-  const [hasStarted, setHasStarted] = useState(false)
+  const [revealProgress, setRevealProgress] = useState(0)
   const [curveBandHeight, setCurveBandHeight] = useState(220)
+  const [curveTravelDistance, setCurveTravelDistance] = useState(280)
+  const [curveEntranceDistance, setCurveEntranceDistance] = useState(280)
   const BACKGROUND_COLOR = style.background
   const HERO_SURFACE_COLOR = "hsl(var(--home-about-bridge))"
 
   useEffect(() => {
     const updateMeasurements = () => {
+      const navOffset = getNavOffsetInPixels()
       const nextHeight = isDesktopViewport(window.innerWidth)
         ? Math.round(window.innerHeight * 0.34)
         : Math.round(window.innerHeight * 0.24)
+      const resolvedHeight = Math.max(nextHeight, 140)
+      const baseTravelDistance = Math.max(
+        window.innerHeight - navOffset - resolvedHeight,
+        120
+      )
+      const curveOverscan = Math.max(Math.round(resolvedHeight * 0.28), 32)
+      const nextTravelDistance = baseTravelDistance + curveOverscan
+      const nextEntranceDistance =
+        nextTravelDistance + Math.max(Math.round(resolvedHeight * 0.45), 56)
 
-      setCurveBandHeight(Math.max(nextHeight, 140))
+      setCurveBandHeight(resolvedHeight)
+      setCurveTravelDistance(nextTravelDistance)
+      setCurveEntranceDistance(nextEntranceDistance)
     }
 
     updateMeasurements()
@@ -163,11 +177,13 @@ export default function HomeInlinePixelBezier({ children }: Props) {
         window.scrollY + rootRef.current.getBoundingClientRect().top
       const startScroll = componentTopInDocument - navOffset
       const pixelsScrolled = window.scrollY - startScroll
-      const nextHasStarted = pixelsScrolled >= 0
-      const nextRatio = clamp(pixelsScrolled / curveBandHeight)
+      const nextRevealProgress = clamp(
+        (pixelsScrolled + curveEntranceDistance) / curveEntranceDistance
+      )
+      const nextRatio = clamp(Math.max(pixelsScrolled, 0) / curveBandHeight)
 
-      setHasStarted((previousValue) =>
-        previousValue !== nextHasStarted ? nextHasStarted : previousValue
+      setRevealProgress((previousValue) =>
+        previousValue !== nextRevealProgress ? nextRevealProgress : previousValue
       )
       setScrollRatio((previousValue) =>
         previousValue !== nextRatio ? nextRatio : previousValue
@@ -182,7 +198,7 @@ export default function HomeInlinePixelBezier({ children }: Props) {
       window.removeEventListener("scroll", handleScroll)
       window.removeEventListener("resize", handleScroll)
     }
-  }, [curveBandHeight])
+  }, [curveBandHeight, curveEntranceDistance])
 
   const startPoint = getInterpolatedValue(90, 0, scrollRatio)
   const firstControlPoint = getInterpolatedValue(60, 0, scrollRatio)
@@ -200,7 +216,8 @@ export default function HomeInlinePixelBezier({ children }: Props) {
     secondControlPoint,
     endPoint
   )
-  const showOverlay = hasStarted && scrollRatio < 1
+  const showOverlay = revealProgress > 0 && scrollRatio < 1
+  const overlayTranslateY = (1 - revealProgress) * curveTravelDistance
 
   return (
     <div ref={rootRef} className="relative">
@@ -212,6 +229,8 @@ export default function HomeInlinePixelBezier({ children }: Props) {
             top: "var(--app-nav-offset)",
             height: `${curveBandHeight}px`,
             backgroundColor: HERO_SURFACE_COLOR,
+            transform: `translateY(${overlayTranslateY}px)`,
+            willChange: "transform",
           }}
         >
           <svg
