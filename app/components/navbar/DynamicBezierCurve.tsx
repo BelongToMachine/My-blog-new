@@ -117,6 +117,8 @@ const DynamicBezierCurve = ({ children }: Props) => {
   const [scrollRatio, setScrollRatio] = useState(0)
   const [scrolledInVH, setScrolledInVh] = useState(0)
   const [hasReachedCurveStart, setHasReachedCurveStart] = useState(false)
+  const [curveRevealProgress, setCurveRevealProgress] = useState(0)
+  const [curveRevealTravel, setCurveRevealTravel] = useState(0)
   const nodeRef = useRef(null)
   const rootAnchorRef = useRef<HTMLDivElement>(null)
   const nonDesktopCurveTargetScrollRef = useRef<number | null>(null)
@@ -237,17 +239,44 @@ const DynamicBezierCurve = ({ children }: Props) => {
 
       const windowHeight = window.innerHeight
       const componentTopInDocument = getComponentTopInDocument()
-      const componentEntranceScroll =
-        componentTopInDocument - NON_DESKTOP_STICKY_TOP_IN_PX
-      const hasEnteredCurve = window.scrollY >= componentEntranceScroll
+      const isDesktop = isDesktopViewport(window.innerWidth)
+      const heroEntranceScroll = isDesktop
+        ? componentTopInDocument
+        : componentTopInDocument - NON_DESKTOP_STICKY_TOP_IN_PX
+      const desktopEntranceDelay = isDesktop ? Math.round(windowHeight * 0.16) : 0
+      const curveRevealStartScroll = isDesktop
+        ? componentTopInDocument + desktopEntranceDelay
+        : heroEntranceScroll
+      const hasEnteredCurve = window.scrollY >= heroEntranceScroll
+      const curveEnteredPixels = Math.max(
+        window.scrollY - curveRevealStartScroll,
+        0
+      )
       const pixelsScrolled = hasEnteredCurve
         ? Math.max(window.scrollY - componentTopInDocument, 0)
         : 0
-      const isDesktop = isDesktopViewport(window.innerWidth)
+      const revealViewportSpan = isDesktop
+        ? windowHeight
+        : Math.max(windowHeight - NON_DESKTOP_STICKY_TOP_IN_PX, 1)
+      const revealDistance = revealViewportSpan * (isDesktop ? 0.08 : 0.07)
+      const revealTravel = revealViewportSpan * (isDesktop ? 0.3 : 0.22)
+      const nextCurveRevealProgress = getProgressBetween(
+        curveEnteredPixels,
+        0,
+        revealDistance
+      )
       let ratio = 0
 
       setHasReachedCurveStart((previousValue) =>
         previousValue !== hasEnteredCurve ? hasEnteredCurve : previousValue
+      )
+      setCurveRevealTravel((previousValue) =>
+        previousValue !== revealTravel ? revealTravel : previousValue
+      )
+      setCurveRevealProgress((previousValue) =>
+        previousValue !== nextCurveRevealProgress
+          ? nextCurveRevealProgress
+          : previousValue
       )
 
       if (!isDesktop) {
@@ -323,10 +352,12 @@ const DynamicBezierCurve = ({ children }: Props) => {
       NON_DESKTOP_HERO_LAYER_HIDE_SCROLL_RATIO
     )
   const shouldShowFixedNonDesktopHero =
-    isCurveScrollable && scrollRatio < NON_DESKTOP_HERO_LAYER_HIDE_SCROLL_RATIO
+    curveRevealProgress > 0 && scrollRatio < NON_DESKTOP_HERO_LAYER_HIDE_SCROLL_RATIO
   const shouldShowFixedDesktopHero =
-    isCurveScrollable && scrollRatio < DESKTOP_HERO_LAYER_HIDE_SCROLL_RATIO
+    hasReachedCurveStart && scrollRatio < DESKTOP_HERO_LAYER_HIDE_SCROLL_RATIO
   const shouldShowPreviewHero = !hasReachedCurveStart
+  const shouldShowCurveOverlay = curveRevealProgress > 0 && scrollRatio < 1
+  const curveRevealTranslateY = (1 - curveRevealProgress) * curveRevealTravel
 
   return (
     <>
@@ -345,9 +376,8 @@ const DynamicBezierCurve = ({ children }: Props) => {
             backgroundColor: HERO_SURFACE_COLOR,
             overflow: "hidden",
             isolation: "isolate",
-            opacity: shouldShowPreviewHero ? 1 : 0,
+            visibility: shouldShowPreviewHero ? "visible" : "hidden",
             pointerEvents: "none",
-            transition: "opacity 180ms ease-out",
             zIndex: 0,
           }}
         >
@@ -381,7 +411,9 @@ const DynamicBezierCurve = ({ children }: Props) => {
             height: "calc(100svh - 3.5rem)",
             pointerEvents: "none",
             zIndex: 30,
-            visibility: hasReachedCurveStart ? "visible" : "hidden",
+            visibility: shouldShowCurveOverlay ? "visible" : "hidden",
+            transform: `translateY(${curveRevealTranslateY}px)`,
+            willChange: "transform",
           }}
         >
           <div
@@ -429,9 +461,8 @@ const DynamicBezierCurve = ({ children }: Props) => {
             height: "100vh",
             backgroundColor: HERO_SURFACE_COLOR,
             overflow: "hidden",
-            opacity: shouldShowPreviewHero ? 1 : 0,
+            visibility: shouldShowPreviewHero ? "visible" : "hidden",
             pointerEvents: "none",
-            transition: "opacity 180ms ease-out",
             zIndex: 0,
           }}
         >
@@ -460,7 +491,9 @@ const DynamicBezierCurve = ({ children }: Props) => {
             top: 0,
             left: 0,
             pointerEvents: "none",
-            visibility: hasReachedCurveStart ? "visible" : "hidden",
+            visibility: shouldShowCurveOverlay ? "visible" : "hidden",
+            transform: `translateY(${curveRevealTranslateY}px)`,
+            willChange: "transform",
           }}
           shapeRendering="crispEdges"
           preserveAspectRatio="none"
