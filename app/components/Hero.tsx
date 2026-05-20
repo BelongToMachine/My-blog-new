@@ -63,23 +63,23 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
             Welcome
           </span>
         </div>
-        <div className="relative z-10 grid items-end gap-8 lg:grid-cols-12 lg:gap-x-6 xl:gap-x-10">
+        <div className="relative z-10 grid items-end gap-8 lg:grid-cols-12 lg:items-start lg:gap-x-4 xl:gap-x-6">
           <motion.div
             initial={{ opacity: 0, x: -18 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-            className="relative lg:col-span-3 lg:pb-16 lg:pt-12 lg:pl-8 xl:pb-20 xl:pt-16 xl:pl-10"
+            className="relative lg:col-span-3 lg:pt-44 lg:pl-24 xl:pt-48 xl:pl-28"
           >
-            <div className="space-y-5 lg:ml-auto lg:max-w-[25rem]">
+            <div className="space-y-6 lg:w-[22rem] xl:w-[24rem]">
               <h1
                 className={cn(
                   bebasNeue.className,
-                  "whitespace-nowrap text-[clamp(4.4rem,9vw,8rem)] font-black uppercase leading-[0.92] tracking-[0.03em] text-foreground",
+                  "whitespace-nowrap text-[clamp(4.9rem,10vw,8.8rem)] font-black uppercase leading-[0.92] tracking-[0.03em] text-foreground",
                 )}
               >
                 I&apos;M JIE
               </h1>
-              <p className="max-w-sm font-pixel text-sm leading-7 tracking-[0.12em] text-muted-foreground md:text-[15px]">
+              <p className="max-w-[34ch] font-pixel text-[15px] leading-[1.8] tracking-[0.08em] text-muted-foreground [text-wrap:pretty] md:text-base lg:-ml-8 xl:-ml-10">
                 {t("shortIntro")}
               </p>
               <div className="flex flex-wrap gap-3">
@@ -118,9 +118,9 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
             initial={{ opacity: 0, x: 18 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.55, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
-            className="relative lg:col-span-3 lg:flex lg:justify-end lg:pb-10"
+            className="relative lg:col-span-3 lg:flex lg:justify-end lg:pb-6"
           >
-            <div className="w-full max-w-[340px] lg:translate-y-10">
+            <div className="w-full max-w-[400px] lg:w-[26rem] lg:translate-y-36 xl:w-[29rem] xl:translate-y-40">
               <div className="mb-3 flex items-center justify-between border-b border-border/50 pb-2 font-pixel text-[9px] uppercase tracking-[0.22em] text-muted-foreground">
                 <span>Profile Snapshot</span>
                 <span>coder.ts</span>
