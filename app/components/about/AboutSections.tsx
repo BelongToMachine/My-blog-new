@@ -15,6 +15,7 @@ interface Props {
   showBackLink?: boolean
   showBezierCurve?: boolean
   showInlinePixelBezier?: boolean
+  mirrorBezierCurve?: boolean
   heroVariant?: "default" | "spotlight"
 }
 
@@ -25,6 +26,7 @@ export default async function AboutSections({
   showBackLink = true,
   showBezierCurve = false,
   showInlinePixelBezier = false,
+  mirrorBezierCurve = false,
   heroVariant = "default",
 }: Props) {
   const articles = await getMdxArticleList(locale)
@@ -53,7 +55,10 @@ export default async function AboutSections({
 
   if (showBezierCurve) {
     return (
-      <AboutClientShell hero={<Hero showBackLink={showBackLink} variant={heroVariant} />}>
+      <AboutClientShell
+        hero={<Hero showBackLink={showBackLink} variant={heroVariant} />}
+        mirrorCurve={mirrorBezierCurve}
+      >
         {content}
       </AboutClientShell>
     )

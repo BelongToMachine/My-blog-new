@@ -12,6 +12,7 @@ import { isDesktopViewport } from "@/app/lib/responsive"
 
 interface Props {
   children: ReactNode
+  mirrorCurve?: boolean
 }
 
 // Utility function that clamps a given value to a
@@ -116,7 +117,7 @@ const getPixelCurveInstructions = (
   return path
 }
 
-const DynamicBezierCurve = ({ children }: Props) => {
+const DynamicBezierCurve = ({ children, mirrorCurve = false }: Props) => {
   const [scrollRatio, setScrollRatio] = useState(0)
   const [scrolledInVH, setScrolledInVh] = useState(0)
   const [hasReachedCurveStart, setHasReachedCurveStart] = useState(false)
@@ -362,6 +363,7 @@ const DynamicBezierCurve = ({ children }: Props) => {
     !hasReachedCurveStart || scrollRatio < DESKTOP_HERO_LAYER_HIDE_SCROLL_RATIO
   const shouldShowCurveOverlay = curveRevealProgress > 0 && scrollRatio < 1
   const curveRevealTranslateY = (1 - curveRevealProgress) * curveRevealTravel
+  const mirroredCurveTransform = mirrorCurve ? " scaleX(-1)" : ""
 
   return (
     <>
@@ -434,6 +436,8 @@ const DynamicBezierCurve = ({ children }: Props) => {
                 height: "100%",
                 position: "absolute",
                 inset: 0,
+                transform: mirrorCurve ? "scaleX(-1)" : undefined,
+                transformOrigin: mirrorCurve ? "center center" : undefined,
               }}
               shapeRendering="crispEdges"
               preserveAspectRatio="none"
@@ -485,7 +489,8 @@ const DynamicBezierCurve = ({ children }: Props) => {
             left: 0,
             pointerEvents: "none",
             visibility: shouldShowCurveOverlay ? "visible" : "hidden",
-            transform: `translateY(${curveRevealTranslateY}px)`,
+            transform: `translateY(${curveRevealTranslateY}px)${mirroredCurveTransform}`,
+            transformOrigin: mirrorCurve ? "center center" : undefined,
             willChange: "transform",
           }}
           shapeRendering="crispEdges"

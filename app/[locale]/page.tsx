@@ -13,6 +13,7 @@ export default function IndexPage({ params }: Props) {
         sectionId="home-about-section"
         showBackLink={false}
         showBezierCurve
+        mirrorBezierCurve
         heroVariant="spotlight"
       />
     </HomeLandingAboutExperience>
