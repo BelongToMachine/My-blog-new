@@ -357,9 +357,9 @@ const DynamicBezierCurve = ({ children }: Props) => {
     )
   const shouldShowFixedNonDesktopHero =
     curveRevealProgress > 0 && scrollRatio < NON_DESKTOP_HERO_LAYER_HIDE_SCROLL_RATIO
-  const shouldShowFixedDesktopHero =
-    hasReachedCurveStart && scrollRatio < DESKTOP_HERO_LAYER_HIDE_SCROLL_RATIO
   const shouldShowPreviewHero = !hasReachedCurveStart
+  const shouldShowDesktopHero =
+    !hasReachedCurveStart || scrollRatio < DESKTOP_HERO_LAYER_HIDE_SCROLL_RATIO
   const shouldShowCurveOverlay = curveRevealProgress > 0 && scrollRatio < 1
   const curveRevealTranslateY = (1 - curveRevealProgress) * curveRevealTravel
 
@@ -458,29 +458,18 @@ const DynamicBezierCurve = ({ children }: Props) => {
       </section>
       <div className="relative hidden lg:block">
         <div
-          aria-hidden
           style={{
-            position: "absolute",
+            position: hasReachedCurveStart ? "fixed" : "absolute",
             inset: 0,
-            height: "100vh",
-            backgroundColor: HERO_SURFACE_COLOR,
-            overflow: "hidden",
-            visibility: shouldShowPreviewHero ? "visible" : "hidden",
-            pointerEvents: "none",
-            zIndex: 0,
-          }}
-        >
-          <Container>{children}</Container>
-        </div>
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            backgroundColor: HERO_SURFACE_COLOR,
+            top: hasReachedCurveStart ? 0 : undefined,
+            left: hasReachedCurveStart ? 0 : undefined,
             height: "100vh",
             width: "100%",
-            visibility: shouldShowFixedDesktopHero ? "visible" : "hidden",
+            backgroundColor: HERO_SURFACE_COLOR,
+            overflow: "hidden",
+            visibility: shouldShowDesktopHero ? "visible" : "hidden",
+            pointerEvents: hasReachedCurveStart ? "auto" : "none",
+            zIndex: 0,
           }}
         >
           <Container>{children}</Container>
