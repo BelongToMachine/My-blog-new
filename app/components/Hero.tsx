@@ -1,10 +1,16 @@
 "use client"
-import React, { useContext, useState } from "react"
+import React, { useContext, useRef, useState } from "react"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
 import selfie from "@/public/images/selfie-no-background.png"
 import { TypeAnimation } from "react-type-animation"
-import { motion } from "framer-motion"
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+  useTransform,
+} from "framer-motion"
 import { ThemeContext } from "../context/DarkModeContext"
 import { CodeBlocker } from "../packages/index"
 import { useLocale, useTranslations } from "next-intl"
@@ -28,6 +34,8 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
   const t = useTranslations("hero")
   const locale = useLocale()
   const themeContext = useContext(ThemeContext)
+  const spotlightRef = useRef<HTMLDivElement>(null)
+  const shouldReduceMotion = useReducedMotion()
 
   if (!themeContext) {
     throw new Error("ThemeToggle must be used within a ThemeProvider")
@@ -42,10 +50,27 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
   const code = t.raw("code") as string
   const [typingIndex, setTypingIndex] = useState(0)
   const isEnLongText = locale === "en" && typingIndex === 1
+  const { scrollYProgress } = useScroll({
+    target: spotlightRef,
+    offset: ["start end", "end start"],
+  })
+  const welcomeScrollLift = useTransform(scrollYProgress, [0, 1], [0, -38])
+  const titleScrollLift = useTransform(scrollYProgress, [0, 1], [0, -26])
+  const welcomeLift = useSpring(welcomeScrollLift, {
+    stiffness: 118,
+    damping: 19,
+    mass: 1.02,
+  })
+  const titleLift = useSpring(titleScrollLift, {
+    stiffness: 128,
+    damping: 20,
+    mass: 0.98,
+  })
 
   if (variant === "spotlight") {
     return (
       <div
+        ref={spotlightRef}
         className="relative overflow-hidden px-5 pb-14 pt-10 md:px-10 md:pb-16 md:pt-12 lg:px-14 lg:pb-20 lg:pt-10"
         id="about-me-section"
       >
@@ -58,11 +83,18 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
             <span>{t("backToNav")}</span>
           </Link>
         ) : null}
-        <div className="pointer-events-none absolute inset-x-0 top-20 z-0 flex justify-center lg:top-24">
+        <motion.div
+          className="pointer-events-none absolute inset-x-0 top-20 z-0 flex justify-center lg:top-24"
+          style={
+            shouldReduceMotion
+              ? undefined
+              : { y: welcomeLift, willChange: "transform" }
+          }
+        >
           <span className={cn(bebasNeue.className, "inline-block text-[clamp(6.5rem,26vw,17rem)] font-black uppercase leading-none tracking-[0.06em] text-foreground/[0.08] dark:text-foreground/[0.1] [transform:scaleY(1.5) scaleX(1.12)]")}>
             Welcome
           </span>
-        </div>
+        </motion.div>
         <div className="relative z-10 grid items-end gap-8 lg:grid-cols-12 lg:items-start lg:gap-x-4 xl:gap-x-6">
           <motion.div
             initial={{ opacity: 0, x: -18 }}
@@ -71,14 +103,19 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
             className="relative lg:col-span-3 lg:pt-44 lg:pl-24 xl:pt-48 xl:pl-28"
           >
             <div className="space-y-6 lg:w-[22rem] xl:w-[24rem]">
-              <h1
+              <motion.h1
                 className={cn(
                   bebasNeue.className,
                   "whitespace-nowrap text-[clamp(4.9rem,10vw,8.8rem)] font-black uppercase leading-[0.92] tracking-[0.03em] text-foreground",
                 )}
+                style={
+                  shouldReduceMotion
+                    ? undefined
+                    : { y: titleLift, willChange: "transform" }
+                }
               >
                 I&apos;M JIE
-              </h1>
+              </motion.h1>
               <p className="max-w-[34ch] font-pixel text-[15px] leading-[1.8] tracking-[0.08em] text-muted-foreground [text-wrap:pretty] md:text-base lg:-ml-8 xl:-ml-10">
                 {t("shortIntro")}
               </p>

@@ -472,7 +472,7 @@ const DynamicBezierCurve = ({ children, mirrorCurve = false }: Props) => {
             backgroundColor: HERO_SURFACE_COLOR,
             overflow: "hidden",
             visibility: shouldShowDesktopHero ? "visible" : "hidden",
-            pointerEvents: hasReachedCurveStart ? "auto" : "none",
+            pointerEvents: shouldShowDesktopHero ? "auto" : "none",
             zIndex: 0,
           }}
         >
