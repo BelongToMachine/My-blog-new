@@ -274,6 +274,26 @@ export default function HomeLandingAboutExperience({ children }: Props) {
         return
       }
 
+      const heroAnchor =
+        document.querySelector<HTMLElement>("[data-home-landing-target-anchor]") ??
+        document.querySelector<HTMLElement>("#about-me-section")
+
+      if (heroAnchor) {
+        const navOffset = getNavOffsetInPixels()
+        const rect = heroAnchor.getBoundingClientRect()
+        const anchorTopInDocument = window.scrollY + rect.top
+        const nextTargetScroll = Math.max(
+          Math.min(anchorTopInDocument - navOffset, window.innerHeight - navOffset),
+          1
+        )
+
+        curveTargetScrollRef.current = nextTargetScroll
+        setLandingReserveHeight(
+          nextTargetScroll * NON_DESKTOP_OVERLAY_HIDE_SCROLL_RATIO
+        )
+        return
+      }
+
       const targetAnchor =
         document.querySelector<HTMLElement>("[data-curve-target-anchor]") ??
         document.querySelector<HTMLElement>("[data-summary-heading-anchor]")

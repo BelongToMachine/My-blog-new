@@ -71,8 +71,9 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
     return (
       <div
         ref={spotlightRef}
-        className="relative overflow-hidden px-5 pb-14 pt-10 md:px-10 md:pb-16 md:pt-12 lg:px-14 lg:pb-20 lg:pt-24"
+        className="relative overflow-hidden px-5 pb-8 pt-10 sm:px-8 sm:pb-10 sm:pt-12 md:px-6 md:pb-16 md:pt-20 lg:px-14 lg:pb-20 lg:pt-24"
         id="about-me-section"
+        data-home-landing-target-anchor
       >
         {showBackLink ? (
           <Link
@@ -84,29 +85,34 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
           </Link>
         ) : null}
         <motion.div
-          className="pointer-events-none absolute inset-x-0 top-20 z-0 flex justify-center lg:top-36"
+          className="pointer-events-none absolute inset-x-0 top-20 z-0 flex justify-center sm:top-24 md:top-24 lg:top-36"
           style={
             shouldReduceMotion
               ? undefined
               : { y: welcomeLift, willChange: "transform" }
           }
         >
-          <span className={cn(bebasNeue.className, "inline-block text-[clamp(6.5rem,26vw,17rem)] font-black uppercase leading-none tracking-[0.06em] text-foreground/[0.08] dark:text-foreground/[0.1] [transform:scaleY(1.5) scaleX(1.12)]")}>
+          <span
+            className={cn(
+              bebasNeue.className,
+              "inline-block text-[clamp(4.8rem,44vw,9rem)] font-black uppercase leading-none tracking-[0.06em] text-foreground/[0.08] dark:text-foreground/[0.1] [transform:scaleY(1.5) scaleX(1.12)] md:text-[clamp(6.5rem,28vw,12rem)] lg:text-[clamp(6.5rem,26vw,17rem)]",
+            )}
+          >
             Welcome
           </span>
         </motion.div>
-        <div className="relative z-10 grid items-end gap-8 lg:grid-cols-12 lg:items-start lg:gap-x-4 xl:gap-x-6">
+        <div className="relative z-10 grid grid-cols-12 items-start gap-y-4 sm:gap-y-6 md:gap-y-8 md:items-start md:gap-x-0 lg:gap-x-4 xl:gap-x-6">
           <motion.div
             initial={{ opacity: 0, x: -18 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-            className="relative lg:col-span-3 lg:pt-44 lg:pl-24 xl:pt-48 xl:pl-28"
+            className="relative z-20 col-span-7 md:col-span-4 md:pt-24 lg:col-span-3 lg:pt-44 lg:pl-24 xl:pt-48 xl:pl-28"
           >
-            <div className="space-y-6 lg:w-[22rem] xl:w-[24rem]">
+            <div className="max-w-[14rem] space-y-4 min-[480px]:max-w-[17rem] sm:max-w-[21rem] md:w-[18rem] md:max-w-none md:translate-x-12 md:space-y-6 lg:w-[22rem] lg:translate-x-0 xl:w-[24rem]">
               <motion.h1
                 className={cn(
                   bebasNeue.className,
-                  "whitespace-nowrap text-[clamp(4.9rem,10vw,8.8rem)] font-black uppercase leading-[0.92] tracking-[0.03em] text-foreground lg:translate-y-5 xl:translate-y-6",
+                  "whitespace-nowrap text-[clamp(3.7rem,17vw,5.4rem)] font-black uppercase leading-[0.92] tracking-[0.03em] text-foreground min-[480px]:text-[clamp(4.2rem,15vw,6rem)] md:text-[clamp(5rem,13vw,7.1rem)] lg:text-[clamp(4.9rem,10vw,8.8rem)] lg:translate-y-5 xl:translate-y-6",
                 )}
                 style={
                   shouldReduceMotion
@@ -116,14 +122,14 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
               >
                 I&apos;M JIE
               </motion.h1>
-              <div className="space-y-6 lg:-translate-y-8 xl:-translate-y-10">
-                <p className="max-w-[34ch] font-pixel text-[15px] leading-[1.8] tracking-[0.08em] text-muted-foreground [text-wrap:pretty] md:text-base lg:-ml-8 xl:-ml-10">
+              <div className="space-y-4 md:max-w-[19rem] lg:-translate-y-8 lg:max-w-none lg:space-y-6 xl:-translate-y-10">
+                <p className="max-w-[18ch] font-pixel text-[15px] leading-[1.7] tracking-[0.05em] text-muted-foreground [text-wrap:pretty] min-[480px]:max-w-[21ch] sm:max-w-[24ch] md:max-w-[24ch] lg:-ml-8 lg:max-w-[34ch] lg:text-base lg:leading-[1.8] lg:tracking-[0.08em] xl:-ml-10">
                   {t("shortIntro")}
                 </p>
                 <div className="flex flex-wrap gap-3">
                   <Link
                     href="/ai"
-                    className="ai-cta-shimmer group inline-flex items-center gap-2 border-2 border-primary/35 bg-primary/[0.04] px-3.5 py-2 font-pixel text-[11px] uppercase tracking-[0.22em] text-primary transition-all duration-200 hover:border-primary/70 hover:bg-primary/[0.09] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                    className="ai-cta-shimmer group inline-flex min-h-10 items-center gap-2 border-2 border-primary/35 bg-primary/[0.04] px-3.5 py-2.5 font-pixel text-[10px] uppercase tracking-[0.22em] text-primary transition-all duration-200 hover:border-primary/70 hover:bg-primary/[0.09] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 min-[480px]:min-h-11 min-[480px]:px-4 min-[480px]:py-3 min-[480px]:text-[11px] md:px-4 md:py-2.5 lg:min-h-0 lg:px-3.5 lg:py-2"
                   >
                     <span>{t("aiCtaLabel")}</span>
                     <span className="transition-transform duration-200 group-hover:translate-x-0.5">
@@ -138,15 +144,15 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
             initial={{ opacity: 0, y: 20, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.65, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
-            className="relative lg:col-span-6 lg:-mx-4 xl:-mx-6"
+            className="relative z-10 col-span-5 self-start justify-self-end md:col-span-4 lg:col-span-6 lg:-mx-4 xl:-mx-6"
           >
-            <div className="relative mx-auto w-full max-w-[860px] -translate-y-36 min-[480px]:max-w-[960px] lg:max-w-[1100px]">
-              <div className="relative aspect-[4/5]">
+            <div className="relative w-[10.75rem] max-w-none -translate-x-1 translate-y-20 min-[480px]:w-[13rem] min-[480px]:translate-y-16 md:mx-auto md:w-[25rem] md:-translate-x-14 md:translate-y-10 lg:w-full lg:translate-x-0 lg:-translate-y-36 lg:max-w-[1100px]">
+              <div className="relative aspect-[4/4.7] sm:aspect-[4/5]">
                 <Image
                   src={heroPortrait}
                   alt={t("imageAlt")}
                   fill
-                  sizes="(min-width: 1280px) 960px, (min-width: 1024px) 50vw, 88vw"
+                  sizes="(min-width: 1280px) 960px, (min-width: 1024px) 50vw, (min-width: 768px) 40vw, 72vw"
                   className="h-full w-full object-contain object-bottom"
                   priority
                 />
@@ -157,9 +163,9 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
             initial={{ opacity: 0, x: 18 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.55, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
-            className="relative lg:col-span-3 lg:flex lg:justify-end lg:pb-6"
+            className="relative z-20 col-span-12 mt-28 hidden md:col-span-4 md:mt-0 md:flex md:justify-end md:pt-24 lg:col-span-3 lg:justify-end lg:pt-0 lg:pb-6"
           >
-            <div className="w-full max-w-[400px] lg:w-[26rem] lg:translate-y-36 xl:w-[29rem] xl:translate-y-40">
+            <div className="w-full max-w-[25rem] sm:max-w-[28rem] md:w-[21rem] md:max-w-none md:-translate-x-16 lg:w-[26rem] lg:translate-x-0 lg:translate-y-36 xl:w-[29rem] xl:translate-y-40">
               <div className="mb-3 flex items-center justify-between border-b border-border/50 pb-2 font-pixel text-[9px] uppercase tracking-[0.22em] text-muted-foreground">
                 <span>Profile Snapshot</span>
                 <span>coder.ts</span>
@@ -168,7 +174,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
                 code={code}
                 colorMode={colorMode}
                 compact
-                className="shadow-[var(--shadow-elevated)]"
+                className="shadow-[var(--shadow-elevated)] md:[&_.codeblock-pre]:text-[10px] md:[&_.codeblock-pre]:leading-5 lg:[&_.codeblock-pre]:text-[12px] lg:[&_.codeblock-pre]:leading-6"
               />
             </div>
           </motion.div>
