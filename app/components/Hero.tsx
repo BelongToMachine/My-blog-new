@@ -71,7 +71,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
     return (
       <div
         ref={spotlightRef}
-        className="relative overflow-hidden px-5 pb-14 pt-10 md:px-10 md:pb-16 md:pt-12 lg:px-14 lg:pb-20 lg:pt-10"
+        className="relative overflow-hidden px-5 pb-14 pt-10 md:px-10 md:pb-16 md:pt-12 lg:px-14 lg:pb-20 lg:pt-24"
         id="about-me-section"
       >
         {showBackLink ? (
@@ -84,7 +84,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
           </Link>
         ) : null}
         <motion.div
-          className="pointer-events-none absolute inset-x-0 top-20 z-0 flex justify-center lg:top-24"
+          className="pointer-events-none absolute inset-x-0 top-20 z-0 flex justify-center lg:top-36"
           style={
             shouldReduceMotion
               ? undefined
@@ -106,7 +106,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
               <motion.h1
                 className={cn(
                   bebasNeue.className,
-                  "whitespace-nowrap text-[clamp(4.9rem,10vw,8.8rem)] font-black uppercase leading-[0.92] tracking-[0.03em] text-foreground",
+                  "whitespace-nowrap text-[clamp(4.9rem,10vw,8.8rem)] font-black uppercase leading-[0.92] tracking-[0.03em] text-foreground lg:translate-y-5 xl:translate-y-6",
                 )}
                 style={
                   shouldReduceMotion
@@ -116,19 +116,21 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
               >
                 I&apos;M JIE
               </motion.h1>
-              <p className="max-w-[34ch] font-pixel text-[15px] leading-[1.8] tracking-[0.08em] text-muted-foreground [text-wrap:pretty] md:text-base lg:-ml-8 xl:-ml-10">
-                {t("shortIntro")}
-              </p>
-              <div className="flex flex-wrap gap-3">
-                <Link
-                  href="/ai"
-                  className="ai-cta-shimmer group inline-flex items-center gap-2 border-2 border-primary/35 bg-primary/[0.04] px-3.5 py-2 font-pixel text-[11px] uppercase tracking-[0.22em] text-primary transition-all duration-200 hover:border-primary/70 hover:bg-primary/[0.09] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
-                >
-                  <span>{t("aiCtaLabel")}</span>
-                  <span className="transition-transform duration-200 group-hover:translate-x-0.5">
-                    →
-                  </span>
-                </Link>
+              <div className="space-y-6 lg:-translate-y-8 xl:-translate-y-10">
+                <p className="max-w-[34ch] font-pixel text-[15px] leading-[1.8] tracking-[0.08em] text-muted-foreground [text-wrap:pretty] md:text-base lg:-ml-8 xl:-ml-10">
+                  {t("shortIntro")}
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  <Link
+                    href="/ai"
+                    className="ai-cta-shimmer group inline-flex items-center gap-2 border-2 border-primary/35 bg-primary/[0.04] px-3.5 py-2 font-pixel text-[11px] uppercase tracking-[0.22em] text-primary transition-all duration-200 hover:border-primary/70 hover:bg-primary/[0.09] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                  >
+                    <span>{t("aiCtaLabel")}</span>
+                    <span className="transition-transform duration-200 group-hover:translate-x-0.5">
+                      →
+                    </span>
+                  </Link>
+                </div>
               </div>
             </div>
           </motion.div>
