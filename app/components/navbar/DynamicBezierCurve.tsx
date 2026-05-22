@@ -361,7 +361,9 @@ const DynamicBezierCurve = ({ children, mirrorCurve = false }: Props) => {
       NON_DESKTOP_HERO_LAYER_HIDE_SCROLL_RATIO
     )
   const shouldShowFixedNonDesktopHero =
-    curveRevealProgress > 0 && scrollRatio < NON_DESKTOP_HERO_LAYER_HIDE_SCROLL_RATIO
+    hasReachedCurveStart &&
+    curveRevealProgress > 0 &&
+    scrollRatio < NON_DESKTOP_HERO_LAYER_HIDE_SCROLL_RATIO
   const shouldShowPreviewHero = !hasReachedCurveStart
   const shouldShowDesktopHero =
     !hasReachedCurveStart || scrollRatio < DESKTOP_HERO_LAYER_HIDE_SCROLL_RATIO
@@ -387,6 +389,8 @@ const DynamicBezierCurve = ({ children, mirrorCurve = false }: Props) => {
             backgroundColor: HERO_SURFACE_COLOR,
             overflow: "hidden",
             isolation: "isolate",
+            display: shouldShowPreviewHero ? "block" : "none",
+            opacity: shouldShowPreviewHero ? 1 : 0,
             visibility: shouldShowPreviewHero ? "visible" : "hidden",
             pointerEvents: "none",
             zIndex: 0,
@@ -403,7 +407,8 @@ const DynamicBezierCurve = ({ children, mirrorCurve = false }: Props) => {
             height: "calc(100svh - 3.5rem)",
             width: "100%",
             backgroundColor: HERO_SURFACE_COLOR,
-            opacity: nonDesktopHeroOpacity,
+            display: shouldShowFixedNonDesktopHero ? "block" : "none",
+            opacity: shouldShowFixedNonDesktopHero ? nonDesktopHeroOpacity : 0,
             overflow: "hidden",
             isolation: "isolate",
             visibility: shouldShowFixedNonDesktopHero ? "visible" : "hidden",
