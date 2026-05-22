@@ -468,7 +468,7 @@ export default function HomeLandingAboutExperience({ children }: Props) {
     <>
       <div
         className={cn(
-          "fixed inset-0 z-10 overflow-hidden transition-opacity duration-200",
+          "fixed inset-0 z-[60] overflow-hidden transition-opacity duration-200 lg:z-10",
           released ? "pointer-events-none" : "pointer-events-auto"
         )}
         style={{
@@ -619,7 +619,7 @@ export default function HomeLandingAboutExperience({ children }: Props) {
       {showCurveOverlay ? (
         <div
           aria-hidden
-          className="pointer-events-none fixed inset-x-0 z-30"
+          className="pointer-events-none fixed inset-x-0 z-[70] lg:z-30"
           style={{
             top: "var(--app-nav-offset)",
             height: "calc(100svh - var(--app-nav-offset))",
