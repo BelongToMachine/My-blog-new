@@ -23,19 +23,19 @@ export default function ChatLandingState({
     <div className="flex h-full items-center justify-center px-4 py-10 md:px-6 md:py-14">
       <div className="ai-lab-landing-panel mx-auto flex w-full max-w-4xl flex-col items-center gap-8 text-center">
         <div className="space-y-5">
-          <p className="font-pixel text-[10px] uppercase tracking-[0.24em] text-primary/78">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-primary/78">
             {t("eyebrow")}
           </p>
-          <h1 className="font-pixel text-[clamp(1.3rem,3vw,2.2rem)] leading-[1.3] tracking-[0.06em] text-foreground md:whitespace-nowrap">
+          <h1 className="font-semibold text-[clamp(1.3rem,3vw,2.2rem)] leading-[1.3] tracking-[-0.01em] text-foreground md:whitespace-nowrap">
             {t("landingTitle")}
           </h1>
-          <p className="mx-auto max-w-[42rem] font-pixel text-[12px] leading-8 tracking-[0.06em] text-muted-foreground/92 md:text-[13px]">
+          <p className="mx-auto max-w-[42rem] text-[12px] leading-8 tracking-[0.02em] text-muted-foreground/92 md:text-[13px]">
             {emptyLabel}
           </p>
         </div>
 
         <div className="space-y-4">
-          <p className="font-pixel text-[10px] uppercase tracking-[0.18em] text-muted-foreground/68">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/68">
             {t("suggestedPromptsLabel")}
           </p>
           <RecommendedPromptChips
@@ -45,7 +45,7 @@ export default function ChatLandingState({
           />
         </div>
 
-        <p className="font-pixel text-[10px] uppercase leading-6 tracking-[0.12em] text-muted-foreground/64">
+        <p className="text-[10px] font-medium uppercase leading-6 tracking-[0.12em] text-muted-foreground/64">
           {t("landingPromptHint")}
         </p>
       </div>

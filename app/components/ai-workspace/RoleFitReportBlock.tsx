@@ -28,7 +28,7 @@ function ReferenceCard({
 
   return (
     <div className="border-l-2 border-primary/30 bg-primary/[0.04] py-2 pl-3 pr-2">
-      <p className="font-pixel text-[12px] tracking-[0.05em] text-foreground">{titleNode}</p>
+      <p className="text-[12px] font-medium tracking-[0.02em] text-foreground">{titleNode}</p>
       <p className="text-[12px] leading-6 tracking-[0.04em] text-muted-foreground">{item.reason}</p>
     </div>
   )
@@ -54,14 +54,14 @@ export default function RoleFitReportBlock({
   return (
     <div className="space-y-5">
       {title ? (
-        <p className="font-pixel text-[11px] uppercase tracking-[0.16em] text-primary">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">
           {title}
         </p>
       ) : null}
 
       {typeof fitScore === "number" ? (
         <div className="flex items-center gap-3">
-          <span className="font-pixel text-[10px] uppercase tracking-[0.14em] text-primary/78">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-primary/78">
             {t("roleFitScore")}
           </span>
           <div className="h-2 flex-1 bg-muted">
@@ -70,7 +70,7 @@ export default function RoleFitReportBlock({
               style={{ width: `${Math.max(0, Math.min(100, fitScore))}%` }}
             />
           </div>
-          <span className="font-pixel text-[11px] uppercase tracking-[0.08em] text-primary">
+          <span className="text-[11px] font-semibold tracking-[0.04em] text-primary">
             {fitScore}%
           </span>
         </div>
@@ -78,7 +78,7 @@ export default function RoleFitReportBlock({
 
       {strengths.length > 0 ? (
         <div>
-          <p className="mb-2 font-pixel text-[10px] uppercase tracking-[0.16em] text-primary/78">
+          <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-primary/78">
             {t("roleFitStrengths")}
           </p>
           <ul className="space-y-1.5">
@@ -97,7 +97,7 @@ export default function RoleFitReportBlock({
 
       {matchedProjects.length > 0 ? (
         <div>
-          <p className="mb-2 font-pixel text-[10px] uppercase tracking-[0.16em] text-primary/78">
+          <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-primary/78">
             {t("roleFitMatchedProjects")}
           </p>
           <div className="space-y-2">
@@ -113,7 +113,7 @@ export default function RoleFitReportBlock({
 
       {matchedArticles.length > 0 ? (
         <div>
-          <p className="mb-2 font-pixel text-[10px] uppercase tracking-[0.16em] text-primary/78">
+          <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-primary/78">
             {t("roleFitMatchedArticles")}
           </p>
           <div className="space-y-2">
@@ -130,7 +130,7 @@ export default function RoleFitReportBlock({
 
       {possibleRisks.length > 0 ? (
         <div>
-          <p className="mb-2 font-pixel text-[10px] uppercase tracking-[0.16em] text-primary/78">
+          <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-primary/78">
             {t("roleFitPossibleRisks")}
           </p>
           <ul className="space-y-1.5">
@@ -149,7 +149,7 @@ export default function RoleFitReportBlock({
 
       {recommendedTalkingPoints.length > 0 ? (
         <div>
-          <p className="mb-2 font-pixel text-[10px] uppercase tracking-[0.16em] text-primary/78">
+          <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-primary/78">
             {t("roleFitRecommendedTalkingPoints")}
           </p>
           <ul className="space-y-1.5">

@@ -38,7 +38,7 @@ export default function ArtifactList({
               key={artifact.id}
               onClick={() => onSelect(artifact.id)}
               className={cn(
-                "flex shrink-0 items-center gap-2 border-2 px-3 py-1.5 font-pixel text-[9px] uppercase tracking-[0.14em] transition-colors",
+                "flex shrink-0 items-center gap-2 border-2 px-3 py-1.5 text-[9px] font-medium uppercase tracking-[0.14em] transition-colors",
                 isActive
                   ? "border-primary/60 bg-primary/[0.08] text-primary"
                   : "border-border/32 bg-background/68 text-muted-foreground hover:border-border/60 hover:bg-background/82",

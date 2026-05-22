@@ -51,7 +51,7 @@ export default function ArtifactRenderer({ artifact }: ArtifactRendererProps) {
       )
     default:
       return (
-        <div className="font-pixel text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+        <div className="text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
           {t("unknownArtifactType")}
         </div>
       )

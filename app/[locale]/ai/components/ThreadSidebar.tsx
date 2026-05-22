@@ -63,11 +63,11 @@ export default function ThreadSidebar({
 
       <div className="flex-1 overflow-y-auto p-2.5 md:p-3">
         {!hydrated ? (
-          <p className="font-pixel pt-6 text-center text-[10px] uppercase tracking-[0.2em] text-muted-foreground/40">
+          <p className="pt-6 text-center text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground/40">
             {t("loadingChats")}
           </p>
         ) : preparedThreads.length === 0 ? (
-          <p className="font-pixel pt-6 text-center text-[10px] uppercase tracking-[0.2em] text-muted-foreground/50">
+          <p className="pt-6 text-center text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground/50">
             {t("noChats")}
           </p>
         ) : (
@@ -115,7 +115,7 @@ export default function ThreadSidebar({
                     </div>
                     <p
                       className={cn(
-                        "mt-1 font-pixel text-[9px] uppercase tracking-[0.14em]",
+                        "mt-1 text-[9px] font-medium uppercase tracking-[0.14em]",
                         isActive ? "text-primary/72" : "text-muted-foreground/46",
                       )}
                     >
@@ -128,7 +128,7 @@ export default function ThreadSidebar({
                       event.stopPropagation()
                       onDeleteThread(thread.id)
                     }}
-                    className="absolute right-2 top-1/2 inline-block -translate-y-1/2 px-2 py-1 font-pixel text-base leading-none text-muted-foreground/40 transition-colors hover:bg-transparent hover:text-destructive md:hidden"
+                    className="absolute right-2 top-1/2 inline-block -translate-y-1/2 px-2 py-1 text-base font-medium leading-none text-muted-foreground/40 transition-colors hover:bg-transparent hover:text-destructive md:hidden"
                     aria-label={t("deleteChat") ?? "Delete chat"}
                     title={t("deleteChat") ?? "Delete chat"}
                   >
@@ -139,7 +139,7 @@ export default function ThreadSidebar({
                       event.stopPropagation()
                       onDeleteThread(thread.id)
                     }}
-                    className="absolute right-2 top-1/2 hidden -translate-y-1/2 px-2 py-1 font-pixel text-base leading-none text-muted-foreground/40 transition-colors hover:bg-transparent hover:text-destructive md:group-hover:inline-block"
+                    className="absolute right-2 top-1/2 hidden -translate-y-1/2 px-2 py-1 text-base font-medium leading-none text-muted-foreground/40 transition-colors hover:bg-transparent hover:text-destructive md:group-hover:inline-block"
                     aria-label={t("deleteChat") ?? "Delete chat"}
                     title={t("deleteChat") ?? "Delete chat"}
                   >
@@ -154,7 +154,7 @@ export default function ThreadSidebar({
       </div>
 
       <div className="shrink-0 border-t border-border/35 px-3 py-2">
-        <p className="font-pixel text-[9px] uppercase tracking-[0.2em] text-muted-foreground/40">
+        <p className="text-[9px] font-medium uppercase tracking-[0.2em] text-muted-foreground/40">
           {hydrated ? threads.length : 0}{" "}
           {threads.length === 1
             ? t("chatSingular") ?? "chat"

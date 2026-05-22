@@ -65,7 +65,7 @@ export default function ArticlePickerModal({
       <div className="w-full max-w-[760px] border-2 border-border bg-background px-5 py-5 shadow-[0_24px_64px_hsl(var(--background)/0.5)] md:px-6 md:py-6">
         <div className="mb-5 flex items-start justify-between gap-4">
           <div className="space-y-2">
-            <h2 className="font-pixel text-[14px] uppercase tracking-[0.14em] text-foreground md:text-[16px]">
+            <h2 className="font-semibold text-[14px] tracking-[0.02em] text-foreground md:text-[16px]">
               {modalTitle}
             </h2>
             <p className="text-[12px] leading-7 tracking-[0.04em] text-muted-foreground md:text-[13px]">
@@ -89,7 +89,7 @@ export default function ArticlePickerModal({
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder={searchPlaceholder}
-            className="border-0 bg-transparent px-0 font-pixel text-[11px] uppercase tracking-[0.08em] shadow-none focus-visible:border-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+            className="border-0 bg-transparent px-0 text-[11px] tracking-[0.02em] shadow-none focus-visible:border-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
           />
         </div>
 
@@ -113,7 +113,7 @@ export default function ArticlePickerModal({
             </div>
           ) : (
             <div className="border-2 border-border/70 px-4 py-8 text-center">
-              <p className="font-pixel text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+              <p className="text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
                 {emptyLabel}
               </p>
             </div>

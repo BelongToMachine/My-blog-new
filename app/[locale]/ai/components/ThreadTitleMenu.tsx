@@ -99,7 +99,7 @@ export default function ThreadTitleMenu({
                 setIsRenaming(false)
               }
             }}
-            className="min-w-[12rem] bg-transparent font-pixel text-[11px] uppercase tracking-[0.08em] text-foreground outline-none placeholder:text-muted-foreground/48"
+            className="min-w-[12rem] bg-transparent text-[11px] font-medium tracking-[0.02em] text-foreground outline-none placeholder:text-muted-foreground/48"
             placeholder={t("renamePlaceholder")}
             aria-label={t("renameChat")}
           />
@@ -124,7 +124,7 @@ export default function ThreadTitleMenu({
         {isStarred ? (
           <Star className="h-3.5 w-3.5 shrink-0 fill-current text-amber-500" />
         ) : null}
-        <span className="truncate font-pixel text-[11px] uppercase tracking-[0.08em] text-foreground">
+        <span className="truncate text-[11px] font-medium tracking-[0.02em] text-foreground">
           {title}
         </span>
         <ChevronDown

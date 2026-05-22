@@ -19,7 +19,7 @@ export default function ProjectGridBlock({
   return (
     <div className="space-y-4">
       {title ? (
-        <p className="font-pixel text-[11px] uppercase tracking-[0.16em] text-primary">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">
           {title}
         </p>
       ) : null}
@@ -29,7 +29,7 @@ export default function ProjectGridBlock({
           const project = item as Project
           return (
             <div key={index} className="space-y-3 border-b border-border/40 pb-4 last:border-0 last:pb-0">
-              <p className="mb-2 font-pixel text-[13px] tracking-[0.06em] text-foreground">
+              <p className="mb-2 text-[13px] font-semibold tracking-[-0.01em] text-foreground">
                 {project.title}
               </p>
               <p className="mb-3 text-[12px] leading-6 tracking-[0.04em] text-muted-foreground">
@@ -40,7 +40,7 @@ export default function ProjectGridBlock({
                 {(project.tech ?? []).map((t: string, i: number) => (
                   <span
                     key={i}
-                    className="border border-border/60 bg-background/70 px-2 py-0.5 font-pixel text-[10px] uppercase tracking-[0.12em] text-muted-foreground"
+                    className="border border-border/60 bg-background/70 px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground"
                   >
                     {t}
                   </span>
@@ -51,7 +51,7 @@ export default function ProjectGridBlock({
                 {(project.highlights ?? []).map((h: string, i: number) => (
                   <span
                     key={i}
-                    className="border border-primary/30 bg-primary/[0.06] px-2 py-0.5 font-pixel text-[10px] uppercase tracking-[0.12em] text-primary/80"
+                    className="border border-primary/30 bg-primary/[0.06] px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.12em] text-primary/80"
                   >
                     {h}
                   </span>

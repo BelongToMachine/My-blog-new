@@ -24,13 +24,13 @@ export default function ProfileCardBlock({
   return (
     <div className="space-y-4">
       {title ? (
-        <p className="font-pixel text-[11px] uppercase tracking-[0.16em] text-primary">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">
           {title}
         </p>
       ) : null}
 
       <div className="space-y-1">
-        <p className="font-pixel text-[1rem] tracking-[0.06em] text-foreground">
+        <p className="text-[1rem] font-semibold tracking-[-0.01em] text-foreground">
           {name}
         </p>
         <p className="text-[12px] leading-6 tracking-[0.04em] text-muted-foreground">{role}</p>
@@ -39,7 +39,7 @@ export default function ProfileCardBlock({
 
       {experience ? (
         <div>
-          <p className="mb-1.5 font-pixel text-[10px] uppercase tracking-[0.16em] text-primary/76">
+          <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-primary/76">
             {t("profileExperience")}
           </p>
           <p className="text-[12px] leading-6 tracking-[0.04em] text-foreground/90">{experience}</p>
@@ -48,7 +48,7 @@ export default function ProfileCardBlock({
 
       {focus.length > 0 ? (
         <div>
-          <p className="mb-1.5 font-pixel text-[10px] uppercase tracking-[0.16em] text-primary/76">
+          <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-primary/76">
             {t("profileFocus")}
           </p>
           <ul className="space-y-1">
@@ -63,7 +63,7 @@ export default function ProfileCardBlock({
 
       {productAreas.length > 0 ? (
         <div>
-          <p className="mb-1.5 font-pixel text-[10px] uppercase tracking-[0.16em] text-primary/76">
+          <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-primary/76">
             {t("profileProductAreas")}
           </p>
           <ul className="space-y-1">
@@ -78,7 +78,7 @@ export default function ProfileCardBlock({
 
       {contact ? (
         <div>
-          <p className="mb-1.5 font-pixel text-[10px] uppercase tracking-[0.16em] text-primary/76">
+          <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-primary/76">
             {t("profileContact")}
           </p>
           <div className="space-y-1 text-[12px] leading-6 tracking-[0.04em] text-foreground/90">
