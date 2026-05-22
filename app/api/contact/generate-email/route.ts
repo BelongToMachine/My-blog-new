@@ -39,11 +39,13 @@ Return ONLY valid JSON (no markdown, no code fences):
 }
 
 Guidelines:
-- Write 2-4 short, warm paragraphs that feel personal and specific.
+- Be direct and business-like. This is a professional inquiry, not a fan letter.
+- Do NOT use flattering language — no "impressed", "amazing", "inspiring", "great fit", "love your work", or similar compliments.
+- State the purpose plainly. If it's a job opening, say so. If it's a collaboration, say what it's about.
+- Keep it 2-3 short paragraphs. Get to the point quickly.
 - Use the sender's actual name, company, and purpose directly in the text.
-- Do not write "My name is [X]" — if you know the name, just sign with it or mention it naturally.
-- The subject line should be specific and intriguing, not generic.
-- End with a clear, friendly call-to-action (a meeting, a call, a reply).
+- The subject line should be descriptive and specific, not clickbait.
+- End with a straightforward call-to-action (a meeting, a call, a reply).
 - Sign off with the sender's name if provided.`
 }
 

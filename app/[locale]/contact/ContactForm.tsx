@@ -111,12 +111,12 @@ export default function ContactForm() {
       </div>
 
       {/* Main grid */}
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div className="grid gap-6 lg:grid-cols-2">
         {/* Left: Input panel */}
-        <div className="space-y-6">
+        <div className="space-y-5">
           {/* About You card */}
-          <section className="pixel-panel panel-grid overflow-hidden border border-border/80 bg-card/88 text-card-foreground">
-            <header className="border-b border-border/70 px-3 py-3.5 sm:px-4 sm:py-4 md:px-5">
+          <section className="overflow-hidden border-2 border-border/60 bg-background/80 backdrop-blur-sm">
+            <header className="border-b-2 border-border/50 px-4 py-3.5 sm:px-5 sm:py-4">
               <div className="flex items-center gap-2">
                 <User className="h-4 w-4 text-primary" />
                 <div className="text-xs font-semibold uppercase tracking-[0.15em] text-foreground">
@@ -127,7 +127,7 @@ export default function ContactForm() {
                 {t("infoHint")}
               </p>
             </header>
-            <div className="space-y-4 px-3 py-3.5 sm:px-4 sm:py-4 md:px-5 md:py-5">
+            <div className="space-y-4 px-4 py-3.5 sm:px-5 sm:py-4">
               <InputWithIcon icon={<User className="h-4 w-4" />}>
                 <Input
                   placeholder={t("namePlaceholder")}
@@ -165,8 +165,8 @@ export default function ContactForm() {
           </section>
 
           {/* Custom prompt card */}
-          <section className="pixel-panel panel-grid overflow-hidden border border-border/80 bg-card/88 text-card-foreground">
-            <header className="border-b border-border/70 px-3 py-3.5 sm:px-4 sm:py-4 md:px-5">
+          <section className="overflow-hidden border-2 border-border/60 bg-background/80 backdrop-blur-sm">
+            <header className="border-b-2 border-border/50 px-4 py-3.5 sm:px-5 sm:py-4">
               <div className="flex items-center gap-2">
                 <MessageSquare className="h-4 w-4 text-primary" />
                 <div className="text-xs font-semibold uppercase tracking-[0.15em] text-foreground">
@@ -174,7 +174,7 @@ export default function ContactForm() {
                 </div>
               </div>
             </header>
-            <div className="px-3 py-3.5 sm:px-4 sm:py-4 md:px-5 md:py-5">
+            <div className="px-4 py-3.5 sm:px-5 sm:py-4">
               <Textarea
                 className="min-h-[100px]"
                 placeholder={t("customPromptPlaceholder")}
@@ -188,7 +188,7 @@ export default function ContactForm() {
           <button
             onClick={handleGenerate}
             disabled={!canGenerate || isGenerating}
-            className="inline-flex w-full items-center justify-center gap-2 border-2 border-primary bg-primary/18 px-5 py-3 text-sm font-medium text-primary shadow-[4px_4px_0_hsl(var(--foreground)/0.28)] transition-[background-color,color,border-color,box-shadow] duration-200 ease-out hover:bg-primary hover:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+            className="inline-flex w-full items-center justify-center gap-2 border-2 border-border/60 bg-background/80 px-5 py-3 text-sm font-medium text-foreground backdrop-blur-sm transition-colors duration-200 hover:border-primary/50 hover:bg-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-40"
           >
             {isGenerating ? (
               <>
@@ -206,9 +206,9 @@ export default function ContactForm() {
 
         {/* Right: Email preview */}
         <div>
-          <div className="sticky top-24 space-y-6">
-            <section className="pixel-panel panel-grid overflow-hidden border border-border/80 bg-card/88 text-card-foreground">
-              <header className="flex items-center gap-2 border-b border-border/70 px-3 py-3.5 sm:px-4 sm:py-4 md:px-5">
+          <div className="sticky top-24 space-y-5">
+            <section className="overflow-hidden border-2 border-border/60 bg-background/80 backdrop-blur-sm">
+              <header className="flex items-center gap-2 border-b-2 border-border/50 px-4 py-3.5 sm:px-5 sm:py-4">
                 <Pencil className="h-4 w-4 text-primary" />
                 <div className="text-xs font-semibold uppercase tracking-[0.15em] text-foreground">
                   {t("previewSection")}
@@ -216,7 +216,7 @@ export default function ContactForm() {
               </header>
 
               {generated ? (
-                <div className="space-y-4 px-3 py-3.5 sm:px-4 sm:py-4 md:px-5 md:py-5">
+                <div className="space-y-4 px-4 py-3.5 sm:px-5 sm:py-4">
                   <div>
                     <label className="mb-1.5 block text-xs font-medium text-muted-foreground">
                       {t("subjectLabel")}
@@ -238,10 +238,8 @@ export default function ContactForm() {
                   </div>
                 </div>
               ) : (
-                <div className="flex flex-col items-center justify-center px-3 py-16 text-center sm:px-4 md:px-5">
-                  <div className="mb-4 border-2 border-muted-foreground/20 bg-muted/50 p-4">
-                    <Sparkles className="h-6 w-6 text-muted-foreground/40" />
-                  </div>
+                <div className="flex flex-col items-center justify-center px-4 py-20 text-center">
+                  <Sparkles className="mb-4 h-6 w-6 text-muted-foreground/30" />
                   <p className="text-sm leading-5 text-muted-foreground">
                     {t("emptyPreview")}
                   </p>
@@ -253,7 +251,7 @@ export default function ContactForm() {
             <button
               onClick={handleSend}
               disabled={!canSend || isSending}
-              className="inline-flex w-full items-center justify-center gap-2 border-2 border-border/80 bg-card/70 px-5 py-3 text-sm font-medium text-foreground shadow-[4px_4px_0_hsl(var(--foreground)/0.16)] transition-[background-color,color,border-color,box-shadow] duration-200 ease-out hover:bg-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
+              className="inline-flex w-full items-center justify-center gap-2 border-2 border-primary/40 bg-primary/10 px-5 py-3 text-sm font-medium text-primary backdrop-blur-sm transition-colors duration-200 hover:border-primary/60 hover:bg-primary/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-40"
             >
               {isSending ? (
                 <>
