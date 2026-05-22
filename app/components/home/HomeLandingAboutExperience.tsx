@@ -41,7 +41,7 @@ const NON_DESKTOP_OVERLAY_FADE_START_SCROLL_RATIO = 0.7
 const NON_DESKTOP_OVERLAY_HIDE_SCROLL_RATIO = 0.84
 const DESKTOP_CURVE_SCROLL_SLOWER = 0.35
 const DESKTOP_CURVE_REVEAL_DELAY_IN_PX = 72
-const DESKTOP_HERO_RISE_ADVANCE_IN_PX = 240
+const DESKTOP_HERO_RISE_ADVANCE_IN_PX = 160
 const CURVE_ENTRANCE_DISTANCE_IN_PX = 180
 
 const bebasNeue = localFont({
@@ -56,7 +56,13 @@ const progressBetween = (value: number, start: number, end: number) =>
 const mix = (from: number, to: number, progress: number) =>
   from * (1 - progress) + to * progress
 
-const cubicPoint = (t: number, p0: number, p1: number, p2: number, p3: number) => {
+const cubicPoint = (
+  t: number,
+  p0: number,
+  p1: number,
+  p2: number,
+  p3: number,
+) => {
   const oneMinusT = 1 - t
 
   return (
@@ -70,28 +76,26 @@ const cubicPoint = (t: number, p0: number, p1: number, p2: number, p3: number) =
 const getInterpolatedValue = (
   curvyValue: number,
   flatValue: number,
-  scrollRatio: number
+  scrollRatio: number,
 ) => curvyValue * (1 - scrollRatio) + flatValue * scrollRatio
-
-const getCurveInstructions = (
-  startPoint: number,
-  firstControlPoint: number,
-  secondControlPoint: number,
-  endPoint: number
-) =>
-  `M 0,${startPoint} C 30,${firstControlPoint} 50,${secondControlPoint} 100,${endPoint} L 100,100 L 0,100 Z`
 
 const getCurveClipPath = (
   startPoint: number,
   firstControlPoint: number,
   secondControlPoint: number,
   endPoint: number,
-  stepCount = 28
+  stepCount = 28,
 ) => {
   const curvePoints = Array.from({ length: stepCount + 1 }, (_, index) => {
     const t = index / stepCount
     const x = cubicPoint(t, 0, 30, 50, 100)
-    const y = cubicPoint(t, startPoint, firstControlPoint, secondControlPoint, endPoint)
+    const y = cubicPoint(
+      t,
+      startPoint,
+      firstControlPoint,
+      secondControlPoint,
+      endPoint,
+    )
 
     return `${x.toFixed(2)}% ${y.toFixed(2)}%`
   })
@@ -101,14 +105,17 @@ const getCurveClipPath = (
 
 const getNavOffsetInPixels = () => {
   const root = document.documentElement
-  const rawValue = getComputedStyle(root).getPropertyValue("--app-nav-offset").trim()
+  const rawValue = getComputedStyle(root)
+    .getPropertyValue("--app-nav-offset")
+    .trim()
 
   if (rawValue.endsWith("px")) {
     return Number.parseFloat(rawValue)
   }
 
   if (rawValue.endsWith("rem")) {
-    const rootFontSize = Number.parseFloat(getComputedStyle(root).fontSize) || 16
+    const rootFontSize =
+      Number.parseFloat(getComputedStyle(root).fontSize) || 16
     return Number.parseFloat(rawValue) * rootFontSize
   }
 
@@ -120,8 +127,12 @@ export default function HomeLandingAboutExperience({ children }: Props) {
   const t = useTranslations("hero")
   const { colorMode } = useContext(ThemeContext) ?? { colorMode: "light" }
   const isDark = colorMode === "dark"
-  const setScrollableSource = useScrollableStore((state) => state.setScrollableSource)
-  const clearScrollableSource = useScrollableStore((state) => state.clearScrollableSource)
+  const setScrollableSource = useScrollableStore(
+    (state) => state.setScrollableSource,
+  )
+  const clearScrollableSource = useScrollableStore(
+    (state) => state.clearScrollableSource,
+  )
 
   const [released, setReleased] = useState(false)
   const [displayProgress, setDisplayProgress] = useState(0)
@@ -130,7 +141,9 @@ export default function HomeLandingAboutExperience({ children }: Props) {
   const [curveProgress, setCurveProgress] = useState(0)
   const [pageScrollY, setPageScrollY] = useState(0)
   const [viewportWidth, setViewportWidth] = useState(0)
-  const [landingReserveHeight, setLandingReserveHeight] = useState<number | null>(null)
+  const [landingReserveHeight, setLandingReserveHeight] = useState<
+    number | null
+  >(null)
 
   const progressRef = useRef(0)
   const targetRef = useRef(0)
@@ -159,7 +172,8 @@ export default function HomeLandingAboutExperience({ children }: Props) {
 
     if (typeof mediaQuery.addEventListener === "function") {
       mediaQuery.addEventListener("change", syncMotionPreference)
-      return () => mediaQuery.removeEventListener("change", syncMotionPreference)
+      return () =>
+        mediaQuery.removeEventListener("change", syncMotionPreference)
     }
 
     mediaQuery.addListener(syncMotionPreference)
@@ -174,7 +188,7 @@ export default function HomeLandingAboutExperience({ children }: Props) {
       const artHeight = artTextRef.current?.getBoundingClientRect().height ?? 0
       const nextOffset = Math.max(
         window.innerHeight - HERO_BOTTOM_OFFSET - heroTop - artHeight,
-        0
+        0,
       )
 
       setArtStartOffset(nextOffset)
@@ -234,9 +248,15 @@ export default function HomeLandingAboutExperience({ children }: Props) {
     const previousBodyTouchAction = document.body.style.touchAction
     const shouldLockScroll = !released && !prefersReducedMotion
 
-    document.documentElement.style.overflow = shouldLockScroll ? "hidden" : previousHtmlOverflow
-    document.body.style.overflow = shouldLockScroll ? "hidden" : previousBodyOverflow
-    document.body.style.touchAction = shouldLockScroll ? "none" : previousBodyTouchAction
+    document.documentElement.style.overflow = shouldLockScroll
+      ? "hidden"
+      : previousHtmlOverflow
+    document.body.style.overflow = shouldLockScroll
+      ? "hidden"
+      : previousBodyOverflow
+    document.body.style.touchAction = shouldLockScroll
+      ? "none"
+      : previousBodyTouchAction
 
     return () => {
       document.documentElement.style.overflow = previousHtmlOverflow
@@ -296,28 +316,24 @@ export default function HomeLandingAboutExperience({ children }: Props) {
               DESKTOP_CURVE_FLATTEN_SCROLL_RATIO *
               DESKTOP_OVERLAY_HIDE_SCROLL_RATIO -
               DESKTOP_HERO_RISE_ADVANCE_IN_PX,
-            window.innerHeight * 0.46
-          )
+            window.innerHeight * 0.46,
+          ),
         )
         return
       }
 
       const heroAnchor =
-        document.querySelector<HTMLElement>("[data-home-landing-target-anchor]") ??
-        document.querySelector<HTMLElement>("#about-me-section")
+        document.querySelector<HTMLElement>(
+          "[data-home-landing-target-anchor]",
+        ) ?? document.querySelector<HTMLElement>("#about-me-section")
 
       if (heroAnchor) {
         const navOffset = getNavOffsetInPixels()
-        const rect = heroAnchor.getBoundingClientRect()
-        const anchorTopInDocument = window.scrollY + rect.top
-        const nextTargetScroll = Math.max(
-          Math.min(anchorTopInDocument - navOffset, window.innerHeight - navOffset),
-          1
-        )
+        const nextTargetScroll = Math.max(window.innerHeight - navOffset, 1)
 
         curveTargetScrollRef.current = nextTargetScroll
         setLandingReserveHeight(
-          nextTargetScroll * NON_DESKTOP_OVERLAY_HIDE_SCROLL_RATIO
+          nextTargetScroll * NON_DESKTOP_OVERLAY_HIDE_SCROLL_RATIO,
         )
         return
       }
@@ -329,11 +345,11 @@ export default function HomeLandingAboutExperience({ children }: Props) {
       if (!targetAnchor) {
         const fallbackTargetScroll = Math.max(
           window.innerHeight - getNavOffsetInPixels(),
-          1
+          1,
         )
         curveTargetScrollRef.current = fallbackTargetScroll
         setLandingReserveHeight(
-          fallbackTargetScroll * NON_DESKTOP_OVERLAY_HIDE_SCROLL_RATIO
+          fallbackTargetScroll * NON_DESKTOP_OVERLAY_HIDE_SCROLL_RATIO,
         )
         return
       }
@@ -343,10 +359,12 @@ export default function HomeLandingAboutExperience({ children }: Props) {
 
       const nextTargetScroll = Math.max(
         anchorTopInDocument - getNavOffsetInPixels(),
-        1
+        1,
       )
       curveTargetScrollRef.current = nextTargetScroll
-      setLandingReserveHeight(nextTargetScroll * NON_DESKTOP_OVERLAY_HIDE_SCROLL_RATIO)
+      setLandingReserveHeight(
+        nextTargetScroll * NON_DESKTOP_OVERLAY_HIDE_SCROLL_RATIO,
+      )
     }
 
     captureCurveTarget()
@@ -379,7 +397,9 @@ export default function HomeLandingAboutExperience({ children }: Props) {
       }
 
       setCurveProgress(
-        clamp01(pixelsScrolled / (windowHeight * DESKTOP_CURVE_FLATTEN_SCROLL_RATIO))
+        clamp01(
+          pixelsScrolled / (windowHeight * DESKTOP_CURVE_FLATTEN_SCROLL_RATIO),
+        ),
       )
     }
 
@@ -420,7 +440,7 @@ export default function HomeLandingAboutExperience({ children }: Props) {
       progressBetween(
         curveProgress,
         NON_DESKTOP_OVERLAY_FADE_START_SCROLL_RATIO,
-        NON_DESKTOP_OVERLAY_HIDE_SCROLL_RATIO
+        NON_DESKTOP_OVERLAY_HIDE_SCROLL_RATIO,
       )
   const landingOverlayActive = !released || curveProgress < overlayHideThreshold
   const landingNavMode =
@@ -454,7 +474,9 @@ export default function HomeLandingAboutExperience({ children }: Props) {
     setScrollableSource,
   ])
 
-  const artProgress = prefersReducedMotion ? 1 : clamp01(displayProgress / ART_REVEAL_END)
+  const artProgress = prefersReducedMotion
+    ? 1
+    : clamp01(displayProgress / ART_REVEAL_END)
   const firstButtonProgress = prefersReducedMotion
     ? 1
     : progressBetween(displayProgress, FIRST_BUTTON_START, FIRST_BUTTON_END)
@@ -464,12 +486,15 @@ export default function HomeLandingAboutExperience({ children }: Props) {
   const easedFirstButtonProgress = easeOutQuint(firstButtonProgress)
   const easedSecondButtonProgress = easeOutQuint(secondButtonProgress)
   const artTextY = artStartOffset * (1 - artProgress)
-  const artTextOpacity = INITIAL_ART_OPACITY + artProgress * (1 - INITIAL_ART_OPACITY)
+  const artTextOpacity =
+    INITIAL_ART_OPACITY + artProgress * (1 - INITIAL_ART_OPACITY)
   const artTextScale = 0.94 + artProgress * 0.06
   const scrollHintProgress = prefersReducedMotion
     ? 1
     : clamp01(displayProgress / SCROLL_HINT_FADE_END)
-  const scrollHintOpacity = prefersReducedMotion ? 0 : 0.78 * (1 - scrollHintProgress)
+  const scrollHintOpacity = prefersReducedMotion
+    ? 0
+    : 0.78 * (1 - scrollHintProgress)
   const scrollHintY = 14 * scrollHintProgress
   const introCopyProgress = prefersReducedMotion
     ? 1
@@ -486,50 +511,45 @@ export default function HomeLandingAboutExperience({ children }: Props) {
   const targetSecondControlPoint = getInterpolatedValue(100, 0, curveProgress)
   const targetEndPoint = getInterpolatedValue(80, 0, curveProgress)
 
-  const visibleCurveStartPoint = mix(100, targetStartPoint, curveEntranceProgress)
+  const visibleCurveStartPoint = mix(
+    100,
+    targetStartPoint,
+    curveEntranceProgress,
+  )
   const visibleCurveFirstControlPoint = mix(
     100,
     targetFirstControlPoint,
-    curveEntranceProgress
+    curveEntranceProgress,
   )
   const visibleCurveSecondControlPoint = mix(
     100,
     targetSecondControlPoint,
-    curveEntranceProgress
+    curveEntranceProgress,
   )
   const visibleCurveEndPoint = mix(100, targetEndPoint, curveEntranceProgress)
 
-  const curveInstructions = getCurveInstructions(
-    visibleCurveStartPoint,
-    visibleCurveFirstControlPoint,
-    visibleCurveSecondControlPoint,
-    visibleCurveEndPoint
-  )
-  const desktopLandingClipPath =
-    isDesktop && showCurveOverlay
+  const landingClipPath =
+    showCurveOverlay
       ? getCurveClipPath(
           visibleCurveStartPoint,
           visibleCurveFirstControlPoint,
           visibleCurveSecondControlPoint,
-          visibleCurveEndPoint
+          visibleCurveEndPoint,
         )
       : undefined
-
-  const curveOverlayTranslateY = (1 - curveEntranceProgress) * 16
-  const curveFillColor = "hsl(var(--home-about-bridge))"
 
   return (
     <>
       <div
         className={cn(
           "fixed inset-0 z-[60] overflow-hidden transition-opacity duration-200",
-          released ? "pointer-events-none" : "pointer-events-auto"
+          released ? "pointer-events-none" : "pointer-events-auto",
         )}
         style={{
           opacity: landingOverlayActive ? overlayFadeOpacity : 0,
           visibility: landingOverlayActive ? "visible" : "hidden",
-          clipPath: desktopLandingClipPath,
-          WebkitClipPath: desktopLandingClipPath,
+          clipPath: landingClipPath,
+          WebkitClipPath: landingClipPath,
         }}
       >
         <div className="fixed inset-0 z-0">
@@ -554,7 +574,7 @@ export default function HomeLandingAboutExperience({ children }: Props) {
               "absolute inset-0",
               isDark
                 ? landingStyles.skyOverlayDark
-                : landingStyles.skyOverlayLight
+                : landingStyles.skyOverlayLight,
             )}
           />
         </div>
@@ -570,7 +590,7 @@ export default function HomeLandingAboutExperience({ children }: Props) {
               "text-center text-[2.65rem] font-extrabold leading-[0.88] tracking-[-0.06em] min-[375px]:text-[3.25rem] md:text-[4.4rem] lg:text-[5.6rem]",
               isDark
                 ? "text-white/95 drop-shadow-[0_4px_40px_rgba(120,160,255,0.2)]"
-                : "text-white drop-shadow-[0_6px_40px_rgba(7,60,120,0.4)]"
+                : "text-white drop-shadow-[0_6px_40px_rgba(7,60,120,0.4)]",
             )}
             style={{
               transform: `translateY(${artTextY}px) scale(${artTextScale})`,
@@ -620,7 +640,7 @@ export default function HomeLandingAboutExperience({ children }: Props) {
                   "group inline-flex min-w-[9.75rem] items-center justify-between gap-2 border-2 px-4 py-2.5 font-pixel text-[10px] uppercase tracking-[0.18em] text-white backdrop-blur-sm transition-all duration-200 hover:text-black focus-visible:outline-none focus-visible:ring-2 min-[375px]:min-w-[10.75rem] min-[375px]:px-5 min-[375px]:text-[11px]",
                   isDark
                     ? "border-slate-300/40 bg-slate-900/50 shadow-[0_0_24px_rgba(148,163,184,0.08)] hover:border-slate-200/80 hover:bg-white/85 focus-visible:ring-white/60"
-                    : "border-sky-200/35 bg-sky-950/15 hover:border-sky-100/80 hover:bg-white/85 focus-visible:ring-white/50"
+                    : "border-sky-200/35 bg-sky-950/15 hover:border-sky-100/80 hover:bg-white/85 focus-visible:ring-white/50",
                 )}
                 style={{
                   transform: `translateY(${firstButtonY}px)`,
@@ -639,7 +659,7 @@ export default function HomeLandingAboutExperience({ children }: Props) {
                   "group inline-flex min-w-[9.75rem] items-center justify-between gap-2 border-2 px-4 py-2.5 font-pixel text-[10px] uppercase tracking-[0.18em] text-white backdrop-blur-sm transition-all duration-200 hover:text-black focus-visible:outline-none focus-visible:ring-2 min-[375px]:min-w-[10.75rem] min-[375px]:px-5 min-[375px]:text-[11px]",
                   isDark
                     ? "border-slate-300/40 bg-slate-900/50 shadow-[0_0_24px_rgba(148,163,184,0.08)] hover:border-slate-200/80 hover:bg-white/85 focus-visible:ring-white/60"
-                    : "border-sky-200/35 bg-sky-950/15 hover:border-sky-100/80 hover:bg-white/85 focus-visible:ring-white/50"
+                    : "border-sky-200/35 bg-sky-950/15 hover:border-sky-100/80 hover:bg-white/85 focus-visible:ring-white/50",
                 )}
                 style={{
                   transform: `translateY(${secondButtonY}px)`,
@@ -659,7 +679,7 @@ export default function HomeLandingAboutExperience({ children }: Props) {
         <div
           className={cn(
             "pointer-events-none fixed bottom-10 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-2 font-pixel text-[11px] uppercase tracking-[0.26em] md:bottom-12",
-            isDark ? "text-indigo-200/85" : "text-white/85"
+            isDark ? "text-indigo-200/85" : "text-white/85",
           )}
           style={{
             transform: `translateX(-50%) translateY(${scrollHintY}px)`,
@@ -671,40 +691,6 @@ export default function HomeLandingAboutExperience({ children }: Props) {
           <span>{t("scrollDown")}</span>
         </div>
       </div>
-
-      {showCurveOverlay ? (
-        <div
-          aria-hidden
-          className="pointer-events-none fixed inset-x-0 z-[70]"
-          style={{
-            top: "var(--app-nav-offset)",
-            height: "calc(100svh - var(--app-nav-offset))",
-            transform: `translateY(${curveOverlayTranslateY}px)`,
-            willChange: "transform",
-          }}
-        >
-          <svg
-            viewBox="0 0 100 100"
-            style={{
-              width: "100%",
-              height: "100%",
-              position: "absolute",
-              inset: 0,
-            }}
-            preserveAspectRatio="none"
-          >
-            {!isDesktop ? (
-              <path
-                d={curveInstructions}
-                fill={curveFillColor}
-                stroke="hsl(var(--border))"
-                strokeWidth={0}
-                vectorEffect="non-scaling-stroke"
-              />
-            ) : null}
-          </svg>
-        </div>
-      ) : null}
 
       <div
         aria-hidden
