@@ -208,7 +208,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className="relative z-10 flex w-full items-start justify-center lg:col-start-2 lg:col-end-8 lg:justify-start"
         >
-          <div className="relative w-full min-w-0 max-w-[800px] lg:max-w-[620px] xl:max-w-[680px]">
+          <div className="relative w-full min-w-0 max-w-[800px] lg:max-w-[680px] xl:max-w-[760px]">
             <h1 className="mb-3 min-h-[5rem] text-left text-[1.75rem] min-[375px]:text-[2rem] md:text-[2.5rem] font-extrabold leading-[1.05] lg:min-h-[7rem] lg:text-5xl xl:min-h-[8rem] xl:text-6xl">
               <span className="font-pixel uppercase tracking-[0.04em] text-primary">
                 {`${t("greeting")} `}
@@ -258,7 +258,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
                 />
               </div>
             </div>
-            <div className="mt-6 hidden w-full min-w-0 max-w-[560px] lg:block xl:max-w-[600px]">
+            <div className="mt-6 hidden w-full min-w-0 max-w-[640px] lg:block xl:max-w-[720px]">
               <CodeBlocker code={code} colorMode={colorMode} />
             </div>
           </div>
@@ -269,7 +269,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
           className="relative z-20 hidden lg:col-start-8 lg:col-end-12 lg:flex lg:items-start lg:justify-start"
         >
-          <div className="relative ml-2 mt-32 w-full max-w-[340px] lg:mt-36 lg:-translate-x-3 xl:ml-0 xl:mt-32 xl:max-w-[380px] xl:translate-x-0">
+          <div className="relative ml-2 mt-32 w-full max-w-[340px] lg:mt-36 lg:-translate-x-6 xl:ml-0 xl:mt-32 xl:max-w-[380px] xl:-translate-x-2">
             <div className="relative aspect-square w-[276px] lg:w-[304px] xl:w-[344px]">
                 <Image
                   src={heroPortrait}
