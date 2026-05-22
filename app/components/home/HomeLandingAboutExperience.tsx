@@ -37,8 +37,8 @@ const SCROLL_HINT_FADE_END = 0.18
 const DESKTOP_CURVE_FLATTEN_SCROLL_RATIO = 0.92
 const DESKTOP_OVERLAY_HIDE_SCROLL_RATIO = 0.995
 const DESKTOP_NAV_LANDING_END_SCROLL_RATIO = 0.9
-const NON_DESKTOP_OVERLAY_FADE_START_SCROLL_RATIO = 0.7
-const NON_DESKTOP_OVERLAY_HIDE_SCROLL_RATIO = 0.84
+const NON_DESKTOP_NAV_LANDING_END_SCROLL_RATIO = 0.7
+const NON_DESKTOP_OVERLAY_HIDE_SCROLL_RATIO = 0.995
 const DESKTOP_CURVE_SCROLL_SLOWER = 0.35
 const DESKTOP_CURVE_REVEAL_DELAY_IN_PX = 72
 const DESKTOP_HERO_RISE_ADVANCE_IN_PX = 160
@@ -276,8 +276,17 @@ export default function HomeLandingAboutExperience({ children }: Props) {
       accumulated += event.deltaY
       const nextProgress = clamp01(accumulated / SCROLL_THRESHOLD)
       targetRef.current = nextProgress
+      if (nextProgress >= 1) {
+        if (rafRef.current) cancelAnimationFrame(rafRef.current)
+        rafRef.current = undefined
+        progressRef.current = 1
+        targetRef.current = 1
+        setDisplayProgress(1)
+        setReleased(true)
+        return
+      }
+
       startAnimationRef.current()
-      if (nextProgress >= 1) setReleased(true)
     }
 
     const handleTouchStart = (event: TouchEvent) => {
@@ -292,8 +301,17 @@ export default function HomeLandingAboutExperience({ children }: Props) {
       accumulated += delta * 1.3
       const nextProgress = clamp01(accumulated / SCROLL_THRESHOLD)
       targetRef.current = nextProgress
+      if (nextProgress >= 1) {
+        if (rafRef.current) cancelAnimationFrame(rafRef.current)
+        rafRef.current = undefined
+        progressRef.current = 1
+        targetRef.current = 1
+        setDisplayProgress(1)
+        setReleased(true)
+        return
+      }
+
       startAnimationRef.current()
-      if (nextProgress >= 1) setReleased(true)
     }
 
     window.addEventListener("wheel", handleWheel, { passive: false })
@@ -434,21 +452,13 @@ export default function HomeLandingAboutExperience({ children }: Props) {
   const overlayHideThreshold = isDesktop
     ? DESKTOP_OVERLAY_HIDE_SCROLL_RATIO
     : NON_DESKTOP_OVERLAY_HIDE_SCROLL_RATIO
-  const overlayFadeOpacity = isDesktop
-    ? 1
-    : 1 -
-      progressBetween(
-        curveProgress,
-        NON_DESKTOP_OVERLAY_FADE_START_SCROLL_RATIO,
-        NON_DESKTOP_OVERLAY_HIDE_SCROLL_RATIO,
-      )
   const landingOverlayActive = !released || curveProgress < overlayHideThreshold
   const landingNavMode =
     !released ||
     curveProgress <
       (isDesktop
         ? DESKTOP_NAV_LANDING_END_SCROLL_RATIO
-        : NON_DESKTOP_OVERLAY_FADE_START_SCROLL_RATIO)
+        : NON_DESKTOP_NAV_LANDING_END_SCROLL_RATIO)
   const curveRevealScrollY = isDesktop
     ? Math.max(pageScrollY - DESKTOP_CURVE_REVEAL_DELAY_IN_PX, 0)
     : pageScrollY
@@ -542,11 +552,11 @@ export default function HomeLandingAboutExperience({ children }: Props) {
     <>
       <div
         className={cn(
-          "fixed inset-0 z-[60] overflow-hidden transition-opacity duration-200",
+          "fixed inset-0 z-[60] overflow-hidden",
           released ? "pointer-events-none" : "pointer-events-auto",
         )}
         style={{
-          opacity: landingOverlayActive ? overlayFadeOpacity : 0,
+          opacity: landingOverlayActive ? 1 : 0,
           visibility: landingOverlayActive ? "visible" : "hidden",
           clipPath: landingClipPath,
           WebkitClipPath: landingClipPath,
@@ -637,7 +647,7 @@ export default function HomeLandingAboutExperience({ children }: Props) {
               <Link
                 href="/about"
                 className={cn(
-                  "group inline-flex min-w-[9.75rem] items-center justify-between gap-2 border-2 px-4 py-2.5 font-pixel text-[10px] uppercase tracking-[0.18em] text-white backdrop-blur-sm transition-all duration-200 hover:text-black focus-visible:outline-none focus-visible:ring-2 min-[375px]:min-w-[10.75rem] min-[375px]:px-5 min-[375px]:text-[11px]",
+                  "group inline-flex min-w-[9.75rem] items-center justify-between gap-2 border-2 px-4 py-2.5 font-pixel text-[10px] uppercase tracking-[0.18em] text-white backdrop-blur-sm transition-colors duration-200 hover:text-black focus-visible:outline-none focus-visible:ring-2 min-[375px]:min-w-[10.75rem] min-[375px]:px-5 min-[375px]:text-[11px]",
                   isDark
                     ? "border-slate-300/40 bg-slate-900/50 shadow-[0_0_24px_rgba(148,163,184,0.08)] hover:border-slate-200/80 hover:bg-white/85 focus-visible:ring-white/60"
                     : "border-sky-200/35 bg-sky-950/15 hover:border-sky-100/80 hover:bg-white/85 focus-visible:ring-white/50",
@@ -656,7 +666,7 @@ export default function HomeLandingAboutExperience({ children }: Props) {
               <Link
                 href="/ai"
                 className={cn(
-                  "group inline-flex min-w-[9.75rem] items-center justify-between gap-2 border-2 px-4 py-2.5 font-pixel text-[10px] uppercase tracking-[0.18em] text-white backdrop-blur-sm transition-all duration-200 hover:text-black focus-visible:outline-none focus-visible:ring-2 min-[375px]:min-w-[10.75rem] min-[375px]:px-5 min-[375px]:text-[11px]",
+                  "group inline-flex min-w-[9.75rem] items-center justify-between gap-2 border-2 px-4 py-2.5 font-pixel text-[10px] uppercase tracking-[0.18em] text-white backdrop-blur-sm transition-colors duration-200 hover:text-black focus-visible:outline-none focus-visible:ring-2 min-[375px]:min-w-[10.75rem] min-[375px]:px-5 min-[375px]:text-[11px]",
                   isDark
                     ? "border-slate-300/40 bg-slate-900/50 shadow-[0_0_24px_rgba(148,163,184,0.08)] hover:border-slate-200/80 hover:bg-white/85 focus-visible:ring-white/60"
                     : "border-sky-200/35 bg-sky-950/15 hover:border-sky-100/80 hover:bg-white/85 focus-visible:ring-white/50",
