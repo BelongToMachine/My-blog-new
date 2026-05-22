@@ -5,7 +5,8 @@
     "aboutMe": "关于我",
     "myBlog": "我的博客",
     "linkedin": "LinkedIn",
-    "language": "EN"
+    "language": "EN",
+    "contact": "联系"
   },
   "ai": {
     "eyebrow": "AI Playground",
@@ -194,12 +195,44 @@
     "connect": "联系",
     "copyright": "© {year} 开发者"
   },
+  "contact": {
+    "eyebrow": "联系",
+    "title": "联系我",
+    "subtitle": "有兴趣一起合作吗？填写以下信息，让 AI 帮你起草一封专业的邮件给 Jie。发送前你可以随意编辑。",
+    "infoSection": "关于你",
+    "infoHint": "尽量填写你能提供的信息 — 其余的 AI 会帮你补充。",
+    "nameLabel": "你的名字",
+    "namePlaceholder": "张三",
+    "companyLabel": "公司",
+    "companyPlaceholder": "某某科技有限公司",
+    "emailLabel": "你的邮箱",
+    "emailPlaceholder": "zhangsan@company.com",
+    "businessLabel": "业务 / 目的",
+    "businessPlaceholder": "工作机会、自由职业项目、技术合作...",
+    "customPromptLabel": "你想说些什么？",
+    "customPromptPlaceholder": "告诉 Jie 你的来意 — 提供越多背景信息，AI 生成的邮件会越精准...",
+    "generateButton": "用 AI 生成邮件",
+    "generating": "生成中...",
+    "generated": "邮件已生成！发送前你可以随意修改。",
+    "previewSection": "邮件预览",
+    "emptyPreview": "在左侧填写你的信息，然后点击“用 AI 生成邮件”来创建草稿。",
+    "subjectLabel": "主题",
+    "bodyLabel": "正文",
+    "sendButton": "发送邮件",
+    "sending": "发送中...",
+    "emailSent": "邮件已发送！Jie 会尽快回复你。",
+    "emailError": "邮件发送失败，请重试。",
+    "generateError": "邮件生成失败，请提供更多信息后重试。",
+    "emailRequired": "请输入你的邮箱地址，以便 Jie 回复你。"
+  },
   "meta": {
     "homeTitle": "开发者 — 前端开发工程师 & AI 提示词工程师",
     "homeDescription": "开发者（Developer）的作品集，专注于 React、Next.js、TypeScript 和 AI 集成。",
     "aiTitle": "问我 AI 助手",
     "aiDescription": "围绕开发者本人、作品集、前端能力与项目决策的 AI 助手。",
     "mdxArticlesTitle": "MDX 文章实验区",
-    "mdxArticlesDescription": "以 MDX 为核心的长文笔记、组件化内容块与交互式阅读实验。"
+    "mdxArticlesDescription": "以 MDX 为核心的长文笔记、组件化内容块与交互式阅读实验。",
+    "contactTitle": "联系 Jie — 取得联系",
+    "contactDescription": "与前端开发工程师 & AI 提示词工程师 Jie 取得联系。使用 AI 快速生成专业邮件。"
   }
 }

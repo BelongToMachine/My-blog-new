@@ -18,6 +18,7 @@ const MobileNav = ({ indexMode = false }: { indexMode?: boolean }) => {
       { label: t("aboutMe"), href: "/about" },
       { label: t("blogs"), href: "/articles" },
       { label: t("ai"), href: "/ai" },
+      { label: t("contact"), href: "/contact" },
     ],
     [t]
   )

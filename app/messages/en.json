@@ -5,7 +5,8 @@
     "aboutMe": "About Me",
     "myBlog": "My Blog",
     "linkedin": "LinkedIn",
-    "language": "中文"
+    "language": "中文",
+    "contact": "Contact"
   },
   "ai": {
     "eyebrow": "AI Playground",
@@ -194,12 +195,44 @@
     "connect": "Connect",
     "copyright": "© {year} Developer"
   },
+  "contact": {
+    "eyebrow": "Contact",
+    "title": "Get in Touch",
+    "subtitle": "Interested in working together? Fill in a few details below and let AI help you draft a professional email to Jie. You can edit it before sending.",
+    "infoSection": "About You",
+    "infoHint": "Fill in what you can — AI will handle the rest.",
+    "nameLabel": "Your Name",
+    "namePlaceholder": "Jane Smith",
+    "companyLabel": "Company",
+    "companyPlaceholder": "Acme Inc.",
+    "emailLabel": "Your Email",
+    "emailPlaceholder": "jane@acme.com",
+    "businessLabel": "Business / Purpose",
+    "businessPlaceholder": "Job opportunity, freelance project, collaboration...",
+    "customPromptLabel": "What would you like to say?",
+    "customPromptPlaceholder": "Tell Jie what brings you here — the more context, the better the AI-generated email will be...",
+    "generateButton": "Generate Email with AI",
+    "generating": "Generating...",
+    "generated": "Email generated! You can edit it before sending.",
+    "previewSection": "Email Preview",
+    "emptyPreview": "Fill in your details on the left and click \"Generate Email with AI\" to create a draft.",
+    "subjectLabel": "Subject",
+    "bodyLabel": "Message",
+    "sendButton": "Send Email",
+    "sending": "Sending...",
+    "emailSent": "Email sent! Jie will get back to you soon.",
+    "emailError": "Failed to send email. Please try again.",
+    "generateError": "Failed to generate email. Please try again with more details.",
+    "emailRequired": "Please enter your email address so Jie can reply."
+  },
   "meta": {
     "homeTitle": "Developer — Front-End Developer & AI Prompt Engineer",
     "homeDescription": "Portfolio of Developer — a front-end developer specializing in React, Next.js, TypeScript, and AI.",
     "aiTitle": "Ask Jie AI",
     "aiDescription": "AI assistant focused on Jie's portfolio, front-end work, and project decisions.",
     "mdxArticlesTitle": "MDX Articles",
-    "mdxArticlesDescription": "MDX notes focused on long-form writing, custom components, and interactive reading experiments."
+    "mdxArticlesDescription": "MDX notes focused on long-form writing, custom components, and interactive reading experiments.",
+    "contactTitle": "Contact Jie — Get in Touch",
+    "contactDescription": "Get in touch with Jie, a front-end developer & AI prompt engineer. Use AI to draft a professional email in seconds."
   }
 }
