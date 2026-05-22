@@ -695,6 +695,7 @@ export default function HomeLandingAboutExperience({ children }: Props) {
       <div
         aria-hidden
         style={{
+          backgroundColor: "hsl(var(--home-about-bridge))",
           height:
             landingReserveHeight !== null
               ? `${landingReserveHeight}px`
