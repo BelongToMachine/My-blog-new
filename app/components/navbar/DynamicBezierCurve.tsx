@@ -9,6 +9,7 @@ import { Container } from "@radix-ui/themes"
 import style from "@/app/service/ThemeService"
 import useIsInScrollable from "@/app/hooks/useIsInScrollable"
 import { isDesktopViewport } from "@/app/lib/responsive"
+import { useScrollableStore } from "@/app/service/Store"
 
 interface Props {
   children: ReactNode
@@ -123,6 +124,9 @@ const DynamicBezierCurve = ({ children, mirrorCurve = false }: Props) => {
   const [hasReachedCurveStart, setHasReachedCurveStart] = useState(false)
   const [curveRevealProgress, setCurveRevealProgress] = useState(0)
   const [curveRevealTravel, setCurveRevealTravel] = useState(0)
+  const isHomeLandingHandoffActive = useScrollableStore((state) =>
+    Boolean(state.scrollableSources["home-landing-handoff"])
+  )
   const nodeRef = useRef(null)
   const rootAnchorRef = useRef<HTMLDivElement>(null)
   const nonDesktopCurveTargetScrollRef = useRef<number | null>(null)
@@ -361,7 +365,8 @@ const DynamicBezierCurve = ({ children, mirrorCurve = false }: Props) => {
   const shouldShowPreviewHero = !hasReachedCurveStart
   const shouldShowDesktopHero =
     !hasReachedCurveStart || scrollRatio < DESKTOP_HERO_LAYER_HIDE_SCROLL_RATIO
-  const shouldShowCurveOverlay = curveRevealProgress > 0 && scrollRatio < 1
+  const shouldShowCurveOverlay =
+    !isHomeLandingHandoffActive && curveRevealProgress > 0 && scrollRatio < 1
   const curveRevealTranslateY = (1 - curveRevealProgress) * curveRevealTravel
   const mirroredCurveTransform = mirrorCurve ? " scaleX(-1)" : ""
 

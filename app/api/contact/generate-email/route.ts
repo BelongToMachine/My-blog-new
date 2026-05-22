@@ -15,34 +15,36 @@ const requestSchema = z.object({
 function buildPrompt(data: z.infer<typeof requestSchema>): string {
   const parts: string[] = []
 
-  if (data.name) parts.push(`- Sender name: ${data.name}`)
-  if (data.company) parts.push(`- Company/Organization: ${data.company}`)
-  if (data.business) parts.push(`- Business/Purpose: ${data.business}`)
+  if (data.name) parts.push(`The sender's name is ${data.name}.`)
+  if (data.company) parts.push(`They work at or represent ${data.company}.`)
+  if (data.business) parts.push(`Their reason for reaching out: ${data.business}.`)
 
-  const contextBlock = parts.length > 0 ? parts.join("\n") : "No additional context provided."
+  const contextBlock = parts.length > 0 ? parts.join(" ") : "The sender didn't provide specific details about themselves."
 
   const customBlock = data.customPrompt?.trim()
-    ? `\n\nThe sender also wrote this note:\n"${data.customPrompt}"`
+    ? `\n\nThe sender added this personal note: "${data.customPrompt}"`
     : ""
 
-  return `Write a professional, concise email from a potential collaborator/recruiter/company to a developer named Jie (a front-end developer & AI prompt engineer with 1.5 years experience at State Street, based in Hangzhou, China).
+  return `You are writing an email on behalf of a real person who wants to contact Jie, a front-end developer and AI prompt engineer. Jie has 1.5 years of experience at State Street and is based in Hangzhou, China.
 
-Context about the sender:
+Sender details (use these naturally — do NOT put them in brackets or as placeholders):
 ${contextBlock}${customBlock}
 
-Generate the email in this exact JSON format (no markdown, no extra text):
+Write the email in the sender's voice — you are that person writing directly to Jie. Weave the sender's details naturally into the text. Do not use bracketed placeholders like [Name] or [Company]. The email should read as if a real human wrote it from scratch.
+
+Return ONLY valid JSON (no markdown, no code fences):
 {
-  "subject": "<email subject line>",
-  "body": "<full email body>"
+  "subject": "the email subject line",
+  "body": "the full email body"
 }
 
-Requirements:
-- The subject should be clear, specific, and attention-grabbing (not generic).
-- The body should be 2-4 short paragraphs, polite and professional.
-- Mention specific details the sender provided — don't be vague.
-- The tone should be warm but business-appropriate.
-- Include a call-to-action (e.g., request a call, meeting, or reply).
-- Sign off naturally.`
+Guidelines:
+- Write 2-4 short, warm paragraphs that feel personal and specific.
+- Use the sender's actual name, company, and purpose directly in the text.
+- Do not write "My name is [X]" — if you know the name, just sign with it or mention it naturally.
+- The subject line should be specific and intriguing, not generic.
+- End with a clear, friendly call-to-action (a meeting, a call, a reply).
+- Sign off with the sender's name if provided.`
 }
 
 export async function POST(request: Request) {

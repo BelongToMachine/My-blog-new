@@ -40,6 +40,8 @@ const DESKTOP_NAV_LANDING_END_SCROLL_RATIO = 0.9
 const NON_DESKTOP_OVERLAY_FADE_START_SCROLL_RATIO = 0.7
 const NON_DESKTOP_OVERLAY_HIDE_SCROLL_RATIO = 0.84
 const DESKTOP_CURVE_SCROLL_SLOWER = 0.35
+const DESKTOP_CURVE_REVEAL_DELAY_IN_PX = 72
+const DESKTOP_HERO_RISE_ADVANCE_IN_PX = 240
 const CURVE_ENTRANCE_DISTANCE_IN_PX = 180
 
 const bebasNeue = localFont({
@@ -53,6 +55,17 @@ const progressBetween = (value: number, start: number, end: number) =>
   clamp01((value - start) / (end - start))
 const mix = (from: number, to: number, progress: number) =>
   from * (1 - progress) + to * progress
+
+const cubicPoint = (t: number, p0: number, p1: number, p2: number, p3: number) => {
+  const oneMinusT = 1 - t
+
+  return (
+    oneMinusT ** 3 * p0 +
+    3 * oneMinusT ** 2 * t * p1 +
+    3 * oneMinusT * t ** 2 * p2 +
+    t ** 3 * p3
+  )
+}
 
 const getInterpolatedValue = (
   curvyValue: number,
@@ -68,12 +81,23 @@ const getCurveInstructions = (
 ) =>
   `M 0,${startPoint} C 30,${firstControlPoint} 50,${secondControlPoint} 100,${endPoint} L 100,100 L 0,100 Z`
 
-const getCurveEdgeInstructions = (
+const getCurveClipPath = (
   startPoint: number,
   firstControlPoint: number,
   secondControlPoint: number,
-  endPoint: number
-) => `M 0,${startPoint} C 30,${firstControlPoint} 50,${secondControlPoint} 100,${endPoint}`
+  endPoint: number,
+  stepCount = 28
+) => {
+  const curvePoints = Array.from({ length: stepCount + 1 }, (_, index) => {
+    const t = index / stepCount
+    const x = cubicPoint(t, 0, 30, 50, 100)
+    const y = cubicPoint(t, startPoint, firstControlPoint, secondControlPoint, endPoint)
+
+    return `${x.toFixed(2)}% ${y.toFixed(2)}%`
+  })
+
+  return `polygon(0% 0%, 100% 0%, ${curvePoints.reverse().join(", ")})`
+}
 
 const getNavOffsetInPixels = () => {
   const root = document.documentElement
@@ -267,9 +291,13 @@ export default function HomeLandingAboutExperience({ children }: Props) {
     const captureCurveTarget = () => {
       if (isDesktopViewport(window.innerWidth)) {
         setLandingReserveHeight(
-          window.innerHeight *
-            DESKTOP_CURVE_FLATTEN_SCROLL_RATIO *
-            DESKTOP_OVERLAY_HIDE_SCROLL_RATIO
+          Math.max(
+            window.innerHeight *
+              DESKTOP_CURVE_FLATTEN_SCROLL_RATIO *
+              DESKTOP_OVERLAY_HIDE_SCROLL_RATIO -
+              DESKTOP_HERO_RISE_ADVANCE_IN_PX,
+            window.innerHeight * 0.46
+          )
         )
         return
       }
@@ -401,19 +429,30 @@ export default function HomeLandingAboutExperience({ children }: Props) {
       (isDesktop
         ? DESKTOP_NAV_LANDING_END_SCROLL_RATIO
         : NON_DESKTOP_OVERLAY_FADE_START_SCROLL_RATIO)
+  const curveRevealScrollY = isDesktop
+    ? Math.max(pageScrollY - DESKTOP_CURVE_REVEAL_DELAY_IN_PX, 0)
+    : pageScrollY
   const showCurveOverlay =
     released &&
     !prefersReducedMotion &&
-    pageScrollY > 0 &&
+    curveRevealScrollY > 0 &&
     curveProgress < overlayHideThreshold
+  const landingHandoffActive = landingOverlayActive || showCurveOverlay
 
   useEffect(() => {
     setScrollableSource("home-landing", landingNavMode)
+    setScrollableSource("home-landing-handoff", landingHandoffActive)
 
     return () => {
       clearScrollableSource("home-landing")
+      clearScrollableSource("home-landing-handoff")
     }
-  }, [clearScrollableSource, landingNavMode, setScrollableSource])
+  }, [
+    clearScrollableSource,
+    landingHandoffActive,
+    landingNavMode,
+    setScrollableSource,
+  ])
 
   const artProgress = prefersReducedMotion ? 1 : clamp01(displayProgress / ART_REVEAL_END)
   const firstButtonProgress = prefersReducedMotion
@@ -440,40 +479,57 @@ export default function HomeLandingAboutExperience({ children }: Props) {
   const secondButtonY = 28 * (1 - easedSecondButtonProgress)
   const curveEntranceProgress = prefersReducedMotion
     ? 1
-    : easeOutQuint(clamp01(pageScrollY / CURVE_ENTRANCE_DISTANCE_IN_PX))
+    : easeOutQuint(clamp01(curveRevealScrollY / CURVE_ENTRANCE_DISTANCE_IN_PX))
 
   const targetStartPoint = getInterpolatedValue(90, 0, curveProgress)
   const targetFirstControlPoint = getInterpolatedValue(60, 0, curveProgress)
   const targetSecondControlPoint = getInterpolatedValue(100, 0, curveProgress)
   const targetEndPoint = getInterpolatedValue(80, 0, curveProgress)
 
+  const visibleCurveStartPoint = mix(100, targetStartPoint, curveEntranceProgress)
+  const visibleCurveFirstControlPoint = mix(
+    100,
+    targetFirstControlPoint,
+    curveEntranceProgress
+  )
+  const visibleCurveSecondControlPoint = mix(
+    100,
+    targetSecondControlPoint,
+    curveEntranceProgress
+  )
+  const visibleCurveEndPoint = mix(100, targetEndPoint, curveEntranceProgress)
+
   const curveInstructions = getCurveInstructions(
-    mix(100, targetStartPoint, curveEntranceProgress),
-    mix(100, targetFirstControlPoint, curveEntranceProgress),
-    mix(100, targetSecondControlPoint, curveEntranceProgress),
-    mix(100, targetEndPoint, curveEntranceProgress)
+    visibleCurveStartPoint,
+    visibleCurveFirstControlPoint,
+    visibleCurveSecondControlPoint,
+    visibleCurveEndPoint
   )
-  const curveEdgeInstructions = getCurveEdgeInstructions(
-    mix(100, targetStartPoint, curveEntranceProgress),
-    mix(100, targetFirstControlPoint, curveEntranceProgress),
-    mix(100, targetSecondControlPoint, curveEntranceProgress),
-    mix(100, targetEndPoint, curveEntranceProgress)
-  )
+  const desktopLandingClipPath =
+    isDesktop && showCurveOverlay
+      ? getCurveClipPath(
+          visibleCurveStartPoint,
+          visibleCurveFirstControlPoint,
+          visibleCurveSecondControlPoint,
+          visibleCurveEndPoint
+        )
+      : undefined
 
   const curveOverlayTranslateY = (1 - curveEntranceProgress) * 16
-  const curveEdgeColor = "hsl(var(--home-about-bridge))"
   const curveFillColor = "hsl(var(--home-about-bridge))"
 
   return (
     <>
       <div
         className={cn(
-          "fixed inset-0 z-[60] overflow-hidden transition-opacity duration-200 lg:z-10",
+          "fixed inset-0 z-[60] overflow-hidden transition-opacity duration-200",
           released ? "pointer-events-none" : "pointer-events-auto"
         )}
         style={{
           opacity: landingOverlayActive ? overlayFadeOpacity : 0,
           visibility: landingOverlayActive ? "visible" : "hidden",
+          clipPath: desktopLandingClipPath,
+          WebkitClipPath: desktopLandingClipPath,
         }}
       >
         <div className="fixed inset-0 z-0">
@@ -619,7 +675,7 @@ export default function HomeLandingAboutExperience({ children }: Props) {
       {showCurveOverlay ? (
         <div
           aria-hidden
-          className="pointer-events-none fixed inset-x-0 z-[70] lg:z-30"
+          className="pointer-events-none fixed inset-x-0 z-[70]"
           style={{
             top: "var(--app-nav-offset)",
             height: "calc(100svh - var(--app-nav-offset))",
@@ -637,22 +693,15 @@ export default function HomeLandingAboutExperience({ children }: Props) {
             }}
             preserveAspectRatio="none"
           >
-            <path
-              d={curveEdgeInstructions}
-              fill="none"
-              stroke={curveEdgeColor}
-              strokeWidth={2.4}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              vectorEffect="non-scaling-stroke"
-            />
-            <path
-              d={curveInstructions}
-              fill={curveFillColor}
-              stroke="hsl(var(--border))"
-              strokeWidth={0}
-              vectorEffect="non-scaling-stroke"
-            />
+            {!isDesktop ? (
+              <path
+                d={curveInstructions}
+                fill={curveFillColor}
+                stroke="hsl(var(--border))"
+                strokeWidth={0}
+                vectorEffect="non-scaling-stroke"
+              />
+            ) : null}
           </svg>
         </div>
       ) : null}
