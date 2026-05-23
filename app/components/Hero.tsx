@@ -108,7 +108,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
             transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
             className="relative z-30 col-span-7 pt-40 min-[480px]:col-span-6 min-[480px]:pt-44 md:z-20 md:col-span-4 md:pt-24 lg:col-span-3 lg:pt-44 lg:pl-24 xl:pt-48 xl:pl-28"
           >
-            <div className="max-w-[11.5rem] space-y-4 min-[390px]:max-w-[12.25rem] min-[480px]:max-w-[14rem] sm:max-w-[15rem] md:w-[18rem] md:max-w-none md:translate-x-12 md:space-y-6 lg:w-[22rem] lg:translate-x-0 xl:w-[24rem]">
+            <div className="max-w-[11.5rem] space-y-4 min-[390px]:max-w-[12.25rem] min-[480px]:max-w-[14rem] sm:max-w-[15rem] md:w-[18rem] md:max-w-none md:translate-x-12 md:space-y-6 lg:w-[24rem] lg:translate-x-0 xl:w-[26rem]">
               <motion.h1
                 className={cn(
                   bebasNeue.className,
@@ -122,8 +122,8 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
               >
                 I&apos;M JIE
               </motion.h1>
-              <div className="space-y-4 md:max-w-[19rem] lg:-translate-y-8 lg:max-w-none lg:space-y-6 xl:-translate-y-10">
-                <p className="max-w-[18ch] font-pixel text-[11px] leading-[1.75] tracking-[0.05em] text-muted-foreground [text-wrap:pretty] min-[390px]:text-[12px] min-[480px]:max-w-[20ch] min-[480px]:text-[13px] sm:max-w-[21ch] md:max-w-[24ch] md:text-base md:tracking-[0.06em] lg:-ml-8 lg:max-w-[34ch] lg:text-base lg:leading-[1.8] lg:tracking-[0.08em] xl:-ml-10">
+              <div className="space-y-4 md:max-w-[19rem] lg:-translate-x-2 lg:-translate-y-8 lg:max-w-none lg:space-y-6 xl:-translate-x-3 xl:-translate-y-10">
+                <p className="max-w-[18ch] font-pixel text-[11px] leading-[1.75] tracking-[0.05em] text-muted-foreground [text-wrap:pretty] min-[390px]:text-[12px] min-[480px]:max-w-[20ch] min-[480px]:text-[13px] sm:max-w-[21ch] md:max-w-[24ch] md:text-base md:tracking-[0.06em] lg:-ml-8 lg:max-w-[40ch] lg:text-base lg:leading-[1.8] lg:tracking-[0.08em] xl:-ml-10 xl:max-w-[42ch]">
                   {t("shortIntro")}
                 </p>
                 <div className="flex flex-wrap gap-3">
@@ -143,11 +143,15 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
           <motion.div
             initial={{ opacity: 0, y: 20, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.65, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
-            className="pointer-events-none absolute left-1/2 top-[6.25rem] z-10 md:pointer-events-auto md:relative md:left-auto md:top-auto md:col-span-4 md:self-start lg:col-span-6 lg:-mx-4 xl:-mx-6"
+            transition={{
+              duration: 0.65,
+              delay: 0.12,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            className="pointer-events-none absolute left-1/2 top-[6.25rem] z-10 md:pointer-events-auto md:relative md:left-auto md:top-auto md:col-span-4 md:self-start lg:col-span-5 lg:-mx-2 xl:-mx-4"
           >
             <div
-              className="relative w-[12.5rem] max-w-none -translate-x-1/2 min-[390px]:w-[14rem] min-[480px]:w-[16rem] md:mx-auto md:w-[25rem] md:-translate-x-14 md:translate-y-10 lg:w-full lg:translate-x-0 lg:-translate-y-36 lg:max-w-[1100px]"
+              className="relative w-[12.5rem] max-w-none -translate-x-1/2 min-[390px]:w-[14rem] min-[480px]:w-[16rem] md:mx-auto md:w-[25rem] md:-translate-x-14 md:-translate-y-16 lg:w-full lg:translate-x-8 lg:-translate-y-16 lg:max-w-[980px] xl:max-w-[1040px]"
               data-mobile-hero-avatar
             >
               <div className="relative aspect-[4/4.7] sm:aspect-[4/5]">
@@ -165,10 +169,14 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
           <motion.div
             initial={{ opacity: 0, x: 18 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.55, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute right-0 top-[14.25rem] z-30 flex w-[8.75rem] justify-end min-[390px]:top-[15rem] min-[390px]:w-[9.75rem] min-[480px]:top-[15.75rem] min-[480px]:w-[11.5rem] md:relative md:right-auto md:top-auto md:col-span-4 md:mt-0 md:w-auto md:pt-24 lg:col-span-3 lg:justify-end lg:pt-0 lg:pb-6"
+            transition={{
+              duration: 0.55,
+              delay: 0.18,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            className="absolute right-0 top-[14.25rem] z-30 flex w-[8.75rem] justify-end min-[390px]:top-[15rem] min-[390px]:w-[9.75rem] min-[480px]:top-[15.75rem] min-[480px]:w-[11.5rem] md:relative md:right-auto md:top-auto md:col-span-4 md:mt-0 md:w-auto md:pt-24 lg:col-span-4 lg:justify-start lg:pt-0 lg:pb-6"
           >
-            <div className="w-full max-w-none md:w-[21rem] md:-translate-x-16 lg:w-[26rem] lg:translate-x-0 lg:translate-y-36 xl:w-[29rem] xl:translate-y-40">
+            <div className="w-full md:w-[316px] md:-translate-x-16 lg:w-[364px] lg:-translate-x-8 lg:translate-y-32 xl:w-[300px] xl:-translate-x-10 xl:translate-y-36 2xl:w-[508px]">
               <div className="mb-2 flex items-center justify-between border-b border-border/50 pb-1.5 font-pixel text-[5px] uppercase tracking-[0.18em] text-muted-foreground min-[390px]:text-[6px] min-[480px]:text-[7px] md:mb-3 md:pb-2 md:text-[9px] md:tracking-[0.22em]">
                 <span>Profile Snapshot</span>
                 <span>coder.ts</span>
@@ -177,7 +185,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
                 code={code}
                 colorMode={colorMode}
                 compact
-                className="shadow-[var(--shadow-elevated)] [&_.codeblock-pre]:max-h-[10.5rem] [&_.codeblock-pre]:overflow-hidden [&_.codeblock-pre]:p-2 [&_.codeblock-pre]:text-[5.5px] [&_.codeblock-pre]:leading-[1.55] [&_.codeblock-pre]:tracking-[0.01em] min-[390px]:[&_.codeblock-pre]:text-[6px] min-[480px]:[&_.codeblock-pre]:max-h-[12rem] min-[480px]:[&_.codeblock-pre]:text-[7px] md:[&_.codeblock-pre]:max-h-none md:[&_.codeblock-pre]:text-[10px] md:[&_.codeblock-pre]:leading-5 lg:[&_.codeblock-pre]:text-[12px] lg:[&_.codeblock-pre]:leading-6"
+                className="shadow-[var(--shadow-elevated)] [&_.codeblock-pre]:max-h-[11.25rem] [&_.codeblock-pre]:overflow-hidden [&_.codeblock-pre]:p-2 [&_.codeblock-pre]:text-[6px] [&_.codeblock-pre]:leading-[1.6] [&_.codeblock-pre]:tracking-[0.01em] min-[390px]:[&_.codeblock-pre]:text-[6.5px] min-[480px]:[&_.codeblock-pre]:max-h-[13rem] min-[480px]:[&_.codeblock-pre]:text-[8px] md:[&_.codeblock-pre]:max-h-none md:[&_.codeblock-pre]:text-[11px] md:[&_.codeblock-pre]:leading-[1.65] lg:[&_.codeblock-pre]:text-[13px] lg:[&_.codeblock-pre]:leading-[1.7] xl:[&_.codeblock-pre]:text-[14px]"
               />
             </div>
           </motion.div>
@@ -258,7 +266,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
                 />
               </div>
             </div>
-            <div className="mt-6 hidden w-full min-w-0 max-w-[640px] lg:block xl:max-w-[720px]">
+            <div className="mt-6 hidden w-full min-w-0 max-w-[540px] lg:block xl:max-w-[700px]">
               <CodeBlocker code={code} colorMode={colorMode} />
             </div>
           </div>
@@ -271,14 +279,14 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
         >
           <div className="relative ml-2 mt-32 w-full max-w-[340px] lg:mt-36 lg:-translate-x-6 xl:ml-0 xl:mt-32 xl:max-w-[380px] xl:-translate-x-2">
             <div className="relative aspect-square w-[276px] lg:w-[304px] xl:w-[344px]">
-                <Image
-                  src={heroPortrait}
-                  alt={t("imageAlt")}
-                  fill
-                  sizes="(min-width: 1280px) 308px, 272px"
-                  className={portraitImageClass}
-                  priority
-                />
+              <Image
+                src={heroPortrait}
+                alt={t("imageAlt")}
+                fill
+                sizes="(min-width: 1280px) 308px, 272px"
+                className={portraitImageClass}
+                priority
+              />
             </div>
           </div>
         </motion.div>
