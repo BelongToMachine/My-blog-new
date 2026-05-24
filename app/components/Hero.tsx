@@ -106,13 +106,13 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
             initial={{ opacity: 0, x: -18 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-            className="relative z-30 col-span-7 pt-40 min-[480px]:col-span-6 min-[480px]:pt-44 md:z-20 md:col-span-4 md:pl-12 md:pt-24 lg:col-span-3 lg:pt-44 lg:pl-24 xl:pt-48 xl:pl-28"
+            className="relative z-30 col-span-6 pt-44 min-[580px]:pl-16 md:z-20 md:col-span-4 md:pl-12 md:pt-24 lg:col-span-3 lg:pt-44 lg:pl-24 xl:pt-48 xl:pl-28"
           >
             <div className="max-w-[11.5rem] space-y-4 min-[390px]:max-w-[12.25rem] min-[480px]:max-w-[14rem] sm:max-w-[15rem] md:w-[18rem] md:max-w-none md:space-y-6 lg:w-[24rem] xl:w-[26rem]">
               <motion.h1
                 className={cn(
                   bebasNeue.className,
-                  "relative md:top-14 lg:top-2 md:left-16 lg:-left-4 whitespace-nowrap text-[clamp(3.2rem,15vw,4.8rem)] font-black uppercase leading-[0.92] tracking-[0.03em] text-foreground md:text-[clamp(5rem,13vw,7.1rem)] lg:text-[clamp(8.0rem,10vw,8.8rem)]",
+                  "relative top-14  md:top-14 lg:top-2 md:left-16 lg:-left-4 whitespace-nowrap text-[clamp(4.8rem,15vw,6rem)] font-black uppercase leading-[0.92] tracking-[0.03em] text-foreground md:text-[clamp(5rem,13vw,7.1rem)] lg:text-[clamp(8.0rem,10vw,8.8rem)]",
                 )}
                 style={
                   shouldReduceMotion
@@ -123,7 +123,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
                 I&apos;M JIE
               </motion.h1>
               <div className="space-y-4 md:max-w-[19rem] lg:-translate-x-2 lg:-translate-y-8 lg:max-w-none lg:space-y-6 xl:-translate-x-3 xl:-translate-y-10">
-                <p className="font-pixel text-[11px] min-[390px]:text-[12px] min-[480px]:text-[13px] md:text-base lg:text-base leading-[1.8] tracking-[0.05em] md:tracking-[0.06em] lg:tracking-[0.08em] max-w-[18ch] min-[480px]:max-w-[20ch] sm:max-w-[21ch] md:max-w-[40ch] lg:max-w-[42ch] min-[1101px]:max-w-[48ch] xl:max-w-[42ch] -ml-10 lg:-ml-24 mt-10 text-muted-foreground [text-wrap:pretty]">
+                <p className="font-pixel text-[11px] min-[390px]:text-[12px] min-[480px]:text-[13px] md:text-base lg:text-base leading-[1.8] tracking-[0.05em] md:tracking-[0.06em] lg:tracking-[0.08em] min-[480px]:max-w-[24ch] sm:max-w-[28ch] md:max-w-[40ch] lg:max-w-[42ch] min-[1101px]:max-w-[48ch] xl:max-w-[42ch] ml-2 lg:-ml-24 mt-10 text-muted-foreground [text-wrap:pretty]">
                   {t("shortIntro")}
                 </p>
                 <div className="flex flex-wrap gap-3">
@@ -148,10 +148,10 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
               delay: 0.12,
               ease: [0.22, 1, 0.36, 1],
             }}
-            className="pointer-events-none absolute left-1/2 top-[6.25rem] z-10 md:pointer-events-auto md:relative md:left-auto md:top-auto md:col-span-4 md:self-start lg:col-span-5 lg:-mx-2 xl:-mx-4"
+            className="pointer-events-none col-span-6 z-10 md:pointer-events-auto md:col-span-4 md:self-start lg:col-span-5 lg:-mx-2 xl:-mx-4"
           >
             <div
-              className="relative w-[12.5rem] max-w-none -translate-x-1/2 min-[390px]:w-[14rem] min-[480px]:w-[16rem] md:mx-auto md:w-[25rem] md:-translate-x-14 md:-translate-y-16 lg:w-full lg:translate-x-8 lg:-translate-y-16 lg:max-w-[980px] xl:max-w-[1040px]"
+              className="relative w-[28rem] -translate-x-32 md:mx-auto md:w-[25rem] md:-translate-x-14 md:-translate-y-16 lg:w-full lg:translate-x-8 lg:-translate-y-16 lg:max-w-[980px] xl:max-w-[1040px]"
               data-mobile-hero-avatar
             >
               <div className="relative aspect-[4/4.7] sm:aspect-[4/5]">
@@ -174,7 +174,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
               delay: 0.18,
               ease: [0.22, 1, 0.36, 1],
             }}
-            className="absolute right-0 top-[14.25rem] z-30 flex w-[8.75rem] justify-end min-[390px]:top-[15rem] min-[390px]:w-[9.75rem] min-[480px]:top-[15.75rem] min-[480px]:w-[11.5rem] md:relative md:right-auto md:top-auto md:col-span-4 md:mt-0 md:w-auto md:pt-24 lg:col-span-4 lg:justify-start lg:pt-0 lg:pb-6"
+            className="max-[767px]:hidden absolute right-0 top-[14.25rem] z-30 flex w-[8.75rem] justify-end min-[390px]:top-[15rem] min-[390px]:w-[9.75rem] min-[480px]:top-[15.75rem] min-[480px]:w-[11.5rem] md:relative md:right-auto md:top-auto md:col-span-4 md:mt-0 md:w-auto md:pt-24 lg:col-span-4 lg:justify-start lg:pt-0 lg:pb-6"
           >
             <div className="w-full md:w-[316px] md:translate-x-2 lg:w-[364px] lg:-translate-x-8 lg:translate-y-32 xl:w-[300px] xl:-translate-x-10 xl:translate-y-36 2xl:w-[508px]">
               <div className="mb-2 flex items-center justify-between border-b border-border/50 pb-1.5 font-pixel text-[5px] uppercase tracking-[0.18em] text-muted-foreground min-[390px]:text-[6px] min-[480px]:text-[7px] md:mb-3 md:pb-2 md:text-[9px] md:tracking-[0.22em]">
