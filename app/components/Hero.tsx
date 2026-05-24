@@ -176,7 +176,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
             }}
             className="absolute right-0 top-[14.25rem] z-30 flex w-[8.75rem] justify-end min-[390px]:top-[15rem] min-[390px]:w-[9.75rem] min-[480px]:top-[15.75rem] min-[480px]:w-[11.5rem] md:relative md:right-auto md:top-auto md:col-span-4 md:mt-0 md:w-auto md:pt-24 lg:col-span-4 lg:justify-start lg:pt-0 lg:pb-6"
           >
-            <div className="w-full md:w-[316px] md:-translate-x-16 lg:w-[364px] lg:-translate-x-8 lg:translate-y-32 xl:w-[300px] xl:-translate-x-10 xl:translate-y-36 2xl:w-[508px]">
+            <div className="w-full md:w-[316px] md:translate-x-2 lg:w-[364px] lg:-translate-x-8 lg:translate-y-32 xl:w-[300px] xl:-translate-x-10 xl:translate-y-36 2xl:w-[508px]">
               <div className="mb-2 flex items-center justify-between border-b border-border/50 pb-1.5 font-pixel text-[5px] uppercase tracking-[0.18em] text-muted-foreground min-[390px]:text-[6px] min-[480px]:text-[7px] md:mb-3 md:pb-2 md:text-[9px] md:tracking-[0.22em]">
                 <span>Profile Snapshot</span>
                 <span>coder.ts</span>
