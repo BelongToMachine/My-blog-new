@@ -1101,6 +1101,35 @@ ul li {
   letter-spacing: 0.03em;
 }
 
+@keyframes hero-welcome-mobile-drift {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+
+  28% {
+    translate: -1.5rem 0;
+  }
+
+  72% {
+    translate: 1.5rem 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .hero-welcome-mobile-drift {
+    animation: hero-welcome-mobile-drift 5.4s ease-in-out infinite;
+    will-change: translate;
+  }
+}
+
+@media (max-width: 767px) and (prefers-reduced-motion: reduce) {
+  .hero-welcome-mobile-drift {
+    animation: none;
+    translate: 0 0;
+  }
+}
+
 @keyframes shimmer-sweep {
   0% {
     background-position: -200% 0;
