@@ -41,7 +41,7 @@ const NON_DESKTOP_NAV_LANDING_END_SCROLL_RATIO = 0.7
 const NON_DESKTOP_OVERLAY_HIDE_SCROLL_RATIO = 0.995
 const DESKTOP_CURVE_SCROLL_SLOWER = 0.35
 const DESKTOP_CURVE_REVEAL_DELAY_IN_PX = 72
-const DESKTOP_HERO_RISE_ADVANCE_IN_PX = 160
+const DESKTOP_HERO_RISE_ADVANCE_IN_PX = 102
 const CURVE_ENTRANCE_DISTANCE_IN_PX = 180
 
 const bebasNeue = localFont({
@@ -538,15 +538,14 @@ export default function HomeLandingAboutExperience({ children }: Props) {
   )
   const visibleCurveEndPoint = mix(100, targetEndPoint, curveEntranceProgress)
 
-  const landingClipPath =
-    showCurveOverlay
-      ? getCurveClipPath(
-          visibleCurveStartPoint,
-          visibleCurveFirstControlPoint,
-          visibleCurveSecondControlPoint,
-          visibleCurveEndPoint,
-        )
-      : undefined
+  const landingClipPath = showCurveOverlay
+    ? getCurveClipPath(
+        visibleCurveStartPoint,
+        visibleCurveFirstControlPoint,
+        visibleCurveSecondControlPoint,
+        visibleCurveEndPoint,
+      )
+    : undefined
 
   return (
     <>

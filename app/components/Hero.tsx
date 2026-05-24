@@ -95,7 +95,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
           <span
             className={cn(
               bebasNeue.className,
-              "inline-block text-[clamp(4.8rem,44vw,9rem)] font-black uppercase leading-none tracking-[0.06em] text-foreground/[0.08] dark:text-foreground/[0.1] [transform:scaleY(1.5) scaleX(1.12)] md:text-[clamp(6.5rem,28vw,12rem)] lg:text-[clamp(6.5rem,26vw,17rem)]",
+              "inline-block text-[clamp(2.2rem,44vw,17rem)] font-black uppercase leading-none tracking-[0.06em] text-foreground/[0.08] dark:text-foreground/[0.1] [transform:scaleY(1.5) scaleX(1.12)] md:text-[clamp(6.5rem,28vw,17rem)] lg:text-[clamp(6.5rem,26vw,20rem)]",
             )}
           >
             Welcome
@@ -106,13 +106,13 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
             initial={{ opacity: 0, x: -18 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-            className="relative z-30 col-span-7 pt-40 min-[480px]:col-span-6 min-[480px]:pt-44 md:z-20 md:col-span-4 md:pt-24 lg:col-span-3 lg:pt-44 lg:pl-24 xl:pt-48 xl:pl-28"
+            className="relative z-30 col-span-7 pt-40 min-[480px]:col-span-6 min-[480px]:pt-44 md:z-20 md:col-span-4 md:pl-12 md:pt-24 lg:col-span-3 lg:pt-44 lg:pl-24 xl:pt-48 xl:pl-28"
           >
-            <div className="max-w-[11.5rem] space-y-4 min-[390px]:max-w-[12.25rem] min-[480px]:max-w-[14rem] sm:max-w-[15rem] md:w-[18rem] md:max-w-none md:translate-x-12 md:space-y-6 lg:w-[24rem] lg:translate-x-0 xl:w-[26rem]">
+            <div className="max-w-[11.5rem] space-y-4 min-[390px]:max-w-[12.25rem] min-[480px]:max-w-[14rem] sm:max-w-[15rem] md:w-[18rem] md:max-w-none md:space-y-6 lg:w-[24rem] xl:w-[26rem]">
               <motion.h1
                 className={cn(
                   bebasNeue.className,
-                  "whitespace-nowrap text-[clamp(3.2rem,15vw,4.8rem)] font-black uppercase leading-[0.92] tracking-[0.03em] text-foreground min-[480px]:text-[clamp(3.7rem,13vw,5.4rem)] md:text-[clamp(5rem,13vw,7.1rem)] lg:text-[clamp(4.9rem,10vw,8.8rem)] lg:translate-y-5 xl:translate-y-6",
+                  "relative md:top-14 lg:top-2 md:left-16 lg:-left-4 whitespace-nowrap text-[clamp(3.2rem,15vw,4.8rem)] font-black uppercase leading-[0.92] tracking-[0.03em] text-foreground md:text-[clamp(5rem,13vw,7.1rem)] lg:text-[clamp(8.0rem,10vw,8.8rem)]",
                 )}
                 style={
                   shouldReduceMotion
@@ -123,7 +123,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
                 I&apos;M JIE
               </motion.h1>
               <div className="space-y-4 md:max-w-[19rem] lg:-translate-x-2 lg:-translate-y-8 lg:max-w-none lg:space-y-6 xl:-translate-x-3 xl:-translate-y-10">
-                <p className="max-w-[18ch] font-pixel text-[11px] leading-[1.75] tracking-[0.05em] text-muted-foreground [text-wrap:pretty] min-[390px]:text-[12px] min-[480px]:max-w-[20ch] min-[480px]:text-[13px] sm:max-w-[21ch] md:max-w-[24ch] md:text-base md:tracking-[0.06em] lg:-ml-8 lg:max-w-[40ch] lg:text-base lg:leading-[1.8] lg:tracking-[0.08em] xl:-ml-10 xl:max-w-[42ch]">
+                <p className="font-pixel text-[11px] min-[390px]:text-[12px] min-[480px]:text-[13px] md:text-base lg:text-base leading-[1.8] tracking-[0.05em] md:tracking-[0.06em] lg:tracking-[0.08em] max-w-[18ch] min-[480px]:max-w-[20ch] sm:max-w-[21ch] md:max-w-[40ch] lg:max-w-[42ch] min-[1101px]:max-w-[48ch] xl:max-w-[42ch] -ml-10 lg:-ml-24 mt-10 text-muted-foreground [text-wrap:pretty]">
                   {t("shortIntro")}
                 </p>
                 <div className="flex flex-wrap gap-3">
