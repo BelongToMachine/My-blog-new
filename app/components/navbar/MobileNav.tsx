@@ -15,7 +15,6 @@ const MobileNav = ({ indexMode = false }: { indexMode?: boolean }) => {
   const currentPath = usePathname()
   const links = useMemo(
     () => [
-      { label: t("aboutMe"), href: "/about" },
       { label: t("blogs"), href: "/articles" },
       { label: t("ai"), href: "/ai" },
       { label: t("contact"), href: "/contact" },

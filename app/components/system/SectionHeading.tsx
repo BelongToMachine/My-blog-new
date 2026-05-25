@@ -8,6 +8,7 @@ interface SectionHeadingProps {
   action?: React.ReactNode
   align?: "left" | "center"
   className?: string
+  titleClassName?: string
 }
 
 const SectionHeading = ({
@@ -16,6 +17,7 @@ const SectionHeading = ({
   action,
   align = "center",
   className,
+  titleClassName,
 }: SectionHeadingProps) => {
   return (
     <div
@@ -35,7 +37,7 @@ const SectionHeading = ({
       >
         <div className="space-y-2 md:space-y-3">
           <div className="terminal-label">system heading</div>
-          <h2 className="pixel-heading max-w-4xl text-balance">
+          <h2 className={cn("pixel-heading max-w-4xl text-balance", titleClassName)}>
             {title}
           </h2>
           {description ? (

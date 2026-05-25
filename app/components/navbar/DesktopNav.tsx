@@ -57,7 +57,6 @@ const NavLinks = ({ compact = false, indexMode = false }: { compact?: boolean; i
 
   const links = useMemo(
     () => [
-      { label: t("aboutMe"), href: "/about" },
       { label: t("blogs"), href: "/articles" },
       { label: t("ai"), href: "/ai" },
       { label: t("contact"), href: "/contact" },

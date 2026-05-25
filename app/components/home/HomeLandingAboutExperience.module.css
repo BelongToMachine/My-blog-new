@@ -1,3 +1,23 @@
+.lightThemeAsset {
+  opacity: 1;
+  visibility: visible;
+}
+
+.darkThemeAsset {
+  opacity: 0;
+  visibility: hidden;
+}
+
+:global(html.dark) .lightThemeAsset {
+  opacity: 0;
+  visibility: hidden;
+}
+
+:global(html.dark) .darkThemeAsset {
+  opacity: 1;
+  visibility: visible;
+}
+
 .skyOverlayLight {
   background:
     radial-gradient(circle at 22% 18%, rgba(154, 208, 255, 0.18) 0%, transparent 28%),

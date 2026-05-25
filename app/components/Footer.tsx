@@ -51,7 +51,6 @@ export default function Footer() {
   }
 
   const navLinks: FooterLink[] = [
-    { label: navT("aboutMe"), href: "/about" },
     { label: navT("blogs"), href: "/articles" },
     { label: navT("ai"), href: "/ai" },
   ]

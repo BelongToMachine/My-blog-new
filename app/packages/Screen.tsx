@@ -18,13 +18,8 @@ export const CodeBlocker = ({
   compact = false,
   filename = "coder.ts",
 }: Props) => {
-  const isDark = colorMode === "dark"
-  const taskbarBg = isDark
-    ? "var(--codeblock-taskbar-bg, #2d2d2d)"
-    : "var(--codeblock-taskbar-bg, #f0f0f0)"
-  const bodyBg = isDark
-    ? "var(--codeblock-body-bg, #000000)"
-    : "var(--codeblock-body-bg, #ffffff)"
+  const taskbarBg = "var(--codeblock-taskbar-bg, #f0f0f0)"
+  const bodyBg = "var(--codeblock-body-bg, #ffffff)"
 
   return (
     <div className={cn("overflow-hidden border-2 border-border", className)}>

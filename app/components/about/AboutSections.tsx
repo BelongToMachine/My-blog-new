@@ -5,7 +5,7 @@ import Hero from "../Hero"
 import ProjectsSection from "../projects/ProjectsSection"
 import SummaryHeader from "@/app/SummaryHeader"
 import PostSummary from "@/app/PostSummary"
-import AboutClientShell from "@/app/[locale]/about/AboutClientShell"
+import AboutClientShell from "./AboutClientShell"
 import HomeInlinePixelBezier from "../home/HomeInlinePixelBezier"
 
 interface Props {

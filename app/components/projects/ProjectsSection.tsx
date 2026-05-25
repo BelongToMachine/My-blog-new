@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server"
 import { cn } from "@/lib/utils"
+import { bebasNeue } from "@/lib/fonts"
 import SectionHeading from "../system/SectionHeading"
 import { DatabaseDollarIcon, HumanAgentIcon, ChatAIIcon } from "./PixelProjectIcons"
 
@@ -41,6 +42,7 @@ export default async function ProjectsSection() {
           title={t("heading")}
           description={t("description")}
           align="left"
+          titleClassName={bebasNeue.className}
         />
       </div>
 

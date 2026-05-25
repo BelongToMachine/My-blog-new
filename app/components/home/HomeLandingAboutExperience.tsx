@@ -1,6 +1,5 @@
 "use client"
 
-import { ThemeContext } from "@/app/context/DarkModeContext"
 import { Link } from "@/app/i18n/navigation"
 import { useTranslations } from "next-intl"
 import { isDesktopViewport } from "@/app/lib/responsive"
@@ -8,10 +7,9 @@ import { useScrollableStore } from "@/app/service/Store"
 import { cn } from "@/lib/utils"
 import landingStyles from "./HomeLandingAboutExperience.module.css"
 import Image from "next/image"
-import localFont from "next/font/local"
+import { bebasNeue } from "@/lib/fonts"
 import React, {
   ReactNode,
-  useContext,
   useEffect,
   useRef,
   useState,
@@ -43,11 +41,6 @@ const DESKTOP_CURVE_SCROLL_SLOWER = 0.35
 const DESKTOP_CURVE_REVEAL_DELAY_IN_PX = 72
 const DESKTOP_HERO_RISE_ADVANCE_IN_PX = 102
 const CURVE_ENTRANCE_DISTANCE_IN_PX = 180
-
-const bebasNeue = localFont({
-  src: "../../../public/fonts/bebas-neue/BebasNeue-Regular.woff2",
-  display: "swap",
-})
 
 const clamp01 = (value: number) => Math.min(Math.max(value, 0), 1)
 const easeOutQuint = (value: number) => 1 - Math.pow(1 - value, 5)
@@ -125,8 +118,6 @@ const getNavOffsetInPixels = () => {
 
 export default function HomeLandingAboutExperience({ children }: Props) {
   const t = useTranslations("hero")
-  const { colorMode } = useContext(ThemeContext) ?? { colorMode: "light" }
-  const isDark = colorMode === "dark"
   const setScrollableSource = useScrollableStore(
     (state) => state.setScrollableSource,
   )
@@ -563,27 +554,61 @@ export default function HomeLandingAboutExperience({ children }: Props) {
       >
         <div className="fixed inset-0 z-0">
           <Image
-            src={isDark ? nightBg : bg}
+            src={bg}
             alt="Sky background"
             fill
             priority
-            className="object-cover md:hidden"
+            className={cn(
+              "object-cover md:hidden",
+              landingStyles.lightThemeAsset,
+            )}
             sizes="100vw"
           />
           <Image
-            src={isDark ? nightBg : bgHd}
+            src={nightBg}
             alt="Sky background"
             fill
             priority
-            className="hidden object-cover md:block"
+            className={cn(
+              "object-cover md:hidden",
+              landingStyles.darkThemeAsset,
+            )}
+            sizes="100vw"
+          />
+          <Image
+            src={bgHd}
+            alt="Sky background"
+            fill
+            priority
+            className={cn(
+              "hidden object-cover md:block",
+              landingStyles.lightThemeAsset,
+            )}
+            sizes="100vw"
+          />
+          <Image
+            src={nightBg}
+            alt="Sky background"
+            fill
+            priority
+            className={cn(
+              "hidden object-cover md:block",
+              landingStyles.darkThemeAsset,
+            )}
             sizes="100vw"
           />
           <div
             className={cn(
               "absolute inset-0",
-              isDark
-                ? landingStyles.skyOverlayDark
-                : landingStyles.skyOverlayLight,
+              landingStyles.skyOverlayLight,
+              landingStyles.lightThemeAsset,
+            )}
+          />
+          <div
+            className={cn(
+              "absolute inset-0",
+              landingStyles.skyOverlayDark,
+              landingStyles.darkThemeAsset,
             )}
           />
         </div>
@@ -596,10 +621,7 @@ export default function HomeLandingAboutExperience({ children }: Props) {
           <h1
             ref={artTextRef}
             className={cn(
-              "text-center text-[2.65rem] font-extrabold leading-[0.88] tracking-[-0.06em] min-[375px]:text-[3.25rem] md:text-[4.4rem] lg:text-[5.6rem]",
-              isDark
-                ? "text-white/95 drop-shadow-[0_4px_40px_rgba(120,160,255,0.2)]"
-                : "text-white drop-shadow-[0_6px_40px_rgba(7,60,120,0.4)]",
+              "text-center text-[2.65rem] font-extrabold leading-[0.88] tracking-[-0.06em] text-white drop-shadow-[0_6px_40px_rgba(7,60,120,0.4)] dark:text-white/95 dark:drop-shadow-[0_4px_40px_rgba(120,160,255,0.2)] min-[375px]:text-[3.25rem] md:text-[4.4rem] lg:text-[5.6rem]",
             )}
             style={{
               transform: `translateY(${artTextY}px) scale(${artTextScale})`,
@@ -643,13 +665,10 @@ export default function HomeLandingAboutExperience({ children }: Props) {
 
             {/* Buttons centered below intro */}
             <div className="mt-6 flex flex-col items-center gap-3 md:mt-8 md:gap-4">
-              <Link
-                href="/about"
+              <a
+                href="#about-me-section"
                 className={cn(
-                  "group inline-flex min-w-[9.75rem] items-center justify-between gap-2 border-2 px-4 py-2.5 font-pixel text-[10px] uppercase tracking-[0.18em] text-white backdrop-blur-sm transition-colors duration-200 hover:text-black focus-visible:outline-none focus-visible:ring-2 min-[375px]:min-w-[10.75rem] min-[375px]:px-5 min-[375px]:text-[11px]",
-                  isDark
-                    ? "border-slate-300/40 bg-slate-900/50 shadow-[0_0_24px_rgba(148,163,184,0.08)] hover:border-slate-200/80 hover:bg-white/85 focus-visible:ring-white/60"
-                    : "border-sky-200/35 bg-sky-950/15 hover:border-sky-100/80 hover:bg-white/85 focus-visible:ring-white/50",
+                  "group inline-flex min-w-[9.75rem] items-center justify-between gap-2 border-2 border-sky-200/35 bg-sky-950/15 px-4 py-2.5 font-pixel text-[10px] uppercase tracking-[0.18em] text-white backdrop-blur-sm transition-colors duration-200 hover:border-sky-100/80 hover:bg-white/85 hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 dark:border-slate-300/40 dark:bg-slate-900/50 dark:shadow-[0_0_24px_rgba(148,163,184,0.08)] dark:hover:border-slate-200/80 dark:focus-visible:ring-white/60 min-[375px]:min-w-[10.75rem] min-[375px]:px-5 min-[375px]:text-[11px]",
                 )}
                 style={{
                   transform: `translateY(${firstButtonY}px)`,
@@ -661,14 +680,11 @@ export default function HomeLandingAboutExperience({ children }: Props) {
                 <span className="transition-transform duration-200 group-hover:translate-x-0.5">
                   →
                 </span>
-              </Link>
+              </a>
               <Link
                 href="/ai"
                 className={cn(
-                  "group inline-flex min-w-[9.75rem] items-center justify-between gap-2 border-2 px-4 py-2.5 font-pixel text-[10px] uppercase tracking-[0.18em] text-white backdrop-blur-sm transition-colors duration-200 hover:text-black focus-visible:outline-none focus-visible:ring-2 min-[375px]:min-w-[10.75rem] min-[375px]:px-5 min-[375px]:text-[11px]",
-                  isDark
-                    ? "border-slate-300/40 bg-slate-900/50 shadow-[0_0_24px_rgba(148,163,184,0.08)] hover:border-slate-200/80 hover:bg-white/85 focus-visible:ring-white/60"
-                    : "border-sky-200/35 bg-sky-950/15 hover:border-sky-100/80 hover:bg-white/85 focus-visible:ring-white/50",
+                  "group inline-flex min-w-[9.75rem] items-center justify-between gap-2 border-2 border-sky-200/35 bg-sky-950/15 px-4 py-2.5 font-pixel text-[10px] uppercase tracking-[0.18em] text-white backdrop-blur-sm transition-colors duration-200 hover:border-sky-100/80 hover:bg-white/85 hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 dark:border-slate-300/40 dark:bg-slate-900/50 dark:shadow-[0_0_24px_rgba(148,163,184,0.08)] dark:hover:border-slate-200/80 dark:focus-visible:ring-white/60 min-[375px]:min-w-[10.75rem] min-[375px]:px-5 min-[375px]:text-[11px]",
                 )}
                 style={{
                   transform: `translateY(${secondButtonY}px)`,
@@ -687,8 +703,7 @@ export default function HomeLandingAboutExperience({ children }: Props) {
 
         <div
           className={cn(
-            "pointer-events-none fixed bottom-10 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-2 font-pixel text-[11px] uppercase tracking-[0.26em] md:bottom-12",
-            isDark ? "text-indigo-200/85" : "text-white/85",
+            "pointer-events-none fixed bottom-10 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-2 font-pixel text-[11px] uppercase tracking-[0.26em] text-white/85 dark:text-indigo-200/85 md:bottom-12",
           )}
           style={{
             transform: `translateX(-50%) translateY(${scrollHintY}px)`,
