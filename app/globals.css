@@ -3,39 +3,34 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: 'flickering';
-  src: url('/fonts/allura/allura-regular-webfont.woff2') format('woff2'),
-       url('/fonts/allura/allura-regular-webfont.woff') format('woff');
+  font-family: "flickering";
+  src:
+    url("/fonts/allura/allura-regular-webfont.woff2") format("woff2"),
+    url("/fonts/allura/allura-regular-webfont.woff") format("woff");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'retro-pixel';
-  src: url('/fonts/ark-pixel/ark-pixel-12px-proportional-latin.ttf.woff2') format('woff2');
+  font-family: "retro-pixel";
+  src: url("/fonts/ark-pixel/ark-pixel-12px-proportional-latin.ttf.woff2")
+    format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
-  unicode-range:
-    U+0000-00FF,
-    U+0100-024F,
-    U+1E00-1EFF,
-    U+2000-206F;
+  unicode-range: U+0000-00FF, U+0100-024F, U+1E00-1EFF, U+2000-206F;
 }
 
 @font-face {
-  font-family: 'retro-pixel';
-  src: url('/fonts/ark-pixel/ark-pixel-12px-proportional-zh_cn.ttf.woff2') format('woff2');
+  font-family: "retro-pixel";
+  src: url("/fonts/ark-pixel/ark-pixel-12px-proportional-zh_cn.ttf.woff2")
+    format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
   unicode-range:
-    U+3000-303F,
-    U+3400-4DBF,
-    U+4E00-9FFF,
-    U+F900-FAFF,
-    U+FF00-FFEF;
+    U+3000-303F, U+3400-4DBF, U+4E00-9FFF, U+F900-FAFF, U+FF00-FFEF;
 }
 
 /* @font-face {
@@ -52,7 +47,8 @@
     --app-nav-offset: 3.5rem;
     --font-sans: "Avenir Next", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
     --font-jetbrains-mono: "Monaco", "Menlo", "Consolas", monospace;
-    --font-mono: var(--font-jetbrains-mono), "Monaco", "Menlo", "Consolas", monospace;
+    --font-mono:
+      var(--font-jetbrains-mono), "Monaco", "Menlo", "Consolas", monospace;
     --font-pixel-cjk: "retro-pixel";
     --font-pixel: "retro-pixel", "Monaco", monospace;
     --font-reading: var(--font-pixel);
@@ -167,11 +163,31 @@
     font-family: var(--font-sans), sans-serif;
     overflow-x: clip;
     background-image:
-      linear-gradient(to right, color-mix(in srgb, hsl(var(--border)) 20%, transparent) 1px, transparent 1px),
-      linear-gradient(to bottom, color-mix(in srgb, hsl(var(--border)) 20%, transparent) 1px, transparent 1px),
-      radial-gradient(circle at top, color-mix(in srgb, hsl(var(--primary)) 12%, transparent), transparent 34%),
-      linear-gradient(180deg, color-mix(in srgb, hsl(var(--background)) 92%, black 8%), hsl(var(--background)));
-    background-size: 28px 28px, 28px 28px, 100% 100%, 100% 100%;
+      linear-gradient(
+        to right,
+        color-mix(in srgb, hsl(var(--border)) 20%, transparent) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        to bottom,
+        color-mix(in srgb, hsl(var(--border)) 20%, transparent) 1px,
+        transparent 1px
+      ),
+      radial-gradient(
+        circle at top,
+        color-mix(in srgb, hsl(var(--primary)) 12%, transparent),
+        transparent 34%
+      ),
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, hsl(var(--background)) 92%, black 8%),
+        hsl(var(--background))
+      );
+    background-size:
+      28px 28px,
+      28px 28px,
+      100% 100%,
+      100% 100%;
     background-attachment: fixed;
     position: relative;
   }
@@ -183,9 +199,20 @@
     pointer-events: none;
     opacity: 0.18;
     background:
-      linear-gradient(transparent 0, rgba(255, 255, 255, 0.06) 50%, transparent 100%),
-      linear-gradient(to bottom, transparent 0, transparent 2px, rgba(0, 0, 0, 0.16) 3px);
-    background-size: 100% 4px, 100% 6px;
+      linear-gradient(
+        transparent 0,
+        rgba(255, 255, 255, 0.06) 50%,
+        transparent 100%
+      ),
+      linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 2px,
+        rgba(0, 0, 0, 0.16) 3px
+      );
+    background-size:
+      100% 4px,
+      100% 6px;
     mix-blend-mode: soft-light;
   }
 
@@ -217,7 +244,8 @@
   html.theme-transition *,
   html.theme-transition *::before,
   html.theme-transition *::after {
-    transition-property: background-color, border-color, color, fill, stroke, box-shadow;
+    transition-property:
+      background-color, border-color, color, fill, stroke, box-shadow;
     transition-duration: var(--motion-duration-slow);
     transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
   }
@@ -268,7 +296,8 @@
   opacity: var(--wind-opacity, 0.5);
   filter: var(--wind-filter, brightness(0));
   transform: translate3d(0, var(--wind-y, 0), 0);
-  animation: wind-flow var(--wind-duration, 7s) steps(var(--wind-steps, 48), end) infinite;
+  animation: wind-flow var(--wind-duration, 7s)
+    steps(var(--wind-steps, 48), end) infinite;
   animation-delay: var(--wind-delay, 0s);
   will-change: transform, opacity;
 }
@@ -367,8 +396,7 @@ html.dark .wind__lane {
   display: block;
   width: 100%;
   height: 100%;
-  filter:
-    drop-shadow(0 0 0 1px rgba(255, 255, 255, 0.9))
+  filter: drop-shadow(0 0 0 1px rgba(255, 255, 255, 0.9))
     drop-shadow(0 0 1.5px rgba(255, 255, 255, 1))
     drop-shadow(0 2px 3px rgba(0, 0, 0, 0.5));
   transition: transform 80ms ease-out;
@@ -431,8 +459,16 @@ html.dark .wind__lane {
 @layer utilities {
   .panel-grid {
     background-image:
-      linear-gradient(to right, color-mix(in srgb, hsl(var(--border)) 11%, transparent) 1px, transparent 1px),
-      linear-gradient(to bottom, color-mix(in srgb, hsl(var(--border)) 11%, transparent) 1px, transparent 1px);
+      linear-gradient(
+        to right,
+        color-mix(in srgb, hsl(var(--border)) 11%, transparent) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        to bottom,
+        color-mix(in srgb, hsl(var(--border)) 11%, transparent) 1px,
+        transparent 1px
+      );
     background-size: 18px 18px;
   }
 
@@ -523,11 +559,17 @@ html.dark .wind__lane {
     isolation: isolate;
     background-color: hsl(var(--background) / 0.96);
     background-image:
-      radial-gradient(circle at 48% 14%, hsl(var(--primary) / 0.055), transparent 34%),
-      linear-gradient(180deg, hsl(var(--background) / 0.98), hsl(var(--background) / 0.94));
-    background-size:
-      auto,
-      auto;
+      radial-gradient(
+        circle at 48% 14%,
+        hsl(var(--primary) / 0.055),
+        transparent 34%
+      ),
+      linear-gradient(
+        180deg,
+        hsl(var(--background) / 0.98),
+        hsl(var(--background) / 0.94)
+      );
+    background-size: auto, auto;
   }
 
   .home-about-bridge {
@@ -540,14 +582,13 @@ html.dark .wind__lane {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    background:
-      linear-gradient(
-        180deg,
-        hsl(var(--background) / 0.1) 0%,
-        transparent 18%,
-        transparent 82%,
-        hsl(var(--background) / 0.1) 100%
-      );
+    background: linear-gradient(
+      180deg,
+      hsl(var(--background) / 0.1) 0%,
+      transparent 18%,
+      transparent 82%,
+      hsl(var(--background) / 0.1) 100%
+    );
   }
 
   .ai-lab-sidebar-pane {
@@ -683,7 +724,11 @@ html.dark .wind__lane {
     position: relative;
     border-color: transparent;
     background:
-      linear-gradient(180deg, hsl(var(--background)), hsl(var(--background) / 0.95)),
+      linear-gradient(
+        180deg,
+        hsl(var(--background)),
+        hsl(var(--background) / 0.95)
+      ),
       linear-gradient(90deg, hsl(var(--primary) / 0.08), transparent 32%);
     color: hsl(var(--foreground));
     box-shadow: none;
@@ -749,14 +794,30 @@ html.dark .wind__lane {
 
   .ai-lab-workspace-pane {
     background:
-      linear-gradient(180deg, hsl(var(--background) / 0.98), hsl(var(--background) / 0.94)),
-      linear-gradient(to bottom, color-mix(in srgb, hsl(var(--border)) 7%, transparent), transparent 18%);
+      linear-gradient(
+        180deg,
+        hsl(var(--background) / 0.98),
+        hsl(var(--background) / 0.94)
+      ),
+      linear-gradient(
+        to bottom,
+        color-mix(in srgb, hsl(var(--border)) 7%, transparent),
+        transparent 18%
+      );
   }
 
   .ai-lab-workspace-drawer {
     background:
-      linear-gradient(180deg, hsl(var(--background) / 0.98), hsl(var(--background) / 0.94)),
-      linear-gradient(to bottom, color-mix(in srgb, hsl(var(--border)) 7%, transparent), transparent 18%);
+      linear-gradient(
+        180deg,
+        hsl(var(--background) / 0.98),
+        hsl(var(--background) / 0.94)
+      ),
+      linear-gradient(
+        to bottom,
+        color-mix(in srgb, hsl(var(--border)) 7%, transparent),
+        transparent 18%
+      );
     backdrop-filter: blur(12px);
   }
 
@@ -836,8 +897,16 @@ html.dark .wind__lane {
     display: block;
     padding: 1.5rem;
     background-image:
-      linear-gradient(to right, color-mix(in srgb, hsl(var(--border)) 18%, transparent) 1px, transparent 1px),
-      linear-gradient(to bottom, color-mix(in srgb, hsl(var(--border)) 18%, transparent) 1px, transparent 1px);
+      linear-gradient(
+        to right,
+        color-mix(in srgb, hsl(var(--border)) 18%, transparent) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        to bottom,
+        color-mix(in srgb, hsl(var(--border)) 18%, transparent) 1px,
+        transparent 1px
+      );
     background-size: 12px 12px;
     border: 3px solid hsl(var(--border));
     background-color: hsl(var(--background) / 0.85);
@@ -931,11 +1000,29 @@ html.dark .wind__lane {
     position: absolute;
     inset: 0;
     background:
-      linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, transparent 40%, transparent 60%, rgba(0, 0, 0, 0.12) 100%),
-      linear-gradient(to right, color-mix(in srgb, hsl(var(--border)) 18%, transparent) 1px, transparent 1px),
-      linear-gradient(to bottom, color-mix(in srgb, hsl(var(--border)) 18%, transparent) 1px, transparent 1px),
+      linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.08) 0%,
+        transparent 40%,
+        transparent 60%,
+        rgba(0, 0, 0, 0.12) 100%
+      ),
+      linear-gradient(
+        to right,
+        color-mix(in srgb, hsl(var(--border)) 18%, transparent) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        to bottom,
+        color-mix(in srgb, hsl(var(--border)) 18%, transparent) 1px,
+        transparent 1px
+      ),
       hsl(var(--background) / 0.85);
-    background-size: 100% 100%, 12px 12px, 12px 12px, 100% 100%;
+    background-size:
+      100% 100%,
+      12px 12px,
+      12px 12px,
+      100% 100%;
     clip-path: inherit;
     z-index: -1;
     pointer-events: none;
@@ -951,7 +1038,15 @@ html.dark .wind__lane {
     width: 16px;
     height: 16px;
     background: hsl(var(--primary));
-    clip-path: polygon(0 25%, 50% 25%, 50% 0%, 100% 50%, 50% 100%, 50% 75%, 0 75%);
+    clip-path: polygon(
+      0 25%,
+      50% 25%,
+      50% 0%,
+      100% 50%,
+      50% 100%,
+      50% 75%,
+      0 75%
+    );
     image-rendering: pixelated;
   }
 
@@ -1043,9 +1138,12 @@ html.dark .wind__lane {
     padding-right: 1.25rem;
     margin-left: -0.6rem;
     margin-right: -1.25rem;
-    border-top: 1px solid color-mix(in srgb, hsl(var(--border)) 28%, transparent);
+    border-top: 1px solid
+      color-mix(in srgb, hsl(var(--border)) 28%, transparent);
     border-left: 2px solid transparent;
-    transition: border-color 0.2s ease, background-color 0.2s ease;
+    transition:
+      border-color 0.2s ease,
+      background-color 0.2s ease;
     animation: fadeInUp 0.3s ease both;
   }
 
@@ -1080,7 +1178,7 @@ ul li {
 }
 
 .flicker {
-  font-family: 'flickering', sans-serif;
+  font-family: "flickering", sans-serif;
 }
 
 .hero-codeblock-mobile pre {
@@ -1108,11 +1206,11 @@ ul li {
   }
 
   28% {
-    translate: -1.5rem 0;
+    translate: -6.25rem 0;
   }
 
   72% {
-    translate: 1.5rem 0;
+    translate: 6.25rem 0;
   }
 }
 
