@@ -8,7 +8,7 @@ import React, {
 import { Container } from "@radix-ui/themes"
 import style from "@/app/service/ThemeService"
 import useIsInScrollable from "@/app/hooks/useIsInScrollable"
-import { isDesktopViewport } from "@/app/lib/responsive"
+import { BREAKPOINTS, isDesktopViewport } from "@/app/lib/responsive"
 import { useScrollableStore } from "@/app/service/Store"
 
 interface Props {
@@ -23,6 +23,7 @@ const clamp = (val: number, min = 0, max = 1) =>
 const easeOutQuint = (value: number) => 1 - Math.pow(1 - value, 5)
 const mix = (from: number, to: number, progress: number) =>
   from * (1 - progress) + to * progress
+const isCurveViewport = (width: number) => width >= BREAKPOINTS.tablet
 
 const getProgressBetween = (value: number, start: number, end: number) => {
   if (end <= start) return value >= end ? 1 : 0
@@ -124,6 +125,7 @@ const DynamicBezierCurve = ({ children, mirrorCurve = false }: Props) => {
   const [hasReachedCurveStart, setHasReachedCurveStart] = useState(false)
   const [curveRevealProgress, setCurveRevealProgress] = useState(0)
   const [curveRevealTravel, setCurveRevealTravel] = useState(0)
+  const [curveViewportEnabled, setCurveViewportEnabled] = useState(false)
   const isHomeLandingHandoffActive = useScrollableStore((state) =>
     Boolean(state.scrollableSources["home-landing-handoff"])
   )
@@ -155,13 +157,30 @@ const DynamicBezierCurve = ({ children, mirrorCurve = false }: Props) => {
   }
   const SLOWER = 0.35
 
+  useEffect(() => {
+    const syncCurveViewport = () => {
+      setCurveViewportEnabled(isCurveViewport(window.innerWidth))
+    }
+
+    syncCurveViewport()
+    window.addEventListener("resize", syncCurveViewport)
+
+    return () => {
+      window.removeEventListener("resize", syncCurveViewport)
+    }
+  }, [])
+
   useIsInScrollable(
-    hasReachedCurveStart ? scrolledInVH : SCROLLABLE_HEIGHT_IN_VH,
+    curveViewportEnabled && hasReachedCurveStart
+      ? scrolledInVH
+      : SCROLLABLE_HEIGHT_IN_VH,
     SCROLLABLE_HEIGHT_IN_VH,
     "dynamic-bezier"
   )
   const isCurveScrollable =
-    hasReachedCurveStart && scrolledInVH < SCROLLABLE_HEIGHT_IN_VH
+    curveViewportEnabled &&
+    hasReachedCurveStart &&
+    scrolledInVH < SCROLLABLE_HEIGHT_IN_VH
 
   const getComponentTopInDocument = () => {
     const anchorRect = rootAnchorRef.current?.getBoundingClientRect()
@@ -190,7 +209,9 @@ const DynamicBezierCurve = ({ children, mirrorCurve = false }: Props) => {
 
   useEffect(() => {
     const captureNonDesktopCurveTarget = () => {
-      if (isDesktopViewport(window.innerWidth)) {
+      const viewportWidth = window.innerWidth
+
+      if (!isCurveViewport(viewportWidth) || isDesktopViewport(viewportWidth)) {
         nonDesktopCurveTargetScrollRef.current = null
         return
       }
@@ -245,11 +266,22 @@ const DynamicBezierCurve = ({ children, mirrorCurve = false }: Props) => {
 
   useEffect(() => {
     const handleScroll = () => {
+      const currentViewportWidth = window.innerWidth
+
+      if (!isCurveViewport(currentViewportWidth)) {
+        setHasReachedCurveStart(false)
+        setCurveRevealTravel(0)
+        setCurveRevealProgress(0)
+        setScrolledInVh(SCROLLABLE_HEIGHT_IN_VH)
+        setScrollRatio(0)
+        return
+      }
+
       if (!nodeRef.current) return
 
       const windowHeight = window.innerHeight
       const componentTopInDocument = getComponentTopInDocument()
-      const isDesktop = isDesktopViewport(window.innerWidth)
+      const isDesktop = isDesktopViewport(currentViewportWidth)
       const heroEntranceScroll = isDesktop
         ? componentTopInDocument
         : componentTopInDocument - NON_DESKTOP_STICKY_TOP_IN_PX
@@ -376,7 +408,15 @@ const DynamicBezierCurve = ({ children, mirrorCurve = false }: Props) => {
     <>
       <div ref={rootAnchorRef} aria-hidden className="h-0" />
       <section
-        className="relative lg:hidden"
+        className="relative md:hidden"
+        style={{
+          backgroundColor: HERO_SURFACE_COLOR,
+        }}
+      >
+        <Container>{children}</Container>
+      </section>
+      <section
+        className="relative hidden md:block lg:hidden"
         style={{
           backgroundColor: HERO_SURFACE_COLOR,
         }}
