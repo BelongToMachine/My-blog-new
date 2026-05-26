@@ -2,7 +2,7 @@
 
 import React, { ReactNode, useEffect, useRef, useState } from "react"
 import style from "@/app/service/ThemeService"
-import { isDesktopViewport } from "@/app/lib/responsive"
+import { BREAKPOINTS, isDesktopViewport } from "@/app/lib/responsive"
 
 interface Props {
   children: ReactNode
@@ -131,6 +131,9 @@ const getNavOffsetInPixels = () => {
 
 export default function HomeInlinePixelBezier({ children }: Props) {
   const rootRef = useRef<HTMLDivElement>(null)
+  const [viewportWidth, setViewportWidth] = useState(() =>
+    typeof window === "undefined" ? BREAKPOINTS.desktop : window.innerWidth
+  )
   const [scrollRatio, setScrollRatio] = useState(0)
   const [revealProgress, setRevealProgress] = useState(0)
   const [curveBandHeight, setCurveBandHeight] = useState(220)
@@ -138,8 +141,24 @@ export default function HomeInlinePixelBezier({ children }: Props) {
   const [curveEntranceDistance, setCurveEntranceDistance] = useState(280)
   const BACKGROUND_COLOR = style.background
   const HERO_SURFACE_COLOR = "hsl(var(--home-about-bridge))"
+  const isMobileViewport = viewportWidth < BREAKPOINTS.tablet
 
   useEffect(() => {
+    const updateViewportWidth = () => {
+      setViewportWidth(window.innerWidth)
+    }
+
+    updateViewportWidth()
+    window.addEventListener("resize", updateViewportWidth)
+
+    return () => {
+      window.removeEventListener("resize", updateViewportWidth)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (isMobileViewport) return
+
     const updateMeasurements = () => {
       const navOffset = getNavOffsetInPixels()
       const nextHeight = isDesktopViewport(window.innerWidth)
@@ -166,9 +185,11 @@ export default function HomeInlinePixelBezier({ children }: Props) {
     return () => {
       window.removeEventListener("resize", updateMeasurements)
     }
-  }, [])
+  }, [isMobileViewport])
 
   useEffect(() => {
+    if (isMobileViewport) return
+
     const handleScroll = () => {
       if (!rootRef.current) return
 
@@ -198,7 +219,15 @@ export default function HomeInlinePixelBezier({ children }: Props) {
       window.removeEventListener("scroll", handleScroll)
       window.removeEventListener("resize", handleScroll)
     }
-  }, [curveBandHeight, curveEntranceDistance])
+  }, [curveBandHeight, curveEntranceDistance, isMobileViewport])
+
+  if (isMobileViewport) {
+    return (
+      <div ref={rootRef} className="relative">
+        {children}
+      </div>
+    )
+  }
 
   const startPoint = getInterpolatedValue(90, 0, scrollRatio)
   const firstControlPoint = getInterpolatedValue(60, 0, scrollRatio)
