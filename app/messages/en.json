@@ -123,7 +123,7 @@
     "ctaAbout": "Get to know me",
     "ctaAi": "Get AI solution",
     "scrollDown": "Scroll down",
-    "code": "const coder = {\n  name: \"Jie\",\n  role: [\"Front-end developer\"],\n  skill: [\"React\", \"Next.js\"],\n  location: \"Hangzhou, China\",\n  problemSolver: true,\n  welcomeMessage: () => {\n    return \"Happy to meet you!\"\n  }\n}"
+    "code": "const coder = {\n  name: \"Jie\",\n  role: [\"Full stack developer\"],\n  skill: [\"TypeScript\", \"React\", \"Next.js\"],\n  location: \"Hangzhou, China\",\n  welcomeMessage: () => {\n    return \"Happy to meet you!\"\n  }\n}"
   },
   "home": {
     "blogSummary": "My Blog Summary",
@@ -139,9 +139,17 @@
   "projects": {
     "heading": "Projects",
     "description": "Projects I've contributed to or led, spanning financial systems, e-commerce platforms, and AI applications.",
+    "featuredLabel": "Featured case",
+    "highlightsLabel": "What I owned",
+    "stackLabel": "Stack",
     "roles": {
       "frontend": "Frontend",
       "fullstack": "Fullstack"
+    },
+    "tracks": {
+      "architecture": "Architecture & dashboard UX",
+      "aiTooling": "Internal AI tooling",
+      "agentProduct": "Agent conversation product"
     },
     "financial": {
       "title": "Trading Management System · State Street Corporation",

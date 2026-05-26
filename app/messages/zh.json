@@ -123,7 +123,7 @@
     "ctaAbout": "认识我",
     "ctaAi": "AI 解决方案",
     "scrollDown": "向下滚动",
-    "code": "const coder = {\n  name: \"开发者\",\n  role: [\"前端开发工程师\"],\n  skill: [\"React\", \"Next.js\"],\n  location: \"中国杭州\",\n  problemSolver: true,\n  welcomeMessage: () => {\n    return \"很高兴认识你！\"\n  }\n}"
+    "code": "const coder = {\n  name: \"开发者\",\n  role: [\"全栈开发工程师\"],\n  skill: [\"TypeScript\", \"React\", \"Next.js\"],\n  location: \"中国杭州\",\n  welcomeMessage: () => {\n    return \"很高兴认识你！\"\n  }\n}"
   },
   "home": {
     "blogSummary": "我的博客总结",
@@ -139,9 +139,17 @@
   "projects": {
     "heading": "项目成果",
     "description": "参与或主导过的项目，涵盖金融系统、电商平台和 AI 应用。",
+    "featuredLabel": "重点案例",
+    "highlightsLabel": "我负责的部分",
+    "stackLabel": "技术栈",
     "roles": {
       "frontend": "前端开发",
       "fullstack": "全栈工程师"
+    },
+    "tracks": {
+      "architecture": "架构拆分与数据看板",
+      "aiTooling": "内部 AI 生产力",
+      "agentProduct": "Agent 对话产品"
     },
     "financial": {
       "title": "交易管理系统 · State Street Corporation",
