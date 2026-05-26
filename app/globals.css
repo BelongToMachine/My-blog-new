@@ -51,6 +51,9 @@
       var(--font-jetbrains-mono), "Monaco", "Menlo", "Consolas", monospace;
     --font-pixel-cjk: "retro-pixel";
     --font-pixel: "retro-pixel", "Monaco", monospace;
+    --font-editorial:
+      "Iowan Old Style", "Palatino Linotype", "Book Antiqua",
+      "Noto Serif SC", "Source Han Serif SC", "Songti SC", serif;
     --font-reading: var(--font-pixel);
     --background: 210 30% 97%;
     --foreground: 210 30% 10%;
@@ -482,6 +485,10 @@ html.dark .wind__lane {
 
   .font-pixel {
     font-family: var(--font-pixel), monospace;
+  }
+
+  .font-editorial {
+    font-family: var(--font-editorial), serif;
   }
 
   .font-reading {

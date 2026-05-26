@@ -14,7 +14,6 @@ import React, {
   useRef,
   useState,
 } from "react"
-import bg from "@/public/images/background.png"
 import bgHd from "@/public/images/minimal_sky_plane_2k_2560x1440.png"
 import nightBg from "@/public/images/night_plane_superres_2k_2560x1440.png"
 
@@ -554,12 +553,13 @@ export default function HomeLandingAboutExperience({ children }: Props) {
       >
         <div className="fixed inset-0 z-0">
           <Image
-            src={bg}
+            src={bgHd}
             alt="Sky background"
             fill
             priority
             className={cn(
               "object-cover md:hidden",
+              landingStyles.skyImage,
               landingStyles.lightThemeAsset,
             )}
             sizes="100vw"
@@ -571,6 +571,7 @@ export default function HomeLandingAboutExperience({ children }: Props) {
             priority
             className={cn(
               "object-cover md:hidden",
+              landingStyles.skyImage,
               landingStyles.darkThemeAsset,
             )}
             sizes="100vw"
@@ -582,6 +583,7 @@ export default function HomeLandingAboutExperience({ children }: Props) {
             priority
             className={cn(
               "hidden object-cover md:block",
+              landingStyles.skyImage,
               landingStyles.lightThemeAsset,
             )}
             sizes="100vw"
@@ -593,6 +595,7 @@ export default function HomeLandingAboutExperience({ children }: Props) {
             priority
             className={cn(
               "hidden object-cover md:block",
+              landingStyles.skyImage,
               landingStyles.darkThemeAsset,
             )}
             sizes="100vw"
