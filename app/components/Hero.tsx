@@ -1,5 +1,5 @@
 "use client"
-import React, { useContext, useRef, useState } from "react"
+import React, { useContext, useEffect, useRef, useState } from "react"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
 import selfie from "@/public/images/selfie-no-background.png"
@@ -17,6 +17,7 @@ import { useLocale, useTranslations } from "next-intl"
 import { FloatingPixelAssistant } from "./PixelAssistantPreview"
 import { Link } from "@/app/i18n/navigation"
 import localFont from "next/font/local"
+import { BREAKPOINTS } from "@/app/lib/responsive"
 
 const bebasNeue = localFont({
   src: "../../public/fonts/bebas-neue/BebasNeue-Regular.woff2",
@@ -49,7 +50,28 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
   const typeSequence = t.raw("typeSequence") as string[]
   const code = t.raw("code") as string
   const [typingIndex, setTypingIndex] = useState(0)
+  const [viewportWidth, setViewportWidth] = useState<number>(BREAKPOINTS.desktop)
+  const [hasResolvedViewport, setHasResolvedViewport] = useState(false)
   const isEnLongText = locale === "en" && typingIndex === 1
+
+  useEffect(() => {
+    const updateViewportWidth = () => {
+      setViewportWidth(window.innerWidth)
+      setHasResolvedViewport(true)
+    }
+
+    updateViewportWidth()
+    window.addEventListener("resize", updateViewportWidth)
+
+    return () => {
+      window.removeEventListener("resize", updateViewportWidth)
+    }
+  }, [])
+
+  const shouldDisableScrollLift =
+    !hasResolvedViewport ||
+    shouldReduceMotion ||
+    viewportWidth < BREAKPOINTS.tablet
   const { scrollYProgress } = useScroll({
     target: spotlightRef,
     offset: ["start end", "end start"],
@@ -87,7 +109,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
         <motion.div
           className="pointer-events-none absolute inset-x-0 z-0 flex justify-center min-[480px]:top-20 sm:top-24 md:top-24 lg:top-36 max-[550px]:top-[clamp(5rem,calc(6rem+(550px-100vw)*3rem/230px),8rem)]"
           style={
-            shouldReduceMotion
+            shouldDisableScrollLift
               ? undefined
               : { y: welcomeLift, willChange: "transform" }
           }
@@ -115,7 +137,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
                   "relative top-14  md:top-14 lg:top-2 md:left-0 lg:-left-14 lg:ml-10 whitespace-nowrap text-[clamp(4.8rem,15vw,6rem)] font-black uppercase leading-[0.92] tracking-[0.03em] text-foreground md:text-[clamp(5rem,13vw,7.1rem)] lg:text-[clamp(8.0rem,10vw,8.8rem)]",
                 )}
                 style={
-                  shouldReduceMotion
+                  shouldDisableScrollLift
                     ? undefined
                     : { y: titleLift, willChange: "transform" }
                 }

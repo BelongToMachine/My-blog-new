@@ -3,12 +3,13 @@ import React, {
   useState,
   useEffect,
   useRef,
+  useCallback,
   ReactNode,
 } from "react"
 import { Container } from "@radix-ui/themes"
 import style from "@/app/service/ThemeService"
 import useIsInScrollable from "@/app/hooks/useIsInScrollable"
-import { isDesktopViewport } from "@/app/lib/responsive"
+import { BREAKPOINTS, isDesktopViewport } from "@/app/lib/responsive"
 import { useScrollableStore } from "@/app/service/Store"
 
 interface Props {
@@ -21,8 +22,13 @@ interface Props {
 const clamp = (val: number, min = 0, max = 1) =>
   Math.max(min, Math.min(max, val))
 const easeOutQuint = (value: number) => 1 - Math.pow(1 - value, 5)
+const easeInOutQuint = (value: number) =>
+  value < 0.5
+    ? 16 * value ** 5
+    : 1 - Math.pow(-2 * value + 2, 5) / 2
 const mix = (from: number, to: number, progress: number) =>
   from * (1 - progress) + to * progress
+const isMobileCurveViewport = (width: number) => width < BREAKPOINTS.tablet
 
 const getProgressBetween = (value: number, start: number, end: number) => {
   if (end <= start) return value >= end ? 1 : 0
@@ -130,6 +136,18 @@ const DynamicBezierCurve = ({ children, mirrorCurve = false }: Props) => {
   const nodeRef = useRef(null)
   const rootAnchorRef = useRef<HTMLDivElement>(null)
   const nonDesktopCurveTargetScrollRef = useRef<number | null>(null)
+  const mobileAutoFrameRef = useRef<number>()
+  const mobileAutoSettleFrameRef = useRef<number>()
+  const mobileAutoDirectionRef = useRef<"forward" | "reverse" | null>(null)
+  const mobileAutoSettleRef = useRef<{
+    direction: "forward" | "reverse"
+    targetScrollY: number
+    until: number
+  } | null>(null)
+  const mobileCurvePhaseRef = useRef<"before" | "after">("before")
+  const mobileLastScrollYRef = useRef(0)
+  const mobileScrollIntentRef = useRef<"down" | "up" | null>(null)
+  const mobileTouchYRef = useRef<number | null>(null)
   const BACKGROUND_COLOR = style.background
   const HERO_SURFACE_COLOR = "hsl(var(--home-about-bridge))"
 
@@ -141,6 +159,8 @@ const DynamicBezierCurve = ({ children, mirrorCurve = false }: Props) => {
   const NON_DESKTOP_HERO_LAYER_HIDE_SCROLL_RATIO = 0.84
   const CURVE_ENTRANCE_DISTANCE_IN_PX = 180
   const CURVE_ENTRANCE_TRANSLATE_Y_IN_PX = 16
+  const MOBILE_AUTO_TRIGGER_DISTANCE_IN_PX = 28
+  const MOBILE_AUTO_DURATION_IN_MS = 1450
   {
     /* 
   ADJUSTED_SCROLL_COEFFICIENT: assoicate with the curve flaten speed, affect this by
@@ -163,13 +183,298 @@ const DynamicBezierCurve = ({ children, mirrorCurve = false }: Props) => {
   const isCurveScrollable =
     hasReachedCurveStart && scrolledInVH < SCROLLABLE_HEIGHT_IN_VH
 
-  const getComponentTopInDocument = () => {
+  const getComponentTopInDocument = useCallback(() => {
     const anchorRect = rootAnchorRef.current?.getBoundingClientRect()
 
     if (!anchorRect) return 0
 
     return window.scrollY + anchorRect.top
-  }
+  }, [])
+
+  const cancelMobileAutoScroll = useCallback(() => {
+    if (mobileAutoFrameRef.current !== undefined) {
+      cancelAnimationFrame(mobileAutoFrameRef.current)
+      mobileAutoFrameRef.current = undefined
+    }
+
+    if (mobileAutoSettleFrameRef.current !== undefined) {
+      cancelAnimationFrame(mobileAutoSettleFrameRef.current)
+      mobileAutoSettleFrameRef.current = undefined
+    }
+
+    mobileAutoDirectionRef.current = null
+    mobileAutoSettleRef.current = null
+  }, [])
+
+  const settleMobileAutoScroll = useCallback(
+    (direction: "forward" | "reverse", targetScrollY: number) => {
+      if (mobileAutoSettleFrameRef.current !== undefined) {
+        cancelAnimationFrame(mobileAutoSettleFrameRef.current)
+      }
+
+      mobileAutoSettleRef.current = {
+        direction,
+        targetScrollY,
+        until: performance.now() + 1000,
+      }
+
+      const step = () => {
+        const settle = mobileAutoSettleRef.current
+
+        if (!settle || !isMobileCurveViewport(window.innerWidth)) {
+          mobileAutoSettleFrameRef.current = undefined
+          mobileAutoSettleRef.current = null
+          return
+        }
+
+        const shouldClampForward =
+          settle.direction === "forward" &&
+          window.scrollY > settle.targetScrollY
+        const shouldClampReverse =
+          settle.direction === "reverse" &&
+          window.scrollY < settle.targetScrollY
+
+        if (shouldClampForward || shouldClampReverse) {
+          window.scrollTo(0, settle.targetScrollY)
+          mobileLastScrollYRef.current = settle.targetScrollY
+        }
+
+        if (performance.now() < settle.until) {
+          mobileAutoSettleFrameRef.current = requestAnimationFrame(step)
+          return
+        }
+
+        mobileAutoSettleFrameRef.current = undefined
+        mobileAutoSettleRef.current = null
+      }
+
+      mobileAutoSettleFrameRef.current = requestAnimationFrame(step)
+    },
+    []
+  )
+
+  const animateMobileCurveScroll = useCallback(
+    (direction: "forward" | "reverse", targetScrollY: number) => {
+      if (!isMobileCurveViewport(window.innerWidth)) return
+
+      cancelMobileAutoScroll()
+
+      const startScrollY = window.scrollY
+      const distance = targetScrollY - startScrollY
+
+      if (Math.abs(distance) < 1) {
+        mobileCurvePhaseRef.current =
+          direction === "forward" ? "after" : "before"
+        mobileLastScrollYRef.current = targetScrollY
+        window.scrollTo(0, targetScrollY)
+        settleMobileAutoScroll(direction, targetScrollY)
+        return
+      }
+
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        mobileCurvePhaseRef.current =
+          direction === "forward" ? "after" : "before"
+        mobileLastScrollYRef.current = targetScrollY
+        window.scrollTo(0, targetScrollY)
+        settleMobileAutoScroll(direction, targetScrollY)
+        return
+      }
+
+      const startedAt = performance.now()
+      mobileAutoDirectionRef.current = direction
+
+      const step = (timestamp: number) => {
+        if (!isMobileCurveViewport(window.innerWidth)) {
+          cancelMobileAutoScroll()
+          return
+        }
+
+        const progress = clamp(
+          (timestamp - startedAt) / MOBILE_AUTO_DURATION_IN_MS
+        )
+        const easedProgress = easeInOutQuint(progress)
+        const nextScrollY = startScrollY + distance * easedProgress
+
+        window.scrollTo(0, nextScrollY)
+
+        if (progress < 1) {
+          mobileAutoFrameRef.current = requestAnimationFrame(step)
+          return
+        }
+
+        window.scrollTo(0, targetScrollY)
+        mobileCurvePhaseRef.current =
+          direction === "forward" ? "after" : "before"
+        mobileLastScrollYRef.current = targetScrollY
+        mobileAutoFrameRef.current = undefined
+        mobileAutoDirectionRef.current = null
+        settleMobileAutoScroll(direction, targetScrollY)
+      }
+
+      mobileAutoFrameRef.current = requestAnimationFrame(step)
+    },
+    [MOBILE_AUTO_DURATION_IN_MS, cancelMobileAutoScroll, settleMobileAutoScroll]
+  )
+
+  const getMobileCurveBounds = useCallback(() => {
+    if (!isMobileCurveViewport(window.innerWidth)) return null
+
+    const componentTopInDocument = getComponentTopInDocument()
+    const liveCurveTargetAnchor =
+      document.querySelector<HTMLElement>("[data-curve-target-anchor]") ??
+      document.querySelector<HTMLElement>("[data-summary-heading-anchor]")
+    const liveEndScroll = liveCurveTargetAnchor
+      ? Math.max(
+          window.scrollY +
+            liveCurveTargetAnchor.getBoundingClientRect().top -
+            NON_DESKTOP_STICKY_TOP_IN_PX,
+          1
+        )
+      : null
+    const liveTargetScroll =
+      liveEndScroll !== null
+        ? Math.max(liveEndScroll - componentTopInDocument, 1)
+        : null
+    const targetScroll =
+      liveTargetScroll ??
+      nonDesktopCurveTargetScrollRef.current ??
+      Math.max(window.innerHeight - NON_DESKTOP_STICKY_TOP_IN_PX, 1)
+
+    nonDesktopCurveTargetScrollRef.current = targetScroll
+
+    return {
+      endScroll: liveEndScroll ?? componentTopInDocument + targetScroll,
+      startScroll: componentTopInDocument - NON_DESKTOP_STICKY_TOP_IN_PX,
+    }
+  }, [NON_DESKTOP_STICKY_TOP_IN_PX, getComponentTopInDocument])
+
+  const maybeStartMobileAutoCurve = useCallback(
+    (
+      direction: "down" | "up" | null,
+      activationScrollY = window.scrollY,
+      beforeStart?: () => void
+    ) => {
+      if (!direction || mobileAutoDirectionRef.current) return false
+
+      const bounds = getMobileCurveBounds()
+      if (!bounds) return false
+
+      const currentScrollY = window.scrollY
+
+      if (currentScrollY <= bounds.startScroll) {
+        mobileCurvePhaseRef.current = "before"
+      } else if (currentScrollY >= bounds.endScroll - 1) {
+        mobileCurvePhaseRef.current = "after"
+      }
+
+      if (
+        direction === "down" &&
+        mobileCurvePhaseRef.current === "before" &&
+        activationScrollY >=
+          bounds.startScroll + MOBILE_AUTO_TRIGGER_DISTANCE_IN_PX &&
+        currentScrollY < bounds.endScroll - 1
+      ) {
+        beforeStart?.()
+        animateMobileCurveScroll("forward", bounds.endScroll)
+        return true
+      }
+
+      if (
+        direction === "up" &&
+        mobileCurvePhaseRef.current === "after" &&
+        activationScrollY <=
+          bounds.endScroll - MOBILE_AUTO_TRIGGER_DISTANCE_IN_PX &&
+        currentScrollY > bounds.startScroll
+      ) {
+        beforeStart?.()
+        animateMobileCurveScroll("reverse", bounds.startScroll - 1)
+        return true
+      }
+
+      return false
+    },
+    [
+      MOBILE_AUTO_TRIGGER_DISTANCE_IN_PX,
+      animateMobileCurveScroll,
+      getMobileCurveBounds,
+    ]
+  )
+
+  useEffect(() => {
+    const handleWheel = (event: WheelEvent) => {
+      if (
+        mobileAutoDirectionRef.current &&
+        isMobileCurveViewport(window.innerWidth)
+      ) {
+        event.preventDefault()
+        return
+      }
+
+      if (isMobileCurveViewport(window.innerWidth) && event.deltaY !== 0) {
+        const direction = event.deltaY > 0 ? "down" : "up"
+        mobileScrollIntentRef.current = direction
+        const projectedScrollY = window.scrollY + event.deltaY
+
+        maybeStartMobileAutoCurve(direction, projectedScrollY, () =>
+          event.preventDefault()
+        )
+      }
+    }
+
+    const handleTouchStart = (event: TouchEvent) => {
+      mobileTouchYRef.current = event.touches[0]?.clientY ?? null
+    }
+
+    const handleTouchMove = (event: TouchEvent) => {
+      if (
+        mobileAutoDirectionRef.current &&
+        isMobileCurveViewport(window.innerWidth)
+      ) {
+        event.preventDefault()
+        return
+      }
+
+      if (!isMobileCurveViewport(window.innerWidth)) return
+
+      const currentTouchY = event.touches[0]?.clientY
+      const previousTouchY = mobileTouchYRef.current
+
+      if (currentTouchY === undefined || previousTouchY === null) return
+
+      const touchDelta = previousTouchY - currentTouchY
+
+      if (touchDelta !== 0) {
+        const direction = touchDelta > 0 ? "down" : "up"
+        mobileScrollIntentRef.current = direction
+        const projectedScrollY = window.scrollY + touchDelta
+
+        maybeStartMobileAutoCurve(direction, projectedScrollY, () =>
+          event.preventDefault()
+        )
+      }
+
+      mobileTouchYRef.current = currentTouchY
+    }
+
+    window.addEventListener("wheel", handleWheel, {
+      capture: true,
+      passive: false,
+    })
+    window.addEventListener("touchstart", handleTouchStart, { passive: true })
+    window.addEventListener("touchmove", handleTouchMove, {
+      capture: true,
+      passive: false,
+    })
+
+    return () => {
+      window.removeEventListener("wheel", handleWheel, { capture: true })
+      window.removeEventListener("touchstart", handleTouchStart)
+      window.removeEventListener("touchmove", handleTouchMove, {
+        capture: true,
+      })
+      cancelMobileAutoScroll()
+    }
+  }, [cancelMobileAutoScroll, maybeStartMobileAutoCurve])
 
   useEffect(() => {
     const handleScroll = (event: WheelEvent) => {
@@ -241,7 +546,7 @@ const DynamicBezierCurve = ({ children, mirrorCurve = false }: Props) => {
     return () => {
       window.removeEventListener("resize", captureNonDesktopCurveTarget)
     }
-  }, [])
+  }, [getComponentTopInDocument])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -249,7 +554,9 @@ const DynamicBezierCurve = ({ children, mirrorCurve = false }: Props) => {
 
       const windowHeight = window.innerHeight
       const componentTopInDocument = getComponentTopInDocument()
-      const isDesktop = isDesktopViewport(window.innerWidth)
+      const viewportWidth = window.innerWidth
+      const isDesktop = isDesktopViewport(viewportWidth)
+      const isMobileCurve = isMobileCurveViewport(viewportWidth)
       const heroEntranceScroll = isDesktop
         ? componentTopInDocument
         : componentTopInDocument - NON_DESKTOP_STICKY_TOP_IN_PX
@@ -289,12 +596,28 @@ const DynamicBezierCurve = ({ children, mirrorCurve = false }: Props) => {
       )
 
       if (!isDesktop) {
+        const mobileCurveBounds = isMobileCurve ? getMobileCurveBounds() : null
         const nonDesktopTargetScroll =
-          nonDesktopCurveTargetScrollRef.current ??
-          Math.max(windowHeight - NON_DESKTOP_STICKY_TOP_IN_PX, 1)
+          mobileCurveBounds !== null
+            ? mobileCurveBounds.endScroll - componentTopInDocument
+            : nonDesktopCurveTargetScrollRef.current ??
+              Math.max(windowHeight - NON_DESKTOP_STICKY_TOP_IN_PX, 1)
         const nonDesktopProgress = pixelsScrolled / nonDesktopTargetScroll
         setScrolledInVh(clamp(nonDesktopProgress) * 100)
         ratio = clamp(ADJUSTED_SCROLL_COEFFICIENT * nonDesktopProgress)
+
+        if (isMobileCurve) {
+          const currentScrollY = window.scrollY
+          const previousScrollY = mobileLastScrollYRef.current
+          const scrollDelta = currentScrollY - previousScrollY
+          const scrollDirection =
+            mobileScrollIntentRef.current ??
+            (scrollDelta > 0 ? "down" : scrollDelta < 0 ? "up" : null)
+          maybeStartMobileAutoCurve(scrollDirection)
+
+          mobileLastScrollYRef.current = currentScrollY
+          mobileScrollIntentRef.current = null
+        }
       } else {
         const baseRatio =
           pixelsScrolled / (windowHeight * DESKTOP_CURVE_FLATTEN_SCROLL_RATIO)
@@ -321,7 +644,11 @@ const DynamicBezierCurve = ({ children, mirrorCurve = false }: Props) => {
       window.removeEventListener("scroll", handleScroll)
       window.removeEventListener("resize", handleScroll)
     }
-  }, [])
+  }, [
+    getComponentTopInDocument,
+    getMobileCurveBounds,
+    maybeStartMobileAutoCurve,
+  ])
 
   // Use our `getInterpolatedValue` function to figure out the values for
   // the start point and the control points.
