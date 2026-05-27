@@ -10,6 +10,7 @@ import Image from "next/image"
 import { bebasNeue } from "@/lib/fonts"
 import React, {
   ReactNode,
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -40,6 +41,18 @@ const DESKTOP_CURVE_SCROLL_SLOWER = 0.35
 const DESKTOP_CURVE_REVEAL_DELAY_IN_PX = 72
 const DESKTOP_HERO_RISE_ADVANCE_IN_PX = 102
 const CURVE_ENTRANCE_DISTANCE_IN_PX = 180
+const TOUCH_TAP_MOVE_TOLERANCE_IN_PX = 12
+const TOUCH_TAP_STEP_PROGRESS = [
+  0,
+  ART_REVEAL_END,
+  0.74,
+  0.84,
+  0.92,
+  0.97,
+  1,
+] as const
+const INTERACTIVE_TAP_TARGET_SELECTOR =
+  "a,button,input,textarea,select,[role='button'],[role='link']"
 
 const clamp01 = (value: number) => Math.min(Math.max(value, 0), 1)
 const easeOutQuint = (value: number) => 1 - Math.pow(1 - value, 5)
@@ -131,17 +144,40 @@ export default function HomeLandingAboutExperience({ children }: Props) {
   const [curveProgress, setCurveProgress] = useState(0)
   const [pageScrollY, setPageScrollY] = useState(0)
   const [viewportWidth, setViewportWidth] = useState(0)
+  const [hasTouchInput, setHasTouchInput] = useState(false)
   const [landingReserveHeight, setLandingReserveHeight] = useState<
     number | null
   >(null)
 
   const progressRef = useRef(0)
   const targetRef = useRef(0)
+  const tapStepRef = useRef(0)
+  const tapStartRef = useRef<{ x: number; y: number } | null>(null)
   const rafRef = useRef<number>()
   const startAnimationRef = useRef<() => void>(() => {})
   const heroFrameRef = useRef<HTMLDivElement>(null)
   const artTextRef = useRef<HTMLHeadingElement>(null)
   const curveTargetScrollRef = useRef<number | null>(null)
+
+  useEffect(() => {
+    const coarsePointerQuery = window.matchMedia("(any-pointer: coarse)")
+    const syncTouchInput = () => {
+      setHasTouchInput(
+        navigator.maxTouchPoints > 0 || coarsePointerQuery.matches,
+      )
+    }
+
+    syncTouchInput()
+
+    if (typeof coarsePointerQuery.addEventListener === "function") {
+      coarsePointerQuery.addEventListener("change", syncTouchInput)
+      return () =>
+        coarsePointerQuery.removeEventListener("change", syncTouchInput)
+    }
+
+    coarsePointerQuery.addListener(syncTouchInput)
+    return () => coarsePointerQuery.removeListener(syncTouchInput)
+  }, [])
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)")
@@ -233,6 +269,80 @@ export default function HomeLandingAboutExperience({ children }: Props) {
   }, [prefersReducedMotion])
 
   useEffect(() => {
+    if (!hasTouchInput || released || prefersReducedMotion) return
+
+    if (targetRef.current >= 1 && displayProgress >= 0.998) {
+      progressRef.current = 1
+      targetRef.current = 1
+      setDisplayProgress(1)
+      setReleased(true)
+    }
+  }, [displayProgress, hasTouchInput, prefersReducedMotion, released])
+
+  const advanceTouchTapStep = useCallback(() => {
+    if (!hasTouchInput || released || prefersReducedMotion) return
+
+    const nextStep = Math.min(
+      tapStepRef.current + 1,
+      TOUCH_TAP_STEP_PROGRESS.length - 1,
+    )
+
+    tapStepRef.current = nextStep
+    targetRef.current = TOUCH_TAP_STEP_PROGRESS[nextStep]
+    startAnimationRef.current()
+  }, [hasTouchInput, prefersReducedMotion, released])
+
+  const isInteractiveTapTarget = (target: EventTarget | null) =>
+    target instanceof Element &&
+    Boolean(target.closest(INTERACTIVE_TAP_TARGET_SELECTOR))
+
+  const handleLandingPointerDown = (
+    event: React.PointerEvent<HTMLDivElement>,
+  ) => {
+    if (
+      !hasTouchInput ||
+      released ||
+      prefersReducedMotion ||
+      event.pointerType === "mouse" ||
+      isInteractiveTapTarget(event.target)
+    ) {
+      return
+    }
+
+    tapStartRef.current = { x: event.clientX, y: event.clientY }
+  }
+
+  const handleLandingPointerUp = (
+    event: React.PointerEvent<HTMLDivElement>,
+  ) => {
+    if (
+      !hasTouchInput ||
+      released ||
+      prefersReducedMotion ||
+      event.pointerType === "mouse" ||
+      isInteractiveTapTarget(event.target)
+    ) {
+      tapStartRef.current = null
+      return
+    }
+
+    const tapStart = tapStartRef.current
+    tapStartRef.current = null
+
+    if (!tapStart) return
+
+    const movedDistance = Math.hypot(
+      event.clientX - tapStart.x,
+      event.clientY - tapStart.y,
+    )
+
+    if (movedDistance > TOUCH_TAP_MOVE_TOLERANCE_IN_PX) return
+
+    event.preventDefault()
+    advanceTouchTapStep()
+  }
+
+  useEffect(() => {
     const previousHtmlOverflow = document.documentElement.style.overflow
     const previousBodyOverflow = document.body.style.overflow
     const previousBodyTouchAction = document.body.style.touchAction
@@ -281,6 +391,10 @@ export default function HomeLandingAboutExperience({ children }: Props) {
 
     const handleTouchStart = (event: TouchEvent) => {
       lastTouchY = event.touches[0].clientY
+      tapStartRef.current = {
+        x: event.touches[0].clientX,
+        y: event.touches[0].clientY,
+      }
     }
 
     const handleTouchMove = (event: TouchEvent) => {
@@ -288,6 +402,24 @@ export default function HomeLandingAboutExperience({ children }: Props) {
       const currentY = event.touches[0].clientY
       const delta = lastTouchY - currentY
       lastTouchY = currentY
+
+      if (hasTouchInput) {
+        const tapStart = tapStartRef.current
+        const currentTouch = event.touches[0]
+
+        if (
+          tapStart &&
+          Math.hypot(
+            currentTouch.clientX - tapStart.x,
+            currentTouch.clientY - tapStart.y,
+          ) > TOUCH_TAP_MOVE_TOLERANCE_IN_PX
+        ) {
+          tapStartRef.current = null
+        }
+
+        return
+      }
+
       accumulated += delta * 1.3
       const nextProgress = clamp01(accumulated / SCROLL_THRESHOLD)
       targetRef.current = nextProgress
@@ -304,16 +436,41 @@ export default function HomeLandingAboutExperience({ children }: Props) {
       startAnimationRef.current()
     }
 
+    const handleTouchEnd = (event: TouchEvent) => {
+      if (!hasTouchInput || isInteractiveTapTarget(event.target)) {
+        tapStartRef.current = null
+        return
+      }
+
+      const tapStart = tapStartRef.current
+      const changedTouch = event.changedTouches[0]
+      tapStartRef.current = null
+
+      if (!tapStart || !changedTouch) return
+
+      const movedDistance = Math.hypot(
+        changedTouch.clientX - tapStart.x,
+        changedTouch.clientY - tapStart.y,
+      )
+
+      if (movedDistance > TOUCH_TAP_MOVE_TOLERANCE_IN_PX) return
+
+      event.preventDefault()
+      advanceTouchTapStep()
+    }
+
     window.addEventListener("wheel", handleWheel, { passive: false })
     window.addEventListener("touchstart", handleTouchStart, { passive: true })
     window.addEventListener("touchmove", handleTouchMove, { passive: false })
+    window.addEventListener("touchend", handleTouchEnd, { passive: false })
 
     return () => {
       window.removeEventListener("wheel", handleWheel)
       window.removeEventListener("touchstart", handleTouchStart)
       window.removeEventListener("touchmove", handleTouchMove)
+      window.removeEventListener("touchend", handleTouchEnd)
     }
-  }, [prefersReducedMotion, released])
+  }, [advanceTouchTapStep, hasTouchInput, prefersReducedMotion, released])
 
   useEffect(() => {
     const captureCurveTarget = () => {
@@ -479,10 +636,18 @@ export default function HomeLandingAboutExperience({ children }: Props) {
     : clamp01(displayProgress / ART_REVEAL_END)
   const firstButtonProgress = prefersReducedMotion
     ? 1
-    : progressBetween(displayProgress, FIRST_BUTTON_START, FIRST_BUTTON_END)
+    : progressBetween(
+        displayProgress,
+        hasTouchInput ? 0.92 : FIRST_BUTTON_START,
+        hasTouchInput ? 0.97 : FIRST_BUTTON_END,
+      )
   const secondButtonProgress = prefersReducedMotion
     ? 1
-    : progressBetween(displayProgress, SECOND_BUTTON_START, SECOND_BUTTON_END)
+    : progressBetween(
+        displayProgress,
+        hasTouchInput ? 0.97 : SECOND_BUTTON_START,
+        hasTouchInput ? 1 : SECOND_BUTTON_END,
+      )
   const easedFirstButtonProgress = easeOutQuint(firstButtonProgress)
   const easedSecondButtonProgress = easeOutQuint(secondButtonProgress)
   const artTextY = artStartOffset * (1 - artProgress)
@@ -499,7 +664,20 @@ export default function HomeLandingAboutExperience({ children }: Props) {
   const introCopyProgress = prefersReducedMotion
     ? 1
     : easeOutQuint(progressBetween(displayProgress, 0.62, 0.76))
-  const introCopyY = 80 * (1 - introCopyProgress)
+  const firstIntroProgress = hasTouchInput
+    ? easeOutQuint(progressBetween(displayProgress, 0.62, 0.74))
+    : introCopyProgress
+  const secondIntroProgress = hasTouchInput
+    ? easeOutQuint(progressBetween(displayProgress, 0.74, 0.84))
+    : introCopyProgress
+  const statusProgress = hasTouchInput
+    ? easeOutQuint(progressBetween(displayProgress, 0.84, 0.92))
+    : introCopyProgress
+  const introCopyY = hasTouchInput ? 0 : 80 * (1 - introCopyProgress)
+  const introCopyOpacity = hasTouchInput ? 1 : introCopyProgress
+  const firstIntroY = hasTouchInput ? 32 * (1 - firstIntroProgress) : 0
+  const secondIntroY = hasTouchInput ? 32 * (1 - secondIntroProgress) : 0
+  const statusY = hasTouchInput ? 32 * (1 - statusProgress) : 0
   const firstButtonY = 28 * (1 - easedFirstButtonProgress)
   const secondButtonY = 28 * (1 - easedSecondButtonProgress)
   const curveEntranceProgress = prefersReducedMotion
@@ -540,6 +718,8 @@ export default function HomeLandingAboutExperience({ children }: Props) {
   return (
     <>
       <div
+        onPointerDown={handleLandingPointerDown}
+        onPointerUp={handleLandingPointerUp}
         className={cn(
           "fixed inset-0 z-[60] overflow-hidden",
           released ? "pointer-events-none" : "pointer-events-auto",
@@ -649,19 +829,40 @@ export default function HomeLandingAboutExperience({ children }: Props) {
             className="mt-7 flex flex-col items-center md:mt-12"
             style={{
               transform: `translateY(${introCopyY}px)`,
-              opacity: introCopyProgress,
+              opacity: introCopyOpacity,
               willChange: "transform, opacity",
             }}
           >
             {/* Intro copy right-aligned */}
             <div className="flex flex-col items-end text-right px-6 md:px-16">
-              <p className="max-w-[60rem] font-pixel text-base font-medium leading-relaxed text-white [text-shadow:0_8px_28px_rgba(7,60,120,0.35)] min-[375px]:text-lg md:text-[1.35rem] md:leading-9">
+              <p
+                className="max-w-[60rem] font-pixel text-base font-medium leading-relaxed text-white [text-shadow:0_8px_28px_rgba(7,60,120,0.35)] min-[375px]:text-lg md:text-[1.35rem] md:leading-9"
+                style={{
+                  transform: `translateY(${firstIntroY}px)`,
+                  opacity: firstIntroProgress,
+                  willChange: hasTouchInput ? "transform, opacity" : undefined,
+                }}
+              >
                 {t("landingTitle1")}
               </p>
-              <p className="mt-0 max-w-[58rem] font-pixel text-[12px] leading-6 text-white/75 [text-shadow:0_6px_22px_rgba(7,60,120,0.3)] min-[375px]:text-[13px] md:mt-1 md:text-[14px]">
+              <p
+                className="mt-0 max-w-[58rem] font-pixel text-[12px] leading-6 text-white/75 [text-shadow:0_6px_22px_rgba(7,60,120,0.3)] min-[375px]:text-[13px] md:mt-1 md:text-[14px]"
+                style={{
+                  transform: `translateY(${secondIntroY}px)`,
+                  opacity: secondIntroProgress,
+                  willChange: hasTouchInput ? "transform, opacity" : undefined,
+                }}
+              >
                 {t("landingTitle2")}
               </p>
-              <p className="mt-2 max-w-[58rem] font-pixel text-[12px] leading-6 text-white/75 [text-shadow:0_6px_22px_rgba(7,60,120,0.3)] min-[375px]:text-[13px] md:mt-3 md:text-[14px]">
+              <p
+                className="mt-2 max-w-[58rem] font-pixel text-[12px] leading-6 text-white/75 [text-shadow:0_6px_22px_rgba(7,60,120,0.3)] min-[375px]:text-[13px] md:mt-3 md:text-[14px]"
+                style={{
+                  transform: `translateY(${statusY}px)`,
+                  opacity: statusProgress,
+                  willChange: hasTouchInput ? "transform, opacity" : undefined,
+                }}
+              >
                 {t("landingStatus")}
               </p>
             </div>
@@ -676,6 +877,7 @@ export default function HomeLandingAboutExperience({ children }: Props) {
                 style={{
                   transform: `translateY(${firstButtonY}px)`,
                   opacity: firstButtonProgress,
+                  pointerEvents: firstButtonProgress > 0.98 ? "auto" : "none",
                   willChange: "transform, opacity",
                 }}
               >
@@ -692,6 +894,7 @@ export default function HomeLandingAboutExperience({ children }: Props) {
                 style={{
                   transform: `translateY(${secondButtonY}px)`,
                   opacity: secondButtonProgress,
+                  pointerEvents: secondButtonProgress > 0.98 ? "auto" : "none",
                   willChange: "transform, opacity",
                 }}
               >
@@ -715,7 +918,7 @@ export default function HomeLandingAboutExperience({ children }: Props) {
           }}
         >
           <span className="text-base leading-none">↓</span>
-          <span>{t("scrollDown")}</span>
+          <span>{hasTouchInput ? t("tapToContinue") : t("scrollDown")}</span>
         </div>
       </div>
 

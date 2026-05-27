@@ -123,6 +123,7 @@
     "ctaAbout": "Get to know me",
     "ctaAi": "Get AI solution",
     "scrollDown": "Scroll down",
+    "tapToContinue": "Tap to continue",
     "code": "const coder = {\n  name: \"Jie\",\n  role: [\"Full stack developer\"],\n  skill: [\"TypeScript\", \"React\", \"Next.js\"],\n  location: \"Hangzhou, China\",\n  welcomeMessage: () => {\n    return \"Happy to meet you!\"\n  }\n}"
   },
   "home": {
