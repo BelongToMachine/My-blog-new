@@ -2,7 +2,7 @@
 
 import { Link } from "@/app/i18n/navigation"
 import { useTranslations } from "next-intl"
-import { isDesktopViewport } from "@/app/lib/responsive"
+import { BREAKPOINTS, isDesktopViewport } from "@/app/lib/responsive"
 import { useScrollableStore } from "@/app/service/Store"
 import { cn } from "@/lib/utils"
 import landingStyles from "./HomeLandingAboutExperience.module.css"
@@ -37,6 +37,7 @@ const DESKTOP_OVERLAY_HIDE_SCROLL_RATIO = 0.995
 const DESKTOP_NAV_LANDING_END_SCROLL_RATIO = 0.9
 const NON_DESKTOP_NAV_LANDING_END_SCROLL_RATIO = 0.7
 const NON_DESKTOP_OVERLAY_HIDE_SCROLL_RATIO = 0.995
+const PHONE_LANDING_RESERVE_RATIO = 0.64
 const DESKTOP_CURVE_SCROLL_SLOWER = 0.35
 const DESKTOP_CURVE_REVEAL_DELAY_IN_PX = 72
 const DESKTOP_HERO_RISE_ADVANCE_IN_PX = 102
@@ -126,6 +127,17 @@ const getNavOffsetInPixels = () => {
 
   const parsedValue = Number.parseFloat(rawValue)
   return Number.isFinite(parsedValue) ? parsedValue : 56
+}
+
+const getNonDesktopLandingTargetScroll = () => {
+  const baseTargetScroll = Math.max(
+    window.innerHeight - getNavOffsetInPixels(),
+    1,
+  )
+
+  if (window.innerWidth >= BREAKPOINTS.tablet) return baseTargetScroll
+
+  return Math.max(baseTargetScroll * PHONE_LANDING_RESERVE_RATIO, 1)
 }
 
 export default function HomeLandingAboutExperience({ children }: Props) {
@@ -493,8 +505,7 @@ export default function HomeLandingAboutExperience({ children }: Props) {
         ) ?? document.querySelector<HTMLElement>("#about-me-section")
 
       if (heroAnchor) {
-        const navOffset = getNavOffsetInPixels()
-        const nextTargetScroll = Math.max(window.innerHeight - navOffset, 1)
+        const nextTargetScroll = getNonDesktopLandingTargetScroll()
 
         curveTargetScrollRef.current = nextTargetScroll
         setLandingReserveHeight(
@@ -508,10 +519,7 @@ export default function HomeLandingAboutExperience({ children }: Props) {
         document.querySelector<HTMLElement>("[data-summary-heading-anchor]")
 
       if (!targetAnchor) {
-        const fallbackTargetScroll = Math.max(
-          window.innerHeight - getNavOffsetInPixels(),
-          1,
-        )
+        const fallbackTargetScroll = getNonDesktopLandingTargetScroll()
         curveTargetScrollRef.current = fallbackTargetScroll
         setLandingReserveHeight(
           fallbackTargetScroll * NON_DESKTOP_OVERLAY_HIDE_SCROLL_RATIO,
