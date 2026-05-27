@@ -37,11 +37,14 @@ const DESKTOP_OVERLAY_HIDE_SCROLL_RATIO = 0.995
 const DESKTOP_NAV_LANDING_END_SCROLL_RATIO = 0.9
 const NON_DESKTOP_NAV_LANDING_END_SCROLL_RATIO = 0.7
 const NON_DESKTOP_OVERLAY_HIDE_SCROLL_RATIO = 0.995
-const PHONE_LANDING_RESERVE_RATIO = 0.64
+const PHONE_HERO_FINAL_GAP_IN_PX = 18
+const PHONE_LANDING_MIN_RESERVE_RATIO = 0.42
+const PHONE_LANDING_FALLBACK_RESERVE_RATIO = 0.78
 const DESKTOP_CURVE_SCROLL_SLOWER = 0.35
 const DESKTOP_CURVE_REVEAL_DELAY_IN_PX = 72
 const DESKTOP_HERO_RISE_ADVANCE_IN_PX = 102
 const CURVE_ENTRANCE_DISTANCE_IN_PX = 180
+const PHONE_CURVE_ENTRANCE_PROGRESS_END = 0.16
 const TOUCH_TAP_MOVE_TOLERANCE_IN_PX = 12
 const TOUCH_TAP_STEP_PROGRESS = [
   0,
@@ -54,6 +57,8 @@ const TOUCH_TAP_STEP_PROGRESS = [
 ] as const
 const INTERACTIVE_TAP_TARGET_SELECTOR =
   "a,button,input,textarea,select,[role='button'],[role='link']"
+const HOME_LANDING_FINAL_ANCHOR_SELECTOR =
+  "[data-home-landing-final-anchor]"
 
 const clamp01 = (value: number) => Math.min(Math.max(value, 0), 1)
 const easeOutQuint = (value: number) => 1 - Math.pow(1 - value, 5)
@@ -135,9 +140,46 @@ const getNonDesktopLandingTargetScroll = () => {
     1,
   )
 
-  if (window.innerWidth >= BREAKPOINTS.tablet) return baseTargetScroll
+  return baseTargetScroll
+}
 
-  return Math.max(baseTargetScroll * PHONE_LANDING_RESERVE_RATIO, 1)
+const getNonDesktopLandingReserveHeight = (
+  targetScroll: number,
+  heroAnchor?: HTMLElement | null,
+) => {
+  const reserveHeight = targetScroll * NON_DESKTOP_OVERLAY_HIDE_SCROLL_RATIO
+
+  if (window.innerWidth >= BREAKPOINTS.tablet) return reserveHeight
+
+  const minimumReserveHeight =
+    window.innerHeight * PHONE_LANDING_MIN_RESERVE_RATIO
+  const fallbackReserveHeight = Math.max(
+    targetScroll * PHONE_LANDING_FALLBACK_RESERVE_RATIO,
+    minimumReserveHeight,
+  )
+  const finalAnchor = document.querySelector<HTMLElement>(
+    HOME_LANDING_FINAL_ANCHOR_SELECTOR,
+  )
+
+  if (!heroAnchor || !finalAnchor) return fallbackReserveHeight
+
+  const heroRect = heroAnchor.getBoundingClientRect()
+  const finalAnchorRect = finalAnchor.getBoundingClientRect()
+  const finalAnchorOffset = finalAnchorRect.top - heroRect.top
+
+  if (!Number.isFinite(finalAnchorOffset) || finalAnchorOffset <= 0) {
+    return fallbackReserveHeight
+  }
+
+  const desiredFinalAnchorTop =
+    getNavOffsetInPixels() + PHONE_HERO_FINAL_GAP_IN_PX
+  const measuredReserveHeight =
+    targetScroll - finalAnchorOffset + desiredFinalAnchorTop
+
+  return Math.max(
+    Math.min(measuredReserveHeight, reserveHeight),
+    minimumReserveHeight,
+  )
 }
 
 export default function HomeLandingAboutExperience({ children }: Props) {
@@ -509,7 +551,7 @@ export default function HomeLandingAboutExperience({ children }: Props) {
 
         curveTargetScrollRef.current = nextTargetScroll
         setLandingReserveHeight(
-          nextTargetScroll * NON_DESKTOP_OVERLAY_HIDE_SCROLL_RATIO,
+          getNonDesktopLandingReserveHeight(nextTargetScroll, heroAnchor),
         )
         return
       }
@@ -522,7 +564,7 @@ export default function HomeLandingAboutExperience({ children }: Props) {
         const fallbackTargetScroll = getNonDesktopLandingTargetScroll()
         curveTargetScrollRef.current = fallbackTargetScroll
         setLandingReserveHeight(
-          fallbackTargetScroll * NON_DESKTOP_OVERLAY_HIDE_SCROLL_RATIO,
+          getNonDesktopLandingReserveHeight(fallbackTargetScroll),
         )
         return
       }
@@ -536,7 +578,7 @@ export default function HomeLandingAboutExperience({ children }: Props) {
       )
       curveTargetScrollRef.current = nextTargetScroll
       setLandingReserveHeight(
-        nextTargetScroll * NON_DESKTOP_OVERLAY_HIDE_SCROLL_RATIO,
+        getNonDesktopLandingReserveHeight(nextTargetScroll),
       )
     }
 
@@ -688,9 +730,17 @@ export default function HomeLandingAboutExperience({ children }: Props) {
   const statusY = hasTouchInput ? 32 * (1 - statusProgress) : 0
   const firstButtonY = 28 * (1 - easedFirstButtonProgress)
   const secondButtonY = 28 * (1 - easedSecondButtonProgress)
+  const isPhoneLandingViewport =
+    viewportWidth > 0 && viewportWidth < BREAKPOINTS.tablet
   const curveEntranceProgress = prefersReducedMotion
     ? 1
-    : easeOutQuint(clamp01(curveRevealScrollY / CURVE_ENTRANCE_DISTANCE_IN_PX))
+    : isPhoneLandingViewport
+      ? easeOutQuint(
+          clamp01(curveProgress / PHONE_CURVE_ENTRANCE_PROGRESS_END),
+        )
+      : easeOutQuint(
+          clamp01(curveRevealScrollY / CURVE_ENTRANCE_DISTANCE_IN_PX),
+        )
 
   const targetStartPoint = getInterpolatedValue(90, 0, curveProgress)
   const targetFirstControlPoint = getInterpolatedValue(60, 0, curveProgress)
