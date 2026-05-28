@@ -2,7 +2,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
-import selfie from "@/public/images/selfie-no-background.png"
+import selfieOutlined from "@/public/images/selfie-no-background-outlined-wide-padded-focus-orange.png"
 import { TypeAnimation } from "react-type-animation"
 import {
   motion,
@@ -43,7 +43,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
   }
 
   const { colorMode } = themeContext
-  const heroPortrait = selfie
+  const heroPortrait = selfieOutlined
   const portraitImageClass =
     "h-full w-full object-contain object-bottom scale-[1.08]"
 
@@ -183,7 +183,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
                   alt={t("imageAlt")}
                   fill
                   sizes="(min-width: 1280px) 960px, (min-width: 1024px) 50vw, (min-width: 768px) 40vw, 72vw"
-                  className="h-full w-full object-contain object-bottom"
+                  className={portraitImageClass}
                   priority
                 />
               </div>

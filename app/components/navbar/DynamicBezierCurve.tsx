@@ -29,6 +29,8 @@ const easeInOutQuint = (value: number) =>
 const mix = (from: number, to: number, progress: number) =>
   from * (1 - progress) + to * progress
 const isMobileCurveViewport = (width: number) => width < BREAKPOINTS.tablet
+const HOME_LANDING_FINAL_ANCHOR_SELECTOR =
+  "[data-home-landing-final-anchor]"
 
 const getProgressBetween = (value: number, start: number, end: number) => {
   if (end <= start) return value >= end ? 1 : 0
@@ -136,6 +138,7 @@ const DynamicBezierCurve = ({ children, mirrorCurve = false }: Props) => {
   const nodeRef = useRef(null)
   const rootAnchorRef = useRef<HTMLDivElement>(null)
   const nonDesktopCurveTargetScrollRef = useRef<number | null>(null)
+  const nonDesktopHeroFinalAnchorOffsetRef = useRef<number | null>(null)
   const mobileAutoFrameRef = useRef<number>()
   const mobileAutoSettleFrameRef = useRef<number>()
   const mobileAutoDirectionRef = useRef<"forward" | "reverse" | null>(null)
@@ -153,6 +156,7 @@ const DynamicBezierCurve = ({ children, mirrorCurve = false }: Props) => {
 
   const SCROLLABLE_HEIGHT_IN_VH = 100
   const NON_DESKTOP_STICKY_TOP_IN_PX = 56
+  const NON_DESKTOP_HERO_FINAL_GAP_IN_PX = 18
   const DESKTOP_CURVE_FLATTEN_SCROLL_RATIO = 0.92
   const DESKTOP_HERO_LAYER_HIDE_SCROLL_RATIO = 0.995
   const NON_DESKTOP_HERO_LAYER_FADE_START_SCROLL_RATIO = 0.7
@@ -190,6 +194,68 @@ const DynamicBezierCurve = ({ children, mirrorCurve = false }: Props) => {
 
     return window.scrollY + anchorRect.top
   }, [])
+
+  const captureNonDesktopHeroFinalAnchorOffset = useCallback(
+    (componentTopInDocument: number) => {
+      const fallbackEntranceScroll =
+        componentTopInDocument - NON_DESKTOP_STICKY_TOP_IN_PX
+
+      if (
+        nonDesktopHeroFinalAnchorOffsetRef.current !== null &&
+        window.scrollY >= fallbackEntranceScroll
+      ) {
+        return nonDesktopHeroFinalAnchorOffsetRef.current
+      }
+
+      const finalAnchors = Array.from(
+        document.querySelectorAll<HTMLElement>(
+          HOME_LANDING_FINAL_ANCHOR_SELECTOR
+        )
+      )
+      const finalAnchor = finalAnchors.find((anchor) => {
+        const rect = anchor.getBoundingClientRect()
+
+        return rect.width > 0 || rect.height > 0
+      })
+
+      if (!finalAnchor) return nonDesktopHeroFinalAnchorOffsetRef.current
+
+      const rect = finalAnchor.getBoundingClientRect()
+      const nextOffset = window.scrollY + rect.top - componentTopInDocument
+
+      if (Number.isFinite(nextOffset) && nextOffset > 0) {
+        nonDesktopHeroFinalAnchorOffsetRef.current = nextOffset
+      }
+
+      return nonDesktopHeroFinalAnchorOffsetRef.current
+    },
+    [NON_DESKTOP_STICKY_TOP_IN_PX]
+  )
+
+  const getNonDesktopHeroEntranceScroll = useCallback(
+    (componentTopInDocument: number) => {
+      const fallbackEntranceScroll =
+        componentTopInDocument - NON_DESKTOP_STICKY_TOP_IN_PX
+      const finalAnchorOffset = captureNonDesktopHeroFinalAnchorOffset(
+        componentTopInDocument
+      )
+
+      if (finalAnchorOffset === null) return fallbackEntranceScroll
+
+      return Math.max(
+        componentTopInDocument +
+          finalAnchorOffset -
+          NON_DESKTOP_STICKY_TOP_IN_PX -
+          NON_DESKTOP_HERO_FINAL_GAP_IN_PX,
+        fallbackEntranceScroll
+      )
+    },
+    [
+      NON_DESKTOP_HERO_FINAL_GAP_IN_PX,
+      NON_DESKTOP_STICKY_TOP_IN_PX,
+      captureNonDesktopHeroFinalAnchorOffset,
+    ]
+  )
 
   const cancelMobileAutoScroll = useCallback(() => {
     if (mobileAutoFrameRef.current !== undefined) {
@@ -344,9 +410,9 @@ const DynamicBezierCurve = ({ children, mirrorCurve = false }: Props) => {
 
     return {
       endScroll: liveEndScroll ?? componentTopInDocument + targetScroll,
-      startScroll: componentTopInDocument - NON_DESKTOP_STICKY_TOP_IN_PX,
+      startScroll: getNonDesktopHeroEntranceScroll(componentTopInDocument),
     }
-  }, [NON_DESKTOP_STICKY_TOP_IN_PX, getComponentTopInDocument])
+  }, [getComponentTopInDocument, getNonDesktopHeroEntranceScroll])
 
   const maybeStartMobileAutoCurve = useCallback(
     (
@@ -501,6 +567,7 @@ const DynamicBezierCurve = ({ children, mirrorCurve = false }: Props) => {
       }
 
       const componentTopInDocument = getComponentTopInDocument()
+      captureNonDesktopHeroFinalAnchorOffset(componentTopInDocument)
 
       // Follow the first section after the hero so adding new blocks above the
       // summary doesn't delay the curve handoff on tablet/mobile.
@@ -546,7 +613,7 @@ const DynamicBezierCurve = ({ children, mirrorCurve = false }: Props) => {
     return () => {
       window.removeEventListener("resize", captureNonDesktopCurveTarget)
     }
-  }, [getComponentTopInDocument])
+  }, [captureNonDesktopHeroFinalAnchorOffset, getComponentTopInDocument])
 
   useEffect(() => {
     const handleScroll = () => {
@@ -559,7 +626,7 @@ const DynamicBezierCurve = ({ children, mirrorCurve = false }: Props) => {
       const isMobileCurve = isMobileCurveViewport(viewportWidth)
       const heroEntranceScroll = isDesktop
         ? componentTopInDocument
-        : componentTopInDocument - NON_DESKTOP_STICKY_TOP_IN_PX
+        : getNonDesktopHeroEntranceScroll(componentTopInDocument)
       const curveRevealStartScroll = heroEntranceScroll
       const hasEnteredCurve = window.scrollY >= heroEntranceScroll
       const curveEnteredPixels = Math.max(
@@ -567,7 +634,7 @@ const DynamicBezierCurve = ({ children, mirrorCurve = false }: Props) => {
         0
       )
       const pixelsScrolled = hasEnteredCurve
-        ? Math.max(window.scrollY - componentTopInDocument, 0)
+        ? Math.max(window.scrollY - heroEntranceScroll, 0)
         : 0
       const revealViewportSpan = isDesktop
         ? windowHeight
@@ -597,11 +664,16 @@ const DynamicBezierCurve = ({ children, mirrorCurve = false }: Props) => {
 
       if (!isDesktop) {
         const mobileCurveBounds = isMobileCurve ? getMobileCurveBounds() : null
-        const nonDesktopTargetScroll =
+        const nonDesktopEndScroll =
           mobileCurveBounds !== null
-            ? mobileCurveBounds.endScroll - componentTopInDocument
-            : nonDesktopCurveTargetScrollRef.current ??
-              Math.max(windowHeight - NON_DESKTOP_STICKY_TOP_IN_PX, 1)
+            ? mobileCurveBounds.endScroll
+            : componentTopInDocument +
+              (nonDesktopCurveTargetScrollRef.current ??
+                Math.max(windowHeight - NON_DESKTOP_STICKY_TOP_IN_PX, 1))
+        const nonDesktopTargetScroll = Math.max(
+          nonDesktopEndScroll - heroEntranceScroll,
+          1
+        )
         const nonDesktopProgress = pixelsScrolled / nonDesktopTargetScroll
         setScrolledInVh(clamp(nonDesktopProgress) * 100)
         ratio = clamp(ADJUSTED_SCROLL_COEFFICIENT * nonDesktopProgress)
@@ -647,6 +719,7 @@ const DynamicBezierCurve = ({ children, mirrorCurve = false }: Props) => {
   }, [
     getComponentTopInDocument,
     getMobileCurveBounds,
+    getNonDesktopHeroEntranceScroll,
     maybeStartMobileAutoCurve,
   ])
 
