@@ -1,21 +1,20 @@
 "use client"
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 import DesktopNav from "./components/navbar/DesktopNav"
 import MobileNav from "./components/navbar/MobileNav"
-import { useScrollableStore } from "./service/Store"
 import { cn } from "@/lib/utils"
 import { isDesktopViewport } from "./lib/responsive"
 import { usePathname } from "@/app/i18n/navigation"
+import { useTheme } from "@/app/hooks/useTheme"
+import { colorMode } from "@/app/context/DarkModeContext"
 
 const NavBar = () => {
   const [windowWidth, setWindowWidth] = useState<number>(0)
-  const [scrolled, setScrolled] = useState(false)
-  const isInScrollable = useScrollableStore((state) => state.isInScrollable)
-  const scrollableSources = useScrollableStore((state) => state.scrollableSources)
   const pathname = usePathname()
-  const isIndexPage = pathname === "/"
-  const isIndexMode = isIndexPage && Boolean(scrollableSources["home-landing"])
-  const isIndexContentMode = isIndexPage && !isIndexMode
+  const isHomepage = pathname === "/"
+  const { setColorMode } = useTheme()
+  const prevHomepageRef = useRef(false)
+  const savedModeRef = useRef<colorMode | null>(null)
 
   const updateWindowValue = useCallback(() => {
     setWindowWidth(window.innerWidth)
@@ -31,17 +30,16 @@ const NavBar = () => {
   }, [updateWindowValue])
 
   useEffect(() => {
-    if (!isIndexMode) {
-      setScrolled(false)
-      return
+    if (isHomepage) {
+      if (!prevHomepageRef.current) {
+        savedModeRef.current = (window.localStorage.getItem("color-mode") as colorMode) || "dark"
+      }
+      setColorMode("dark")
+    } else if (prevHomepageRef.current && savedModeRef.current) {
+      setColorMode(savedModeRef.current)
     }
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 40)
-    }
-    handleScroll()
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [isIndexMode])
+    prevHomepageRef.current = isHomepage
+  }, [isHomepage, setColorMode])
 
   if (windowWidth === 0) {
     return null
@@ -49,25 +47,15 @@ const NavBar = () => {
 
   return (
     <nav
-      data-index-nav={isIndexMode || undefined}
-      data-scrolled={scrolled || undefined}
       className={cn(
         "!fixed inset-x-0 top-0 z-[1200] border-b transition-all duration-300",
-        isIndexMode
-          ? scrolled
-            ? "border-sky-100/25 bg-sky-900/78 backdrop-blur-xl shadow-none"
-            : "border-transparent bg-transparent shadow-none"
-          : isIndexContentMode
-            ? "pixel-panel border-border/70 bg-background"
-          : isInScrollable
-            ? "pixel-panel border-border bg-card"
-            : "pixel-panel border-border/70 bg-background"
+        "pixel-panel border-border/70 bg-background"
       )}
     >
       {isDesktopViewport(windowWidth) ? (
-        <DesktopNav indexMode={isIndexMode} />
+        <DesktopNav indexMode={isHomepage} />
       ) : (
-        <MobileNav indexMode={isIndexMode} />
+        <MobileNav indexMode={isHomepage} />
       )}
     </nav>
   )

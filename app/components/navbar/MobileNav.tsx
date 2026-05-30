@@ -15,6 +15,7 @@ const MobileNav = ({ indexMode = false }: { indexMode?: boolean }) => {
   const currentPath = usePathname()
   const links = useMemo(
     () => [
+      { label: t("aboutMe"), href: "/" },
       { label: t("blogs"), href: "/articles" },
       { label: t("ai"), href: "/ai" },
       { label: t("contact"), href: "/contact" },
@@ -69,7 +70,7 @@ const MobileNav = ({ indexMode = false }: { indexMode?: boolean }) => {
       {/* Right: Controls */}
       <div className="flex items-center gap-1">
         <LanguageToggle className={indexClass} />
-        <ThemeToggle className={indexClass} />
+        {!indexMode && <ThemeToggle className={indexClass} />}
       </div>
     </div>
   )

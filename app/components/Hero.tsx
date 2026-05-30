@@ -95,7 +95,6 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
         ref={spotlightRef}
         className="relative min-h-[35rem] overflow-hidden px-5 pb-8 pt-10 min-[390px]:min-h-[38rem] min-[480px]:min-h-[40rem] sm:px-8 sm:pb-10 sm:pt-12 md:min-h-0 md:px-6 md:pb-16 md:pt-20 lg:px-14 lg:pb-20 lg:pt-24"
         id="about-me-section"
-        data-home-landing-target-anchor
       >
         {showBackLink ? (
           <Link
@@ -132,7 +131,6 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
           >
             <div className="max-w-[11.5rem] space-y-4 min-[390px]:max-w-[12.25rem] min-[480px]:max-w-[14rem] sm:max-w-[15rem] md:w-[18rem] md:max-w-none md:space-y-6 lg:w-[24rem] xl:w-[26rem]">
               <motion.h1
-                data-home-landing-final-anchor
                 className={cn(
                   bebasNeue.className,
                   "relative top-14  md:top-14 lg:top-2 md:left-0 lg:-left-14 lg:ml-10 whitespace-nowrap text-[clamp(4.8rem,15vw,6rem)] font-black uppercase leading-[0.92] tracking-[0.03em] text-foreground md:text-[clamp(5rem,13vw,7.1rem)] lg:text-[clamp(8.0rem,10vw,8.8rem)]",
@@ -199,7 +197,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
             }}
             className="max-[767px]:hidden absolute right-0 top-[14.25rem] z-30 flex w-[8.75rem] justify-end min-[390px]:top-[15rem] min-[390px]:w-[9.75rem] min-[480px]:top-[15.75rem] min-[480px]:w-[11.5rem] md:relative md:right-auto md:top-auto md:col-span-4 md:mt-0 md:w-auto md:pt-24 lg:col-span-4 lg:justify-start lg:pt-0 lg:pb-6"
           >
-            <div className="w-full md:w-[316px] md:translate-x-2 lg:w-[364px] lg:-translate-x-8 lg:translate-y-32 xl:w-[300px] xl:-translate-x-10 xl:translate-y-36 2xl:w-[508px]">
+            <div className="w-full md:w-[316px] md:translate-x-2 lg:w-[364px] lg:-translate-x-8 lg:translate-y-32 xl:w-[500px] xl:-translate-x-10 xl:translate-y-36 2xl:w-[508px]">
               <div className="mb-2 flex items-center justify-between border-b border-border/50 pb-1.5 font-pixel text-[5px] uppercase tracking-[0.18em] text-muted-foreground min-[390px]:text-[6px] min-[480px]:text-[7px] md:mb-3 md:pb-2 md:text-[9px] md:tracking-[0.22em]">
                 <span>Profile Snapshot</span>
                 <span>coder.ts</span>

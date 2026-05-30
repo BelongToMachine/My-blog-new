@@ -55,7 +55,7 @@ export default async function ProjectsSection() {
 
   return (
     <section className="mb-10 space-y-5 md:mb-14 md:space-y-6">
-      <div data-curve-target-anchor data-projects-heading-anchor>
+      <div>
         <SectionHeading title={t("heading")} align="left" className="mb-0" />
       </div>
 
@@ -125,7 +125,7 @@ function ProjectFeatureCard({
 }) {
   return (
     <article
-      className="pixel-panel panel-grid overflow-hidden border border-border/80 bg-card/88 p-6 transition-colors duration-200 hover:border-primary/50 md:p-8 lg:p-10"
+      className="pixel-panel overflow-hidden border border-border/80 bg-card/88 p-6 transition-colors duration-200 hover:border-primary/50 md:p-8 lg:p-10"
     >
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border/60 pb-5">
         <div className="space-y-3">
@@ -207,7 +207,7 @@ function ProjectSupportCard({
 }) {
   return (
     <article
-      className="pixel-panel panel-grid overflow-hidden border border-border/80 bg-card/88 p-6 transition-colors duration-200 hover:border-primary/50 md:p-7"
+      className="pixel-panel overflow-hidden border border-border/80 bg-card/88 p-6 transition-colors duration-200 hover:border-primary/50 md:p-7"
     >
       <div className="flex items-start justify-between gap-4 border-b border-border/60 pb-4">
         <div className="space-y-3">
