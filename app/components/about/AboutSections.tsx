@@ -38,10 +38,15 @@ export default async function AboutSections({
       className={cn(
         "relative z-40 bg-background",
         overlapTop && "-mt-[78px]",
-        pinHeroUnderDesktop &&
-          "max-lg:relative max-lg:border-t-[3px] max-lg:border-solid max-lg:border-border max-lg:shadow-[6px_-6px_0_rgba(0,0,0,0.34)]",
+        pinHeroUnderDesktop && "max-lg:relative",
       )}
     >
+      {pinHeroUnderDesktop ? (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 hidden h-10 -translate-y-full bg-background [clip-path:polygon(0_0,100%_100%,100%_100%,0_100%)] max-lg:block sm:h-12 md:h-16"
+        />
+      ) : null}
       <Container
         className={cn(
           "px-3 pb-16 sm:px-4 md:px-6 md:pb-20 lg:px-8 xl:px-10",

@@ -50,7 +50,9 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
   const typeSequence = t.raw("typeSequence") as string[]
   const code = t.raw("code") as string
   const [typingIndex, setTypingIndex] = useState(0)
-  const [viewportWidth, setViewportWidth] = useState<number>(BREAKPOINTS.desktop)
+  const [viewportWidth, setViewportWidth] = useState<number>(
+    BREAKPOINTS.desktop,
+  )
   const [hasResolvedViewport, setHasResolvedViewport] = useState(false)
   const isEnLongText = locale === "en" && typingIndex === 1
 
@@ -93,7 +95,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
     return (
       <div
         ref={spotlightRef}
-        className="relative min-h-[35rem] overflow-hidden px-5 pb-8 pt-10 min-[390px]:min-h-[38rem] min-[480px]:min-h-[40rem] sm:px-8 sm:pb-10 sm:pt-12 md:min-h-0 md:px-6 md:pb-16 md:pt-20 lg:px-14 lg:pb-20 lg:pt-24"
+        className="relative overflow-hidden min-h-[35rem] min-[390px]:min-h-[38rem] min-[480px]:min-h-[40rem] md:min-h-0 px-5 sm:px-8 md:px-6 lg:px-14 sm:pt-12 md:pt-20 lg:pt-24 pb-8 sm:pb-10 md:pb-16 lg:pb-20"
         id="about-me-section"
       >
         {showBackLink ? (
@@ -106,7 +108,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
           </Link>
         ) : null}
         <motion.div
-          className="pointer-events-none absolute inset-x-0 z-0 flex justify-center min-[480px]:top-20 sm:top-24 md:top-24 lg:top-36 max-[550px]:top-[clamp(5rem,calc(6rem+(550px-100vw)*3rem/230px),8rem)]"
+          className="pointer-events-none absolute inset-x-0 z-0 flex justify-center min-[480px]:top-6 md:top-12 lg:top-36 max-[550px]:top-[clamp(5rem,calc(6rem+(550px-100vw)*3rem/230px),8rem)]"
           style={
             shouldDisableScrollLift
               ? undefined
@@ -127,13 +129,13 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
             initial={{ opacity: 0, x: -18 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-            className="relative z-30 col-span-6 pt-44 min-[550px]:pt-32 min-[580px]:pl-16 md:z-20 md:col-span-4 md:pl-12 md:pt-24 lg:col-span-3 lg:pt-44 lg:pl-24 xl:pt-48 xl:pl-28"
+            className="relative z-30 col-span-6 pt-44 min-[550px]:pt-36 min-[580px]:pl-16 md:z-20 md:col-span-4 md:pl-12 md:pt-24 lg:col-span-3 lg:pt-44 lg:pl-24 xl:pt-48 xl:pl-28"
           >
             <div className="max-w-[11.5rem] space-y-4 min-[390px]:max-w-[12.25rem] min-[480px]:max-w-[14rem] sm:max-w-[15rem] md:w-[18rem] md:max-w-none md:space-y-6 lg:w-[24rem] xl:w-[26rem]">
               <motion.h1
                 className={cn(
                   bebasNeue.className,
-                  "relative top-14  md:top-14 lg:top-2 md:left-0 lg:-left-14 lg:ml-10 whitespace-nowrap text-[clamp(4.8rem,15vw,6rem)] font-black uppercase leading-[0.92] tracking-[0.03em] text-foreground md:text-[clamp(5rem,13vw,7.1rem)] lg:text-[clamp(8.0rem,10vw,8.8rem)]",
+                  "relative top-14  lg:top-2 md:left-0 lg:-left-14 lg:ml-10 whitespace-nowrap text-[clamp(4.8rem,15vw,6rem)] font-black uppercase leading-[0.92] tracking-[0.03em] text-foreground md:text-[clamp(5rem,13vw,7.1rem)] lg:text-[clamp(8.0rem,10vw,8.8rem)]",
                 )}
                 style={
                   shouldDisableScrollLift
@@ -143,7 +145,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
               >
                 I&apos;M JIE
               </motion.h1>
-              <div className="space-y-4 md:max-w-[19rem] lg:-translate-x-2 lg:-translate-y-8 lg:max-w-none lg:space-y-6 xl:-translate-x-3 xl:-translate-y-10">
+              <div className="space-y-4 md:max-w-[19rem] lg:-translate-x-2 translate-y-4 lg:-translate-y-8 lg:max-w-none lg:space-y-6 xl:-translate-x-3 xl:-translate-y-10">
                 <p className="font-pixel text-[11px] min-[390px]:text-[12px] min-[480px]:text-[13px] md:text-base lg:text-base leading-[1.8] tracking-[0.05em] md:tracking-[0.06em] lg:tracking-[0.08em] min-[480px]:max-w-[24ch] sm:max-w-[28ch] md:max-w-[40ch] lg:max-w-[42ch] min-[1101px]:max-w-[48ch] xl:max-w-[42ch] ml-2 lg:-ml-24 mt-10 text-muted-foreground [text-wrap:pretty]">
                   {t("shortIntro")}
                 </p>
@@ -172,7 +174,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
             className="pointer-events-none col-span-6 z-10 md:pointer-events-auto md:col-span-4 md:self-start lg:col-span-5 lg:-mx-2 xl:-mx-4"
           >
             <div
-              className="relative w-[28rem] -translate-x-32 sm:-translate-y-20 md:mx-auto md:w-[25rem] md:-translate-x-14 md:-translate-y-16 lg:w-full lg:translate-x-8 lg:-translate-y-16 lg:max-w-[980px] xl:max-w-[1040px]"
+              className="relative w-[28rem] md:w-[25rem] lg:w-full lg:max-w-[980px] xl:max-w-[1040px] md:mx-auto -translate-x-32 md:-translate-x-14 lg:translate-x-8 sm:-translate-y-10 md:-translate-y-16 lg:-translate-y-12"
               data-mobile-hero-avatar
             >
               <div className="relative aspect-[4/4.7] sm:aspect-[4/5]">

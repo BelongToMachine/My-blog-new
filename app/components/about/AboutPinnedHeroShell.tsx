@@ -216,23 +216,12 @@ export default function AboutPinnedHeroShell({
     <>
       <div ref={rootAnchorRef} aria-hidden className="h-0" />
       <section
-        className="relative lg:hidden"
+        className="relative overflow-hidden lg:hidden"
         style={{
           backgroundColor: "hsl(var(--home-about-bridge))",
         }}
       >
-        <div
-          className="fixed inset-x-0 overflow-hidden"
-          style={{
-            top: "calc(var(--app-nav-offset) - 5rem)",
-            height: "calc(100svh - var(--app-nav-offset) + 5rem)",
-            backgroundColor: "hsl(var(--home-about-bridge))",
-            zIndex: 0,
-          }}
-        >
-          <Container>{hero}</Container>
-        </div>
-        <div aria-hidden className="h-[100svh]" />
+        <Container>{hero}</Container>
       </section>
       <div className="relative hidden lg:block">
         <div
