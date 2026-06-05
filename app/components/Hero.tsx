@@ -74,28 +74,38 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
     !hasResolvedViewport ||
     shouldReduceMotion ||
     viewportWidth < BREAKPOINTS.tablet
+  const welcomeLiftDistance = -200
+  const contentLiftDistance = -60
   const { scrollYProgress } = useScroll({
     target: spotlightRef,
-    offset: ["start end", "end start"],
+    offset: ["start start", "end start"],
   })
-  const welcomeScrollLift = useTransform(scrollYProgress, [0, 1], [0, -38])
-  const titleScrollLift = useTransform(scrollYProgress, [0, 1], [0, -26])
+  const welcomeScrollLift = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [0, welcomeLiftDistance],
+  )
+  const contentScrollLift = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [0, contentLiftDistance],
+  )
   const welcomeLift = useSpring(welcomeScrollLift, {
     stiffness: 118,
     damping: 19,
     mass: 1.02,
   })
-  const titleLift = useSpring(titleScrollLift, {
-    stiffness: 128,
-    damping: 20,
-    mass: 0.98,
+  const contentLift = useSpring(contentScrollLift, {
+    stiffness: 132,
+    damping: 22,
+    mass: 0.96,
   })
 
   if (variant === "spotlight") {
     return (
       <div
         ref={spotlightRef}
-        className="relative overflow-hidden min-h-[35rem] min-[390px]:min-h-[38rem] min-[480px]:min-h-[40rem] md:min-h-0 px-5 sm:px-8 md:px-6 lg:px-14 sm:pt-12 md:pt-20 lg:pt-24 pb-8 sm:pb-10 md:pb-16 lg:pb-20"
+        className="relative overflow-hidden min-h-[35rem] min-[390px]:min-h-[38rem] min-[480px]:min-h-[40rem] md:min-h-0 px-5 sm:px-8 md:px-6 lg:px-14 md:pt-16 lg:pt-12 pb-8 sm:pb-10 md:pb-16 lg:pb-20"
         id="about-me-section"
       >
         {showBackLink ? (
@@ -108,7 +118,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
           </Link>
         ) : null}
         <motion.div
-          className="pointer-events-none absolute inset-x-0 z-0 flex justify-center min-[480px]:top-6 md:top-12 lg:top-36 max-[550px]:top-[clamp(5rem,calc(6rem+(550px-100vw)*3rem/230px),8rem)]"
+          className="pointer-events-none absolute inset-x-0 z-0 flex justify-center top-12 min-[480px]:top-6 md:top-12"
           style={
             shouldDisableScrollLift
               ? undefined
@@ -118,7 +128,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
           <span
             className={cn(
               bebasNeue.className,
-              "hero-welcome-mobile-drift inline-block text-[clamp(2.2rem,44vw,17rem)] font-black uppercase leading-none tracking-[0.06em] text-foreground/[0.08] dark:text-foreground/[0.1] [transform:scaleY(1.5) scaleX(1.12)] md:text-[clamp(6.5rem,28vw,17rem)] lg:text-[clamp(6.5rem,26vw,20rem)]",
+              "inline-block text-[clamp(12rem,44vw,17rem)] font-black uppercase leading-none tracking-[0.06em] text-foreground/[0.08] dark:text-foreground/[0.1] [transform:scaleY(1.5) scaleX(1.12)] md:text-[clamp(6.5rem,28vw,17rem)] lg:text-[clamp(6.5rem,26vw,20rem)]",
             )}
           >
             Welcome
@@ -129,6 +139,11 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
             initial={{ opacity: 0, x: -18 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+            style={
+              shouldDisableScrollLift
+                ? undefined
+                : { y: contentLift, willChange: "transform" }
+            }
             className="relative z-30 col-span-6 pt-44 min-[550px]:pt-36 min-[580px]:pl-16 md:z-20 md:col-span-4 md:pl-12 md:pt-24 lg:col-span-3 lg:pt-44 lg:pl-24 xl:pt-48 xl:pl-28"
           >
             <div className="max-w-[11.5rem] space-y-4 min-[390px]:max-w-[12.25rem] min-[480px]:max-w-[14rem] sm:max-w-[15rem] md:w-[18rem] md:max-w-none md:space-y-6 lg:w-[24rem] xl:w-[26rem]">
@@ -137,11 +152,6 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
                   bebasNeue.className,
                   "relative top-14  lg:top-2 md:left-0 lg:-left-14 lg:ml-10 whitespace-nowrap text-[clamp(4.8rem,15vw,6rem)] font-black uppercase leading-[0.92] tracking-[0.03em] text-foreground md:text-[clamp(5rem,13vw,7.1rem)] lg:text-[clamp(8.0rem,10vw,8.8rem)]",
                 )}
-                style={
-                  shouldDisableScrollLift
-                    ? undefined
-                    : { y: titleLift, willChange: "transform" }
-                }
               >
                 I&apos;M JIE
               </motion.h1>
@@ -197,6 +207,11 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
               delay: 0.18,
               ease: [0.22, 1, 0.36, 1],
             }}
+            style={
+              shouldDisableScrollLift
+                ? undefined
+                : { y: contentLift, willChange: "transform" }
+            }
             className="max-[767px]:hidden absolute right-0 top-[14.25rem] z-30 flex w-[8.75rem] justify-end min-[390px]:top-[15rem] min-[390px]:w-[9.75rem] min-[480px]:top-[15.75rem] min-[480px]:w-[11.5rem] md:relative md:right-auto md:top-auto md:col-span-4 md:mt-0 md:w-auto md:pt-24 lg:col-span-4 lg:justify-start lg:pt-0 lg:pb-6"
           >
             <div className="w-full md:w-[316px] md:translate-x-2 lg:w-[364px] lg:-translate-x-8 lg:translate-y-32 xl:w-[500px] xl:-translate-x-10 xl:translate-y-36 2xl:w-[508px]">
