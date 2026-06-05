@@ -6,6 +6,7 @@ import ProjectsSection from "../projects/ProjectsSection"
 import SummaryHeader from "@/app/SummaryHeader"
 import PostSummary from "@/app/PostSummary"
 import AboutPinnedHeroShell from "./AboutPinnedHeroShell"
+import FunFactsSection from "./FunFactsSection"
 
 interface Props {
   locale: string
@@ -13,7 +14,6 @@ interface Props {
   sectionId?: string
   showBackLink?: boolean
   pinHeroUnderDesktop?: boolean
-  mirrorDesktopCurve?: boolean
   heroVariant?: "default" | "spotlight"
 }
 
@@ -23,7 +23,6 @@ export default async function AboutSections({
   sectionId,
   showBackLink = true,
   pinHeroUnderDesktop = false,
-  mirrorDesktopCurve = false,
   heroVariant = "default",
 }: Props) {
   const articles = await getMdxArticleList(locale)
@@ -35,24 +34,21 @@ export default async function AboutSections({
   const content = (
     <section
       id={pinHeroUnderDesktop ? sectionId : undefined}
-      className={cn(
-        "relative z-40 bg-background",
-        overlapTop && "-mt-[78px]",
-        pinHeroUnderDesktop && "max-lg:relative",
-      )}
+      className={cn("relative z-40 bg-background", overlapTop && "-mt-[78px]")}
     >
       {pinHeroUnderDesktop ? (
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 hidden h-10 -translate-y-full bg-background [clip-path:polygon(0_0,100%_100%,100%_100%,0_100%)] max-lg:block sm:h-12 md:h-16"
+          className="pointer-events-none absolute inset-x-0 top-0 block h-10 -translate-y-full bg-background [clip-path:polygon(0_0,100%_100%,100%_100%,0_100%)] sm:h-12 md:h-16 lg:h-20 xl:h-24"
         />
       ) : null}
       <Container
         className={cn(
           "px-3 pb-16 sm:px-4 md:px-6 md:pb-20 lg:px-8 xl:px-10",
-          pinHeroUnderDesktop && "pt-12 sm:pt-14 md:pt-16 lg:pt-0",
+          pinHeroUnderDesktop && "pt-12 sm:pt-14 md:pt-16 lg:pt-16 xl:pt-20",
         )}
       >
+        <FunFactsSection />
         <ProjectsSection />
         <SummaryHeader />
         <PostSummary
@@ -69,7 +65,6 @@ export default async function AboutSections({
     return (
       <AboutPinnedHeroShell
         hero={<Hero showBackLink={showBackLink} variant={heroVariant} />}
-        mirrorDesktopCurve={mirrorDesktopCurve}
       >
         {content}
       </AboutPinnedHeroShell>

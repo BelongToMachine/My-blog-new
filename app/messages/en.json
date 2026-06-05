@@ -174,6 +174,46 @@
       "highlight3": "3-tier Redis rate-limiting with thread-level concurrency lock"
     }
   },
+  "funFacts": {
+    "heading": "Fun facts before the case studies",
+    "description": "A softer intro before the project details: where I am, how to say my name, and a couple of State Street things I helped ship.",
+    "map": {
+      "eyebrow": "Distance mock",
+      "route": "San Francisco -> Hangzhou",
+      "title": "If you're opening this from San Francisco, we're roughly 10,043 km apart.",
+      "body": "This one is intentionally mocked for now, but it sets up the fun idea of showing how far your current location is from mine.",
+      "fromLabel": "My side",
+      "fromValue": "Hangzhou, China",
+      "toLabel": "Mock visitor",
+      "toValue": "San Francisco, CA",
+      "distanceLabel": "Estimated distance",
+      "distanceValue": "10,043 km"
+    },
+    "pronunciation": {
+      "eyebrow": "Say it right",
+      "name": "Jie",
+      "phoneticLabel": "Pronounced",
+      "phonetic": "jee-eh",
+      "body": "Think of it as a clean \"jee\" followed by a quick \"eh\". Short, light, and easy to repeat once you've heard it.",
+      "breakdownLabel": "Quick cue",
+      "breakdownValue": "Start with \"jee\", then let the ending fall off softly.",
+      "audioLabel": "Audio mock"
+    },
+    "stateStreet": {
+      "highlightsLabel": "What I built into it",
+      "cta": "See full case below",
+      "cards": {
+        "financial": {
+          "kicker": "I contributed to",
+          "summary": "the trading platform rewrite, helping split a legacy monolith into independently deployable domains and shaping the draggable dashboard experience."
+        },
+        "uxAgent": {
+          "kicker": "I authored",
+          "summary": "an internal UX Agent that turns product specs into React pages, plus the migration layer that let legacy and MUI systems coexist without breaking callers."
+        }
+      }
+    }
+  },
   "blogs": {
     "mdxTab": "MDX Lab",
     "mdxEyebrow": "POC Feature",

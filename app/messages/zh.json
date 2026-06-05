@@ -174,6 +174,46 @@
       "highlight3": "3 层 Redis 限流 + Thread 级并发锁保障系统稳定性"
     }
   },
+  "funFacts": {
+    "heading": "在项目案例前，先认识我一下",
+    "description": "先用几张轻量卡片热个身：我在哪、我的名字怎么念，以及我在 State Street 做过的两件事。",
+    "map": {
+      "eyebrow": "距离 mock",
+      "route": "旧金山 -> 杭州",
+      "title": "如果你现在在旧金山，我们大概相距 10,043 公里。",
+      "body": "这里先用模拟数据占位，后面可以自然升级成“访客离我多远”的真实距离卡片。",
+      "fromLabel": "我这边",
+      "fromValue": "中国杭州",
+      "toLabel": "模拟访客",
+      "toValue": "美国旧金山",
+      "distanceLabel": "估算距离",
+      "distanceValue": "10,043 公里"
+    },
+    "pronunciation": {
+      "eyebrow": "名字怎么念",
+      "name": "Jie",
+      "phoneticLabel": "读作",
+      "phonetic": "jee-eh",
+      "body": "可以理解成先读一个轻一点的 “jee”，后面快速带出一个 “eh”，整体要短一点、干净一点。",
+      "breakdownLabel": "记忆方式",
+      "breakdownValue": "先发 “jee”，结尾轻轻收住，不要拖长。",
+      "audioLabel": "音频 mock"
+    },
+    "stateStreet": {
+      "highlightsLabel": "我实际做进去的部分",
+      "cta": "下方看完整案例",
+      "cards": {
+        "financial": {
+          "kicker": "我参与了",
+          "summary": "交易平台重构这件事，帮助团队把遗留单体拆成可独立部署的多个 Domain，并把可拖拽的数据看板体验真正做出来。"
+        },
+        "uxAgent": {
+          "kicker": "我主导实现了",
+          "summary": "一套内部 UX Agent，它能把产品需求直接转成 React 页面，同时我也做了新旧组件体系并行迁移的兼容层。"
+        }
+      }
+    }
+  },
   "blogs": {
     "mdxTab": "MDX 实验",
     "mdxEyebrow": "POC 功能",

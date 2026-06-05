@@ -54,7 +54,7 @@ export default async function ProjectsSection() {
   const [featuredProject, ...secondaryProjects] = projects
 
   return (
-    <section className="mb-10 space-y-5 md:mb-14 md:space-y-6">
+    <section id="projects" className="mb-10 space-y-5 md:mb-14 md:space-y-6">
       <div>
         <SectionHeading title={t("heading")} align="left" className="mb-0" />
       </div>
