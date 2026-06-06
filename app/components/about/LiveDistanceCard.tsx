@@ -13,7 +13,17 @@ const cardShell =
   "pixel-panel overflow-hidden border border-border/80 bg-card/88 transition-colors duration-200 hover:border-primary/50"
 
 const mapWidth = 800
-const mapHeight = 420
+const mapHeight = 400
+const worldMapMaskStyle = {
+  WebkitMaskImage: "url('/maps/world-equirectangular.svg')",
+  WebkitMaskPosition: "center",
+  WebkitMaskRepeat: "no-repeat",
+  WebkitMaskSize: "100% 100%",
+  maskImage: "url('/maps/world-equirectangular.svg')",
+  maskPosition: "center",
+  maskRepeat: "no-repeat",
+  maskSize: "100% 100%",
+} as const
 
 type LoadState = "loading" | "ready" | "unavailable"
 
@@ -164,87 +174,108 @@ function DistanceMapGraphic({
       ? projectPoint(visitor.latitude, visitor.longitude)
       : null
 
+  const loadingPoint = projectPoint(37.7749, -122.4194)
   const routePaths = visitorPoint
     ? buildRoutePaths(visitorPoint, homePoint)
-    : []
+    : loadState === "loading"
+      ? buildRoutePaths(loadingPoint, homePoint)
+      : []
 
   return (
-    <svg
-      viewBox={`0 0 ${mapWidth} ${mapHeight}`}
+    <div
       role="img"
       aria-label={ariaLabel}
-      className="h-full w-full"
+      className="relative aspect-[2/1] w-full overflow-hidden bg-[#121b26]"
     >
-      <rect width={mapWidth} height={mapHeight} fill="#cfe6f2" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_12%,rgba(67,92,126,0.2),transparent_30%),linear-gradient(180deg,#192432_0%,#111a25_100%)]" />
+      <div
+        aria-hidden
+        style={worldMapMaskStyle}
+        className="absolute inset-[4.5%_0_4%_0] bg-[#2c3d54] opacity-95"
+      />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-[linear-gradient(180deg,transparent,rgba(9,14,20,0.48))]" />
 
-      <g opacity="0.3" stroke="#97bfd1" strokeWidth="1">
-        <path d="M0 110h800" />
-        <path d="M0 210h800" />
-        <path d="M0 310h800" />
-        <path d="M160 0v420" />
-        <path d="M320 0v420" />
-        <path d="M480 0v420" />
-        <path d="M640 0v420" />
-      </g>
+      <svg
+        viewBox={`0 0 ${mapWidth} ${mapHeight}`}
+        aria-hidden
+        className="absolute inset-0 h-full w-full"
+      >
+        {routePaths.length > 0 ? (
+          <g>
+            {routePaths.map((path) => (
+              <path
+                key={path}
+                d={path}
+                fill="none"
+                stroke="#ff235d"
+                strokeWidth="7"
+                strokeLinecap="round"
+                strokeDasharray="4 16"
+                opacity={loadState === "loading" ? 0.55 : 0.92}
+              />
+            ))}
+          </g>
+        ) : null}
 
-      <g fill="#f6fbff">
-        <path d="M44 78c36-19 97-27 152-17l25 10 31-10 47 15 13 29-17 16-34 6-27 21-58 7-28-20-31 11-29-21-15-4-11-18 8-16z" />
-        <path d="M170 183l22 18 11 37-18 54-20 53-18-8-6-30 9-50 3-35 17-39z" />
-        <path d="M332 95l32-16 34 4 17 17 13-2 15 10-5 17 22 14 29-6 15 21-17 8-30 2-16 17-33 3-12 30 9 46-22 42-48-7-30-51 5-48 17-25-6-26 11-25z" />
-        <path d="M520 92l31-13 83 3 45 20 23-5 40 15-11 21 13 20-18 19-43 8-29 20-41 0-21 17-42 5-35-14-18-29 8-30 21-19-4-22 18-16z" />
-        <path d="M660 275l33 2 24 14-6 20-29 8-35-8-8-18 21-18z" />
-      </g>
+        {visitorPoint ? (
+          <VisitorMarker point={visitorPoint} />
+        ) : loadState === "loading" ? (
+          <VisitorMarker dimmed point={loadingPoint} />
+        ) : null}
 
-      {routePaths.length > 0 ? (
-        <g>
-          {routePaths.map((path) => (
-            <path
-              key={path}
-              d={path}
-              fill="none"
-              stroke="#4d55e2"
-              strokeWidth="7"
-              strokeLinecap="round"
-              strokeDasharray="6 15"
-            />
-          ))}
-        </g>
-      ) : loadState === "loading" ? (
-        <g>
-          <circle cx="108" cy="154" r="18" fill="#f7b500" opacity="0.16" />
-          <circle cx="108" cy="154" r="8" fill="#f7b500" opacity="0.75" />
-          <path
-            d="M108 154C186 124 288 118 398 136"
-            fill="none"
-            stroke="#4d55e2"
-            strokeWidth="7"
-            strokeLinecap="round"
-            strokeDasharray="6 15"
-            opacity="0.45"
-          />
-        </g>
-      ) : null}
-
-      {visitorPoint ? (
-        <PointMarker color="#f7b500" point={visitorPoint} />
-      ) : null}
-
-      <PointMarker color="#00a7d1" point={homePoint} />
-    </svg>
+        <HomePinMarker point={homePoint} />
+      </svg>
+    </div>
   )
 }
 
-function PointMarker({
-  color,
+function VisitorMarker({
+  dimmed = false,
   point,
 }: {
-  color: string
+  dimmed?: boolean
   point: { x: number; y: number }
 }) {
   return (
     <g>
-      <circle cx={point.x} cy={point.y} r="17" fill={color} opacity="0.18" />
-      <circle cx={point.x} cy={point.y} r="8" fill={color} />
+      <circle
+        cx={point.x}
+        cy={point.y}
+        r="18"
+        fill="#ff235d"
+        opacity={dimmed ? 0.14 : 0.22}
+      />
+      <circle
+        cx={point.x}
+        cy={point.y}
+        r="8"
+        fill="#ff235d"
+        opacity={dimmed ? 0.68 : 1}
+      />
+      <circle
+        cx={point.x}
+        cy={point.y}
+        r="3.2"
+        fill="#ffd3df"
+        opacity={dimmed ? 0.7 : 1}
+      />
+    </g>
+  )
+}
+
+function HomePinMarker({ point }: { point: { x: number; y: number } }) {
+  const pinTop = point.y - 24
+
+  return (
+    <g>
+      <ellipse cx={point.x} cy={point.y + 11} rx="8" ry="4.5" fill="#05080d" opacity="0.42" />
+      <path
+        d={`M ${point.x} ${point.y + 2} L ${point.x - 10} ${pinTop + 24} A 22 22 0 1 1 ${point.x + 10} ${pinTop + 24} Z`}
+        fill="#aeb7c0"
+        stroke="#6c7885"
+        strokeWidth="2"
+      />
+      <circle cx={point.x} cy={pinTop + 16} r="9.5" fill="#f7f7f6" />
     </g>
   )
 }
