@@ -10,3 +10,5 @@ To do:
 [ ] Put the fan on the right hand
 
 [ ] Change that cursor pointer to have a specific look, and figure out if the position of the cursor can be changed
+
+[ ] Should make a type of feeling when user finally scroll finsih the first bezier curve (the curve has been completely flattened), what's your point of this finish effect should be like, and also i think after user finish the fist beizer curve scroll the second bezier curve is seamlessly follow up so that user don't have enough time to fully see the hero section

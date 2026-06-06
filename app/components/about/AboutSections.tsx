@@ -5,17 +5,15 @@ import Hero from "../Hero"
 import ProjectsSection from "../projects/ProjectsSection"
 import SummaryHeader from "@/app/SummaryHeader"
 import PostSummary from "@/app/PostSummary"
-import AboutClientShell from "./AboutClientShell"
-import HomeInlinePixelBezier from "../home/HomeInlinePixelBezier"
+import AboutPinnedHeroShell from "./AboutPinnedHeroShell"
+import FunFactsSection from "./FunFactsSection"
 
 interface Props {
   locale: string
   overlapTop?: boolean
   sectionId?: string
   showBackLink?: boolean
-  showBezierCurve?: boolean
-  showInlinePixelBezier?: boolean
-  mirrorBezierCurve?: boolean
+  pinHeroUnderDesktop?: boolean
   heroVariant?: "default" | "spotlight"
 }
 
@@ -24,9 +22,7 @@ export default async function AboutSections({
   overlapTop = false,
   sectionId,
   showBackLink = true,
-  showBezierCurve = false,
-  showInlinePixelBezier = false,
-  mirrorBezierCurve = false,
+  pinHeroUnderDesktop = false,
   heroVariant = "default",
 }: Props) {
   const articles = await getMdxArticleList(locale)
@@ -37,10 +33,22 @@ export default async function AboutSections({
 
   const content = (
     <section
-      id={sectionId}
+      id={pinHeroUnderDesktop ? sectionId : undefined}
       className={cn("relative z-40 bg-background", overlapTop && "-mt-[78px]")}
     >
-      <Container className="px-3 pb-16 sm:px-4 md:px-6 md:pb-20 lg:px-8 xl:px-10">
+      {pinHeroUnderDesktop ? (
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 block h-10 -translate-y-[calc(100%-2px)] bg-background [clip-path:polygon(0_0,100%_100%,100%_100%,0_100%)] sm:h-12 md:h-16 lg:h-20 xl:h-24"
+        />
+      ) : null}
+      <Container
+        className={cn(
+          "px-3 pb-16 sm:px-4 md:px-6 md:pb-20 lg:px-8 xl:px-10",
+          pinHeroUnderDesktop && "pt-12 sm:pt-14 md:pt-16 lg:pt-16 xl:pt-20",
+        )}
+      >
+        <FunFactsSection />
         <ProjectsSection />
         <SummaryHeader />
         <PostSummary
@@ -53,22 +61,15 @@ export default async function AboutSections({
     </section>
   )
 
-  if (showBezierCurve) {
+  if (pinHeroUnderDesktop) {
     return (
-      <AboutClientShell
+      <AboutPinnedHeroShell
         hero={<Hero showBackLink={showBackLink} variant={heroVariant} />}
-        mirrorCurve={mirrorBezierCurve}
       >
         {content}
-      </AboutClientShell>
+      </AboutPinnedHeroShell>
     )
   }
-
-  const contentWithInlineCurve = showInlinePixelBezier ? (
-    <HomeInlinePixelBezier>{content}</HomeInlinePixelBezier>
-  ) : (
-    content
-  )
 
   return (
     <section
@@ -80,7 +81,7 @@ export default async function AboutSections({
           <Hero showBackLink={showBackLink} variant={heroVariant} />
         </Container>
       </div>
-      {contentWithInlineCurve}
+      {content}
     </section>
   )
 }

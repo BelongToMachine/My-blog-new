@@ -71,7 +71,7 @@ export default function Footer() {
   ]
 
   return (
-    <footer className="relative z-40 border-t-4 border-border bg-background/88 backdrop-blur-sm">
+    <footer className="relative z-40 border-t-4 border-border bg-background">
       <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-12 lg:py-14">
         <div className="grid gap-8 md:grid-cols-2 md:gap-x-10 md:gap-y-8 lg:grid-cols-[minmax(0,1.35fr)_minmax(11rem,0.8fr)_minmax(0,1fr)] lg:gap-x-12">
           <div className="space-y-4 border-b-2 border-border/70 pb-8 md:col-span-2 lg:col-span-1 lg:border-b-0 lg:border-r-2 lg:pb-0 lg:pr-10">

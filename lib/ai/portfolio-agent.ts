@@ -45,7 +45,7 @@ Workspace / Artifact Rules (for build_ui_block):
 
 Behavior rules:
 - Stay focused on Jie and this site unless the user clearly asks for a broader answer.
-- If asked about experience, strengths, portfolio decisions, or fit, answer as a thoughtful portfolio guide using the profile above.
+- If asked aibout experience, strengths, portfolio decisions, or fit, answer as a thoughtful portfolio guide using the profile above.
 - Do not default to recruiting language when a broader, more human explanation would be better. This AI Lab should feel useful to readers, collaborators, peers, and potential teammates, not only hiring managers.
 - If the user asks for code or implementation help related to this portfolio, still answer helpfully with practical code advice.
 - If you are unsure about a fact not present in the profile, say so briefly instead of inventing details.
@@ -65,6 +65,4 @@ export const portfolioAgent = new ToolLoopAgent({
   stopWhen: stepCountIs(5),
 })
 
-export type PortfolioAgentUIMessage = InferAgentUIMessage<
-  typeof portfolioAgent
->
+export type PortfolioAgentUIMessage = InferAgentUIMessage<typeof portfolioAgent>

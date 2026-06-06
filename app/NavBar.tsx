@@ -1,21 +1,27 @@
 "use client"
-import React, { useCallback, useEffect, useState } from "react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
+import { useReducedMotion } from "framer-motion"
 import DesktopNav from "./components/navbar/DesktopNav"
 import MobileNav from "./components/navbar/MobileNav"
-import { useScrollableStore } from "./service/Store"
 import { cn } from "@/lib/utils"
 import { isDesktopViewport } from "./lib/responsive"
 import { usePathname } from "@/app/i18n/navigation"
+import { useTheme } from "@/app/hooks/useTheme"
+import { colorMode } from "@/app/context/DarkModeContext"
 
 const NavBar = () => {
   const [windowWidth, setWindowWidth] = useState<number>(0)
-  const [scrolled, setScrolled] = useState(false)
-  const isInScrollable = useScrollableStore((state) => state.isInScrollable)
-  const scrollableSources = useScrollableStore((state) => state.scrollableSources)
+  const [shouldScrollAwayWithHero, setShouldScrollAwayWithHero] =
+    useState(false)
   const pathname = usePathname()
-  const isIndexPage = pathname === "/"
-  const isIndexMode = isIndexPage && Boolean(scrollableSources["home-landing"])
-  const isIndexContentMode = isIndexPage && !isIndexMode
+  const isHomepage = pathname === "/"
+  const shouldReduceMotion = useReducedMotion()
+  const { setColorMode } = useTheme()
+  const prevHomepageRef = useRef(false)
+  const savedModeRef = useRef<colorMode | null>(null)
+  const navRef = useRef<HTMLElement | null>(null)
+  const previousHeroScrollStateRef = useRef(false)
+  const reentryAnimationRef = useRef<Animation | null>(null)
 
   const updateWindowValue = useCallback(() => {
     setWindowWidth(window.innerWidth)
@@ -31,17 +37,101 @@ const NavBar = () => {
   }, [updateWindowValue])
 
   useEffect(() => {
-    if (!isIndexMode) {
-      setScrolled(false)
+    if (isHomepage) {
+      if (!prevHomepageRef.current) {
+        savedModeRef.current =
+          (window.localStorage.getItem("color-mode") as colorMode) || "dark"
+      }
+      setColorMode("dark")
+    } else if (prevHomepageRef.current && savedModeRef.current) {
+      setColorMode(savedModeRef.current)
+    }
+    prevHomepageRef.current = isHomepage
+  }, [isHomepage, setColorMode])
+
+  useEffect(() => {
+    if (!isHomepage) {
+      setShouldScrollAwayWithHero(false)
       return
     }
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 40)
+
+    let frameId = 0
+
+    const syncNavbarVisibility = () => {
+      frameId = 0
+
+      const heroSection = document.getElementById("about-me-section")
+
+      if (!heroSection) {
+        setShouldScrollAwayWithHero(false)
+        return
+      }
+
+      const heroBounds = heroSection.getBoundingClientRect()
+      const hasStartedScrolling = window.scrollY > 0
+      const isStillInsideHero = heroBounds.bottom > 0
+
+      setShouldScrollAwayWithHero(hasStartedScrolling && isStillInsideHero)
     }
-    handleScroll()
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [isIndexMode])
+
+    const requestVisibilitySync = () => {
+      if (frameId) return
+      frameId = window.requestAnimationFrame(syncNavbarVisibility)
+    }
+
+    syncNavbarVisibility()
+    window.addEventListener("scroll", requestVisibilitySync, { passive: true })
+    window.addEventListener("resize", requestVisibilitySync)
+
+    return () => {
+      if (frameId) {
+        window.cancelAnimationFrame(frameId)
+      }
+      window.removeEventListener("scroll", requestVisibilitySync)
+      window.removeEventListener("resize", requestVisibilitySync)
+    }
+  }, [isHomepage])
+
+  useEffect(() => {
+    const wasScrollingAwayWithHero = previousHeroScrollStateRef.current
+    previousHeroScrollStateRef.current = shouldScrollAwayWithHero
+
+    if (
+      !isHomepage ||
+      shouldReduceMotion ||
+      shouldScrollAwayWithHero ||
+      !wasScrollingAwayWithHero ||
+      window.scrollY <= 0
+    ) {
+      return
+    }
+
+    reentryAnimationRef.current?.cancel()
+
+    const navElement = navRef.current
+
+    if (!navElement) {
+      return
+    }
+
+    const animation = navElement.animate(
+      [
+        { opacity: 0, transform: "translateY(-10px)" },
+        { opacity: 1, transform: "translateY(0)" },
+      ],
+      {
+        duration: 260,
+        easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+        fill: "both",
+      },
+    )
+
+    reentryAnimationRef.current = animation
+
+    return () => {
+      animation.cancel()
+    }
+  }, [isHomepage, shouldReduceMotion, shouldScrollAwayWithHero])
 
   if (windowWidth === 0) {
     return null
@@ -49,25 +139,16 @@ const NavBar = () => {
 
   return (
     <nav
-      data-index-nav={isIndexMode || undefined}
-      data-scrolled={scrolled || undefined}
+      ref={navRef}
       className={cn(
-        "!fixed inset-x-0 top-0 z-[1200] border-b transition-all duration-300",
-        isIndexMode
-          ? scrolled
-            ? "border-sky-100/25 bg-sky-900/78 backdrop-blur-xl shadow-none"
-            : "border-transparent bg-transparent shadow-none"
-          : isIndexContentMode
-            ? "pixel-panel border-border/70 bg-background"
-          : isInScrollable
-            ? "pixel-panel border-border bg-card"
-            : "pixel-panel border-border/70 bg-background"
+        "inset-x-0 top-0 z-[1200] bg-[hsl(var(--home-about-bridge))] shadow-[var(--shadow-elevated)]",
+        shouldScrollAwayWithHero ? "!absolute" : "!fixed",
       )}
     >
       {isDesktopViewport(windowWidth) ? (
-        <DesktopNav indexMode={isIndexMode} />
+        <DesktopNav indexMode={isHomepage} />
       ) : (
-        <MobileNav indexMode={isIndexMode} />
+        <MobileNav indexMode={isHomepage} />
       )}
     </nav>
   )

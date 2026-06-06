@@ -1,8 +1,8 @@
 "use client"
-import React, { useContext, useRef, useState } from "react"
+import React, { useContext, useEffect, useRef, useState } from "react"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
-import selfie from "@/public/images/selfie-no-background.png"
+import selfieOutlined from "@/public/images/selfie-no-background-outlined-wide-padded-focus-orange.png"
 import { TypeAnimation } from "react-type-animation"
 import {
   motion,
@@ -17,6 +17,7 @@ import { useLocale, useTranslations } from "next-intl"
 import { FloatingPixelAssistant } from "./PixelAssistantPreview"
 import { Link } from "@/app/i18n/navigation"
 import localFont from "next/font/local"
+import { BREAKPOINTS } from "@/app/lib/responsive"
 
 const bebasNeue = localFont({
   src: "../../public/fonts/bebas-neue/BebasNeue-Regular.woff2",
@@ -42,38 +43,67 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
   }
 
   const { colorMode } = themeContext
-  const heroPortrait = selfie
+  const heroPortrait = selfieOutlined
   const portraitImageClass =
     "h-full w-full object-contain object-bottom scale-[1.08]"
 
   const typeSequence = t.raw("typeSequence") as string[]
   const code = t.raw("code") as string
   const [typingIndex, setTypingIndex] = useState(0)
+  const [viewportWidth, setViewportWidth] = useState<number>(
+    BREAKPOINTS.desktop,
+  )
+  const [hasResolvedViewport, setHasResolvedViewport] = useState(false)
   const isEnLongText = locale === "en" && typingIndex === 1
+
+  useEffect(() => {
+    const updateViewportWidth = () => {
+      setViewportWidth(window.innerWidth)
+      setHasResolvedViewport(true)
+    }
+
+    updateViewportWidth()
+    window.addEventListener("resize", updateViewportWidth)
+
+    return () => {
+      window.removeEventListener("resize", updateViewportWidth)
+    }
+  }, [])
+
+  const shouldDisableScrollLift = !hasResolvedViewport || shouldReduceMotion
+  const welcomeLiftDistance = -120
+  const contentLiftDistance = -80
   const { scrollYProgress } = useScroll({
     target: spotlightRef,
-    offset: ["start end", "end start"],
+    offset: ["start start", "end start"],
   })
-  const welcomeScrollLift = useTransform(scrollYProgress, [0, 1], [0, -38])
-  const titleScrollLift = useTransform(scrollYProgress, [0, 1], [0, -26])
+  const welcomeScrollLift = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [0, welcomeLiftDistance],
+  )
+  const contentScrollLift = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [0, contentLiftDistance],
+  )
   const welcomeLift = useSpring(welcomeScrollLift, {
     stiffness: 118,
     damping: 19,
     mass: 1.02,
   })
-  const titleLift = useSpring(titleScrollLift, {
-    stiffness: 128,
-    damping: 20,
-    mass: 0.98,
+  const contentLift = useSpring(contentScrollLift, {
+    stiffness: 132,
+    damping: 22,
+    mass: 0.96,
   })
 
   if (variant === "spotlight") {
     return (
       <div
         ref={spotlightRef}
-        className="relative min-h-[35rem] overflow-hidden px-5 pb-8 pt-10 min-[390px]:min-h-[38rem] min-[480px]:min-h-[40rem] sm:px-8 sm:pb-10 sm:pt-12 md:min-h-0 md:px-6 md:pb-16 md:pt-20 lg:px-14 lg:pb-20 lg:pt-24"
+        className="relative overflow-hidden min-h-[35rem] min-[390px]:min-h-[38rem] min-[480px]:min-h-[40rem] md:min-h-0 lg:min-h-[calc(100svh-var(--app-nav-offset))] px-5 sm:px-8 md:px-6 lg:px-14 md:pt-16 lg:pt-[clamp(4rem,9svh,9rem)] pb-8 sm:pb-10 md:pb-16 lg:pb-[clamp(6rem,14svh,14rem)]"
         id="about-me-section"
-        data-home-landing-target-anchor
       >
         {showBackLink ? (
           <Link
@@ -85,9 +115,9 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
           </Link>
         ) : null}
         <motion.div
-          className="pointer-events-none absolute inset-x-0 z-0 flex justify-center min-[480px]:top-20 sm:top-24 md:top-24 lg:top-36 max-[550px]:top-[clamp(5rem,calc(6rem+(550px-100vw)*3rem/230px),8rem)]"
+          className="pointer-events-none absolute inset-x-0 z-0 flex justify-center top-24 min-[480px]:top-20 md:top-12"
           style={
-            shouldReduceMotion
+            shouldDisableScrollLift
               ? undefined
               : { y: welcomeLift, willChange: "transform" }
           }
@@ -95,7 +125,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
           <span
             className={cn(
               bebasNeue.className,
-              "hero-welcome-mobile-drift inline-block text-[clamp(2.2rem,44vw,17rem)] font-black uppercase leading-none tracking-[0.06em] text-foreground/[0.08] dark:text-foreground/[0.1] [transform:scaleY(1.5) scaleX(1.12)] md:text-[clamp(6.5rem,28vw,17rem)] lg:text-[clamp(6.5rem,26vw,20rem)]",
+              "hero-welcome-mobile-drift inline-block origin-top text-[clamp(10.5rem,40vw,13rem)] font-normal uppercase leading-[0.8] tracking-[0.04em] text-foreground/[0.12] [font-synthesis-weight:none] subpixel-antialiased dark:text-foreground/[0.14] md:text-[clamp(6.5rem,28vw,17rem)] md:font-black md:leading-none md:tracking-[0.06em] md:text-foreground/[0.08] md:[font-synthesis-weight:auto] md:antialiased md:dark:text-foreground/[0.1] md:scale-x-[1.12] md:scale-y-[1.5] lg:text-[clamp(6.5rem,26vw,18rem)]",
             )}
           >
             Welcome
@@ -106,23 +136,23 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
             initial={{ opacity: 0, x: -18 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-            className="relative z-30 col-span-6 pt-44 min-[550px]:pt-32 min-[580px]:pl-16 md:z-20 md:col-span-4 md:pl-12 md:pt-24 lg:col-span-3 lg:pt-44 lg:pl-24 xl:pt-48 xl:pl-28"
+            style={
+              shouldDisableScrollLift
+                ? undefined
+                : { y: contentLift, willChange: "transform" }
+            }
+            className="relative z-30 col-span-6 pt-44 min-[550px]:pt-36 min-[580px]:pl-16 md:z-20 md:col-span-4 md:pl-12 md:pt-24 lg:col-span-3 lg:pt-44 lg:pl-24 xl:pt-48 xl:pl-28"
           >
             <div className="max-w-[11.5rem] space-y-4 min-[390px]:max-w-[12.25rem] min-[480px]:max-w-[14rem] sm:max-w-[15rem] md:w-[18rem] md:max-w-none md:space-y-6 lg:w-[24rem] xl:w-[26rem]">
               <motion.h1
                 className={cn(
                   bebasNeue.className,
-                  "relative top-14  md:top-14 lg:top-2 md:left-0 lg:-left-14 lg:ml-10 whitespace-nowrap text-[clamp(4.8rem,15vw,6rem)] font-black uppercase leading-[0.92] tracking-[0.03em] text-foreground md:text-[clamp(5rem,13vw,7.1rem)] lg:text-[clamp(8.0rem,10vw,8.8rem)]",
+                  "relative top-14  lg:top-2 md:left-0 lg:-left-14 lg:ml-10 whitespace-nowrap text-[clamp(4.8rem,15vw,6rem)] font-black uppercase leading-[0.92] tracking-[0.03em] text-foreground md:text-[clamp(5rem,13vw,7.1rem)] lg:text-[clamp(8.0rem,10vw,8.8rem)]",
                 )}
-                style={
-                  shouldReduceMotion
-                    ? undefined
-                    : { y: titleLift, willChange: "transform" }
-                }
               >
                 I&apos;M JIE
               </motion.h1>
-              <div className="space-y-4 md:max-w-[19rem] lg:-translate-x-2 lg:-translate-y-8 lg:max-w-none lg:space-y-6 xl:-translate-x-3 xl:-translate-y-10">
+              <div className="space-y-4 md:max-w-[19rem] lg:-translate-x-2 translate-y-4 lg:-translate-y-8 lg:max-w-none lg:space-y-6 xl:-translate-x-3 xl:-translate-y-10">
                 <p className="font-pixel text-[11px] min-[390px]:text-[12px] min-[480px]:text-[13px] md:text-base lg:text-base leading-[1.8] tracking-[0.05em] md:tracking-[0.06em] lg:tracking-[0.08em] min-[480px]:max-w-[24ch] sm:max-w-[28ch] md:max-w-[40ch] lg:max-w-[42ch] min-[1101px]:max-w-[48ch] xl:max-w-[42ch] ml-2 lg:-ml-24 mt-10 text-muted-foreground [text-wrap:pretty]">
                   {t("shortIntro")}
                 </p>
@@ -151,7 +181,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
             className="pointer-events-none col-span-6 z-10 md:pointer-events-auto md:col-span-4 md:self-start lg:col-span-5 lg:-mx-2 xl:-mx-4"
           >
             <div
-              className="relative w-[28rem] -translate-x-32 sm:-translate-y-20 md:mx-auto md:w-[25rem] md:-translate-x-14 md:-translate-y-16 lg:w-full lg:translate-x-8 lg:-translate-y-16 lg:max-w-[980px] xl:max-w-[1040px]"
+              className="relative w-[28rem] md:w-[25rem] lg:w-full lg:max-w-[980px] xl:max-w-[1040px] md:mx-auto -translate-x-32 md:-translate-x-14 lg:translate-x-8 sm:-translate-y-10 md:-translate-y-16 lg:-translate-y-12"
               data-mobile-hero-avatar
             >
               <div className="relative aspect-[4/4.7] sm:aspect-[4/5]">
@@ -160,7 +190,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
                   alt={t("imageAlt")}
                   fill
                   sizes="(min-width: 1280px) 960px, (min-width: 1024px) 50vw, (min-width: 768px) 40vw, 72vw"
-                  className="h-full w-full object-contain object-bottom"
+                  className={portraitImageClass}
                   priority
                 />
               </div>
@@ -174,9 +204,14 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
               delay: 0.18,
               ease: [0.22, 1, 0.36, 1],
             }}
+            style={
+              shouldDisableScrollLift
+                ? undefined
+                : { y: contentLift, willChange: "transform" }
+            }
             className="max-[767px]:hidden absolute right-0 top-[14.25rem] z-30 flex w-[8.75rem] justify-end min-[390px]:top-[15rem] min-[390px]:w-[9.75rem] min-[480px]:top-[15.75rem] min-[480px]:w-[11.5rem] md:relative md:right-auto md:top-auto md:col-span-4 md:mt-0 md:w-auto md:pt-24 lg:col-span-4 lg:justify-start lg:pt-0 lg:pb-6"
           >
-            <div className="w-full md:w-[316px] md:translate-x-2 lg:w-[364px] lg:-translate-x-8 lg:translate-y-32 xl:w-[300px] xl:-translate-x-10 xl:translate-y-36 2xl:w-[508px]">
+            <div className="w-full md:w-[316px] md:translate-x-2 lg:w-[364px] lg:-translate-x-8 lg:translate-y-32 xl:w-[500px] xl:-translate-x-10 xl:translate-y-36 2xl:w-[508px]">
               <div className="mb-2 flex items-center justify-between border-b border-border/50 pb-1.5 font-pixel text-[5px] uppercase tracking-[0.18em] text-muted-foreground min-[390px]:text-[6px] min-[480px]:text-[7px] md:mb-3 md:pb-2 md:text-[9px] md:tracking-[0.22em]">
                 <span>Profile Snapshot</span>
                 <span>coder.ts</span>

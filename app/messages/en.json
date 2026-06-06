@@ -123,6 +123,7 @@
     "ctaAbout": "Get to know me",
     "ctaAi": "Get AI solution",
     "scrollDown": "Scroll down",
+    "tapToContinue": "Tap to continue",
     "code": "const coder = {\n  name: \"Jie\",\n  role: [\"Full stack developer\"],\n  skill: [\"TypeScript\", \"React\", \"Next.js\"],\n  location: \"Hangzhou, China\",\n  welcomeMessage: () => {\n    return \"Happy to meet you!\"\n  }\n}"
   },
   "home": {
@@ -171,6 +172,57 @@
       "highlight1": "ToolLoopAgent architecture for multi-turn autonomous tool-calling",
       "highlight2": "SSE streaming + generative UI for real-time structured component rendering",
       "highlight3": "3-tier Redis rate-limiting with thread-level concurrency lock"
+    }
+  },
+  "funFacts": {
+    "heading": "Fun facts before the case studies",
+    "description": "A softer intro before the project details: where I am, how to say my name, and a couple of State Street things I helped ship.",
+    "map": {
+      "eyebrow": "Live distance",
+      "sourceReady": "Approx. from IP",
+      "sourceLoading": "Checking Vercel geo",
+      "sourceUnavailable": "Geo unavailable",
+      "titleLoading": "Checking how far your current IP is from Hangzhou.",
+      "titleReady": "You look to be roughly {distance} km away from Hangzhou.",
+      "titleUnavailable": "The live route is waiting for Vercel geo headers.",
+      "bodyLoading": "On a deployed Vercel request, this card reads the incoming geo headers, estimates your current region, and draws the route back to my side of the map.",
+      "bodyReady": "Using your IP, Vercel places you around {location} and I draw a straight-line route back to Hangzhou. It's approximate, but it makes the intro feel personal.",
+      "bodyUnavailable": "Geo headers are unavailable in this environment, so the live route only lights up after a real Vercel deployment request. Local development and some proxies won't include visitor coordinates.",
+      "fromLabel": "My side",
+      "fromValue": "Hangzhou, China",
+      "toLabel": "Your side",
+      "toUnknownValue": "Your current region",
+      "distanceLabel": "Estimated distance",
+      "distanceReadyValue": "{distance} km",
+      "distancePendingValue": "Calculating...",
+      "distanceUnavailableValue": "Unavailable",
+      "mapAriaReady": "Approximate map from {visitor} to Hangzhou, China",
+      "mapAriaLoading": "Loading approximate visitor route to Hangzhou, China",
+      "mapAriaUnavailable": "Approximate visitor route unavailable; Hangzhou location remains visible"
+    },
+    "pronunciation": {
+      "eyebrow": "Say it right",
+      "name": "Jie",
+      "phoneticLabel": "Pronounced",
+      "phonetic": "jee-eh",
+      "body": "Think of it as a clean \"jee\" followed by a quick \"eh\". Short, light, and easy to repeat once you've heard it.",
+      "breakdownLabel": "Quick cue",
+      "breakdownValue": "Start with \"jee\", then let the ending fall off softly.",
+      "audioLabel": "Audio mock"
+    },
+    "stateStreet": {
+      "highlightsLabel": "What I built into it",
+      "cta": "See full case below",
+      "cards": {
+        "financial": {
+          "kicker": "I contributed to",
+          "summary": "the trading platform rewrite, helping split a legacy monolith into independently deployable domains and shaping the draggable dashboard experience."
+        },
+        "uxAgent": {
+          "kicker": "I authored",
+          "summary": "an internal UX Agent that turns product specs into React pages, plus the migration layer that let legacy and MUI systems coexist without breaking callers."
+        }
+      }
     }
   },
   "blogs": {

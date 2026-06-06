@@ -44,7 +44,7 @@ const DesktopNav = ({ indexMode = false }: { indexMode?: boolean }) => {
       {/* Right: controls */}
       <div className="flex items-center gap-3">
         <LanguageToggle className={indexClass} />
-        <ThemeToggle className={indexClass} />
+        {!indexMode && <ThemeToggle className={indexClass} />}
       </div>
     </div>
   )
@@ -57,6 +57,7 @@ const NavLinks = ({ compact = false, indexMode = false }: { compact?: boolean; i
 
   const links = useMemo(
     () => [
+      { label: t("aboutMe"), href: "/" },
       { label: t("blogs"), href: "/articles" },
       { label: t("ai"), href: "/ai" },
       { label: t("contact"), href: "/contact" },

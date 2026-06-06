@@ -12,6 +12,12 @@ interface GeneratedEmail {
   body: string
 }
 
+const contactCardClass =
+  "pixel-panel panel-grid overflow-hidden border border-border/80 bg-card/88 backdrop-blur-sm"
+
+const contactCardHeaderClass =
+  "border-b border-border/70 px-4 py-3.5 sm:px-5 sm:py-4"
+
 export default function ContactForm() {
   const t = useTranslations("contact")
 
@@ -115,8 +121,8 @@ export default function ContactForm() {
         {/* Left: Input panel */}
         <div className="space-y-5">
           {/* About You card */}
-          <section className="overflow-hidden border-2 border-border/60 bg-background/80 backdrop-blur-sm">
-            <header className="border-b-2 border-border/50 px-4 py-3.5 sm:px-5 sm:py-4">
+          <section className={contactCardClass}>
+            <header className={contactCardHeaderClass}>
               <div className="flex items-center gap-2">
                 <User className="h-4 w-4 text-primary" />
                 <div className="text-xs font-semibold uppercase tracking-[0.15em] text-foreground">
@@ -165,8 +171,8 @@ export default function ContactForm() {
           </section>
 
           {/* Custom prompt card */}
-          <section className="overflow-hidden border-2 border-border/60 bg-background/80 backdrop-blur-sm">
-            <header className="border-b-2 border-border/50 px-4 py-3.5 sm:px-5 sm:py-4">
+          <section className={contactCardClass}>
+            <header className={contactCardHeaderClass}>
               <div className="flex items-center gap-2">
                 <MessageSquare className="h-4 w-4 text-primary" />
                 <div className="text-xs font-semibold uppercase tracking-[0.15em] text-foreground">
@@ -207,8 +213,8 @@ export default function ContactForm() {
         {/* Right: Email preview */}
         <div>
           <div className="sticky top-24 space-y-5">
-            <section className="overflow-hidden border-2 border-border/60 bg-background/80 backdrop-blur-sm">
-              <header className="flex items-center gap-2 border-b-2 border-border/50 px-4 py-3.5 sm:px-5 sm:py-4">
+            <section className={contactCardClass}>
+              <header className={`${contactCardHeaderClass} flex items-center gap-2`}>
                 <Pencil className="h-4 w-4 text-primary" />
                 <div className="text-xs font-semibold uppercase tracking-[0.15em] text-foreground">
                   {t("previewSection")}

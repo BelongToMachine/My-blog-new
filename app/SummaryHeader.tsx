@@ -6,7 +6,7 @@ const SummaryHeader = () => {
   const t = useTranslations("home")
 
   return (
-    <div data-curve-target-anchor data-summary-heading-anchor>
+    <div>
       <SectionHeading
         title={t("blogSummary")}
         description="Retro-styled summaries, recent entries, and article activity snapshots."
