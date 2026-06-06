@@ -1,9 +1,14 @@
 import type { Metadata } from "next"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { hasLocale, NextIntlClientProvider } from "next-intl"
-import { getMessages, getTranslations, setRequestLocale } from "next-intl/server"
+import {
+  getMessages,
+  getTranslations,
+  setRequestLocale,
+} from "next-intl/server"
 import { notFound } from "next/navigation"
 import NavBar from "../NavBar"
+import MainShell from "../MainShell"
 import Footer from "../components/Footer"
 import QueryClientProvider from "../QueryClientProvider"
 import CursorManager from "../CursorManager"
@@ -59,7 +64,7 @@ export default async function LocaleLayout({
             <RadixThemeProvider>
               <NavBar />
               <CursorManager />
-              <main style={{ paddingTop: "var(--app-nav-offset)" }}>{children}</main>
+              <MainShell>{children}</MainShell>
               <Footer />
             </RadixThemeProvider>
             <ReactQueryDevtools />

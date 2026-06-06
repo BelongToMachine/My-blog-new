@@ -39,7 +39,7 @@ export default async function AboutSections({
       {pinHeroUnderDesktop ? (
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 block h-10 -translate-y-full bg-background [clip-path:polygon(0_0,100%_100%,100%_100%,0_100%)] sm:h-12 md:h-16 lg:h-20 xl:h-24"
+          className="pointer-events-none absolute inset-x-0 top-0 block h-10 -translate-y-[calc(100%-2px)] bg-background [clip-path:polygon(0_0,100%_100%,100%_100%,0_100%)] sm:h-12 md:h-16 lg:h-20 xl:h-24"
         />
       ) : null}
       <Container

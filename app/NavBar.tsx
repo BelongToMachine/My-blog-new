@@ -1,5 +1,6 @@
 "use client"
 import React, { useCallback, useEffect, useRef, useState } from "react"
+import { useReducedMotion } from "framer-motion"
 import DesktopNav from "./components/navbar/DesktopNav"
 import MobileNav from "./components/navbar/MobileNav"
 import { cn } from "@/lib/utils"
@@ -10,11 +11,17 @@ import { colorMode } from "@/app/context/DarkModeContext"
 
 const NavBar = () => {
   const [windowWidth, setWindowWidth] = useState<number>(0)
+  const [shouldScrollAwayWithHero, setShouldScrollAwayWithHero] =
+    useState(false)
   const pathname = usePathname()
   const isHomepage = pathname === "/"
+  const shouldReduceMotion = useReducedMotion()
   const { setColorMode } = useTheme()
   const prevHomepageRef = useRef(false)
   const savedModeRef = useRef<colorMode | null>(null)
+  const navRef = useRef<HTMLElement | null>(null)
+  const previousHeroScrollStateRef = useRef(false)
+  const reentryAnimationRef = useRef<Animation | null>(null)
 
   const updateWindowValue = useCallback(() => {
     setWindowWidth(window.innerWidth)
@@ -32,7 +39,8 @@ const NavBar = () => {
   useEffect(() => {
     if (isHomepage) {
       if (!prevHomepageRef.current) {
-        savedModeRef.current = (window.localStorage.getItem("color-mode") as colorMode) || "dark"
+        savedModeRef.current =
+          (window.localStorage.getItem("color-mode") as colorMode) || "dark"
       }
       setColorMode("dark")
     } else if (prevHomepageRef.current && savedModeRef.current) {
@@ -41,15 +49,100 @@ const NavBar = () => {
     prevHomepageRef.current = isHomepage
   }, [isHomepage, setColorMode])
 
+  useEffect(() => {
+    if (!isHomepage) {
+      setShouldScrollAwayWithHero(false)
+      return
+    }
+
+    let frameId = 0
+
+    const syncNavbarVisibility = () => {
+      frameId = 0
+
+      const heroSection = document.getElementById("about-me-section")
+
+      if (!heroSection) {
+        setShouldScrollAwayWithHero(false)
+        return
+      }
+
+      const heroBounds = heroSection.getBoundingClientRect()
+      const hasStartedScrolling = window.scrollY > 0
+      const isStillInsideHero = heroBounds.bottom > 0
+
+      setShouldScrollAwayWithHero(hasStartedScrolling && isStillInsideHero)
+    }
+
+    const requestVisibilitySync = () => {
+      if (frameId) return
+      frameId = window.requestAnimationFrame(syncNavbarVisibility)
+    }
+
+    syncNavbarVisibility()
+    window.addEventListener("scroll", requestVisibilitySync, { passive: true })
+    window.addEventListener("resize", requestVisibilitySync)
+
+    return () => {
+      if (frameId) {
+        window.cancelAnimationFrame(frameId)
+      }
+      window.removeEventListener("scroll", requestVisibilitySync)
+      window.removeEventListener("resize", requestVisibilitySync)
+    }
+  }, [isHomepage])
+
+  useEffect(() => {
+    const wasScrollingAwayWithHero = previousHeroScrollStateRef.current
+    previousHeroScrollStateRef.current = shouldScrollAwayWithHero
+
+    if (
+      !isHomepage ||
+      shouldReduceMotion ||
+      shouldScrollAwayWithHero ||
+      !wasScrollingAwayWithHero ||
+      window.scrollY <= 0
+    ) {
+      return
+    }
+
+    reentryAnimationRef.current?.cancel()
+
+    const navElement = navRef.current
+
+    if (!navElement) {
+      return
+    }
+
+    const animation = navElement.animate(
+      [
+        { opacity: 0, transform: "translateY(-10px)" },
+        { opacity: 1, transform: "translateY(0)" },
+      ],
+      {
+        duration: 260,
+        easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+        fill: "both",
+      },
+    )
+
+    reentryAnimationRef.current = animation
+
+    return () => {
+      animation.cancel()
+    }
+  }, [isHomepage, shouldReduceMotion, shouldScrollAwayWithHero])
+
   if (windowWidth === 0) {
     return null
   }
 
   return (
     <nav
+      ref={navRef}
       className={cn(
-        "!fixed inset-x-0 top-0 z-[1200] border-b transition-all duration-300",
-        "pixel-panel border-border/70 bg-background"
+        "inset-x-0 top-0 z-[1200] bg-background/92 shadow-[var(--shadow-elevated)] backdrop-blur-md supports-[backdrop-filter]:bg-background/78",
+        shouldScrollAwayWithHero ? "!absolute" : "!fixed",
       )}
     >
       {isDesktopViewport(windowWidth) ? (
