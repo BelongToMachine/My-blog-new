@@ -141,7 +141,7 @@ const NavBar = () => {
     <nav
       ref={navRef}
       className={cn(
-        "inset-x-0 top-0 z-[1200] bg-background/92 shadow-[var(--shadow-elevated)] backdrop-blur-md supports-[backdrop-filter]:bg-background/78",
+        "inset-x-0 top-0 z-[1200] bg-[hsl(var(--home-about-bridge))] shadow-[var(--shadow-elevated)]",
         shouldScrollAwayWithHero ? "!absolute" : "!fixed",
       )}
     >
