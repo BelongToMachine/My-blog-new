@@ -71,9 +71,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
   }, [])
 
   const shouldDisableScrollLift =
-    !hasResolvedViewport ||
-    shouldReduceMotion ||
-    viewportWidth < BREAKPOINTS.tablet
+    !hasResolvedViewport || shouldReduceMotion
   const welcomeLiftDistance = -200
   const contentLiftDistance = -60
   const { scrollYProgress } = useScroll({
@@ -105,7 +103,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
     return (
       <div
         ref={spotlightRef}
-        className="relative overflow-hidden min-h-[35rem] min-[390px]:min-h-[38rem] min-[480px]:min-h-[40rem] md:min-h-0 px-5 sm:px-8 md:px-6 lg:px-14 md:pt-16 lg:pt-12 pb-8 sm:pb-10 md:pb-16 lg:pb-20"
+        className="relative overflow-hidden min-h-[35rem] min-[390px]:min-h-[38rem] min-[480px]:min-h-[40rem] md:min-h-0 lg:min-h-[calc(100svh-var(--app-nav-offset))] px-5 sm:px-8 md:px-6 lg:px-14 md:pt-16 lg:pt-[clamp(4rem,9svh,9rem)] pb-8 sm:pb-10 md:pb-16 lg:pb-[clamp(6rem,14svh,14rem)]"
         id="about-me-section"
       >
         {showBackLink ? (
@@ -128,7 +126,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
           <span
             className={cn(
               bebasNeue.className,
-              "inline-block text-[clamp(12rem,44vw,17rem)] font-black uppercase leading-none tracking-[0.06em] text-foreground/[0.08] dark:text-foreground/[0.1] [transform:scaleY(1.5) scaleX(1.12)] md:text-[clamp(6.5rem,28vw,17rem)] lg:text-[clamp(6.5rem,26vw,20rem)]",
+              "hero-welcome-mobile-drift inline-block origin-top text-[clamp(10.5rem,40vw,13rem)] font-black uppercase leading-[0.8] tracking-[0.04em] text-foreground/[0.08] antialiased dark:text-foreground/[0.1] md:text-[clamp(6.5rem,28vw,17rem)] md:leading-none md:tracking-[0.06em] md:scale-x-[1.12] md:scale-y-[1.5] lg:text-[clamp(6.5rem,26vw,20rem)]",
             )}
           >
             Welcome
