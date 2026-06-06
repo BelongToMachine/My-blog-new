@@ -70,10 +70,9 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
     }
   }, [])
 
-  const shouldDisableScrollLift =
-    !hasResolvedViewport || shouldReduceMotion
-  const welcomeLiftDistance = -200
-  const contentLiftDistance = -60
+  const shouldDisableScrollLift = !hasResolvedViewport || shouldReduceMotion
+  const welcomeLiftDistance = -120
+  const contentLiftDistance = -80
   const { scrollYProgress } = useScroll({
     target: spotlightRef,
     offset: ["start start", "end start"],
@@ -116,7 +115,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
           </Link>
         ) : null}
         <motion.div
-          className="pointer-events-none absolute inset-x-0 z-0 flex justify-center top-12 min-[480px]:top-6 md:top-12"
+          className="pointer-events-none absolute inset-x-0 z-0 flex justify-center top-24 min-[480px]:top-20 md:top-12"
           style={
             shouldDisableScrollLift
               ? undefined
@@ -126,7 +125,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
           <span
             className={cn(
               bebasNeue.className,
-              "hero-welcome-mobile-drift inline-block origin-top text-[clamp(10.5rem,40vw,13rem)] font-black uppercase leading-[0.8] tracking-[0.04em] text-foreground/[0.08] antialiased dark:text-foreground/[0.1] md:text-[clamp(6.5rem,28vw,17rem)] md:leading-none md:tracking-[0.06em] md:scale-x-[1.12] md:scale-y-[1.5] lg:text-[clamp(6.5rem,26vw,20rem)]",
+              "hero-welcome-mobile-drift inline-block origin-top text-[clamp(10.5rem,40vw,13rem)] font-normal uppercase leading-[0.8] tracking-[0.04em] text-foreground/[0.12] [font-synthesis-weight:none] subpixel-antialiased dark:text-foreground/[0.14] md:text-[clamp(6.5rem,28vw,17rem)] md:font-black md:leading-none md:tracking-[0.06em] md:text-foreground/[0.08] md:[font-synthesis-weight:auto] md:antialiased md:dark:text-foreground/[0.1] md:scale-x-[1.12] md:scale-y-[1.5] lg:text-[clamp(6.5rem,26vw,20rem)]",
             )}
           >
             Welcome

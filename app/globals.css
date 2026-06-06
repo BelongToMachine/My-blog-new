@@ -1221,14 +1221,14 @@ ul li {
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 499px) {
   .hero-welcome-mobile-drift {
     animation: hero-welcome-mobile-drift 5.4s ease-in-out infinite;
     will-change: translate;
   }
 }
 
-@media (max-width: 767px) and (prefers-reduced-motion: reduce) {
+@media (max-width: 499px) and (prefers-reduced-motion: reduce) {
   .hero-welcome-mobile-drift {
     animation: none;
     translate: 0 0;
