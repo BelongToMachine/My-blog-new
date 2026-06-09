@@ -102,7 +102,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
     return (
       <div
         ref={spotlightRef}
-        className="relative overflow-hidden min-h-[35rem] min-[390px]:min-h-[38rem] min-[480px]:min-h-[40rem] md:min-h-0 lg:min-h-[calc(100svh-var(--app-nav-offset))] px-5 sm:px-8 md:px-6 lg:px-14 md:pt-16 lg:pt-[clamp(4rem,9svh,9rem)] pb-8 sm:pb-10 md:pb-16 lg:pb-[clamp(6rem,14svh,14rem)]"
+        className="relative overflow-hidden min-h-[35rem] min-[390px]:min-h-[38rem] min-[480px]:min-h-[40rem] md:min-h-0 px-5 sm:px-8 md:px-6 lg:px-14 md:pt-16 lg:pt-12 pb-8 sm:pb-10 md:pb-16 lg:pb-20"
         id="about-me-section"
       >
         {showBackLink ? (
@@ -125,7 +125,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
           <span
             className={cn(
               bebasNeue.className,
-              "hero-welcome-mobile-drift inline-block origin-top text-[clamp(10.5rem,40vw,13rem)] font-normal uppercase leading-[0.8] tracking-[0.04em] text-foreground/[0.12] [font-synthesis-weight:none] subpixel-antialiased dark:text-foreground/[0.14] md:text-[clamp(6.5rem,28vw,17rem)] md:font-black md:leading-none md:tracking-[0.06em] md:text-foreground/[0.08] md:[font-synthesis-weight:auto] md:antialiased md:dark:text-foreground/[0.1] md:scale-x-[1.12] md:scale-y-[1.5] lg:text-[clamp(6.5rem,26vw,18rem)]",
+              "hero-welcome-mobile-drift inline-block origin-top text-[clamp(10.5rem,40vw,13rem)] font-normal uppercase leading-[0.8] tracking-[0.04em] text-foreground/[0.12] [font-synthesis-weight:none] subpixel-antialiased dark:text-foreground/[0.14] md:text-[clamp(6.5rem,28vw,17rem)] md:font-normal md:leading-none md:tracking-[0.06em] md:text-foreground/[0.08] md:[font-synthesis-weight:none] md:subpixel-antialiased md:dark:text-foreground/[0.1] md:scale-x-[1.12] md:scale-y-[1.5] lg:text-[clamp(6.5rem,26vw,18rem)]",
             )}
           >
             Welcome
