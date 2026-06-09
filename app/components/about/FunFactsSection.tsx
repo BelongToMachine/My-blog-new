@@ -6,11 +6,15 @@ import {
   DatabaseDollarIcon,
   HumanAgentIcon,
 } from "../projects/PixelProjectIcons"
-import SectionHeading from "../system/SectionHeading"
 import LiveDistanceCard from "./LiveDistanceCard"
+import WaveFlagCard from "./WaveFlagCard"
 
 const sharedCardShell =
   "pixel-panel overflow-hidden border border-border/80 bg-card/88 transition-colors duration-200 hover:border-primary/50"
+const metaTextClassName =
+  "text-[11px] font-medium leading-none tracking-[0.04em] text-muted-foreground"
+const accentLabelClassName =
+  "text-xs font-medium tracking-[0.04em] text-primary/80"
 
 interface ContributionCardConfig {
   key: "financial" | "uxAgent"
@@ -44,72 +48,76 @@ export default async function FunFactsSection() {
 
   return (
     <section className="mb-10 space-y-5 md:mb-14 md:space-y-6">
-      <div>
-        <SectionHeading
-          title={t("heading")}
-          description={t("description")}
-          align="left"
-          className="mb-0"
-        />
+      <div className="max-w-3xl space-y-3">
+        <h2 className="max-w-4xl text-balance text-[clamp(1.8rem,4vw,3rem)] font-semibold leading-[1.08] tracking-[-0.03em] text-foreground">
+          {t("heading")}
+        </h2>
+        <p className="max-w-2xl text-pretty text-sm leading-7 text-muted-foreground md:text-base">
+          {t("description")}
+        </p>
       </div>
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1.3fr)_minmax(0,0.9fr)]">
         <LiveDistanceCard />
 
-        <article
-          className={cn(
-            sharedCardShell,
-            "flex flex-col justify-between gap-6 p-6 md:p-7",
-          )}
-        >
-          <div className="flex items-center justify-between gap-3">
-            <MetaPill>{t("pronunciation.eyebrow")}</MetaPill>
-            <div aria-hidden className="flex items-end gap-1 text-primary/70">
-              <span className="h-3 w-1.5 bg-current" />
-              <span className="h-5 w-1.5 bg-current" />
-              <span className="h-7 w-1.5 bg-current" />
-              <span className="h-4 w-1.5 bg-current" />
-              <span className="h-6 w-1.5 bg-current" />
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <p className="font-editorial text-[clamp(2rem,4vw,3.35rem)] leading-none tracking-[-0.05em] text-foreground">
-                {t("pronunciation.name")}
-              </p>
-              <div className="inline-flex items-center gap-3 border border-border/60 bg-background/72 px-4 py-2">
-                <span className="font-pixel text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-                  {t("pronunciation.phoneticLabel")}
-                </span>
-                <span className="font-editorial text-xl italic tracking-[-0.03em] text-primary">
-                  {t("pronunciation.phonetic")}
-                </span>
+        <div className="grid gap-5">
+          <article
+            className={cn(
+              sharedCardShell,
+              "flex flex-col justify-between gap-6 p-6 md:p-7",
+            )}
+          >
+            <div className="flex items-center justify-between gap-3">
+              <MetaPill>{t("pronunciation.eyebrow")}</MetaPill>
+              <div aria-hidden className="flex items-end gap-1 text-primary/70">
+                <span className="h-3 w-1.5 bg-current" />
+                <span className="h-5 w-1.5 bg-current" />
+                <span className="h-7 w-1.5 bg-current" />
+                <span className="h-4 w-1.5 bg-current" />
+                <span className="h-6 w-1.5 bg-current" />
               </div>
             </div>
 
-            <p className="text-pretty text-[15px] leading-7 text-foreground/82 md:text-base md:leading-8">
-              {t("pronunciation.body")}
-            </p>
-          </div>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <p className="font-editorial text-[clamp(2rem,4vw,3.35rem)] leading-none tracking-[-0.05em] text-foreground">
+                  {t("pronunciation.name")}
+                </p>
+                <div className="inline-flex items-center gap-3 border border-border/60 bg-background/72 px-4 py-2">
+                  <span className={metaTextClassName}>
+                    {t("pronunciation.phoneticLabel")}
+                  </span>
+                  <span className="font-editorial text-xl italic tracking-[-0.03em] text-primary">
+                    {t("pronunciation.phonetic")}
+                  </span>
+                </div>
+              </div>
 
-          <div className="grid gap-3 border-t border-border/60 pt-4 sm:grid-cols-[minmax(0,1fr)_auto]">
-            <div className="border border-border/60 bg-background/68 px-4 py-3">
-              <p className="font-pixel text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-                {t("pronunciation.breakdownLabel")}
-              </p>
-              <p className="mt-2 text-sm leading-7 text-foreground/82">
-                {t("pronunciation.breakdownValue")}
+              <p className="text-pretty text-[15px] leading-7 text-foreground/82 md:text-base md:leading-8">
+                {t("pronunciation.body")}
               </p>
             </div>
-            <div className="flex items-center justify-between gap-3 border border-border/60 bg-background/68 px-4 py-3">
-              <span className="font-pixel text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-                {t("pronunciation.audioLabel")}
-              </span>
-              <Volume2 className="h-4 w-4 text-primary" />
+
+            <div className="grid gap-3 border-t border-border/60 pt-4 sm:grid-cols-[minmax(0,1fr)_auto]">
+              <div className="border border-border/60 bg-background/68 px-4 py-3">
+                <p className={metaTextClassName}>
+                  {t("pronunciation.breakdownLabel")}
+                </p>
+                <p className="mt-2 text-sm leading-7 text-foreground/82">
+                  {t("pronunciation.breakdownValue")}
+                </p>
+              </div>
+              <div className="flex items-center justify-between gap-3 border border-border/60 bg-background/68 px-4 py-3">
+                <span className={metaTextClassName}>
+                  {t("pronunciation.audioLabel")}
+                </span>
+                <Volume2 className="h-4 w-4 text-primary" />
+              </div>
             </div>
-          </div>
-        </article>
+          </article>
+
+          <WaveFlagCard className={sharedCardShell} />
+        </div>
       </div>
 
       <div className="grid gap-5 lg:grid-cols-2">
@@ -166,7 +174,7 @@ function ContributionCard({
           </div>
           <p
             className={cn(
-              "font-pixel text-[10px] uppercase tracking-[0.22em]",
+              "text-sm font-medium tracking-[0.01em]",
               accentClassName,
             )}
           >
@@ -188,9 +196,7 @@ function ContributionCard({
       </div>
 
       <div className="mt-5 border-t border-border/60 pt-4">
-        <p className="font-pixel text-[10px] uppercase tracking-[0.22em] text-primary/80">
-          {highlightsLabel}
-        </p>
+        <p className={accentLabelClassName}>{highlightsLabel}</p>
         <div className="mt-3 space-y-3">
           {highlights.map((highlight) => (
             <div key={highlight} className="flex items-start gap-3">
@@ -206,7 +212,7 @@ function ContributionCard({
       <div className="mt-5 border-t border-border/60 pt-4">
         <a
           href="#projects"
-          className="inline-flex items-center gap-2 font-pixel text-[10px] uppercase tracking-[0.22em] text-primary transition-colors hover:text-primary/75"
+          className="inline-flex items-center gap-2 text-sm font-medium text-primary transition-colors hover:text-primary/75"
         >
           {ctaLabel}
           <ArrowRight className="h-3.5 w-3.5" />
@@ -218,7 +224,12 @@ function ContributionCard({
 
 function MetaPill({ children }: { children: ReactNode }) {
   return (
-    <span className="inline-flex items-center border border-border/60 bg-background/70 px-2.5 py-1 font-pixel text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
+    <span
+      className={cn(
+        "inline-flex items-center border border-border/60 bg-background/70 px-2.5 py-1",
+        metaTextClassName,
+      )}
+    >
       {children}
     </span>
   )

@@ -1,0 +1,95 @@
+.showcase {
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: 1.25rem 1rem;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, hsl(var(--accent)) 72%, transparent),
+      transparent 68%
+    ),
+    repeating-linear-gradient(
+      0deg,
+      color-mix(in srgb, hsl(var(--border)) 22%, transparent) 0 1px,
+      transparent 1px 14px
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, hsl(var(--background)) 90%, hsl(var(--accent)) 10%),
+      color-mix(in srgb, hsl(var(--background)) 96%, hsl(var(--foreground)) 4%)
+    );
+}
+
+.flagFrame {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 11rem;
+}
+
+.flag {
+  position: relative;
+  display: flex;
+  aspect-ratio: 3 / 2;
+  max-width: 100%;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid color-mix(in srgb, hsl(var(--foreground)) 16%, transparent);
+  background: hsl(var(--background));
+}
+
+.flag::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    hsl(var(--background) / 0.22) 0%,
+    transparent 34%,
+    hsl(var(--foreground) / 0.08) 70%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+.column {
+  flex: 1 1 0;
+  min-width: 0;
+  animation-name: oscillate;
+  animation-duration: 500ms;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: backwards;
+  will-change: transform;
+}
+
+.column:first-child {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+.column:last-child {
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+@keyframes oscillate {
+  from {
+    transform: translateY(var(--billow));
+  }
+
+  to {
+    transform: translateY(calc(var(--billow) * -1));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .column {
+    animation: none;
+    transform: translateY(0);
+    will-change: auto;
+  }
+}

@@ -210,6 +210,17 @@
       "breakdownValue": "Start with \"jee\", then let the ending fall off softly.",
       "audioLabel": "Audio mock"
     },
+    "flag": {
+      "eyebrow": "Motion study",
+      "badge": "PRC flag",
+      "title": "Same wave mechanics, now translated into the People's Republic of China flag.",
+      "body": "The motion system stays exactly the same: narrow columns, negative staggered delays, and per-column billow. Only the artwork changes, so the stars and red field bend together like a single flag instead of a static overlay.",
+      "ariaLabel": "Animated People's Republic of China flag waving in staggered columns",
+      "techniqueLabel": "Built with",
+      "techniqueValue": "CSS variables, negative delays, and a shared star SVG mapped across all columns",
+      "motionLabel": "Starts alive",
+      "motionValue": "Each column is phase-shifted so the flag is already in motion on first paint"
+    },
     "stateStreet": {
       "highlightsLabel": "What I built into it",
       "cta": "See full case below",
