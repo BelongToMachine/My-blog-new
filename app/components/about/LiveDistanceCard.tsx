@@ -11,6 +11,8 @@ import { cn } from "@/lib/utils"
 
 const cardShell =
   "pixel-panel overflow-hidden border border-border/80 bg-card/88 transition-colors duration-200 hover:border-primary/50"
+const metaTextClassName =
+  "text-[11px] font-medium leading-none tracking-[0.04em] text-muted-foreground"
 
 const mapWidth = 800
 const mapHeight = 400
@@ -291,9 +293,7 @@ function FactStat({
 }) {
   return (
     <div className="border border-border/60 bg-background/68 px-4 py-3">
-      <p className="font-pixel text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-        {label}
-      </p>
+      <p className={metaTextClassName}>{label}</p>
       <p
         className={cn(
           "mt-2 text-sm leading-7 text-foreground/84",
@@ -308,7 +308,12 @@ function FactStat({
 
 function MetaPill({ children }: { children: string }) {
   return (
-    <span className="inline-flex items-center border border-border/60 bg-background/70 px-2.5 py-1 font-pixel text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
+    <span
+      className={cn(
+        "inline-flex items-center border border-border/60 bg-background/70 px-2.5 py-1",
+        metaTextClassName,
+      )}
+    >
       {children}
     </span>
   )
