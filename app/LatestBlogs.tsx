@@ -16,13 +16,15 @@ const LatestBlogs = async () => {
   return (
     <RetroPanel
       className="flex min-w-0 w-full flex-col"
+      typography="plain"
       eyebrow="recent logs"
       title={t("latestBlogs")}
       action={
         <div className="flex w-full justify-start md:w-auto md:justify-end">
           <RetroBadge
+            typography="plain"
             tone="primary"
-            className="px-2 text-[9px] tracking-[0.16em] md:px-2.5 md:text-[10px] md:tracking-[0.22em]"
+            className="px-2 text-[10px] tracking-[0.02em] md:px-2.5 md:text-[11px]"
           >
             {recent.length} items
           </RetroBadge>
@@ -38,7 +40,7 @@ const LatestBlogs = async () => {
           >
             <div className="flex min-w-0 flex-1 flex-col gap-2">
               <Link
-                className="block min-w-0 overflow-hidden font-pixel text-sm uppercase leading-[1.8] tracking-[0.12em] text-foreground transition-colors hover:text-primary hover:underline [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2] md:text-base md:leading-[1.7]"
+                className="block min-w-0 overflow-hidden text-[0.98rem] font-medium leading-[1.6] tracking-[0.01em] text-foreground transition-colors hover:text-primary hover:underline [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2] md:text-[1.02rem] md:leading-[1.65]"
                 href={`/articles/${article.slug}`}
               >
                 {article.title}
@@ -46,14 +48,16 @@ const LatestBlogs = async () => {
             </div>
             <div className="flex flex-wrap items-center gap-2.5 md:shrink-0 md:flex-nowrap md:justify-end md:self-center">
               <RetroBadge
+                typography="plain"
                 tone="primary"
-                className="px-2 text-[9px] tracking-[0.16em] md:px-2.5 md:text-[10px] md:tracking-[0.22em]"
+                className="px-2 text-[10px] tracking-[0.02em] md:px-2.5 md:text-[11px]"
               >
                 {article.category ? tBlog(`category.${article.category}`) : "MDX"}
               </RetroBadge>
               <RetroBadge
+                typography="plain"
                 tone="neutral"
-                className="px-2 text-[9px] tracking-[0.16em] md:px-2.5 md:text-[10px] md:tracking-[0.22em]"
+                className="px-2 text-[10px] tracking-[0.02em] md:px-2.5 md:text-[11px]"
               >
                 {article.publishedOn}
               </RetroBadge>

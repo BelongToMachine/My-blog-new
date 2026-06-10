@@ -35,7 +35,7 @@ const BlogChart = (props: Props) => {
         </div>
       }
     >
-      <Chart {...props} />
+      <Chart {...props} typography="plain" />
     </Suspense>
   )
 }

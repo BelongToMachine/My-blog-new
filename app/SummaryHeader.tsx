@@ -7,11 +7,7 @@ const SummaryHeader = () => {
 
   return (
     <div>
-      <SectionHeading
-        title={t("blogSummary")}
-        description="Retro-styled summaries, recent entries, and article activity snapshots."
-        align="left"
-      />
+      <SectionHeading title={t("blogSummary")} align="left" variant="plain" />
     </div>
   )
 }
