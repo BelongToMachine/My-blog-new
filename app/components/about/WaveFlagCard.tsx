@@ -3,7 +3,9 @@ import { getTranslations } from "next-intl/server"
 import { cn } from "@/lib/utils"
 import styles from "./WaveFlagCard.module.css"
 
-const desiredWidth = 240
+const DALI_INTRO_URL =
+  "https://www.fabionodariphoto.com/en/dali-yunnan-things-to-do/"
+const desiredWidth = 176
 const numOfColumns = 10
 const staggeredDelay = 100
 const billow = 1.5
@@ -22,34 +24,13 @@ export default async function WaveFlagCard({
   const t = await getTranslations("funFacts.flag")
 
   return (
-    <article className={cn(className, "flex flex-col gap-5 p-6 md:p-7")}>
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex flex-wrap items-center gap-2">
-          <MetaPill>{t("eyebrow")}</MetaPill>
-          <MetaPill>{t("badge")}</MetaPill>
-        </div>
-        <div aria-hidden className="flex items-end gap-1">
-          <span className="h-2.5 w-2.5 bg-[#de2910]/75" />
-          <span className="h-2.5 w-2.5 bg-[#de2910]" />
-          <span className="h-2.5 w-2.5 bg-[#ffde00]" />
-        </div>
-      </div>
-
-      <div className="space-y-3">
-        <h3 className="font-editorial max-w-[18ch] text-[clamp(1.55rem,2.2vw,2.15rem)] leading-[1.05] tracking-[-0.03em] text-foreground">
-          {t("title")}
-        </h3>
-        <p className="text-pretty text-[15px] leading-7 text-foreground/82 md:text-base md:leading-8">
-          {t("body")}
-        </p>
-      </div>
-
-      <div className="border border-border/60 bg-background/68 p-4">
+    <article className={cn(className, "flex flex-col gap-4 p-4 md:p-5 lg:p-5")}>
+      <div className="border border-border/60 bg-background/68 p-3 sm:p-3.5">
         <div role="img" aria-label={t("ariaLabel")} className={styles.showcase}>
           <div className={styles.flagFrame}>
             <div
               className={styles.flag}
-              style={{ width: `${friendlyWidth}px` }}
+              style={{ width: `min(${friendlyWidth}px, 100%)` }}
             >
               {Array.from({ length: numOfColumns }, (_, index) => (
                 <div
@@ -63,13 +44,21 @@ export default async function WaveFlagCard({
         </div>
       </div>
 
-      <div className="grid gap-3 border-t border-border/60 pt-4 sm:grid-cols-2">
-        <DetailCell label={t("techniqueLabel")} value={t("techniqueValue")} />
-        <DetailCell
-          label={t("motionLabel")}
-          value={t("motionValue")}
-          valueClassName="text-primary"
-        />
+      <div className="space-y-2">
+        <h3 className="font-editorial text-[clamp(1.25rem,2vw,1.55rem)] leading-[1.08] tracking-[-0.03em] text-foreground">
+          {t("title")}
+        </h3>
+        {t("body") ? (
+          <p className="text-sm leading-6 text-foreground/78">{t("body")}</p>
+        ) : null}
+        <a
+          href={DALI_INTRO_URL}
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex text-sm font-medium leading-6 text-primary transition-colors hover:text-primary/75"
+        >
+          {t("linkLabel")}
+        </a>
       </div>
     </article>
   )
@@ -139,38 +128,4 @@ function createStarPath(
 
 function formatCoordinate(value: number) {
   return value.toFixed(3).replace(/\.?0+$/, "")
-}
-
-function MetaPill({ children }: { children: string }) {
-  return (
-    <span className="inline-flex items-center border border-border/60 bg-background/70 px-2.5 py-1 font-pixel text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
-      {children}
-    </span>
-  )
-}
-
-function DetailCell({
-  label,
-  value,
-  valueClassName,
-}: {
-  label: string
-  value: string
-  valueClassName?: string
-}) {
-  return (
-    <div className="border border-border/60 bg-background/68 px-4 py-3">
-      <p className="font-pixel text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-        {label}
-      </p>
-      <p
-        className={cn(
-          "mt-2 text-sm leading-7 text-foreground/82",
-          valueClassName,
-        )}
-      >
-        {value}
-      </p>
-    </div>
-  )
 }

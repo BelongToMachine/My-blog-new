@@ -1,12 +1,14 @@
 import type { ReactNode } from "react"
-import { ArrowRight, Volume2 } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 import { getTranslations } from "next-intl/server"
 import { cn } from "@/lib/utils"
 import {
   DatabaseDollarIcon,
   HumanAgentIcon,
 } from "../projects/PixelProjectIcons"
+import ArticleFooter from "@/app/articles/_components/ArticleFooter"
 import LiveDistanceCard from "./LiveDistanceCard"
+import PronunciationCard from "./PronunciationCard"
 import WaveFlagCard from "./WaveFlagCard"
 
 const sharedCardShell =
@@ -21,6 +23,7 @@ interface ContributionCardConfig {
   index: string
   accentClassName: string
   icon: ReactNode
+  layoutClassName: string
 }
 
 const contributionCards: ContributionCardConfig[] = [
@@ -28,6 +31,7 @@ const contributionCards: ContributionCardConfig[] = [
     key: "financial",
     index: "01",
     accentClassName: "text-primary",
+    layoutClassName: "md:col-span-6 xl:col-span-7",
     icon: (
       <DatabaseDollarIcon className="h-12 w-12 text-primary md:h-14 md:w-14" />
     ),
@@ -36,6 +40,7 @@ const contributionCards: ContributionCardConfig[] = [
     key: "uxAgent",
     index: "02",
     accentClassName: "text-[hsl(var(--signal-amber))]",
+    layoutClassName: "md:col-span-6 xl:col-span-5",
     icon: (
       <HumanAgentIcon className="h-12 w-12 text-[hsl(var(--signal-amber))] md:h-14 md:w-14" />
     ),
@@ -45,99 +50,65 @@ const contributionCards: ContributionCardConfig[] = [
 export default async function FunFactsSection() {
   const t = await getTranslations("funFacts")
   const projectT = await getTranslations("projects")
+  const description = t("description")
 
   return (
-    <section className="mb-10 space-y-5 md:mb-14 md:space-y-6">
+    <section className="mb-10 space-y-6 md:mb-14 md:space-y-7">
       <div className="max-w-3xl space-y-3">
+        <div className="flex items-center gap-3">
+          <span className="terminal-label">FUN FACT FILE</span>
+          <div className="h-px flex-1 bg-border/60" />
+        </div>
         <h2 className="max-w-4xl text-balance text-[clamp(1.8rem,4vw,3rem)] font-semibold leading-[1.08] tracking-[-0.03em] text-foreground">
           {t("heading")}
         </h2>
-        <p className="max-w-2xl text-pretty text-sm leading-7 text-muted-foreground md:text-base">
-          {t("description")}
-        </p>
+        {description ? (
+          <p className="max-w-2xl text-pretty text-sm leading-7 text-muted-foreground md:text-base">
+            {description}
+          </p>
+        ) : null}
       </div>
 
-      <div className="grid gap-5 xl:grid-cols-[minmax(0,1.3fr)_minmax(0,0.9fr)]">
-        <LiveDistanceCard />
+      <div className="grid gap-5 md:grid-cols-12 md:items-start">
+        <div className="md:col-span-8">
+          <LiveDistanceCard />
+        </div>
 
-        <div className="grid gap-5">
-          <article
-            className={cn(
-              sharedCardShell,
-              "flex flex-col justify-between gap-6 p-6 md:p-7",
-            )}
-          >
-            <div className="flex items-center justify-between gap-3">
-              <MetaPill>{t("pronunciation.eyebrow")}</MetaPill>
-              <div aria-hidden className="flex items-end gap-1 text-primary/70">
-                <span className="h-3 w-1.5 bg-current" />
-                <span className="h-5 w-1.5 bg-current" />
-                <span className="h-7 w-1.5 bg-current" />
-                <span className="h-4 w-1.5 bg-current" />
-                <span className="h-6 w-1.5 bg-current" />
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <p className="font-editorial text-[clamp(2rem,4vw,3.35rem)] leading-none tracking-[-0.05em] text-foreground">
-                  {t("pronunciation.name")}
-                </p>
-                <div className="inline-flex items-center gap-3 border border-border/60 bg-background/72 px-4 py-2">
-                  <span className={metaTextClassName}>
-                    {t("pronunciation.phoneticLabel")}
-                  </span>
-                  <span className="font-editorial text-xl italic tracking-[-0.03em] text-primary">
-                    {t("pronunciation.phonetic")}
-                  </span>
-                </div>
-              </div>
-
-              <p className="text-pretty text-[15px] leading-7 text-foreground/82 md:text-base md:leading-8">
-                {t("pronunciation.body")}
-              </p>
-            </div>
-
-            <div className="grid gap-3 border-t border-border/60 pt-4 sm:grid-cols-[minmax(0,1fr)_auto]">
-              <div className="border border-border/60 bg-background/68 px-4 py-3">
-                <p className={metaTextClassName}>
-                  {t("pronunciation.breakdownLabel")}
-                </p>
-                <p className="mt-2 text-sm leading-7 text-foreground/82">
-                  {t("pronunciation.breakdownValue")}
-                </p>
-              </div>
-              <div className="flex items-center justify-between gap-3 border border-border/60 bg-background/68 px-4 py-3">
-                <span className={metaTextClassName}>
-                  {t("pronunciation.audioLabel")}
-                </span>
-                <Volume2 className="h-4 w-4 text-primary" />
-              </div>
-            </div>
-          </article>
+        <div className="grid content-start gap-5 md:col-span-4">
+          <PronunciationCard className={sharedCardShell} />
 
           <WaveFlagCard className={sharedCardShell} />
         </div>
-      </div>
 
-      <div className="grid gap-5 lg:grid-cols-2">
-        {contributionCards.map((card) => (
-          <ContributionCard
-            key={card.key}
-            index={card.index}
-            accentClassName={card.accentClassName}
-            icon={card.icon}
-            kicker={t(`stateStreet.cards.${card.key}.kicker`)}
-            summary={t(`stateStreet.cards.${card.key}.summary`)}
-            title={projectT(`${card.key}.title`)}
-            highlights={[
-              projectT(`${card.key}.highlight1`),
-              projectT(`${card.key}.highlight2`),
-            ]}
-            highlightsLabel={t("stateStreet.highlightsLabel")}
-            ctaLabel={t("stateStreet.cta")}
-          />
-        ))}
+        <article
+          className={cn(
+            sharedCardShell,
+            "px-3 sm:px-4 md:col-span-10 md:px-5 lg:col-span-8 xl:col-span-7",
+          )}
+        >
+          <ArticleFooter fullWidth compact showHeader={false} />
+        </article>
+
+        <div className="grid gap-5 md:col-span-12 md:grid-cols-12">
+          {contributionCards.map((card) => (
+            <ContributionCard
+              key={card.key}
+              index={card.index}
+              accentClassName={card.accentClassName}
+              icon={card.icon}
+              layoutClassName={card.layoutClassName}
+              kicker={t(`stateStreet.cards.${card.key}.kicker`)}
+              summary={t(`stateStreet.cards.${card.key}.summary`)}
+              title={projectT(`${card.key}.title`)}
+              highlights={[
+                projectT(`${card.key}.highlight1`),
+                projectT(`${card.key}.highlight2`),
+              ]}
+              highlightsLabel={t("stateStreet.highlightsLabel")}
+              ctaLabel={t("stateStreet.cta")}
+            />
+          ))}
+        </div>
       </div>
     </section>
   )
@@ -150,6 +121,7 @@ function ContributionCard({
   highlightsLabel,
   icon,
   index,
+  layoutClassName,
   kicker,
   summary,
   title,
@@ -160,18 +132,22 @@ function ContributionCard({
   highlightsLabel: string
   icon: ReactNode
   index: string
+  layoutClassName: string
   kicker: string
   summary: string
   title: string
 }) {
   return (
-    <article className={cn(sharedCardShell, "p-6 md:p-7")}>
+    <article
+      className={cn(
+        sharedCardShell,
+        layoutClassName,
+        "flex h-full flex-col p-5 md:p-6 lg:p-7",
+      )}
+    >
       <div className="flex items-start justify-between gap-4 border-b border-border/60 pb-4">
         <div className="space-y-3">
-          <div className="flex flex-wrap items-center gap-2">
-            <MetaPill>State Street</MetaPill>
-            <MetaPill>{index}</MetaPill>
-          </div>
+          <MetaPill>{index}</MetaPill>
           <p
             className={cn(
               "text-sm font-medium tracking-[0.01em]",
@@ -190,7 +166,7 @@ function ContributionCard({
         <h3 className="font-editorial max-w-[16ch] text-[clamp(1.4rem,2vw,2rem)] leading-[1.06] tracking-[-0.03em] text-foreground">
           {title}
         </h3>
-        <p className="mt-3 text-pretty text-[15px] leading-7 text-foreground/80">
+        <p className="mt-3 text-pretty text-sm leading-6 text-foreground/80 md:text-[15px] md:leading-7">
           {summary}
         </p>
       </div>
@@ -209,7 +185,7 @@ function ContributionCard({
         </div>
       </div>
 
-      <div className="mt-5 border-t border-border/60 pt-4">
+      <div className="mt-auto border-t border-border/60 pt-4">
         <a
           href="#projects"
           className="inline-flex items-center gap-2 text-sm font-medium text-primary transition-colors hover:text-primary/75"
@@ -226,7 +202,7 @@ function MetaPill({ children }: { children: ReactNode }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center border border-border/60 bg-background/70 px-2.5 py-1",
+        "inline-flex w-fit items-center border border-border/60 bg-background/70 px-2.5 py-1",
         metaTextClassName,
       )}
     >

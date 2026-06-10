@@ -3,7 +3,7 @@
   display: grid;
   place-items: center;
   overflow: hidden;
-  padding: 1.25rem 1rem;
+  padding: 0.8rem 0.65rem;
   background:
     linear-gradient(
       180deg,
@@ -26,7 +26,7 @@
   display: grid;
   place-items: center;
   width: 100%;
-  min-height: 11rem;
+  min-height: 7rem;
 }
 
 .flag {
