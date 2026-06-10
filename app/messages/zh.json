@@ -175,19 +175,19 @@
     }
   },
   "funFacts": {
-    "heading": "在项目案例前，先认识我一下",
-    "description": "先用几张轻量卡片热个身：我在哪、我的名字怎么念，以及我在 State Street 做过的两件事。",
+    "heading": "真实的我",
+    "description": "",
     "map": {
       "eyebrow": "实时距离",
-      "sourceReady": "基于 IP 的近似定位",
-      "sourceLoading": "正在读取 Vercel Geo",
-      "sourceUnavailable": "暂时无法定位",
-      "titleLoading": "正在估算你当前 IP 到杭州的大致距离。",
-      "titleReady": "从你现在的大致位置到杭州，约有 {distance} 公里。",
-      "titleUnavailable": "这张实时路线卡正在等待 Vercel 的地理信息头。",
-      "bodyLoading": "当请求经过正式部署的 Vercel 环境时，这张卡会读取 Geo Headers，估算你当前所在区域，并把路线画回我这边。",
-      "bodyReady": "Vercel 会根据你的 IP 把你大致定位到 {location}，然后我再把这条直线距离画回杭州。它不是精确定位，但足够让这段自我介绍更有温度。",
-      "bodyUnavailable": "当前环境拿不到 Geo Headers，所以这张实时路线卡只有在真正的 Vercel 部署请求里才会亮起来。本地开发和部分代理场景不会带上访客坐标。",
+      "sourceReady": "大致位置已获取",
+      "sourceLoading": "正在定位中",
+      "sourceUnavailable": "定位暂时不可用",
+      "titleLoading": "让我猜猜你离我有多远",
+      "titleReady": "我来自杭州，距离你现在的位置大约 {distance} 公里。",
+      "titleUnavailable": "距离计算器正在休息",
+      "bodyLoading": "正在根据你的位置画一条线回杭州，稍等片刻，就会告诉你我们相隔多少公里。",
+      "bodyReady": "看起来你现在大概在 {location}，我画了一条线把你和杭州连起来。这不是精确导航，只是想让我们的初次见面多一点仪式感。",
+      "bodyUnavailable": "现在没法算出你离我有多远，但你可以把它当成一个小小的悬念——等它醒来的时候，就会告诉你我们相隔多少公里。",
       "fromLabel": "我这边",
       "fromValue": "中国杭州",
       "toLabel": "你这边",
@@ -208,18 +208,23 @@
       "body": "可以理解成先读一个轻一点的 “jee”，后面快速带出一个 “eh”，整体要短一点、干净一点。",
       "breakdownLabel": "记忆方式",
       "breakdownValue": "先发 “jee”，结尾轻轻收住，不要拖长。",
-      "audioLabel": "音频 mock"
+      "audioLabel": "音频 mock",
+      "sentencePrefix": "我的名字 {name} 读作",
+      "sentenceSuffix": "。",
+      "hint": "点击喇叭，听一遍机器发音。",
+      "buttonLabel": "听 Jie 的发音"
     },
     "flag": {
-      "eyebrow": "动效小实验",
+      "eyebrow": "来自",
       "badge": "中国国旗",
-      "title": "保留同一套波动机制，只把图案换成了中华人民共和国国旗。",
-      "body": "动效结构没有变，仍然是窄列切分、负延迟错峰和逐列起伏。变化只发生在旗面图案本身，所以红底和星形会一起弯曲，而不是像静态贴图那样浮在上面。",
+      "title": "我来自阳光明媚的大理。",
+      "body": "",
+      "linkLabel": "点击这里了解我的家乡",
       "ariaLabel": "使用错峰列波动的中华人民共和国国旗动效",
       "techniqueLabel": "实现方式",
-      "techniqueValue": "CSS 变量、负延迟错峰，以及映射到所有列上的共享星形 SVG",
+      "techniqueValue": "前端动画与 SVG 绘制",
       "motionLabel": "开场状态",
-      "motionValue": "每一列都预先错开相位，所以首屏出现时就已经在动"
+      "motionValue": "页面打开时就已经在轻轻飘动"
     },
     "stateStreet": {
       "highlightsLabel": "我实际做进去的部分",
@@ -227,11 +232,11 @@
       "cards": {
         "financial": {
           "kicker": "我参与了",
-          "summary": "交易平台重构这件事，帮助团队把遗留单体拆成可独立部署的多个 Domain，并把可拖拽的数据看板体验真正做出来。"
+          "summary": "交易平台重构这件事，帮助团队把旧的系统拆成几个能独立更新的模块，还做了一块可以自由拖拽的数据看板。"
         },
         "uxAgent": {
           "kicker": "我主导实现了",
-          "summary": "一套内部 UX Agent，它能把产品需求直接转成 React 页面，同时我也做了新旧组件体系并行迁移的兼容层。"
+          "summary": "一套内部设计助手，产品经理只要描述需求，它就能自动生成页面代码。我还负责让新旧两套组件库能平稳过渡，不影响现有功能。"
         }
       }
     }
@@ -258,6 +263,9 @@
     "FINISHED": "Web开发",
     "IN_PROGRESS": "AI",
     "CLOSED": "非技术类"
+  },
+  "article": {
+    "fanDescription": "\u6211\u559c\u6b22\u5199\u4e00\u4e9b\u5947\u5947\u602a\u602a\u7684\u4ee3\u7801\u3002\u51e0\u4e2a\u6708\u524d\u6211\u505a\u4e86\u8fd9\u4e2a\u300c\u53cd\u70b9\u8e29\u300d\u98ce\u6247\u2014\u2014\u5b83\u4f1a\u628a dislike \u6309\u94ae\u4ece\u4f60\u5149\u6807\u5e95\u4e0b\u5439\u8d70\u3002\u7eaf\u5c5e\u5a31\u4e50\uff0c\u6211\u5e76\u4e0d\u662f\u4e00\u4e2a\u4e13\u65ad\u7684\u4eba\u3002"
   },
   "footer": {
     "identity": "开发者",

@@ -175,19 +175,19 @@
     }
   },
   "funFacts": {
-    "heading": "Fun facts before the case studies",
-    "description": "A softer intro before the project details: where I am, how to say my name, and a couple of State Street things I helped ship.",
+    "heading": "Truth About Me",
+    "description": "",
     "map": {
       "eyebrow": "Live distance",
-      "sourceReady": "Approx. from IP",
-      "sourceLoading": "Checking Vercel geo",
-      "sourceUnavailable": "Geo unavailable",
-      "titleLoading": "Checking how far your current IP is from Hangzhou.",
-      "titleReady": "You look to be roughly {distance} km away from Hangzhou.",
-      "titleUnavailable": "The live route is waiting for Vercel geo headers.",
-      "bodyLoading": "On a deployed Vercel request, this card reads the incoming geo headers, estimates your current region, and draws the route back to my side of the map.",
-      "bodyReady": "Using your IP, Vercel places you around {location} and I draw a straight-line route back to Hangzhou. It's approximate, but it makes the intro feel personal.",
-      "bodyUnavailable": "Geo headers are unavailable in this environment, so the live route only lights up after a real Vercel deployment request. Local development and some proxies won't include visitor coordinates.",
+      "sourceReady": "Location found",
+      "sourceLoading": "Finding you",
+      "sourceUnavailable": "Location unavailable",
+      "titleLoading": "Let me guess how far you are from me",
+      "titleReady": "I'm from Hangzhou, roughly {distance} km away from your current location.",
+      "titleUnavailable": "Distance calculator is taking a nap",
+      "bodyLoading": "Drawing a line from your location back to Hangzhou. Give me a moment and I'll tell you how many kilometers separate us.",
+      "bodyReady": "Looks like you're somewhere near {location}. I've drawn a line connecting you to Hangzhou. This isn't a precise GPS — just a little ritual to make our first meeting feel more personal.",
+      "bodyUnavailable": "Right now I can't tell how far apart we are, but think of it as a little suspense — when it wakes up, it will show the distance between us.",
       "fromLabel": "My side",
       "fromValue": "Hangzhou, China",
       "toLabel": "Your side",
@@ -208,18 +208,23 @@
       "body": "Think of it as a clean \"jee\" followed by a quick \"eh\". Short, light, and easy to repeat once you've heard it.",
       "breakdownLabel": "Quick cue",
       "breakdownValue": "Start with \"jee\", then let the ending fall off softly.",
-      "audioLabel": "Audio mock"
+      "audioLabel": "Audio mock",
+      "sentencePrefix": "My name, {name}, is pronounced",
+      "sentenceSuffix": ".",
+      "hint": "Click to hear a robot say it.",
+      "buttonLabel": "Hear how Jie is pronounced"
     },
     "flag": {
-      "eyebrow": "Motion study",
+      "eyebrow": "Origin",
       "badge": "PRC flag",
-      "title": "Same wave mechanics, now translated into the People's Republic of China flag.",
-      "body": "The motion system stays exactly the same: narrow columns, negative staggered delays, and per-column billow. Only the artwork changes, so the stars and red field bend together like a single flag instead of a static overlay.",
+      "title": "I am from big, sunny Dali, China.",
+      "body": "",
+      "linkLabel": "Click here to know my hometown",
       "ariaLabel": "Animated People's Republic of China flag waving in staggered columns",
       "techniqueLabel": "Built with",
-      "techniqueValue": "CSS variables, negative delays, and a shared star SVG mapped across all columns",
+      "techniqueValue": "Front-end animation & SVG",
       "motionLabel": "Starts alive",
-      "motionValue": "Each column is phase-shifted so the flag is already in motion on first paint"
+      "motionValue": "It's already gently waving when you open the page"
     },
     "stateStreet": {
       "highlightsLabel": "What I built into it",
@@ -227,11 +232,11 @@
       "cards": {
         "financial": {
           "kicker": "I contributed to",
-          "summary": "the trading platform rewrite, helping split a legacy monolith into independently deployable domains and shaping the draggable dashboard experience."
+          "summary": "the trading platform rewrite, helping split an old system into independently updatable parts and building a free-form dashboard you can drag and drop."
         },
         "uxAgent": {
           "kicker": "I authored",
-          "summary": "an internal UX Agent that turns product specs into React pages, plus the migration layer that let legacy and MUI systems coexist without breaking callers."
+          "summary": "an internal design assistant that turns product ideas into page code. I also built the bridge that let old and new systems run side by side without breaking anything."
         }
       }
     }
@@ -258,6 +263,9 @@
     "FINISHED": "Web Development",
     "IN_PROGRESS": "AI",
     "CLOSED": "Non-Tech"
+  },
+  "article": {
+    "fanDescription": "I enjoy building weird stuff with code. A few months ago, I made this anti-dislike wind generator that literally blows the dislike button away from your cursor. It\u2019s just for fun \u2014 not a dictatorship, I promise."
   },
   "footer": {
     "identity": "Developer",
