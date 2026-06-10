@@ -9,6 +9,7 @@ interface SectionHeadingProps {
   align?: "left" | "center"
   className?: string
   titleClassName?: string
+  variant?: "retro" | "plain"
 }
 
 const SectionHeading = ({
@@ -18,7 +19,10 @@ const SectionHeading = ({
   align = "center",
   className,
   titleClassName,
+  variant = "retro",
 }: SectionHeadingProps) => {
+  const isPlain = variant === "plain"
+
   return (
     <div
       className={cn(
@@ -36,12 +40,25 @@ const SectionHeading = ({
         )}
       >
         <div className="space-y-2 md:space-y-3">
-          <div className="terminal-label">system heading</div>
-          <h2 className={cn("pixel-heading max-w-4xl text-balance", titleClassName)}>
+          {!isPlain ? <div className="terminal-label">system heading</div> : null}
+          <h2
+            className={cn(
+              isPlain
+                ? "max-w-4xl text-balance text-[clamp(1.8rem,4vw,3rem)] font-semibold leading-[1.08] tracking-[-0.03em] text-foreground"
+                : "pixel-heading max-w-4xl text-balance",
+              titleClassName
+            )}
+          >
             {title}
           </h2>
           {description ? (
-            <p className="max-w-xl font-pixel text-[11px] leading-6 tracking-[0.08em] text-muted-foreground md:max-w-2xl md:text-[12px] md:leading-7">
+            <p
+              className={cn(
+                isPlain
+                  ? "max-w-xl text-pretty text-sm leading-7 text-muted-foreground md:max-w-2xl md:text-base md:leading-8"
+                  : "max-w-xl font-pixel text-[11px] leading-6 tracking-[0.08em] text-muted-foreground md:max-w-2xl md:text-[12px] md:leading-7"
+              )}
+            >
               {description}
             </p>
           ) : null}

@@ -6,6 +6,7 @@ interface RetroStatCardProps extends React.HTMLAttributes<HTMLDivElement> {
   label: React.ReactNode
   value: React.ReactNode
   hint?: React.ReactNode
+  typography?: "retro" | "plain"
 }
 
 export function RetroStatCard({
@@ -13,6 +14,7 @@ export function RetroStatCard({
   label,
   value,
   hint,
+  typography = "retro",
   ...props
 }: RetroStatCardProps) {
   return (
@@ -23,11 +25,25 @@ export function RetroStatCard({
       )}
       {...props}
     >
-      <div className="terminal-label min-w-0 break-words text-[8px] leading-4 tracking-[0.1em] sm:text-[9px] sm:tracking-[0.16em] md:text-[10px] md:tracking-[0.22em]">
+      <div
+        className={cn(
+          "min-w-0 break-words",
+          typography === "plain"
+            ? "text-[11px] font-medium leading-5 tracking-[0.04em] text-muted-foreground"
+            : "terminal-label text-[8px] leading-4 tracking-[0.1em] sm:text-[9px] sm:tracking-[0.16em] md:text-[10px] md:tracking-[0.22em]"
+        )}
+      >
         {label}
       </div>
       <div className="flex min-w-0 flex-1 flex-col items-center justify-center gap-2 pt-3 sm:gap-3 sm:pt-4 md:gap-2.5 md:pt-4 lg:gap-2 lg:pt-3">
-        <div className="font-pixel min-w-0 text-[1.375rem] uppercase tracking-[0.06em] text-foreground sm:text-2xl md:text-3xl md:tracking-[0.08em]">
+        <div
+          className={cn(
+            "min-w-0 text-foreground",
+            typography === "plain"
+              ? "text-[1.45rem] font-semibold tracking-[-0.03em] sm:text-[1.8rem] md:text-[2.25rem]"
+              : "font-pixel text-[1.375rem] uppercase tracking-[0.06em] sm:text-2xl md:text-3xl md:tracking-[0.08em]"
+          )}
+        >
           {value}
         </div>
         {hint ? (

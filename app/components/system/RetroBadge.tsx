@@ -17,17 +17,21 @@ const toneStyles: Record<RetroBadgeTone, string> = {
 
 interface RetroBadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   tone?: RetroBadgeTone
+  typography?: "retro" | "plain"
 }
 
 export function RetroBadge({
   className,
   tone = "neutral",
+  typography = "retro",
   ...props
 }: RetroBadgeProps) {
   return (
     <span
       className={cn(
-        "font-pixel inline-flex items-center border-2 px-2.5 py-1 text-[10px] uppercase tracking-[0.22em]",
+        typography === "plain"
+          ? "inline-flex items-center border-2 px-2.5 py-1 text-[11px] font-medium tracking-[0.02em]"
+          : "font-pixel inline-flex items-center border-2 px-2.5 py-1 text-[10px] uppercase tracking-[0.22em]",
         toneStyles[tone],
         className
       )}
@@ -35,4 +39,3 @@ export function RetroBadge({
     />
   )
 }
-
