@@ -2,13 +2,14 @@
 
 ## Project Identity
 - Jie's production portfolio, blog, and AI skill-showcase. Treat every change as recruiter-facing.
-- Current priority: **styling normalization** (converge on Tailwind + semantic tokens + shared UI primitives; CSS Modules only for complex isolated visuals).
+- Current priority: **font normalization inside a broader styling transition**. This project is in the middle of moving from pixel-heavy font/style choices toward normalized font/styling conventions, but the active scope right now is fonts only.
 
 ## Non-Negotiable Rules
 1. Minimal change; do not break business logic.
 2. Preserve current visual look and motion unless explicitly asked to redesign.
 3. Do not mix style refactors with unrelated logic changes.
 4. Prefer normalization over reinvention; migrate incrementally.
+5. During the current transition, keep broader pixel styling in place unless the task is explicitly about fonts/typography.
 
 ## Commands & Toolchain
 
@@ -111,6 +112,7 @@ app/
 ```
 
 ### Styling System
+- **Transition status**: The site is mid-migration from pixel font/style toward normalized font/styling. Current active work is limited to font/typography changes; broader styling cleanup is deferred unless explicitly requested.
 - **Primary**: Tailwind CSS 3.4 + semantic tokens defined in `app/globals.css` (`@layer base`).
 - **Plugins**: `tailwindcss-animate`, `@tailwindcss/typography`.
 - **Dark mode**: `class` strategy (`.dark` class on `<html>`).
@@ -136,7 +138,7 @@ Reuse these before inventing new patterns:
 - **Layout**: `.app-shell`, `.section-shell`, `.content-page-shell`, `.panel-grid`
 - **Cards**: `.pixel-card`, `.pixel-corners`, `.article-preview-card`, `.summary-stat-card`
 - **Typography**: `.display-title`, `.pixel-heading`, `.display-kicker`, `.section-kicker`, `.section-copy`, `.terminal-label`, `.pixel-header-label`
-- **Fonts**: `.font-pixel` (Ark Pixel), `.font-editorial`, `.font-reading`, `.font-normal-mode`
+- **Fonts**: `.font-pixel` (legacy transition surface during the font migration), `.font-editorial`, `.font-reading`, `.font-normal-mode`
 - **AI Lab**: `.ai-lab-shell`, `.ai-lab-sidebar-pane`, `.ai-lab-chat-pane`, `.ai-lab-message-card--*`, `.ai-lab-composer`, `.ai-lab-composer-shell`, `.ai-lab-landing-panel`, `.ai-lab-pixel-button`, `.ai-lab-featured-chip`, `.ai-lab-pixel-menu-item`, `.ai-lab-workspace-pane`, `.ai-lab-workspace-drawer`
 - **Data**: `.data-table-shell`, `.data-table-header`, `.data-table-row`
 - **Pixels**: `.pixelated` (image-rendering), `.pixel-panel`, `.pixel-arrow`, `.pixel-divider`, `.pixel-title`, `.pixel-title-wrapper`
