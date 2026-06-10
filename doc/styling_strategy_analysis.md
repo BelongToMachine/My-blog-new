@@ -1,5 +1,11 @@
 # Styling Strategy Analysis — jie-blog
 
+## Current Transition Status
+
+This project is currently in the middle of transitioning from pixel-heavy font/style choices toward normalized font/styling conventions.
+
+The active workstream right now is fonts/typography only. Treat the broader styling recommendations in this document as future-facing unless a task explicitly expands beyond font work.
+
 ## 🔍 Current State Audit
 
 After reviewing your codebase, here is what you're currently using **all at once**:
@@ -88,6 +94,8 @@ After reviewing your codebase, here is what you're currently using **all at once
 ## 🎯 My Recommendation: **Option A — Tailwind + CSS Custom Properties**
 
 You are **already 80% there**. Here's the concrete action plan:
+
+Before the broader styling migration, handle typography first: normalize font usage, reduce pixel-font overreach gradually, and leave non-font pixel styling in place unless the task explicitly calls for a wider refactor.
 
 ### Step 1: Remove styled-components
 

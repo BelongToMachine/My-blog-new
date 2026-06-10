@@ -2,6 +2,8 @@
 
 This is the single source of truth for styling normalization work in this repo.
 
+The repo is currently in the middle of a transition from pixel-heavy font/style choices to normalized font/styling conventions. The active workstream right now is font normalization only; broader styling normalization remains planned but is not the current default scope.
+
 Use this document for:
 
 - normalization scope and guardrails
@@ -26,12 +28,15 @@ Normalization goals:
 - preserve the current recruiter-facing look unless the user explicitly asks for visual revision
 - keep migrations incremental and easy to verify
 - improve consistency without flattening page personality
+- move from pixel-heavy typography toward normalized typography first, before broader styling cleanup
 
 Current product-direction decisions:
 
 - `Projects` is no longer an active product module
 - `Contact` form is no longer an active product module
-- future normalization work should focus on:
+- active normalization scope is typography/font work first
+- until font migration is intentionally widened, preserve existing pixel-heavy styling outside typography changes
+- future broader normalization work can later focus on:
   - navigation and shared shell
   - home shared rhythm
   - blogs and articles
@@ -48,6 +53,7 @@ Target styling model:
 - shared primitives in `app/components/ui/*`
 - shared site-level composed components where repetition is clear
 - CSS Modules only for complex editorial or animation-heavy surfaces
+- execute this transition incrementally, with fonts/typography as the current active phase
 
 Preferred component layering:
 
@@ -62,6 +68,7 @@ Keep as exceptions, not defaults:
 
 - inline styles only for true runtime values
 - CSS Modules only when utilities/components are awkward or overly complex
+- legacy pixel-styled components/utilities while the typography-only transition is still in progress
 
 ---
 
@@ -96,6 +103,7 @@ Relevant backbone files:
 - [x] Keep changes minimal.
 - [x] Do not change business logic as part of normalization.
 - [x] Confirm scope before editing.
+- [x] Keep current normalize tasks limited to fonts/typography unless the user explicitly expands scope.
 - [ ] Verify dark mode, mobile, and interaction states after each completed batch.
 - [x] Do not mix normalize work with unrelated feature work.
 
