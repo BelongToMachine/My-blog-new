@@ -1,6 +1,8 @@
 "use client"
 
 import { useState } from "react"
+import { cn } from "@/lib/utils"
+import { useTranslations } from "next-intl"
 import { Button } from "@/app/components/ui/button"
 import Wind from "./Wind"
 import Image from "next/image"
@@ -9,19 +11,37 @@ import styles from "@/app/articles/post.module.css"
 
 interface ArticleFooterProps {
   initialLikes?: number
+  label?: string
+  fullWidth?: boolean
+  compact?: boolean
+  showHeader?: boolean
 }
 
-const ArticleFooter = ({ initialLikes = 0 }: ArticleFooterProps) => {
+const ArticleFooter = ({
+  initialLikes = 0,
+  label = "ARTICLE REACTION",
+  fullWidth = false,
+  compact = false,
+  showHeader = true,
+}: ArticleFooterProps) => {
+  const t = useTranslations("article")
   const [likes, setLikes] = useState(initialLikes)
 
   return (
-    <div className={styles.footerWrapper}>
-      {/* Module label + divider */}
-      <div className="mb-8 flex items-center gap-3">
-        <div className="h-px flex-1 bg-border/50" />
-        <span className="terminal-label">ARTICLE REACTION</span>
-        <div className="h-px flex-1 bg-border/50" />
-      </div>
+    <div
+      className={cn(
+        styles.footerWrapper,
+        fullWidth && styles.footerWrapperFullWidth,
+        compact && styles.footerWrapperCompact,
+      )}
+    >
+      {showHeader ? (
+        <div className="mb-8 flex items-center gap-3">
+          <div className="h-px flex-1 bg-border/50" />
+          <span className="terminal-label">{label}</span>
+          <div className="h-px flex-1 bg-border/50" />
+        </div>
+      ) : null}
 
       {/* Reaction controls */}
       <div className={styles.footerReactions}>
@@ -53,6 +73,10 @@ const ArticleFooter = ({ initialLikes = 0 }: ArticleFooterProps) => {
           />
         </div>
       </div>
+
+      <p className="mt-4 max-w-[60ch] text-pretty text-center text-[15px] leading-7 text-foreground/82 md:text-base md:leading-8">
+        {t("fanDescription")}
+      </p>
     </div>
   )
 }
