@@ -23,7 +23,9 @@ const MobileNav = ({ indexMode = false }: { indexMode?: boolean }) => {
     [t]
   )
 
-  const indexClass = indexMode ? "text-white hover:text-white/80" : undefined
+  const indexClass = indexMode
+    ? "font-sans text-[13px] font-medium normal-case tracking-[0.02em] text-white hover:text-white/80"
+    : undefined
 
   return (
     <div className="flex items-center justify-between gap-2 px-4 py-2.5">
@@ -47,7 +49,11 @@ const MobileNav = ({ indexMode = false }: { indexMode?: boolean }) => {
                 asChild
                 active={link.href === currentPath}
                 variant="desktop"
-                className="flex h-8 items-center px-1.5 py-0 text-[9px] leading-none tracking-[0.12em]"
+                className={cn(
+                  "flex h-8 items-center px-1.5 py-0 text-[9px] leading-none tracking-[0.12em]",
+                  indexMode &&
+                    "font-sans px-2 py-0 text-[12px] normal-case tracking-[0.02em]",
+                )}
               >
                 <Link
                   className={cn(

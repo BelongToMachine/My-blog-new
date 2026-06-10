@@ -17,7 +17,9 @@ interface NavLinkItem {
 }
 
 const DesktopNav = ({ indexMode = false }: { indexMode?: boolean }) => {
-  const indexClass = indexMode ? "text-white hover:text-white/80" : undefined
+  const indexClass = indexMode
+    ? "font-sans text-[13px] font-medium normal-case tracking-[0.02em] text-white hover:text-white/80"
+    : undefined
 
   return (
     <div className="flex h-16 items-center justify-between px-5">
@@ -90,6 +92,7 @@ const NavLinks = ({ compact = false, indexMode = false }: { compact?: boolean; i
             active={link.href === currentPath}
             variant="desktop"
             className={cn(
+              indexMode && "font-sans px-2.5 py-1.5 text-[13px] normal-case tracking-[0.02em]",
               compact &&
                 "px-1.5 py-1 text-[9px] tracking-[0.12em]"
             )}

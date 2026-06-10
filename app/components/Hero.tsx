@@ -108,7 +108,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
         {showBackLink ? (
           <Link
             href="/"
-            className="absolute -left-1 top-3 z-30 inline-flex items-center gap-1.5 border-2 border-primary/30 bg-background/80 px-2.5 py-1.5 font-pixel text-[10px] uppercase tracking-[0.2em] text-primary backdrop-blur-sm transition-all duration-200 hover:border-primary/60 hover:bg-background hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 md:-left-1 md:top-5"
+            className="absolute -left-1 top-3 z-30 inline-flex items-center gap-1.5 border-2 border-primary/30 bg-background/80 px-2.5 py-1.5 text-sm font-medium tracking-[0.02em] text-primary backdrop-blur-sm transition-all duration-200 hover:border-primary/60 hover:bg-background hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 md:-left-1 md:top-5"
           >
             <span>←</span>
             <span>{t("backToNav")}</span>
@@ -153,13 +153,13 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
                 I&apos;M JIE
               </motion.h1>
               <div className="space-y-4 md:max-w-[19rem] lg:-translate-x-2 translate-y-4 lg:-translate-y-8 lg:max-w-none lg:space-y-6 xl:-translate-x-3 xl:-translate-y-10">
-                <p className="font-pixel text-[11px] min-[390px]:text-[12px] min-[480px]:text-[13px] md:text-base lg:text-base leading-[1.8] tracking-[0.05em] md:tracking-[0.06em] lg:tracking-[0.08em] min-[480px]:max-w-[24ch] sm:max-w-[28ch] md:max-w-[40ch] lg:max-w-[42ch] min-[1101px]:max-w-[48ch] xl:max-w-[42ch] ml-2 lg:-ml-24 mt-10 text-muted-foreground [text-wrap:pretty]">
+                <p className="text-[15px] min-[480px]:text-base md:text-[1.05rem] lg:text-[1.05rem] leading-[1.75] tracking-[0.01em] min-[480px]:max-w-[24ch] sm:max-w-[28ch] md:max-w-[40ch] lg:max-w-[42ch] min-[1101px]:max-w-[48ch] xl:max-w-[42ch] ml-2 lg:-ml-24 mt-10 text-muted-foreground [text-wrap:pretty]">
                   {t("shortIntro")}
                 </p>
                 <div className="flex flex-wrap gap-3">
                   <Link
                     href="/ai"
-                    className="ai-cta-shimmer group inline-flex min-h-10 items-center gap-2 border-2 border-primary/35 bg-primary/[0.04] px-3 py-2.5 font-pixel text-[9px] uppercase tracking-[0.2em] text-primary transition-all duration-200 hover:border-primary/70 hover:bg-primary/[0.09] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 min-[390px]:text-[10px] min-[480px]:min-h-11 min-[480px]:px-4 min-[480px]:py-3 min-[480px]:text-[11px] md:px-4 md:py-2.5 lg:min-h-0 lg:px-3.5 lg:py-2"
+                    className="ai-cta-shimmer group inline-flex min-h-10 items-center gap-2 border-2 border-primary/35 bg-primary/[0.04] px-3 py-2.5 text-sm font-medium tracking-[0.02em] text-primary transition-all duration-200 hover:border-primary/70 hover:bg-primary/[0.09] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 min-[480px]:min-h-11 min-[480px]:px-4 min-[480px]:py-3 md:px-4 md:py-2.5 lg:min-h-0 lg:px-3.5 lg:py-2"
                   >
                     <span>{t("aiCtaLabel")}</span>
                     <span className="transition-transform duration-200 group-hover:translate-x-0.5">
@@ -212,7 +212,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
             className="max-[767px]:hidden absolute right-0 top-[14.25rem] z-30 flex w-[8.75rem] justify-end min-[390px]:top-[15rem] min-[390px]:w-[9.75rem] min-[480px]:top-[15.75rem] min-[480px]:w-[11.5rem] md:relative md:right-auto md:top-auto md:col-span-4 md:mt-0 md:w-auto md:pt-24 lg:col-span-4 lg:justify-start lg:pt-0 lg:pb-6"
           >
             <div className="w-full md:w-[316px] md:translate-x-2 lg:w-[364px] lg:-translate-x-8 lg:translate-y-32 xl:w-[500px] xl:-translate-x-10 xl:translate-y-36 2xl:w-[508px]">
-              <div className="mb-2 flex items-center justify-between border-b border-border/50 pb-1.5 font-pixel text-[5px] uppercase tracking-[0.18em] text-muted-foreground min-[390px]:text-[6px] min-[480px]:text-[7px] md:mb-3 md:pb-2 md:text-[9px] md:tracking-[0.22em]">
+              <div className="mb-2 flex items-center justify-between border-b border-border/50 pb-1.5 text-[8px] font-medium tracking-[0.08em] text-muted-foreground min-[390px]:text-[8px] min-[480px]:text-[9px] md:mb-3 md:pb-2 md:text-[10px] md:tracking-[0.12em]">
                 <span>Profile Snapshot</span>
                 <span>coder.ts</span>
               </div>
@@ -238,7 +238,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
       {showBackLink ? (
         <Link
           href="/"
-          className="absolute -left-1 top-3 z-30 inline-flex items-center gap-1.5 border-2 border-primary/30 bg-background/80 px-2.5 py-1.5 font-pixel text-[10px] uppercase tracking-[0.2em] text-primary backdrop-blur-sm transition-all duration-200 hover:border-primary/60 hover:bg-background hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 md:-left-1 md:top-5"
+          className="absolute -left-1 top-3 z-30 inline-flex items-center gap-1.5 border-2 border-primary/30 bg-background/80 px-2.5 py-1.5 text-sm font-medium tracking-[0.02em] text-primary backdrop-blur-sm transition-all duration-200 hover:border-primary/60 hover:bg-background hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 md:-left-1 md:top-5"
         >
           <span>←</span>
           <span>{t("backToNav")}</span>
@@ -253,7 +253,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
         >
           <div className="relative w-full min-w-0 max-w-[800px] lg:max-w-[680px] xl:max-w-[760px]">
             <h1 className="mb-3 min-h-[5rem] text-left text-[1.75rem] min-[375px]:text-[2rem] md:text-[2.5rem] font-extrabold leading-[1.05] lg:min-h-[7rem] lg:text-5xl xl:min-h-[8rem] xl:text-6xl">
-              <span className="font-pixel uppercase tracking-[0.04em] text-primary">
+              <span className="text-base font-semibold tracking-[0.02em] text-primary md:text-lg">
                 {`${t("greeting")} `}
               </span>
               <TypeAnimation
@@ -266,12 +266,15 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
                 speed={50}
                 repeat={Infinity}
                 className={cn(
-                  "font-pixel mt-1 block whitespace-nowrap min-h-[1.1em] text-left uppercase tracking-[0.04em] text-foreground transition-all duration-300",
+                  cn(
+                    bebasNeue.className,
+                    "mt-1 block whitespace-nowrap min-h-[1.1em] text-left tracking-[0.03em] text-foreground transition-all duration-300",
+                  ),
                   isEnLongText && "lg:text-[0.55em]",
                 )}
               />
             </h1>
-            <p className="font-pixel mb-4 mt-2 max-w-xl text-sm leading-relaxed tracking-wide text-muted-foreground md:text-base">
+            <p className="mb-4 mt-2 max-w-xl text-[15px] leading-[1.75] tracking-[0.01em] text-muted-foreground md:text-base">
               {t("shortIntro")}
             </p>
             <motion.div
@@ -282,7 +285,7 @@ const Hero = ({ showBackLink = true, variant = "default" }: Props) => {
             >
               <Link
                 href="/ai"
-                className="ai-cta-shimmer group inline-flex items-center gap-2 border-2 border-primary/35 bg-primary/[0.04] px-3.5 py-2 font-pixel text-[11px] uppercase tracking-[0.22em] text-primary transition-all duration-200 hover:border-primary/70 hover:bg-primary/[0.09] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
+                className="ai-cta-shimmer group inline-flex items-center gap-2 border-2 border-primary/35 bg-primary/[0.04] px-3.5 py-2 text-sm font-medium tracking-[0.02em] text-primary transition-all duration-200 hover:border-primary/70 hover:bg-primary/[0.09] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50"
               >
                 <span>{t("aiCtaLabel")}</span>
                 <span className="transition-transform duration-200 group-hover:translate-x-0.5">

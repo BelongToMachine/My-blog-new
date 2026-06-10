@@ -1,11 +1,17 @@
 import type { ReactNode } from "react"
 import { getTranslations } from "next-intl/server"
+import { cn } from "@/lib/utils"
 import {
   ChatAIIcon,
   DatabaseDollarIcon,
   HumanAgentIcon,
 } from "./PixelProjectIcons"
 import SectionHeading from "../system/SectionHeading"
+
+const metaTextClassName =
+  "text-[11px] font-medium leading-none tracking-[0.04em] text-muted-foreground"
+const accentLabelClassName =
+  "text-xs font-medium tracking-[0.04em] text-primary/80"
 
 type ProjectKey = "financial" | "uxAgent" | "aiChat"
 type ProjectRoleKey = "frontend" | "fullstack"
@@ -56,7 +62,12 @@ export default async function ProjectsSection() {
   return (
     <section id="projects" className="mb-10 space-y-5 md:mb-14 md:space-y-6">
       <div>
-        <SectionHeading title={t("heading")} align="left" className="mb-0" />
+        <SectionHeading
+          title={t("heading")}
+          align="left"
+          className="mb-0"
+          variant="plain"
+        />
       </div>
 
       <div>
@@ -129,7 +140,7 @@ function ProjectFeatureCard({
     >
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border/60 pb-5">
         <div className="space-y-3">
-          <div className="font-pixel text-[10px] uppercase tracking-[0.24em] text-primary/80">
+          <div className={accentLabelClassName}>
             {featuredLabel}
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -154,7 +165,7 @@ function ProjectFeatureCard({
 
       <div className="mt-8 grid gap-6 border-t border-border/60 pt-6 md:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
         <div>
-          <p className="font-pixel text-[10px] uppercase tracking-[0.22em] text-primary/80">
+          <p className={accentLabelClassName}>
             {highlightsLabel}
           </p>
           <div className="mt-4 space-y-3">
@@ -167,14 +178,14 @@ function ProjectFeatureCard({
           </div>
         </div>
         <div>
-          <p className="font-pixel text-[10px] uppercase tracking-[0.22em] text-primary/80">
+          <p className={accentLabelClassName}>
             {stackLabel}
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
             {project.tech.map((tech) => (
               <span
                 key={tech}
-                className="inline-flex items-center border border-border/60 bg-background/70 px-2.5 py-1 font-pixel text-[10px] uppercase tracking-[0.16em] text-muted-foreground"
+                className="inline-flex items-center border border-border/60 bg-background/70 px-2.5 py-1 text-[11px] font-medium leading-none tracking-[0.04em] text-muted-foreground"
               >
                 {tech}
               </span>
@@ -215,7 +226,7 @@ function ProjectSupportCard({
             <MetaPill>{projectIndex}</MetaPill>
             <MetaPill>{roleLabel}</MetaPill>
           </div>
-          <p className="font-pixel text-[10px] uppercase tracking-[0.22em] text-primary/80">
+          <p className={accentLabelClassName}>
             {trackLabel}
           </p>
         </div>
@@ -243,14 +254,14 @@ function ProjectSupportCard({
       </div>
 
       <div className="mt-5 border-t border-border/60 pt-4">
-        <p className="font-pixel text-[10px] uppercase tracking-[0.22em] text-primary/80">
+        <p className={accentLabelClassName}>
           {stackLabel}
         </p>
         <div className="mt-3 flex flex-wrap gap-2">
           {project.tech.map((tech) => (
             <span
               key={tech}
-              className="inline-flex items-center border border-border/60 bg-background/70 px-2.5 py-1 font-pixel text-[10px] uppercase tracking-[0.16em] text-muted-foreground"
+              className="inline-flex items-center border border-border/60 bg-background/70 px-2.5 py-1 text-[11px] font-medium leading-none tracking-[0.04em] text-muted-foreground"
             >
               {tech}
             </span>
@@ -263,7 +274,12 @@ function ProjectSupportCard({
 
 function MetaPill({ children }: { children: ReactNode }) {
   return (
-    <span className="inline-flex items-center border border-border/60 bg-background/70 px-2.5 py-1 font-pixel text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
+    <span
+      className={cn(
+        "inline-flex items-center border border-border/60 bg-background/70 px-2.5 py-1",
+        metaTextClassName
+      )}
+    >
       {children}
     </span>
   )

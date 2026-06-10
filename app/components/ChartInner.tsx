@@ -8,6 +8,7 @@ interface Props {
   open: number
   inProgress: number
   closed: number
+  typography?: "retro" | "plain"
 }
 
 const PixelXTick = ({
@@ -16,12 +17,14 @@ const PixelXTick = ({
   payload,
   fontSize = 11,
   dy = 16,
+  typography = "retro",
 }: {
   x?: number
   y?: number
   payload?: { value?: string }
   fontSize?: number
   dy?: number
+  typography?: "retro" | "plain"
 }) => (
   <text
     x={x}
@@ -30,10 +33,14 @@ const PixelXTick = ({
     textAnchor="middle"
     fill="hsl(var(--muted-foreground))"
     style={{
-      fontFamily: "var(--font-pixel), monospace",
+      fontFamily:
+        typography === "plain"
+          ? "var(--font-sans), sans-serif"
+          : "var(--font-pixel), monospace",
       fontSize,
-      textTransform: "uppercase",
-      letterSpacing: "0.05em",
+      textTransform: typography === "retro" ? "uppercase" : undefined,
+      letterSpacing: typography === "retro" ? "0.05em" : "0.01em",
+      fontWeight: typography === "plain" ? 500 : undefined,
     }}
   >
     {payload?.value}
@@ -46,12 +53,14 @@ const PixelYTick = ({
   payload,
   dx = -10,
   fontSize = 11,
+  typography = "retro",
 }: {
   x?: number
   y?: number
   payload?: { value?: string | number }
   dx?: number
   fontSize?: number
+  typography?: "retro" | "plain"
 }) => (
   <text
     x={x}
@@ -60,10 +69,14 @@ const PixelYTick = ({
     textAnchor="end"
     fill="hsl(var(--muted-foreground))"
     style={{
-      fontFamily: "var(--font-pixel), monospace",
+      fontFamily:
+        typography === "plain"
+          ? "var(--font-sans), sans-serif"
+          : "var(--font-pixel), monospace",
       fontSize,
-      textTransform: "uppercase",
-      letterSpacing: "0.05em",
+      textTransform: typography === "retro" ? "uppercase" : undefined,
+      letterSpacing: typography === "retro" ? "0.05em" : "0.01em",
+      fontWeight: typography === "plain" ? 500 : undefined,
     }}
   >
     {payload?.value}
@@ -96,7 +109,12 @@ const PixelBarShape = (props: any) => {
   )
 }
 
-const PixelTooltip = ({ active, payload, label }: any) => {
+const PixelTooltip = ({
+  active,
+  payload,
+  label,
+  typography = "retro",
+}: any) => {
   if (!active || !payload?.length) return null
   return (
     <div
@@ -105,10 +123,14 @@ const PixelTooltip = ({ active, payload, label }: any) => {
         border: "2px solid hsl(var(--border))",
         color: "hsl(var(--card-foreground))",
         padding: "6px 10px",
-        fontFamily: "var(--font-pixel), monospace",
+        fontFamily:
+          typography === "plain"
+            ? "var(--font-sans), sans-serif"
+            : "var(--font-pixel), monospace",
         fontSize: 11,
-        letterSpacing: "0.05em",
-        textTransform: "uppercase",
+        letterSpacing: typography === "retro" ? "0.05em" : "0.01em",
+        textTransform: typography === "retro" ? "uppercase" : undefined,
+        fontWeight: typography === "plain" ? 500 : undefined,
         lineHeight: 1.5,
       }}
     >
@@ -118,7 +140,12 @@ const PixelTooltip = ({ active, payload, label }: any) => {
   )
 }
 
-const ChartInner = ({ open, inProgress, closed }: Props) => {
+const ChartInner = ({
+  open,
+  inProgress,
+  closed,
+  typography = "retro",
+}: Props) => {
   const t = useTranslations("home")
   const [viewportWidth, setViewportWidth] = useState(() =>
     typeof window === "undefined" ? BREAKPOINTS.desktop : window.innerWidth
@@ -178,7 +205,13 @@ const ChartInner = ({ open, inProgress, closed }: Props) => {
           >
             <XAxis
               dataKey="label"
-              tick={<PixelXTick fontSize={xTickFontSize} dy={xTickDy} />}
+              tick={
+                <PixelXTick
+                  fontSize={xTickFontSize}
+                  dy={xTickDy}
+                  typography={typography}
+                />
+              }
               height={isMobileViewport ? 40 : 34}
               axisLine={{
                 stroke: "hsl(var(--border))",
@@ -190,7 +223,13 @@ const ChartInner = ({ open, inProgress, closed }: Props) => {
               }}
             />
             <YAxis
-              tick={<PixelYTick dx={yTickDx} fontSize={yTickFontSize} />}
+              tick={
+                <PixelYTick
+                  dx={yTickDx}
+                  fontSize={yTickFontSize}
+                  typography={typography}
+                />
+              }
               width={yAxisWidth}
               axisLine={{
                 stroke: "hsl(var(--border))",
@@ -203,7 +242,7 @@ const ChartInner = ({ open, inProgress, closed }: Props) => {
             />
             <Tooltip
               cursor={{ fill: "hsl(var(--muted) / 0.2)" }}
-              content={<PixelTooltip />}
+              content={<PixelTooltip typography={typography} />}
             />
             <Bar
               dataKey="value"
