@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl"
 import { Button } from "@/app/components/ui/button"
 import Wind from "./Wind"
 import Image from "next/image"
-import fan from "@/public/images/fan_8bit.png"
+import fan from "@/public/images/fan_8bit-256.webp"
 import styles from "@/app/articles/post.module.css"
 
 interface ArticleFooterProps {

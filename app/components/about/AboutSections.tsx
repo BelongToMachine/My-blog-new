@@ -14,7 +14,6 @@ interface Props {
   sectionId?: string
   showBackLink?: boolean
   pinHeroUnderDesktop?: boolean
-  heroVariant?: "default" | "spotlight"
 }
 
 export default async function AboutSections({
@@ -23,7 +22,6 @@ export default async function AboutSections({
   sectionId,
   showBackLink = true,
   pinHeroUnderDesktop = false,
-  heroVariant = "default",
 }: Props) {
   const articles = await getMdxArticleList(locale)
 
@@ -63,9 +61,7 @@ export default async function AboutSections({
 
   if (pinHeroUnderDesktop) {
     return (
-      <AboutPinnedHeroShell
-        hero={<Hero showBackLink={showBackLink} variant={heroVariant} />}
-      >
+      <AboutPinnedHeroShell hero={<Hero showBackLink={showBackLink} />}>
         {content}
       </AboutPinnedHeroShell>
     )
@@ -78,7 +74,7 @@ export default async function AboutSections({
     >
       <div className="home-about-bridge">
         <Container className="pb-14 md:pb-20">
-          <Hero showBackLink={showBackLink} variant={heroVariant} />
+          <Hero showBackLink={showBackLink} />
         </Container>
       </div>
       {content}

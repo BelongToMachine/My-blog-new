@@ -1,5 +1,5 @@
 import Image from "next/image"
-import fan from "@/public/images/fan_8bit.png"
+import fan from "@/public/images/fan_8bit-256.webp"
 import styles from "./PixelFan.module.css"
 
 interface PixelFanProps {
