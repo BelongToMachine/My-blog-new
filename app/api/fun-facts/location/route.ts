@@ -43,7 +43,7 @@ export function GET(request: Request) {
 
   return Response.json(response, {
     headers: {
-      "Cache-Control": "no-store, max-age=0",
+      "Cache-Control": "private, max-age=300, stale-while-revalidate=600",
     },
   })
 }

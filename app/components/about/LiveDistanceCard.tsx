@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useLocale, useTranslations } from "next-intl"
 import {
   HANGZHOU_LOCATION,
@@ -26,6 +26,15 @@ const worldMapMaskStyle = {
 
 type LoadState = "loading" | "ready" | "unavailable"
 
+declare global {
+  interface Navigator {
+    connection?: {
+      effectiveType?: string
+      saveData?: boolean
+    }
+  }
+}
+
 export default function LiveDistanceCard() {
   const t = useTranslations("funFacts.map")
   const locale = useLocale()
@@ -33,15 +42,32 @@ export default function LiveDistanceCard() {
   const [geoData, setGeoData] = useState<DistanceCardLocationResponse | null>(
     null,
   )
+  const articleRef = useRef<HTMLElement | null>(null)
 
   useEffect(() => {
     let isMounted = true
     const abortController = new AbortController()
+    let timeoutId: number | null = null
+    let idleCallbackId: number | null = null
 
     async function loadGeo() {
+      if (navigator.connection?.saveData) {
+        if (isMounted) {
+          setLoadState("unavailable")
+        }
+        return
+      }
+
+      const effectiveType = navigator.connection?.effectiveType
+      if (effectiveType === "slow-2g" || effectiveType === "2g") {
+        if (isMounted) {
+          setLoadState("unavailable")
+        }
+        return
+      }
+
       try {
         const response = await fetch("/api/fun-facts/location", {
-          cache: "no-store",
           signal: abortController.signal,
         })
 
@@ -66,11 +92,59 @@ export default function LiveDistanceCard() {
       }
     }
 
-    loadGeo()
+    const scheduleLoad = () => {
+      if (abortController.signal.aborted) {
+        return
+      }
+
+      if (typeof window.requestIdleCallback === "function") {
+        idleCallbackId = window.requestIdleCallback(() => {
+          void loadGeo()
+        }, { timeout: 1500 })
+        return
+      }
+
+      timeoutId = window.setTimeout(() => {
+        void loadGeo()
+      }, 300)
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries
+
+        if (!entry?.isIntersecting) {
+          return
+        }
+
+        observer.disconnect()
+        scheduleLoad()
+      },
+      {
+        rootMargin: "240px 0px",
+      },
+    )
+
+    const currentArticle = articleRef.current
+
+    if (currentArticle) {
+      observer.observe(currentArticle)
+    } else {
+      scheduleLoad()
+    }
 
     return () => {
       isMounted = false
+      observer.disconnect()
       abortController.abort()
+
+      if (idleCallbackId !== null) {
+        window.cancelIdleCallback?.(idleCallbackId)
+      }
+
+      if (timeoutId !== null) {
+        window.clearTimeout(timeoutId)
+      }
     }
   }, [])
 
@@ -107,7 +181,7 @@ export default function LiveDistanceCard() {
         : t("mapAriaUnavailable")
 
   return (
-    <article className={cn(cardShell, "grid h-full gap-0 p-0")}>
+    <article ref={articleRef} className={cn(cardShell, "grid h-full gap-0 p-0")}>
       <div className="flex items-center justify-between gap-3 border-b border-border/60 bg-[linear-gradient(180deg,hsl(var(--accent))/0.34,transparent)] px-5 py-3 sm:px-6">
         <span className="terminal-label">{t("eyebrow")}</span>
         <span

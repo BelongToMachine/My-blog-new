@@ -1,11 +1,15 @@
 import "./globals.css"
 import type { Metadata } from "next"
+import { headers } from "next/headers"
 import Script from "next/script"
 import "@radix-ui/themes/styles.css"
 import "@pigment-css/react/styles.css"
 import { getLocale } from "next-intl/server"
 import { GlobalChatRuntimeProvider } from "./context/GlobalChatRuntimeContext"
 import { Analytics } from "@vercel/analytics/next"
+
+const analyticsEnabled =
+  process.env.NEXT_PUBLIC_ENABLE_VERCEL_ANALYTICS === "true"
 
 export const metadata: Metadata = {
   title: "Developer — Front-End Developer & AI Prompt Engineer",
@@ -33,6 +37,9 @@ export default async function RootLayout({
   children: React.ReactNode
 }) {
   const locale = await getLocale()
+  const visitorCountry = headers().get("x-vercel-ip-country")
+  const shouldLoadAnalytics =
+    analyticsEnabled && visitorCountry !== "CN"
 
   return (
     <html lang={locale} suppressHydrationWarning>
@@ -54,7 +61,7 @@ export default async function RootLayout({
       </head>
       <body>
         <GlobalChatRuntimeProvider>{children}</GlobalChatRuntimeProvider>
-        <Analytics />
+        {shouldLoadAnalytics ? <Analytics /> : null}
       </body>
     </html>
   )

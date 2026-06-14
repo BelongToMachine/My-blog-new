@@ -1,5 +1,4 @@
 import type { Metadata } from "next"
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { hasLocale, NextIntlClientProvider } from "next-intl"
 import {
   getMessages,
@@ -11,6 +10,7 @@ import NavBar from "../NavBar"
 import MainShell from "../MainShell"
 import Footer from "../components/Footer"
 import QueryClientProvider from "../QueryClientProvider"
+import ReactQueryDevtoolsMount from "../ReactQueryDevtoolsMount"
 import CursorManager from "../CursorManager"
 import { ThemeProvider } from "../context/DarkModeContext"
 import RadixThemeProvider from "../context/RadixThemeProvider"
@@ -67,7 +67,7 @@ export default async function LocaleLayout({
               <MainShell>{children}</MainShell>
               <Footer />
             </RadixThemeProvider>
-            <ReactQueryDevtools />
+            <ReactQueryDevtoolsMount />
           </ThemeProvider>
         </QueryClientProvider>
       </div>
