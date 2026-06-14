@@ -25,23 +25,19 @@ export default async function WaveFlagCard({
 
   return (
     <article className={cn(className, "flex flex-col gap-4 p-4 md:p-5 lg:p-5")}>
-      <div className="border border-border/60 bg-background/68 p-3 sm:p-3.5">
-        <div role="img" aria-label={t("ariaLabel")} className={styles.showcase}>
-          <div className={styles.flagFrame}>
-            <div
-              className={styles.flag}
-              style={{ width: `min(${friendlyWidth}px, 100%)` }}
-            >
-              {Array.from({ length: numOfColumns }, (_, index) => (
-                <div
-                  key={index}
-                  className={styles.column}
-                  style={getColumnStyle(index)}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
+      <div
+        role="img"
+        aria-label={t("ariaLabel")}
+        className={cn(styles.flag, "mx-auto")}
+        style={{ width: `min(${friendlyWidth}px, 100%)` }}
+      >
+        {Array.from({ length: numOfColumns }, (_, index) => (
+          <div
+            key={index}
+            className={styles.column}
+            style={getColumnStyle(index)}
+          />
+        ))}
       </div>
 
       <div className="space-y-2">

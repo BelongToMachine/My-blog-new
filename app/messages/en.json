@@ -154,21 +154,21 @@
     },
     "financial": {
       "title": "Trading Management System · State Street Corporation",
-      "description": "Led the frontend architecture upgrade for State Street's internal B2B trading management system, refactoring a legacy monolith into independently deployable domains. Built a draggable data dashboard with unified request handling and testing strategies for system stability.",
+      "description": "Rebuilt the frontend architecture of State Street's B2B trading platform — breaking a legacy monolith into independently deployable domains, and shipping a drag-and-drop data dashboard with unified request handling and robust test coverage.",
       "highlight1": "Webpack Module Federation splitting 5+ domains for independent dev and deploy",
       "highlight2": "Draggable Monitor/Dashboard with responsive layout and local persistence",
       "highlight3": "Vitest + React Testing Library for decoupled, high-coverage unit testing"
     },
     "uxAgent": {
       "title": "UX Agent · State Street Corporation",
-      "description": "Designed and built an AI-powered UX Agent tool for State Street internal use. Product managers can generate spec-compliant React pages by describing the UI in natural language. Also engineered a component migration solution and an agent orchestration platform.",
+      "description": "Built an AI-powered UX Agent that lets product managers generate spec-compliant React pages from natural language descriptions. Also engineered a component library migration pipeline and an agent orchestration platform for the team.",
       "highlight1": "GitHub Copilot custom paradigm constraints + CLI scaffold + preset templates for consistent AI output",
       "highlight2": "Runtime wrapper compatibility layer exposing legacy API with zero caller changes for parallel library coexistence",
       "highlight3": "AI-powered batch migration of 50+ custom components to MUI with seamless progressive replacement"
     },
     "aiChat": {
       "title": "AI Agent Chat Application",
-      "description": "Intelligent conversational assistant powered by OpenAI API with multi-turn context understanding and tool-calling support.",
+      "description": "Full-stack conversational assistant built on the OpenAI API — supporting multi-turn context, autonomous tool-calling, and real-time generative UI.",
       "highlight1": "ToolLoopAgent architecture for multi-turn autonomous tool-calling",
       "highlight2": "SSE streaming + generative UI for real-time structured component rendering",
       "highlight3": "3-tier Redis rate-limiting with thread-level concurrency lock"
@@ -183,10 +183,10 @@
       "sourceLoading": "Finding you",
       "sourceUnavailable": "Location unavailable",
       "titleLoading": "Let me guess how far you are from me",
-      "titleReady": "I'm from Hangzhou, roughly {distance} km away from your current location.",
+      "titleReady": "I’m from Hangzhou, China roughly {distance} km away from your current location, according to your IP address.",
       "titleUnavailable": "Distance calculator is taking a nap",
       "bodyLoading": "Drawing a line from your location back to Hangzhou. Give me a moment and I'll tell you how many kilometers separate us.",
-      "bodyReady": "Looks like you're somewhere near {location}. I've drawn a line connecting you to Hangzhou. This isn't a precise GPS — just a little ritual to make our first meeting feel more personal.",
+      "bodyReady": "I’m from Hangzhou, China roughly {distance} km away from your current location, according to your IP address.",
       "bodyUnavailable": "Right now I can't tell how far apart we are, but think of it as a little suspense — when it wakes up, it will show the distance between us.",
       "fromLabel": "My side",
       "fromValue": "Hangzhou, China",

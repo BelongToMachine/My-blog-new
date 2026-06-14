@@ -87,7 +87,9 @@ export default function LiveDistanceCard() {
 
   const body =
     loadState === "ready"
-      ? t("bodyReady", { location: visitorLabel })
+      ? t("bodyReady", {
+          distance: formattedDistance ?? t("distancePendingValue"),
+        })
       : loadState === "loading"
         ? t("bodyLoading")
         : t("bodyUnavailable")

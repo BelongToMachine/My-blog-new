@@ -11,7 +11,7 @@ import SectionHeading from "../system/SectionHeading"
 const metaTextClassName =
   "text-[11px] font-medium leading-none tracking-[0.04em] text-muted-foreground"
 const accentLabelClassName =
-  "text-xs font-medium tracking-[0.04em] text-primary/80"
+  "text-[13px] font-semibold uppercase tracking-[0.08em] text-primary/80"
 
 type ProjectKey = "financial" | "uxAgent" | "aiChat"
 type ProjectRoleKey = "frontend" | "fullstack"
@@ -136,8 +136,10 @@ function ProjectFeatureCard({
 }) {
   return (
     <article
-      className="pixel-panel overflow-hidden border border-border/80 bg-card/88 p-6 transition-colors duration-200 hover:border-primary/50 md:p-8 lg:p-10"
+      className="pixel-panel group relative overflow-hidden border border-border/40 bg-card/88 p-6 transition-colors duration-200 hover:border-primary/40 md:p-8 lg:p-10"
     >
+      {/* Featured accent gradient line */}
+      <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-primary/80 via-primary/50 to-transparent" />
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border/60 pb-5">
         <div className="space-y-3">
           <div className={accentLabelClassName}>
@@ -149,16 +151,16 @@ function ProjectFeatureCard({
             <MetaPill>{trackLabel}</MetaPill>
           </div>
         </div>
-        <div className="flex h-20 w-20 shrink-0 items-center justify-center border-2 border-border/70 bg-background/78 text-foreground">
+        <div className="flex h-20 w-20 shrink-0 items-center justify-center border-2 border-border/50 bg-primary/5 text-foreground">
           {project.icon}
         </div>
       </div>
 
       <div className="mt-6">
-        <h3 className="font-editorial max-w-[20ch] text-[clamp(1.75rem,2.6vw,2.6rem)] leading-[1.02] tracking-[-0.035em] text-foreground">
+        <h3 className="max-w-[28ch] text-[clamp(1.75rem,2.6vw,2.6rem)] font-semibold leading-[1.08] tracking-[-0.025em] text-foreground">
           {title}
         </h3>
-        <p className="mt-4 max-w-[64ch] text-pretty text-[15px] leading-7 text-foreground/82 md:text-base md:leading-8">
+        <p className="mt-4 max-w-[72ch] text-pretty text-[15px] leading-[1.7] text-foreground/78 md:text-base md:leading-[1.75]">
           {description}
         </p>
       </div>
@@ -170,9 +172,9 @@ function ProjectFeatureCard({
           </p>
           <div className="mt-4 space-y-3">
             {highlights.map((highlight) => (
-              <div key={highlight} className="flex items-start gap-3">
-                <span className="mt-2 block h-1.5 w-1.5 shrink-0 bg-primary/70" />
-                <span className="text-sm leading-7 text-foreground/84">{highlight}</span>
+              <div key={highlight} className="flex items-start gap-2.5">
+                <span className="mt-[5px] block h-4 w-[2px] shrink-0 rounded-full bg-primary/60" />
+                <span className="text-[14px] leading-relaxed text-foreground/80">{highlight}</span>
               </div>
             ))}
           </div>
@@ -218,7 +220,7 @@ function ProjectSupportCard({
 }) {
   return (
     <article
-      className="pixel-panel overflow-hidden border border-border/80 bg-card/88 p-6 transition-colors duration-200 hover:border-primary/50 md:p-7"
+      className="pixel-panel overflow-hidden border border-border/40 bg-card/88 p-6 transition-colors duration-200 hover:border-primary/40 md:p-7"
     >
       <div className="flex items-start justify-between gap-4 border-b border-border/60 pb-4">
         <div className="space-y-3">
@@ -230,25 +232,25 @@ function ProjectSupportCard({
             {trackLabel}
           </p>
         </div>
-        <div className="flex h-16 w-16 shrink-0 items-center justify-center border-2 border-border/70 bg-background/78">
+        <div className="flex h-16 w-16 shrink-0 items-center justify-center border-2 border-border/50 bg-primary/5">
           {project.icon}
         </div>
       </div>
 
       <div className="mt-5">
-        <h3 className="font-editorial max-w-[16ch] text-[clamp(1.4rem,2vw,2rem)] leading-[1.06] tracking-[-0.03em] text-foreground">
+        <h3 className="max-w-[20ch] text-[clamp(1.4rem,2vw,2rem)] font-semibold leading-[1.08] tracking-[-0.02em] text-foreground">
           {title}
         </h3>
-        <p className="mt-3 text-pretty text-[15px] leading-7 text-foreground/80">
+        <p className="mt-3 text-pretty text-[15px] leading-[1.7] text-foreground/78">
           {description}
         </p>
       </div>
 
       <div className="mt-5 space-y-3 border-t border-border/60 pt-4">
         {highlights.map((highlight) => (
-          <div key={highlight} className="flex items-start gap-3">
-            <span className="mt-2 block h-1.5 w-1.5 shrink-0 bg-primary/70" />
-            <span className="text-sm leading-7 text-foreground/82">{highlight}</span>
+          <div key={highlight} className="flex items-start gap-2.5">
+            <span className="mt-[5px] block h-4 w-[2px] shrink-0 rounded-full bg-primary/60" />
+            <span className="text-[14px] leading-relaxed text-foreground/80">{highlight}</span>
           </div>
         ))}
       </div>
