@@ -1,6 +1,5 @@
 "use client"
 import React, { useCallback, useEffect, useRef, useState } from "react"
-import { useReducedMotion } from "framer-motion"
 import DesktopNav from "./components/navbar/DesktopNav"
 import MobileNav from "./components/navbar/MobileNav"
 import { cn } from "@/lib/utils"
@@ -11,11 +10,11 @@ import { colorMode } from "@/app/context/DarkModeContext"
 
 const NavBar = () => {
   const [windowWidth, setWindowWidth] = useState<number>(0)
+  const [shouldReduceMotion, setShouldReduceMotion] = useState(false)
   const [shouldScrollAwayWithHero, setShouldScrollAwayWithHero] =
     useState(false)
   const pathname = usePathname()
   const isHomepage = pathname === "/"
-  const shouldReduceMotion = useReducedMotion()
   const { setColorMode } = useTheme()
   const prevHomepageRef = useRef(false)
   const savedModeRef = useRef<colorMode | null>(null)
@@ -35,6 +34,21 @@ const NavBar = () => {
       window.removeEventListener("resize", updateWindowValue)
     }
   }, [updateWindowValue])
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)")
+
+    const updateReducedMotion = () => {
+      setShouldReduceMotion(mediaQuery.matches)
+    }
+
+    updateReducedMotion()
+    mediaQuery.addEventListener("change", updateReducedMotion)
+
+    return () => {
+      mediaQuery.removeEventListener("change", updateReducedMotion)
+    }
+  }, [])
 
   useEffect(() => {
     if (isHomepage) {

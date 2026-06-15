@@ -1,4 +1,5 @@
 import type { ReactNode } from "react"
+import dynamic from "next/dynamic"
 import { ArrowRight } from "lucide-react"
 import { getTranslations } from "next-intl/server"
 import { cn } from "@/lib/utils"
@@ -7,8 +8,6 @@ import {
   HumanAgentIcon,
 } from "../projects/PixelProjectIcons"
 import ArticleFooter from "@/app/articles/_components/ArticleFooter"
-import LiveDistanceCard from "./LiveDistanceCard"
-import PronunciationCard from "./PronunciationCard"
 import WaveFlagCard from "./WaveFlagCard"
 
 const sharedCardShell =
@@ -17,6 +16,16 @@ const metaTextClassName =
   "text-[11px] font-medium leading-none tracking-[0.04em] text-muted-foreground"
 const accentLabelClassName =
   "text-xs font-medium tracking-[0.04em] text-primary/80"
+
+const LiveDistanceCard = dynamic(() => import("./LiveDistanceCard"), {
+  ssr: false,
+  loading: () => <LiveDistanceCardFallback />,
+})
+
+const PronunciationCard = dynamic(() => import("./PronunciationCard"), {
+  ssr: false,
+  loading: () => <PronunciationCardFallback className={sharedCardShell} />,
+})
 
 interface ContributionCardConfig {
   key: "financial" | "uxAgent"
@@ -208,5 +217,46 @@ function MetaPill({ children }: { children: ReactNode }) {
     >
       {children}
     </span>
+  )
+}
+
+function LiveDistanceCardFallback() {
+  return (
+    <article className={cn(sharedCardShell, "grid h-full gap-0 p-0")}>
+      <div className="f··lex items-center justify-between gap-3 border-b border-border/60 bg-[linear-gradient(180deg,hsl(var(--accent))/0.34,transparent)] px-5 py-3 sm:px-6">
+        <span className="terminal-label">LIVE DISTANCE</span>
+        <span className="inline-flex items-center border border-border/70 bg-background/76 px-2.5 py-1 font-pixel text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+          loading
+        </span>
+      </div>
+      <div className="border-b border-border/60 bg-[linear-gradient(180deg,hsl(var(--accent))/0.44,transparent)] p-3 sm:p-4 md:p-5">
+        <div className="h-[13.5rem] animate-pulse border-2 border-border/60 bg-muted/60 sm:h-[15rem] md:h-[16rem]" />
+      </div>
+      <div className="grid gap-5 p-5 sm:p-6 md:p-6">
+        <div className="space-y-3">
+          <div className="h-5 w-full max-w-[36rem] animate-pulse bg-muted/60" />
+          <div className="h-5 w-3/4 animate-pulse bg-muted/55" />
+        </div>
+      </div>
+    </article>
+  )
+}
+
+function PronunciationCardFallback({ className }: { className?: string }) {
+  return (
+    <article
+      className={cn(
+        className,
+        "flex flex-col items-center gap-5 p-4 text-center md:p-4 lg:p-5",
+      )}
+    >
+      <div className="grid w-full grid-cols-[2.75rem_minmax(0,1fr)_2.75rem] items-start gap-3">
+        <div aria-hidden className="h-11 w-11" />
+        <div className="mx-auto h-12 w-28 animate-pulse bg-muted/60" />
+        <div className="h-11 w-11 animate-pulse border border-border/60 bg-background/72" />
+      </div>
+      <div className="h-14 w-full max-w-[16ch] animate-pulse bg-muted/55" />
+      <div className="h-10 w-full max-w-[13ch] animate-pulse bg-muted/50" />
+    </article>
   )
 }

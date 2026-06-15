@@ -265,7 +265,7 @@
   background: hsl(var(--background));
   border: 1px solid color-mix(in srgb, var(--accent) 8%, hsl(var(--border)));
   color: var(--text-soft);
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--font-mono), monospace;
   font-size: 0.78rem;
   line-height: 1.55;
   white-space: pre-wrap;

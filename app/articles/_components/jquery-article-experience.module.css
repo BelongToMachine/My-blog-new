@@ -196,7 +196,7 @@
   white-space: pre-wrap;
   font-size: 0.93rem;
   line-height: 1.9;
-  font-family: "SFMono-Regular", "Menlo", "Monaco", monospace;
+  font-family: var(--font-mono), monospace;
 }
 
 .tokenComment {

@@ -23,8 +23,8 @@ const MobileNav = ({ indexMode = false }: { indexMode?: boolean }) => {
     [t]
   )
 
-  const indexClass = indexMode
-    ? "font-sans text-[13px] font-medium normal-case tracking-[0.02em] text-white hover:text-white/80"
+  const controlToneClass = indexMode
+    ? "text-white hover:text-white/80"
     : undefined
 
   return (
@@ -34,7 +34,7 @@ const MobileNav = ({ indexMode = false }: { indexMode?: boolean }) => {
         <ActionIconButton
           asChild
           aria-label="Open GitHub profile"
-          className={cn("shrink-0 self-center", indexClass)}
+          className={cn("shrink-0 self-center", controlToneClass)}
           tone="borderless"
           size="sm"
         >
@@ -50,9 +50,8 @@ const MobileNav = ({ indexMode = false }: { indexMode?: boolean }) => {
                 active={link.href === currentPath}
                 variant="desktop"
                 className={cn(
-                  "flex h-8 items-center px-1.5 py-0 text-[9px] leading-none tracking-[0.12em]",
-                  indexMode &&
-                    "font-sans px-2 py-0 text-[12px] normal-case tracking-[0.02em]",
+                  "flex h-8 items-center px-2 py-0 text-[13px] leading-none",
+                  indexMode ? "text-white/80 hover:text-white" : undefined,
                 )}
               >
                 <Link
@@ -75,8 +74,8 @@ const MobileNav = ({ indexMode = false }: { indexMode?: boolean }) => {
 
       {/* Right: Controls */}
       <div className="flex items-center gap-1">
-        <LanguageToggle className={indexClass} />
-        {!indexMode && <ThemeToggle className={indexClass} />}
+        <LanguageToggle className={controlToneClass} />
+        {!indexMode && <ThemeToggle className={controlToneClass} />}
       </div>
     </div>
   )

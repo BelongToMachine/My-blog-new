@@ -7,6 +7,8 @@ import "@pigment-css/react/styles.css"
 import { getLocale } from "next-intl/server"
 import { GlobalChatRuntimeProvider } from "./context/GlobalChatRuntimeContext"
 import { Analytics } from "@vercel/analytics/next"
+import DeferredFontLoader from "./DeferredFontLoader"
+import { bebasNeue } from "@/lib/fonts"
 
 const analyticsEnabled =
   process.env.NEXT_PUBLIC_ENABLE_VERCEL_ANALYTICS === "true"
@@ -42,7 +44,11 @@ export default async function RootLayout({
     analyticsEnabled && visitorCountry !== "CN"
 
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html
+      lang={locale}
+      suppressHydrationWarning
+      className={bebasNeue.variable}
+    >
       <head>
         <script
           // eslint-disable-next-line react/no-danger
@@ -61,6 +67,7 @@ export default async function RootLayout({
       </head>
       <body>
         <GlobalChatRuntimeProvider>{children}</GlobalChatRuntimeProvider>
+        <DeferredFontLoader />
         {shouldLoadAnalytics ? <Analytics /> : null}
       </body>
     </html>

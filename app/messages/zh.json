@@ -124,7 +124,7 @@
     "ctaAi": "AI 解决方案",
     "scrollDown": "向下滚动",
     "tapToContinue": "轻点继续",
-    "code": "const coder = {\n  name: \"开发者\",\n  role: [\"全栈开发工程师\"],\n  skill: [\"TypeScript\", \"React\", \"Next.js\"],\n  location: \"中国杭州\",\n  welcomeMessage: () => {\n    return \"很高兴认识你！\"\n  }\n}"
+    "code": "const coder = {\n  name: \"开发者\",\n  role: [\"全栈开发工程师\"],\n  skill: [\"React\", \"Next.js\"],\n  location: \"中国杭州\",\n  welcomeMessage: () => {\n    return \"很高兴认识你！\"\n  }\n}"
   },
   "home": {
     "blogSummary": "我的博客总结",

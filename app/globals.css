@@ -12,27 +12,6 @@
   font-display: swap;
 }
 
-@font-face {
-  font-family: "retro-pixel";
-  src: url("/fonts/ark-pixel/ark-pixel-12px-proportional-latin.ttf.woff2")
-    format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-  unicode-range: U+0000-00FF, U+0100-024F, U+1E00-1EFF, U+2000-206F;
-}
-
-@font-face {
-  font-family: "retro-pixel";
-  src: url("/fonts/ark-pixel/ark-pixel-12px-proportional-zh_cn.ttf.woff2")
-    format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-  unicode-range:
-    U+3000-303F, U+3400-4DBF, U+4E00-9FFF, U+F900-FAFF, U+FF00-FFEF;
-}
-
 /* @font-face {
   font-family: 'test';
   src: url('/fonts/YourFont.woff2') format('woff2'),
@@ -46,15 +25,18 @@
   :root {
     --app-nav-offset: 3.5rem;
     --font-sans: "Avenir Next", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
-    --font-jetbrains-mono: "Monaco", "Menlo", "Consolas", monospace;
+    --font-display:
+      var(--font-bebas), "Avenir Next", "Segoe UI", "Helvetica Neue", Arial,
+      sans-serif;
+    --font-jetbrains-mono: var(--font-geist-mono);
     --font-mono:
       var(--font-jetbrains-mono), "Monaco", "Menlo", "Consolas", monospace;
-    --font-pixel-cjk: "retro-pixel";
-    --font-pixel: "retro-pixel", "Monaco", monospace;
+    --font-pixel-cjk: var(--font-sans);
+    --font-pixel: var(--font-sans);
     --font-editorial:
       "Iowan Old Style", "Palatino Linotype", "Book Antiqua",
       "Noto Serif SC", "Source Han Serif SC", "Songti SC", serif;
-    --font-reading: var(--font-pixel);
+    --font-reading: var(--font-sans);
     --background: 210 30% 97%;
     --foreground: 210 30% 10%;
 
@@ -491,6 +473,10 @@ html.dark .wind__lane {
     font-family: var(--font-editorial), serif;
   }
 
+  .font-display-face {
+    font-family: var(--font-display), sans-serif;
+  }
+
   .font-reading {
     font-family: var(--font-reading), monospace;
   }
@@ -504,7 +490,7 @@ html.dark .wind__lane {
   }
 
   .display-title {
-    font-family: var(--font-pixel), monospace;
+    font-family: var(--font-display), sans-serif;
     font-size: clamp(2.4rem, 6vw, 5.5rem);
     line-height: 0.92;
     letter-spacing: 0.04em;
@@ -513,7 +499,7 @@ html.dark .wind__lane {
   }
 
   .pixel-heading {
-    font-family: var(--font-pixel), monospace;
+    font-family: var(--font-display), sans-serif;
     font-size: clamp(1.5rem, 4vw, 3rem);
     line-height: 1.18;
     letter-spacing: 0.04em;
@@ -1058,7 +1044,7 @@ html.dark .wind__lane {
   }
 
   .pixel-header-label {
-    font-family: var(--font-pixel), monospace;
+    font-family: var(--font-sans), sans-serif;
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.32em;
@@ -1074,7 +1060,7 @@ html.dark .wind__lane {
   }
 
   .pixel-title {
-    font-family: var(--font-pixel), monospace;
+    font-family: var(--font-display), sans-serif;
     font-size: clamp(2.8rem, 8vw, 6rem);
     line-height: 0.88;
     letter-spacing: 0.02em;
@@ -1202,7 +1188,7 @@ ul li {
 
 .codeblock-pre,
 .codeblock-pre code {
-  font-family: var(--font-pixel), monospace !important;
+  font-family: var(--font-mono), monospace !important;
   letter-spacing: 0.03em;
 }
 

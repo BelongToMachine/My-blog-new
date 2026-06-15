@@ -12,9 +12,9 @@ const navItemVariants = cva(
     variants: {
       variant: {
         desktop:
-          "border-transparent px-2 py-1 font-pixel text-[10px] uppercase tracking-[0.2em] text-muted-foreground hover:border-border hover:bg-accent/60 hover:text-foreground",
+          "border-transparent px-2.5 py-1.5 font-sans text-[14px] uppercase leading-none tracking-[0.08em] text-muted-foreground hover:border-border hover:bg-accent/60 hover:text-foreground",
         dropdown:
-          "w-full justify-between border-border px-2 py-2 font-pixel text-[10px] uppercase tracking-[0.18em] text-foreground hover:bg-accent hover:text-accent-foreground",
+          "w-full justify-between border-border px-3 py-2.5 font-sans text-[14px] uppercase tracking-[0.08em] text-foreground hover:bg-accent hover:text-accent-foreground",
       },
       active: {
         true: "",

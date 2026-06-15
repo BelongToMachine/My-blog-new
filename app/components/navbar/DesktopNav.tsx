@@ -17,8 +17,8 @@ interface NavLinkItem {
 }
 
 const DesktopNav = ({ indexMode = false }: { indexMode?: boolean }) => {
-  const indexClass = indexMode
-    ? "font-sans text-[13px] font-medium normal-case tracking-[0.02em] text-white hover:text-white/80"
+  const controlToneClass = indexMode
+    ? "text-white hover:text-white/80"
     : undefined
 
   return (
@@ -29,7 +29,7 @@ const DesktopNav = ({ indexMode = false }: { indexMode?: boolean }) => {
           asChild
           aria-label="Open GitHub profile"
           tone="borderless"
-          className={indexClass}
+          className={controlToneClass}
         >
           <NextLink href="https://github.com/BelongToMachine">
             <PixelGithubIcon />
@@ -38,22 +38,19 @@ const DesktopNav = ({ indexMode = false }: { indexMode?: boolean }) => {
         <div className="hidden lg:block">
           <NavLinks indexMode={indexMode} />
         </div>
-        <div className="hidden">
-          <NavLinks compact indexMode={indexMode} />
-        </div>
       </div>
 
       {/* Right: controls */}
       <div className="flex items-center gap-3">
-        <LanguageToggle className={indexClass} />
-        {!indexMode && <ThemeToggle className={indexClass} />}
+        <LanguageToggle className={controlToneClass} />
+        {!indexMode && <ThemeToggle className={controlToneClass} />}
       </div>
     </div>
   )
 }
 export default DesktopNav
 
-const NavLinks = ({ compact = false, indexMode = false }: { compact?: boolean; indexMode?: boolean }) => {
+const NavLinks = ({ indexMode = false }: { indexMode?: boolean }) => {
   const t = useTranslations("nav")
   const currentPath = usePathname()
 
@@ -71,8 +68,8 @@ const NavLinks = ({ compact = false, indexMode = false }: { compact?: boolean; i
     () => (link: NavLinkItem) =>
       cn(
         indexMode
-          ? "text-sm font-medium text-white/80 hover:text-white"
-          : "text-sm font-medium text-muted-foreground hover:text-foreground",
+          ? "text-white/80 hover:text-white"
+          : "text-muted-foreground hover:text-foreground",
         link.href === currentPath && (indexMode ? "text-white" : "text-foreground")
       ),
     [currentPath, indexMode]
@@ -82,7 +79,7 @@ const NavLinks = ({ compact = false, indexMode = false }: { compact?: boolean; i
     <ul
       className={cn(
         "flex flex-wrap items-center gap-4",
-        compact ? "gap-1" : "relative top-1"
+        "relative top-1"
       )}
     >
       {links.map((link) => (
@@ -91,11 +88,7 @@ const NavLinks = ({ compact = false, indexMode = false }: { compact?: boolean; i
             asChild
             active={link.href === currentPath}
             variant="desktop"
-            className={cn(
-              indexMode && "font-sans px-2.5 py-1.5 text-[13px] normal-case tracking-[0.02em]",
-              compact &&
-                "px-1.5 py-1 text-[9px] tracking-[0.12em]"
-            )}
+            className={indexMode ? "text-white/80 hover:text-white" : undefined}
           >
             <Link className={styledTag(link)} href={link.href}>
               {link.label}
