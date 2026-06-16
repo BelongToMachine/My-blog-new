@@ -36,6 +36,10 @@
     --font-editorial:
       "Iowan Old Style", "Palatino Linotype", "Book Antiqua",
       "Noto Serif SC", "Source Han Serif SC", "Songti SC", serif;
+    --font-rounded:
+      "SF Pro Rounded", "PingFang SC", "Hiragino Sans GB",
+      "Microsoft YaHei", "Avenir Next Rounded", "Arial Rounded MT Bold",
+      var(--font-sans);
     --font-reading: var(--font-sans);
     --background: 210 30% 97%;
     --foreground: 210 30% 10%;
@@ -471,6 +475,10 @@ html.dark .wind__lane {
 
   .font-editorial {
     font-family: var(--font-editorial), serif;
+  }
+
+  .font-rounded-display {
+    font-family: var(--font-rounded), sans-serif;
   }
 
   .font-display-face {
@@ -1160,6 +1168,11 @@ html.dark .wind__lane {
       transform: translateY(0);
     }
   }
+}
+
+/* Hide theme toggle on the about-me (homepage) route */
+nav[data-homepage] .theme-toggle {
+  display: none;
 }
 
 ul li {

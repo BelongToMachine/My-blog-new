@@ -16,11 +16,7 @@ interface NavLinkItem {
   href: string
 }
 
-const DesktopNav = ({ indexMode = false }: { indexMode?: boolean }) => {
-  const controlToneClass = indexMode
-    ? "text-white hover:text-white/80"
-    : undefined
-
+const DesktopNav = () => {
   return (
     <div className="flex h-16 items-center justify-between px-5">
       {/* Left: GitHub + nav links */}
@@ -29,28 +25,27 @@ const DesktopNav = ({ indexMode = false }: { indexMode?: boolean }) => {
           asChild
           aria-label="Open GitHub profile"
           tone="borderless"
-          className={controlToneClass}
         >
           <NextLink href="https://github.com/BelongToMachine">
             <PixelGithubIcon />
           </NextLink>
         </ActionIconButton>
-        <div className="hidden lg:block">
-          <NavLinks indexMode={indexMode} />
+        <div className="hidden md:block">
+          <NavLinks />
         </div>
       </div>
 
       {/* Right: controls */}
       <div className="flex items-center gap-3">
-        <LanguageToggle className={controlToneClass} />
-        {!indexMode && <ThemeToggle className={controlToneClass} />}
+        <LanguageToggle />
+        <ThemeToggle />
       </div>
     </div>
   )
 }
 export default DesktopNav
 
-const NavLinks = ({ indexMode = false }: { indexMode?: boolean }) => {
+const NavLinks = () => {
   const t = useTranslations("nav")
   const currentPath = usePathname()
 
@@ -67,12 +62,10 @@ const NavLinks = ({ indexMode = false }: { indexMode?: boolean }) => {
   const styledTag = useMemo(
     () => (link: NavLinkItem) =>
       cn(
-        indexMode
-          ? "text-white/80 hover:text-white"
-          : "text-muted-foreground hover:text-foreground",
-        link.href === currentPath && (indexMode ? "text-white" : "text-foreground")
+        "text-muted-foreground hover:text-foreground",
+        link.href === currentPath && "text-foreground"
       ),
-    [currentPath, indexMode]
+    [currentPath]
   )
 
   return (
@@ -88,7 +81,6 @@ const NavLinks = ({ indexMode = false }: { indexMode?: boolean }) => {
             asChild
             active={link.href === currentPath}
             variant="desktop"
-            className={indexMode ? "text-white/80 hover:text-white" : undefined}
           >
             <Link className={styledTag(link)} href={link.href}>
               {link.label}

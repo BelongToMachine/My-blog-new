@@ -16,10 +16,19 @@ export interface ApproximateGeoPoint {
 
 export interface DistanceCardLocationResponse {
   status: "ok" | "unavailable"
-  source: "vercel-ip"
+  source: "vercel-ip" | "mock"
   visitor: ApproximateGeoPoint
   home: typeof HANGZHOU_LOCATION
   distanceKm: number | null
+}
+
+export const MOCK_VISITOR_NYC: ApproximateGeoPoint = {
+  city: "New York",
+  country: "US",
+  countryRegion: "New York",
+  latitude: 40.7128,
+  longitude: -74.006,
+  timezone: "America/New_York",
 }
 
 export function haversineKm(

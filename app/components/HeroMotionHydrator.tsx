@@ -85,7 +85,9 @@ export default function HeroMotionHydrator() {
     }
 
     const controls = ENTRY_ANIMATIONS.flatMap((config) => {
-      const element = rootRef.current?.querySelector<HTMLElement>(config.selector)
+      const element = rootRef.current?.querySelector<HTMLElement>(
+        config.selector,
+      )
 
       if (!element) {
         return []

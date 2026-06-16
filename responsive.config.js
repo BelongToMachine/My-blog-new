@@ -1,6 +1,6 @@
 const BREAKPOINTS = Object.freeze({
-  tablet: 768,
-  desktop: 1024,
+  tablet: 640,
+  desktop: 768,
 })
 
 const screens = Object.fromEntries(

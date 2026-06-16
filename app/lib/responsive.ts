@@ -1,6 +1,6 @@
 export const BREAKPOINTS = {
-  tablet: 768,
-  desktop: 1024,
+  tablet: 640,
+  desktop: 768,
 } as const
 
 export const isTabletViewport = (width: number) =>

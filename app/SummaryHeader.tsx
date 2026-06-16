@@ -7,7 +7,12 @@ const SummaryHeader = () => {
 
   return (
     <div>
-      <SectionHeading title={t("blogSummary")} align="left" variant="plain" />
+      <SectionHeading
+        title={t("blogSummary")}
+        align="left"
+        titleClassName="font-rounded-display font-semibold tracking-[-0.02em]"
+        variant="plain"
+      />
     </div>
   )
 }

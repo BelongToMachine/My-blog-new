@@ -2,6 +2,7 @@
 
 import { useTheme } from "@/app/hooks/useTheme"
 import { ActionIconButton } from "../system/ActionIconButton"
+import { cn } from "@/lib/utils"
 
 const PixelSun = () => (
   <svg
@@ -67,7 +68,7 @@ const ThemeToggle = ({ className }: ThemeToggleProps) => {
       onClick={() => setColorMode(nextMode)}
       type="button"
       tone="borderless"
-      className={className}
+      className={cn("theme-toggle", className)}
     >
       {colorMode === "light"
         ? <PixelSun />

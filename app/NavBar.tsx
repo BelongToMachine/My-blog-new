@@ -154,15 +154,16 @@ const NavBar = () => {
   return (
     <nav
       ref={navRef}
+      data-homepage={isHomepage || undefined}
       className={cn(
         "inset-x-0 top-0 z-[1200] bg-[hsl(var(--home-about-bridge))] shadow-[var(--shadow-elevated)]",
         shouldScrollAwayWithHero ? "!absolute" : "!fixed",
       )}
     >
       {isDesktopViewport(windowWidth) ? (
-        <DesktopNav indexMode={isHomepage} />
+        <DesktopNav />
       ) : (
-        <MobileNav indexMode={isHomepage} />
+        <MobileNav />
       )}
     </nav>
   )

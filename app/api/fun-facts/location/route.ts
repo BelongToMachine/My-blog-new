@@ -1,11 +1,16 @@
 import {
   HANGZHOU_LOCATION,
+  MOCK_VISITOR_NYC,
   haversineKm,
   type DistanceCardLocationResponse,
 } from "@/app/lib/funFactsGeo"
 
 export const dynamic = "force-dynamic"
 export const revalidate = 0
+
+const isDevMode =
+  process.env.NODE_ENV === "development" ||
+  process.env.NEXT_PUBLIC_DEV_MODE === "dev"
 
 export function GET(request: Request) {
   const visitor = {
@@ -31,6 +36,29 @@ export function GET(request: Request) {
       HANGZHOU_LOCATION.latitude,
       HANGZHOU_LOCATION.longitude,
     )
+  }
+
+  if (!hasCoordinates && isDevMode) {
+    const mockDistanceKm = haversineKm(
+      MOCK_VISITOR_NYC.latitude!,
+      MOCK_VISITOR_NYC.longitude!,
+      HANGZHOU_LOCATION.latitude,
+      HANGZHOU_LOCATION.longitude,
+    )
+
+    const response: DistanceCardLocationResponse = {
+      status: "ok",
+      source: "mock",
+      visitor: MOCK_VISITOR_NYC,
+      home: HANGZHOU_LOCATION,
+      distanceKm: mockDistanceKm,
+    }
+
+    return Response.json(response, {
+      headers: {
+        "Cache-Control": "no-store",
+      },
+    })
   }
 
   const response: DistanceCardLocationResponse = {

@@ -134,9 +134,9 @@ function HeroCodeBlock({
         style={{ background: "var(--codeblock-taskbar-bg, #232937)" }}
       >
         <div className="flex items-center gap-1.5">
-          <span className="block h-3.5 w-3.5 bg-[#f38ba8]" />
-          <span className="block h-3.5 w-3.5 bg-[#f9c97c]" />
-          <span className="block h-3.5 w-3.5 bg-[#94e2d5]" />
+          <span className="block h-3.5 w-3.5" style={{ background: "#ff5f57" }} />
+          <span className="block h-3.5 w-3.5" style={{ background: "#ffbd2e" }} />
+          <span className="block h-3.5 w-3.5" style={{ background: "#28c840" }} />
         </div>
       </div>
       <div style={{ background: "var(--codeblock-body-bg, #0d1118)" }}>

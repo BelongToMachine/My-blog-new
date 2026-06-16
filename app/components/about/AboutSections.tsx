@@ -99,30 +99,18 @@ async function DeferredHomeSections({ locale }: { locale: string }) {
 
 function DeferredHomeSectionsFallback() {
   return (
-    <div className="space-y-8 md:space-y-10">
-      <section className="mb-10 space-y-6 md:mb-14 md:space-y-7">
-        <div className="max-w-3xl space-y-3">
-          <div className="flex items-center gap-3">
-            <span className="terminal-label">FUN FACT FILE</span>
-            <div className="h-px flex-1 bg-border/60" />
-          </div>
-          <div className="h-10 w-56 animate-pulse bg-muted/70 md:h-12 md:w-72" />
+    <div className="space-y-6 md:space-y-8">
+      <div className="grid gap-5 md:grid-cols-12 md:items-start">
+        <div className="h-[25rem] animate-pulse rounded-[2px] bg-muted/60 md:col-span-8" />
+        <div className="grid gap-5 md:col-span-4">
+          <div className="h-56 animate-pulse rounded-[2px] bg-muted/60" />
+          <div className="h-56 animate-pulse rounded-[2px] bg-muted/60" />
         </div>
-        <div className="grid gap-5 md:grid-cols-12 md:items-start">
-          <div className="h-[25rem] animate-pulse bg-muted/60 md:col-span-8" />
-          <div className="grid gap-5 md:col-span-4">
-            <div className="h-56 animate-pulse bg-muted/60" />
-            <div className="h-56 animate-pulse bg-muted/60" />
-          </div>
-        </div>
-      </section>
-      <div className="h-[28rem] animate-pulse bg-muted/55" />
-      <div className="space-y-4">
-        <div className="h-10 w-48 animate-pulse bg-muted/70" />
-        <div className="grid gap-4 lg:grid-cols-[0.92fr_1.08fr]">
-          <div className="h-80 animate-pulse bg-muted/60" />
-          <div className="h-80 animate-pulse bg-muted/60" />
-        </div>
+      </div>
+      <div className="h-[28rem] animate-pulse rounded-[2px] bg-muted/55" />
+      <div className="grid gap-5 lg:grid-cols-2">
+        <div className="h-80 animate-pulse rounded-[2px] bg-muted/60" />
+        <div className="h-80 animate-pulse rounded-[2px] bg-muted/60" />
       </div>
     </div>
   )

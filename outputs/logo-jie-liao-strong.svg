@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200" width="800" height="200">
+  <defs>
+    <!-- 粗线条渐变：冷调科技感 -->
+    <linearGradient id="brandGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2B6CB0" />
+      <stop offset="50%" stop-color="#4A7DFF" />
+      <stop offset="100%" stop-color="#805AD5" />
+    </linearGradient>
+    
+    <!-- 更强线条的描边滤镜 -->
+    <filter id="strongStroke" x="-2%" y="-2%" width="104%" height="104%">
+      <feMorphology operator="dilate" radius="2" in="SourceAlpha" result="thicken" />
+      <feComposite in="thicken" in2="SourceAlpha" operator="out" result="outline" />
+      <feMerge>
+        <feMergeNode in="outline" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- 背景（深色，突出线条） -->
+  <rect width="800" height="200" fill="#1A202C" rx="8" />
+
+  <!-- 左侧文字：Jie（强线条粗体） -->
+  <text x="80" y="125" 
+        font-family="'Inter', 'Helvetica Neue', 'Arial', sans-serif" 
+        font-size="80" 
+        font-weight="900" 
+        fill="url(#brandGrad)" 
+        letter-spacing="2">
+    Jie
+  </text>
+
+  <!-- 中间符号：几何闪电/星形（强线条版） -->
+  <g transform="translate(360, 100)" stroke="url(#brandGrad)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <!-- 交叉闪电形状 -->
+    <path d="M -20 -35 L 5 0 L -20 35" />
+    <path d="M 20 -35 L -5 0 L 20 35" />
+    <!-- 中心连接点 -->
+    <circle cx="0" cy="0" r="10" fill="url(#brandGrad)" stroke="none" />
+  </g>
+
+  <!-- 右侧文字：Liao（强线条粗体） -->
+  <text x="440" y="125" 
+        font-family="'Inter', 'Helvetica Neue', 'Arial', sans-serif" 
+        font-size="80" 
+        font-weight="900" 
+        fill="url(#brandGrad)" 
+        letter-spacing="2">
+    Liao
+  </text>
+</svg>

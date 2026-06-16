@@ -167,12 +167,6 @@ export default function LiveDistanceCard() {
       : loadState === "loading"
         ? t("bodyLoading")
         : t("bodyUnavailable")
-  const statusLabel =
-    loadState === "ready"
-      ? t("sourceReady")
-      : loadState === "loading"
-        ? t("sourceLoading")
-        : t("sourceUnavailable")
   const ariaLabel =
     loadState === "ready"
       ? t("mapAriaReady", { visitor: visitorLabel })
@@ -182,24 +176,8 @@ export default function LiveDistanceCard() {
 
   return (
     <article ref={articleRef} className={cn(cardShell, "grid h-full gap-0 p-0")}>
-      <div className="flex items-center justify-between gap-3 border-b border-border/60 bg-[linear-gradient(180deg,hsl(var(--accent))/0.34,transparent)] px-5 py-3 sm:px-6">
-        <span className="terminal-label">{t("eyebrow")}</span>
-        <span
-          className={cn(
-            "inline-flex items-center border px-2.5 py-1 font-pixel text-[10px] uppercase tracking-[0.18em]",
-            loadState === "ready"
-              ? "border-primary/60 bg-primary/10 text-primary"
-              : loadState === "loading"
-                ? "border-[hsl(var(--signal-amber))]/60 bg-[hsl(var(--signal-amber))]/12 text-[hsl(var(--signal-amber))]"
-                : "border-border/70 bg-background/76 text-muted-foreground",
-          )}
-        >
-          {statusLabel}
-        </span>
-      </div>
-
-      <div className="border-b border-border/60 bg-[linear-gradient(180deg,hsl(var(--accent))/0.44,transparent)] p-3 sm:p-4 md:p-5">
-        <div className="overflow-hidden border-2 border-border/60 bg-[linear-gradient(180deg,#cfe6f2_0%,#d9ecf6_100%)]">
+      <div className="bg-[linear-gradient(180deg,hsl(var(--accent))/0.44,transparent)] p-3 sm:p-4 md:p-5">
+        <div className="overflow-hidden bg-[linear-gradient(180deg,#cfe6f2_0%,#d9ecf6_100%)]">
           <DistanceMapGraphic
             ariaLabel={ariaLabel}
             loadState={loadState}

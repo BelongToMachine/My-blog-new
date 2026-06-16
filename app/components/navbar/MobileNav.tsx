@@ -1,18 +1,20 @@
 "use client"
-import React, { useMemo } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import NextLink from "next/link"
 import LanguageToggle from "./LanguageToggle"
 import ThemeToggle from "./ThemeToggle"
 import { ActionIconButton } from "../system/ActionIconButton"
 import PixelGithubIcon from "./PixelGithubIcon"
+import PixelMenuIcon from "../system/PixelMenuIcon"
 import { Link, usePathname } from "@/app/i18n/navigation"
 import { useTranslations } from "next-intl"
 import { NavItem } from "../system/NavItem"
 import { cn } from "@/lib/utils"
 
-const MobileNav = ({ indexMode = false }: { indexMode?: boolean }) => {
+const MobileNav = () => {
   const t = useTranslations("nav")
   const currentPath = usePathname()
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
   const links = useMemo(
     () => [
       { label: t("aboutMe"), href: "/" },
@@ -23,18 +25,17 @@ const MobileNav = ({ indexMode = false }: { indexMode?: boolean }) => {
     [t]
   )
 
-  const controlToneClass = indexMode
-    ? "text-white hover:text-white/80"
-    : undefined
+  useEffect(() => {
+    setIsMenuOpen(false)
+  }, [currentPath])
 
   return (
-    <div className="flex items-center justify-between gap-2 px-4 py-2.5">
-      {/* Left: GitHub + nav links */}
-      <div className="flex items-center gap-3">
+    <div className="relative px-4 py-2.5">
+      <div className="flex items-center justify-between gap-2">
         <ActionIconButton
           asChild
           aria-label="Open GitHub profile"
-          className={cn("shrink-0 self-center", controlToneClass)}
+          className="shrink-0 self-center"
           tone="borderless"
           size="sm"
         >
@@ -42,41 +43,60 @@ const MobileNav = ({ indexMode = false }: { indexMode?: boolean }) => {
             <PixelGithubIcon className="h-5 w-5" />
           </NextLink>
         </ActionIconButton>
-        <ul className="m-0 flex h-8 list-none items-center gap-1 p-0">
+
+        <div className="flex items-center gap-1">
+          <LanguageToggle />
+          <ThemeToggle />
+          <ActionIconButton
+            aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-controls="mobile-site-navigation"
+            aria-expanded={isMenuOpen}
+            className="shadow-none"
+            onClick={() => setIsMenuOpen((open) => !open)}
+            size="sm"
+            tone="quiet"
+            type="button"
+          >
+            <PixelMenuIcon isOpen={isMenuOpen} />
+          </ActionIconButton>
+        </div>
+      </div>
+
+      <aside
+        id="mobile-site-navigation"
+        className={cn(
+          "fixed bottom-0 right-0 top-[var(--app-nav-offset)] z-30 w-[min(280px,85vw)] border-l-2 border-border/60 bg-background/95 px-4 py-4 backdrop-blur-sm transition-all duration-200 ease-out",
+          isMenuOpen
+            ? "translate-x-0 opacity-100"
+            : "pointer-events-none translate-x-full opacity-0",
+        )}
+      >
+        <ul className="m-0 grid list-none gap-2 p-0">
           {links.map((link) => (
-            <li key={link.href} className="mb-0 flex items-center">
+            <li key={link.href} className="mb-0">
               <NavItem
                 asChild
                 active={link.href === currentPath}
-                variant="desktop"
-                className={cn(
-                  "flex h-8 items-center px-2 py-0 text-[13px] leading-none",
-                  indexMode ? "text-white/80 hover:text-white" : undefined,
-                )}
+                variant="dropdown"
+                className="w-full"
               >
-                <Link
-                  className={cn(
-                    "whitespace-nowrap",
-                    indexMode
-                      ? "text-white/80 hover:text-white"
-                      : "text-muted-foreground hover:text-foreground",
-                    link.href === currentPath && (indexMode ? "text-white" : "text-foreground")
-                  )}
-                  href={link.href}
-                >
+                <Link href={link.href} onClick={() => setIsMenuOpen(false)}>
                   {link.label}
                 </Link>
               </NavItem>
             </li>
           ))}
         </ul>
-      </div>
+      </aside>
 
-      {/* Right: Controls */}
-      <div className="flex items-center gap-1">
-        <LanguageToggle className={controlToneClass} />
-        {!indexMode && <ThemeToggle className={controlToneClass} />}
-      </div>
+      <div
+        className={cn(
+          "fixed inset-0 top-[var(--app-nav-offset)] z-20 bg-background/80 backdrop-blur-sm transition-opacity duration-200",
+          isMenuOpen ? "opacity-100" : "pointer-events-none opacity-0",
+        )}
+        onClick={() => setIsMenuOpen(false)}
+        aria-hidden="true"
+      />
     </div>
   )
 }
