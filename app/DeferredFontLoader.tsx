@@ -10,8 +10,8 @@ export default function DeferredFontLoader() {
     const root = document.documentElement
     let firstFrame = 0
     let secondFrame = 0
-    let timeoutId = 0
-    let idleId = 0
+    let timeoutId: ReturnType<typeof setTimeout> | number = 0
+    let idleId: number | ReturnType<typeof requestIdleCallback> = 0
     let cancelled = false
 
     const markReady = () => {
@@ -36,7 +36,7 @@ export default function DeferredFontLoader() {
         return
       }
 
-      timeoutId = window.setTimeout(markReady, 600)
+      timeoutId = globalThis.setTimeout(markReady, 600)
     }
 
     const scheduleFonts = () => {
@@ -49,7 +49,7 @@ export default function DeferredFontLoader() {
         return
       }
 
-      timeoutId = window.setTimeout(loadFonts, 240)
+      timeoutId = globalThis.setTimeout(loadFonts, 240)
     }
 
     root.dataset.fontStage = "pending"

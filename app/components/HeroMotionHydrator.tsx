@@ -39,7 +39,7 @@ const ENTRY_ANIMATIONS = [
     duration: 0.55,
     delay: 0.18,
   },
-] as const
+]
 
 export default function HeroMotionHydrator() {
   const reduceMotion = useReducedMotion()
@@ -94,11 +94,10 @@ export default function HeroMotionHydrator() {
       }
 
       return [
-        animate(element, config.keyframes, {
+        animate(element, [...config.keyframes] as any, {
           duration: config.duration,
           delay: config.delay,
           ease: [0.22, 1, 0.36, 1],
-          fill: "both",
         }),
       ]
     })

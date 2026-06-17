@@ -13,8 +13,8 @@ export default function HeroDeferredMotion() {
   const [shouldLoadAnimation, setShouldLoadAnimation] = useState(false)
 
   useEffect(() => {
-    let timeoutId = 0
-    let idleId = 0
+    let timeoutId: ReturnType<typeof setTimeout> | number = 0
+    let idleId: number | ReturnType<typeof requestIdleCallback> = 0
     let cancelled = false
 
     const scheduleAnimation = () => {
@@ -33,7 +33,7 @@ export default function HeroDeferredMotion() {
         return
       }
 
-      timeoutId = window.setTimeout(activate, 180)
+      timeoutId = globalThis.setTimeout(activate, 180)
     }
 
     if (document.documentElement.dataset.fontStage === "ready") {
