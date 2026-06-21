@@ -140,7 +140,7 @@
   "projects": {
     "heading": "项目成果",
     "description": "参与或主导过的项目，涵盖金融系统、电商平台和 AI 应用。",
-    "featuredLabel": "重点案例",
+    "featuredLabel": "我的工作经历",
     "stackLabel": "技术栈",
     "projectLabel": "项目 {index}",
     "contributionsLabel": "核心工作",
@@ -255,7 +255,7 @@
     "emergencyExitCoding": {
       "eyebrow": "深夜故事",
       "location": "安全通道",
-      "title": "我曾在安全通道里写代码（猜猜后来怎样了）",
+      "title": "我有一次在紧急出口写代码（猜猜为什么）",
       "imageAlt": "Jie 坐在安全通道楼梯上，带着电脑和充电线继续写代码"
     },
     "stateStreet": {

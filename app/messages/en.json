@@ -140,7 +140,7 @@
   "projects": {
     "heading": "Projects",
     "description": "Projects I've contributed to or led, spanning financial systems, e-commerce platforms, and AI applications.",
-    "featuredLabel": "Featured case",
+    "featuredLabel": "MY WORK EXPERIENCE",
     "stackLabel": "Stack",
     "projectLabel": "Project {index}",
     "contributionsLabel": "Key contributions",
@@ -255,7 +255,7 @@
     "emergencyExitCoding": {
       "eyebrow": "Late-night story",
       "location": "Emergency exit",
-      "title": "I once ended up coding in an emergency stairwell",
+      "title": "I once ended up coding in an emergency stairwell (Guess What)",
       "imageAlt": "Jie sitting on emergency exit stairs with laptops and chargers while trying to code"
     },
     "stateStreet": {
