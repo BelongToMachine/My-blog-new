@@ -49,11 +49,14 @@ research/
 
 # playwright / local browser automation artifacts
 .codex-*.png
+.gemini_*.mjs
+.gemini_*.json
 .playwright/
 .playwright-*/
 playwright-report/
 test-results/
 .next.corrupt-*
+screenshot_*.png
 
 # Private MDX content (copied during build, not committed)
 app/content/mdx/
