@@ -1,13 +1,19 @@
 import { Suspense } from "react"
 import { Container } from "@radix-ui/themes"
 import { cn } from "@/lib/utils"
-import { getMdxArticleList } from "@/app/service/mdxArticles"
 import Hero from "../Hero"
 import ProjectsSection from "../projects/ProjectsSection"
 import SummaryHeader from "@/app/SummaryHeader"
 import PostSummary from "@/app/PostSummary"
 import AboutPinnedHeroShell from "./AboutPinnedHeroShell"
 import FunFactsSection from "./FunFactsSection"
+
+const BLOG_SUMMARY_COUNTS = {
+  total: 6,
+  webDev: 1,
+  ai: 5,
+  nonTech: 0,
+} as const
 
 interface Props {
   locale: string
@@ -42,7 +48,7 @@ export default async function AboutSections({
         )}
       >
         <Suspense fallback={<DeferredHomeSectionsFallback />}>
-          <DeferredHomeSections locale={locale} />
+          <DeferredHomeSections />
         </Suspense>
       </Container>
     </section>
@@ -71,28 +77,15 @@ export default async function AboutSections({
   )
 }
 
-async function DeferredHomeSections({ locale }: { locale: string }) {
-  const articles = await getMdxArticleList(locale)
-
-  const webDevCount = articles.filter(
-    (article) => article.category === "webDev",
-  ).length
-  const aiCount = articles.filter((article) => article.category === "ai").length
-  const nonTechCount = articles.filter(
-    (article) => article.category === "nonTech",
-  ).length
-
+async function DeferredHomeSections() {
   return (
     <>
       <FunFactsSection />
       <ProjectsSection />
-      <SummaryHeader />
-      <PostSummary
-        total={articles.length}
-        webDev={webDevCount}
-        ai={aiCount}
-        nonTech={nonTechCount}
-      />
+      <section className="pt-8 md:pt-12 lg:pt-14">
+        <SummaryHeader />
+        <PostSummary {...BLOG_SUMMARY_COUNTS} />
+      </section>
     </>
   )
 }
