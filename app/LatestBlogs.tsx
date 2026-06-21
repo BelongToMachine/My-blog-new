@@ -15,7 +15,7 @@ const LatestBlogs = async () => {
 
   return (
     <RetroPanel
-      className="flex min-w-0 w-full flex-col"
+      className="!shadow-none flex min-w-0 w-full flex-col"
       typography="plain"
       eyebrow="recent logs"
       title={t("latestBlogs")}
@@ -36,7 +36,7 @@ const LatestBlogs = async () => {
         {recent.map((article) => (
           <div
             key={article.slug}
-            className="pixel-panel flex w-full min-w-0 flex-col gap-3 border border-border/70 bg-background/70 px-3 py-3.5 sm:px-4 sm:py-4 md:flex-row md:items-start md:justify-between md:gap-4 lg:items-center"
+            className="pixel-panel !shadow-none flex w-full min-w-0 flex-col gap-3 border border-border/70 bg-background/70 px-3 py-3.5 sm:px-4 sm:py-4 md:flex-row md:items-start md:justify-between md:gap-4 lg:items-center"
           >
             <div className="flex min-w-0 flex-1 flex-col gap-2">
               <Link

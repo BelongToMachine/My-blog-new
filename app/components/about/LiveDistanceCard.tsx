@@ -10,7 +10,7 @@ import {
 import { cn } from "@/lib/utils"
 
 const cardShell =
-  "pixel-panel overflow-hidden border border-border/80 bg-card/88 transition-colors duration-200 hover:border-primary/50"
+  "pixel-panel !shadow-none overflow-hidden border border-border/80 bg-card/88 transition-colors duration-200 hover:border-primary/50"
 const mapWidth = 800
 const mapHeight = 400
 const worldMapMaskStyle = {

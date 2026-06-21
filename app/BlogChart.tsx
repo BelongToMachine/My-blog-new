@@ -4,7 +4,7 @@ import React, { Suspense } from "react"
 import { useTranslations } from "next-intl"
 
 const chartShellClassName =
-  "pixel-panel panel-grid flex min-w-0 flex-1 flex-col overflow-hidden border border-border/80 bg-card/88 p-3 sm:p-4 md:p-5"
+  "pixel-panel !shadow-none panel-grid flex min-w-0 flex-1 flex-col overflow-hidden border border-border/80 bg-card/88 p-3 sm:p-4 md:p-5"
 const chartBodyClassName =
   "flex min-h-[220px] flex-1 items-center justify-center text-sm text-muted-foreground md:min-h-[280px] lg:min-h-[300px]"
 

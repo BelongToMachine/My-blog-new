@@ -196,7 +196,7 @@ const ChartInner = ({
   ]
 
   return (
-    <div className="pixel-panel panel-grid flex min-w-0 flex-1 flex-col overflow-hidden border border-border/80 bg-card/88 p-3 sm:p-4 md:p-5">
+    <div className="pixel-panel !shadow-none panel-grid flex min-w-0 flex-1 flex-col overflow-hidden border border-border/80 bg-card/88 p-3 sm:p-4 md:p-5">
       <div className="pixel-chart flex h-full w-full items-center justify-center">
         <ResponsiveContainer width="100%" height={chartHeight}>
           <BarChart

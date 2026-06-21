@@ -17,7 +17,7 @@ const BlogSummary = ({ total, webDev, ai, nonTech }: Props) => {
     <div className="flex min-w-0 flex-row gap-1.5 sm:gap-2 md:gap-4">
       <RetroStatCard
         typography="plain"
-        className="min-h-[7.5rem] min-w-0 basis-0 flex-1 px-2 py-3 sm:min-h-[8rem] sm:px-3 sm:py-4 md:min-h-[9rem] md:px-4 md:py-5"
+        className="!shadow-none min-h-[7.5rem] min-w-0 basis-0 flex-1 px-2 py-3 sm:min-h-[8rem] sm:px-3 sm:py-4 md:min-h-[9rem] md:px-4 md:py-5"
         label={t("webDev")}
         value={webDev}
         hint={
@@ -32,7 +32,7 @@ const BlogSummary = ({ total, webDev, ai, nonTech }: Props) => {
       />
       <RetroStatCard
         typography="plain"
-        className="min-h-[7.5rem] min-w-0 basis-0 flex-1 px-2 py-3 sm:min-h-[8rem] sm:px-3 sm:py-4 md:min-h-[9rem] md:px-4 md:py-5"
+        className="!shadow-none min-h-[7.5rem] min-w-0 basis-0 flex-1 px-2 py-3 sm:min-h-[8rem] sm:px-3 sm:py-4 md:min-h-[9rem] md:px-4 md:py-5"
         label={t("ai")}
         value={ai}
         hint={
@@ -47,7 +47,7 @@ const BlogSummary = ({ total, webDev, ai, nonTech }: Props) => {
       />
       <RetroStatCard
         typography="plain"
-        className="min-h-[7.5rem] min-w-0 basis-0 flex-1 px-2 py-3 sm:min-h-[8rem] sm:px-3 sm:py-4 md:min-h-[9rem] md:px-4 md:py-5"
+        className="!shadow-none min-h-[7.5rem] min-w-0 basis-0 flex-1 px-2 py-3 sm:min-h-[8rem] sm:px-3 sm:py-4 md:min-h-[9rem] md:px-4 md:py-5"
         label={t("nonTech")}
         value={nonTech}
         hint={
