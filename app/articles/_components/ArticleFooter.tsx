@@ -46,9 +46,9 @@ const ArticleFooter = ({
       {/* Reaction controls */}
       <div className={styles.footerReactions}>
         <Button
-          variant="default"
+          variant="outline"
           size="sm"
-          className={styles.likeButton}
+          className={cn(styles.reactionButton, styles.likeButton, "!shadow-none")}
           onClick={() => setLikes((v) => v + 1)}
         >
           LIKES ({likes})
@@ -57,9 +57,13 @@ const ArticleFooter = ({
         <div className={styles.windFanRig}>
           <Wind className={styles.windTrack}>
             <Button
-              variant="destructive"
+              variant="outline"
               size="sm"
-              className={styles.dislikeButton}
+              className={cn(
+                styles.reactionButton,
+                styles.dislikeButton,
+                "!shadow-none",
+              )}
             >
               DISLIKE
             </Button>
