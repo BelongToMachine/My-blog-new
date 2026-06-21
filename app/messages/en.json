@@ -115,7 +115,7 @@
     "imageAlt": "Jie is standing firm",
     "typeSequence": ["Jie", "a web developer", "AI product dev"],
     "shortIntro": "I build production-ready web apps and AI product features with React, Next.js, PostgreSQL, Prisma, Redis, and LLM APIs.",
-    "aiCtaLabel": "Ask AI about me",
+    "aiCtaLabel": "ASK AI ABOUT ME",
     "backToNav": "Back to Home",
     "landingTitle1": "I'm Jie, a full-stack TypeScript developer based in Hangzhou, China.",
     "landingTitle2": "I build production-ready web apps and AI product features with React, Next.js, PostgreSQL, Prisma, Redis, and LLM APIs.",
@@ -141,8 +141,10 @@
     "heading": "Projects",
     "description": "Projects I've contributed to or led, spanning financial systems, e-commerce platforms, and AI applications.",
     "featuredLabel": "Featured case",
-    "highlightsLabel": "What I owned",
     "stackLabel": "Stack",
+    "projectLabel": "Project {index}",
+    "contributionsLabel": "Key contributions",
+    "toolsUsedLabel": "Tools used",
     "roles": {
       "frontend": "Frontend",
       "fullstack": "Fullstack"
@@ -151,6 +153,18 @@
       "architecture": "Architecture & dashboard UX",
       "aiTooling": "Internal AI tooling",
       "agentProduct": "Agent conversation product"
+    },
+    "stateStreet": {
+      "period": "2024-present",
+      "company": "State Street Corporation",
+      "roleTitle": "Frontend Developer at State Street Corporation",
+      "workstream1": "Trading Management System",
+      "workstream2": "UX Agent",
+      "description": "Worked across two internal State Street initiatives: modernizing a legacy trading platform and building an AI-powered UX Agent for product teams. The scope spanned frontend architecture, dashboard interaction patterns, design-system migration, and agent-assisted page generation.",
+      "highlight1": "Split a legacy trading monolith into 5+ independently deployable domains with Module Federation",
+      "highlight2": "Built a draggable dashboard with unified request handling, responsive persistence, and solid unit test coverage",
+      "highlight3": "Created a UX Agent that turns natural-language product specs into spec-compliant React pages",
+      "highlight4": "Shipped migration and orchestration tooling to modernize 50+ custom components alongside the existing system"
     },
     "financial": {
       "title": "Trading Management System · State Street Corporation",
@@ -225,6 +239,24 @@
       "techniqueValue": "Front-end animation & SVG",
       "motionLabel": "Starts alive",
       "motionValue": "It's already gently waving when you open the page"
+    },
+    "volunteerTurkey": {
+      "eyebrow": "Volunteer note",
+      "location": "Turkey",
+      "title": "I once do volunteer in Turkey",
+      "body": "I love backpacking. I once traveled to Istanbul, Turkey and spent two weeks volunteering on a local farm and make friends.",
+      "image1Alt": "Jie harvesting small tomatoes while volunteering in Turkey",
+      "image2Alt": "Jie with new friends during his backpacking trip in Turkey",
+      "listIntro": "A few favorite memories from that trip",
+      "highlight1": "Backpacking through Istanbul and seeing the city beyond the usual tourist path",
+      "highlight2": "Spending time volunteering on a local farm and joining everyday life there",
+      "highlight3": "Meeting warm local friends who made the trip feel personal and unforgettable"
+    },
+    "emergencyExitCoding": {
+      "eyebrow": "Late-night story",
+      "location": "Emergency exit",
+      "title": "I once ended up coding in an emergency stairwell",
+      "imageAlt": "Jie sitting on emergency exit stairs with laptops and chargers while trying to code"
     },
     "stateStreet": {
       "highlightsLabel": "What I built into it",

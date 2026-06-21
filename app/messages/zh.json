@@ -141,8 +141,10 @@
     "heading": "项目成果",
     "description": "参与或主导过的项目，涵盖金融系统、电商平台和 AI 应用。",
     "featuredLabel": "重点案例",
-    "highlightsLabel": "我负责的部分",
     "stackLabel": "技术栈",
+    "projectLabel": "项目 {index}",
+    "contributionsLabel": "核心工作",
+    "toolsUsedLabel": "使用工具",
     "roles": {
       "frontend": "前端开发",
       "fullstack": "全栈工程师"
@@ -151,6 +153,18 @@
       "architecture": "架构拆分与数据看板",
       "aiTooling": "内部 AI 生产力",
       "agentProduct": "Agent 对话产品"
+    },
+    "stateStreet": {
+      "period": "2024-至今",
+      "company": "State Street Corporation",
+      "roleTitle": "State Street Corporation 前端开发工程师",
+      "workstream1": "交易管理系统",
+      "workstream2": "UX Agent",
+      "description": "在 State Street 的两条内部产品线上持续交付，一条是遗留交易平台的前端架构重构，一条是面向产品团队的 AI 驱动 UX Agent。整体工作覆盖前端架构拆分、数据看板交互、设计系统迁移，以及基于自然语言的页面生成能力。",
+      "highlight1": "用 Module Federation 将遗留交易单体拆分为 5+ 个可独立开发部署的功能域",
+      "highlight2": "搭建可拖拽数据看板，统一请求处理逻辑，并补齐响应式持久化与单元测试覆盖",
+      "highlight3": "设计并实现 UX Agent，让产品需求描述可以直接生成符合规范的 React 页面",
+      "highlight4": "交付迁移与编排工具，推动 50+ 自研组件在保留旧系统可用性的前提下渐进升级"
     },
     "financial": {
       "title": "交易管理系统 · State Street Corporation",
@@ -225,6 +239,24 @@
       "techniqueValue": "前端动画与 SVG 绘制",
       "motionLabel": "开场状态",
       "motionValue": "页面打开时就已经在轻轻飘动"
+    },
+    "volunteerTurkey": {
+      "eyebrow": "志愿者片段",
+      "location": "土耳其",
+      "title": "我曾在土耳其做过志愿者",
+      "body": "我很喜欢背包旅行。有一次我背包去了土耳其伊斯坦布尔，还在当地的一家农场做了志愿者。",
+      "image1Alt": "Jie 在土耳其做志愿者时在温室里采摘小番茄",
+      "image2Alt": "Jie 在土耳其背包旅行时和新认识朋友们的合影",
+      "listIntro": "这趟旅程里我最喜欢的几个瞬间",
+      "highlight1": "背包走进伊斯坦布尔，在常规游客路线之外感受这座城市",
+      "highlight2": "在当地农场做志愿者，真正参与那里的日常生活",
+      "highlight3": "认识了很热情的新朋友，让这趟旅行变得更真实也更难忘"
+    },
+    "emergencyExitCoding": {
+      "eyebrow": "深夜故事",
+      "location": "安全通道",
+      "title": "我曾在安全通道里写代码（猜猜后来怎样了）",
+      "imageAlt": "Jie 坐在安全通道楼梯上，带着电脑和充电线继续写代码"
     },
     "stateStreet": {
       "highlightsLabel": "我实际做进去的部分",
