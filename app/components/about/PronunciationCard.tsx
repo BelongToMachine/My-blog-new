@@ -66,11 +66,18 @@ export default function PronunciationCard({
           onClick={handleSpeak}
           disabled={!canSpeak}
           className={cn(
-            "flex h-11 w-11 shrink-0 items-center justify-center border border-primary/40 bg-primary/10 text-primary transition-colors duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 disabled:cursor-not-allowed disabled:border-border/60 disabled:bg-background/72 disabled:text-muted-foreground",
-            isSpeaking && "bg-primary/18 text-primary",
+            "group flex h-11 w-11 shrink-0 items-center justify-center border-2 border-primary/35 bg-primary/[0.04] text-primary transition-colors duration-200 ease-out hover:border-[color-mix(in_srgb,hsl(var(--primary))_78%,hsl(var(--border)))] hover:bg-[color-mix(in_srgb,hsl(var(--primary))_14%,hsl(var(--accent)))] hover:text-foreground focus-visible:border-[color-mix(in_srgb,hsl(var(--primary))_78%,hsl(var(--border)))] focus-visible:bg-[color-mix(in_srgb,hsl(var(--primary))_14%,hsl(var(--accent)))] focus-visible:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:border-border/60 disabled:bg-background/72 disabled:text-muted-foreground",
+            isSpeaking && "border-primary/55 bg-primary/[0.09] text-foreground",
           )}
         >
-          <Volume2 className="h-5 w-5" />
+          <span
+            className={cn(
+              "inline-flex h-7 w-7 items-center justify-center bg-transparent transition-transform duration-200 ease-out group-hover:-translate-y-px group-hover:scale-[1.06]",
+              isSpeaking && "text-foreground",
+            )}
+          >
+            <Volume2 className="h-[18px] w-[18px]" />
+          </span>
         </button>
       </div>
 

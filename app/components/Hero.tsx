@@ -59,7 +59,7 @@ export default async function Hero({ showBackLink = true }: Props) {
               I&apos;M JIE
             </h1>
             <div className="space-y-4 md:max-w-[19rem] lg:-translate-x-2 translate-y-4 lg:-translate-y-8 lg:max-w-none lg:space-y-6 xl:-translate-x-3 xl:-translate-y-10">
-              <p className="text-[15px] min-[480px]:text-base md:text-[1.05rem] lg:text-[1.05rem] leading-[1.75] tracking-[0.01em] min-[480px]:max-w-[24ch] sm:max-w-[28ch] md:max-w-[40ch] lg:max-w-[42ch] min-[1101px]:max-w-[48ch] xl:max-w-[42ch] ml-2 lg:-ml-24 mt-10 text-muted-foreground [text-wrap:pretty]">
+              <p className="text-[15px] min-[480px]:text-base md:text-[1.05rem] lg:text-[1.05rem] leading-[1.75] tracking-[0.01em] min-[480px]:max-w-[24ch] sm:max-w-[28ch] md:max-w-[40ch] lg:max-w-[36ch] xl:max-w-[38ch] ml-2 lg:-ml-24 mt-10 text-muted-foreground [text-wrap:pretty]">
                 {t("shortIntro")}
               </p>
               <div className="flex flex-wrap gap-3">
@@ -81,7 +81,7 @@ export default async function Hero({ showBackLink = true }: Props) {
           data-hero-enter="image"
         >
           <div
-            className="relative w-[28rem] -translate-x-32 sm:-translate-y-20 md:mx-auto md:w-[25rem] md:-translate-x-14 md:-translate-y-16 lg:w-full lg:translate-x-8 lg:-translate-y-16 lg:max-w-[980px] xl:max-w-[1040px]"
+            className="relative w-[28rem] -translate-x-32 sm:-translate-y-10 md:mx-auto md:w-[25rem] md:-translate-x-14 md:-translate-y-16 lg:w-full lg:translate-x-8 lg:-translate-y-12 lg:max-w-[980px] xl:max-w-[1040px]"
             data-mobile-hero-avatar
           >
             <div className="relative aspect-[4/4.7] sm:aspect-[4/5]">

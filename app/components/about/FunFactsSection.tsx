@@ -1,10 +1,12 @@
 import dynamic from "next/dynamic"
 import { cn } from "@/lib/utils"
 import ArticleFooter from "@/app/articles/_components/ArticleFooter"
+import EmergencyExitCodingCard from "./EmergencyExitCodingCard"
 import WaveFlagCard from "./WaveFlagCard"
+import TurkeyVolunteerCard from "./TurkeyVolunteerCard"
 
 const sharedCardShell =
-  "pixel-panel overflow-hidden border border-border/60 bg-card/88 transition-colors duration-200 hover:border-primary/40"
+  "pixel-panel !shadow-none overflow-hidden border border-border/60 bg-card/88 transition-colors duration-200 hover:border-primary/40"
 
 const LiveDistanceCard = dynamic(() => import("./LiveDistanceCard"), {
   ssr: false,
@@ -20,14 +22,15 @@ export default async function FunFactsSection() {
   return (
     <section className="mb-8 md:mb-10">
       <div className="grid gap-5 md:grid-cols-12 md:items-start">
-        <div className="md:col-span-8">
+        <div className="grid content-start gap-5 md:col-span-8">
           <LiveDistanceCard />
+          <TurkeyVolunteerCard className={sharedCardShell} />
         </div>
 
         <div className="grid content-start gap-5 md:col-span-4">
           <PronunciationCard className={sharedCardShell} />
-
           <WaveFlagCard className={sharedCardShell} />
+          <EmergencyExitCodingCard className={sharedCardShell} />
         </div>
 
         <article
