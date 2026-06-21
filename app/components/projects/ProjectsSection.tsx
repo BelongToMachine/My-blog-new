@@ -1,5 +1,6 @@
 import type { ReactNode } from "react"
 import { getTranslations } from "next-intl/server"
+import { Pencil } from "lucide-react"
 import { cn } from "@/lib/utils"
 import {
   DatabaseDollarIcon,
@@ -171,13 +172,37 @@ function ProjectTimelineCard({
   return (
     <div className="grid grid-cols-[56px_minmax(0,1fr)] items-stretch gap-4 sm:grid-cols-[72px_minmax(0,1fr)] sm:gap-5 md:grid-cols-[88px_minmax(0,1fr)] md:gap-6">
       <div className="relative flex justify-center">
-        <div className="absolute bottom-0 left-1/2 top-0 w-px -translate-x-1/2 bg-border/70" />
-        <div className="relative z-10 mt-6 flex h-12 w-12 items-center justify-center border-2 border-primary/40 bg-background md:mt-8 md:h-14 md:w-14">
-          <span className="block h-3 w-3 bg-primary/78 md:h-3.5 md:w-3.5" />
+        <div className="absolute bottom-0 left-1/2 top-0 w-[2px] -translate-x-1/2 bg-border/90 md:w-[3px]" />
+        <div className="relative z-10 mt-6 flex h-12 w-12 items-center justify-center border border-border/55 bg-background/96 md:mt-8 md:h-14 md:w-14">
+          <div className="flex h-9 w-9 items-center justify-center bg-primary text-primary-foreground md:h-10 md:w-10">
+            <Pencil className="h-4 w-4 stroke-[2.2] md:h-[18px] md:w-[18px]" />
+          </div>
         </div>
       </div>
 
-      <article className="pixel-panel !shadow-none group relative overflow-hidden border border-border/40 bg-card/88 px-5 py-6 transition-colors duration-200 hover:border-primary/40 md:px-8 md:py-8 lg:px-10 lg:py-10">
+      <div className="relative">
+        {/* Speech-bubble tail — sibling of article so it can paint over the card border */}
+        <svg
+          aria-hidden="true"
+          className="absolute -left-[10px] top-[35px] z-10 md:top-[47px]"
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          overflow="visible"
+        >
+          <path
+            d="M16 0 L0 8 L16 16"
+            style={{
+              fill: "hsl(var(--card))",
+              stroke: "hsl(var(--border))",
+              strokeWidth: 3,
+              strokeLinejoin: "miter",
+              strokeLinecap: "butt",
+            }}
+          />
+        </svg>
+
+        <article className="pixel-panel !shadow-none group relative overflow-visible border border-border/40 bg-card/88 px-5 py-6 transition-colors duration-200 hover:border-primary/40 md:px-8 md:py-8 lg:px-10 lg:py-10">
         <div className="border-b border-border/60 pb-5">
           <div className="space-y-4">
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-2">
@@ -245,6 +270,7 @@ function ProjectTimelineCard({
           ))}
         </div>
       </article>
+      </div>
     </div>
   )
 }
