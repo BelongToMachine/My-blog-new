@@ -22,25 +22,30 @@ export default async function FunFactsSection() {
   return (
     <section className="mb-8 md:mb-10">
       <div className="grid gap-5 md:grid-cols-12 md:items-start">
-        <div className="grid content-start gap-5 md:col-span-8">
-          <LiveDistanceCard />
-          <TurkeyVolunteerCard className={sharedCardShell} />
+        <div className="contents md:col-span-8 md:grid md:content-start md:gap-5">
+          <div className="order-1 md:order-none">
+            <LiveDistanceCard />
+          </div>
+          <div className="order-3 md:order-none">
+            <TurkeyVolunteerCard className={sharedCardShell} />
+          </div>
+          <article
+            className={cn(
+              sharedCardShell,
+              "order-4 px-3 sm:px-4 md:order-none md:px-5",
+            )}
+          >
+            <ArticleFooter fullWidth compact showHeader={false} />
+          </article>
         </div>
 
-        <div className="grid content-start gap-5 md:col-span-4">
-          <PronunciationCard className={sharedCardShell} />
-          <WaveFlagCard className={sharedCardShell} />
+        <div className="order-2 grid grid-cols-2 gap-5 md:order-none md:col-span-4 md:grid-cols-1 md:content-start">
+          <div className="grid content-start gap-5">
+            <PronunciationCard className={sharedCardShell} />
+            <WaveFlagCard className={sharedCardShell} />
+          </div>
           <EmergencyExitCodingCard className={sharedCardShell} />
         </div>
-
-        <article
-          className={cn(
-            sharedCardShell,
-            "px-3 sm:px-4 md:col-span-10 md:px-5 lg:col-span-8 xl:col-span-7",
-          )}
-        >
-          <ArticleFooter fullWidth compact showHeader={false} />
-        </article>
       </div>
     </section>
   )

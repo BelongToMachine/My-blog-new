@@ -24,7 +24,7 @@ export default async function TurkeyVolunteerCard({
         </figure>
 
         <div className="flex flex-1 items-center justify-center px-3 py-3 text-center sm:px-5 sm:py-4">
-          <p className="mx-auto max-w-[34ch] text-pretty text-[15px] leading-7 text-foreground/82 md:text-[16px]">
+          <p className="mx-auto max-w-[34ch] text-pretty text-[15px] leading-7 text-foreground/82 md:max-w-[64ch] md:text-[16px]">
             {t("body")}
           </p>
         </div>
