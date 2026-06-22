@@ -55,10 +55,9 @@ export default function PronunciationCard({
         "flex flex-col items-center gap-5 p-4 text-center md:p-4 lg:p-5",
       )}
     >
-      <div className="grid w-full grid-cols-[2.75rem_minmax(0,1fr)_2.75rem] items-start gap-3">
-        <div aria-hidden className="h-11 w-11" />
+      <div className="flex w-full flex-wrap items-start justify-center gap-3">
         <p className="font-editorial text-[clamp(2.35rem,5vw,4.1rem)] leading-[0.9] tracking-[-0.08em] text-foreground">
-          {t("phonetic")}
+          <span className="whitespace-nowrap">{t("phonetic")}</span>
         </p>
         <button
           type="button"
