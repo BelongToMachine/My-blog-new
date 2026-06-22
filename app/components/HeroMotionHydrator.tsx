@@ -6,7 +6,6 @@ import {
   useMotionValue,
   useMotionValueEvent,
   useReducedMotion,
-  useScroll,
   useSpring,
   useTransform,
 } from "framer-motion"
@@ -59,11 +58,6 @@ export default function HeroMotionHydrator() {
     mass: 0.96,
   })
 
-  const { scrollYProgress } = useScroll({
-    target: rootRef,
-    offset: ["start start", "end start"],
-  })
-
   useEffect(() => {
     rootRef.current = document.querySelector<HTMLElement>("[data-hero-root]")
 
@@ -107,14 +101,54 @@ export default function HeroMotionHydrator() {
     }
   }, [reduceMotion])
 
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    if (reduceMotion || !hasResolvedViewport) {
+  useEffect(() => {
+    if (reduceMotion || !hasResolvedViewport || !rootRef.current) {
       rawProgress.set(0)
       return
     }
 
-    rawProgress.set(latest)
-  })
+    let frameId = 0
+
+    // The hero node is discovered after mount, so compute scroll progress manually
+    // instead of relying on a target ref subscription created before it exists.
+    const syncScrollProgress = () => {
+      frameId = 0
+
+      const root = rootRef.current
+
+      if (!root) {
+        rawProgress.set(0)
+        return
+      }
+
+      const bounds = root.getBoundingClientRect()
+      const height = bounds.height || 1
+      const nextProgress = Math.min(Math.max(-bounds.top / height, 0), 1)
+
+      rawProgress.set(nextProgress)
+    }
+
+    const requestSync = () => {
+      if (frameId) {
+        return
+      }
+
+      frameId = window.requestAnimationFrame(syncScrollProgress)
+    }
+
+    syncScrollProgress()
+    window.addEventListener("scroll", requestSync, { passive: true })
+    window.addEventListener("resize", requestSync)
+
+    return () => {
+      if (frameId) {
+        window.cancelAnimationFrame(frameId)
+      }
+
+      window.removeEventListener("scroll", requestSync)
+      window.removeEventListener("resize", requestSync)
+    }
+  }, [hasResolvedViewport, rawProgress, reduceMotion])
 
   useMotionValueEvent(smoothWelcomeLift, "change", (latest) => {
     const welcome = rootRef.current?.querySelector<HTMLElement>(
