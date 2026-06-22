@@ -180,29 +180,46 @@ function ProjectTimelineCard({
         </div>
       </div>
 
-      <div className="relative">
-        {/* Speech-bubble tail — sibling of article so it can paint over the card border */}
+      <div className="group relative">
+        {/* Left border and tail share one path, so no rectangular border segment exists behind the tail. */}
         <svg
           aria-hidden="true"
-          className="absolute -left-[10px] top-[35px] z-10 md:top-[47px]"
-          width="16"
-          height="16"
-          viewBox="0 0 16 16"
-          overflow="visible"
+          className="pointer-events-none absolute -left-10 top-0 z-20 h-full w-[43px] overflow-hidden md:hidden"
         >
           <path
-            d="M16 0 L0 8 L16 16"
-            style={{
-              fill: "hsl(var(--card))",
-              stroke: "hsl(var(--border))",
-              strokeWidth: 3,
-              strokeLinejoin: "miter",
-              strokeLinecap: "butt",
-            }}
+            d="M41.5 40 L1.5 48 L41.5 56 Z"
+            fill="hsl(var(--card) / 0.88)"
+            stroke="none"
+          />
+          <path
+            className="stroke-border transition-colors duration-200 group-hover:stroke-primary/40"
+            d="M41.5 0 V40 L1.5 48 L41.5 56 V5000"
+            fill="none"
+            strokeWidth={3}
+            strokeLinejoin="miter"
+            strokeLinecap="butt"
+          />
+        </svg>
+        <svg
+          aria-hidden="true"
+          className="pointer-events-none absolute -left-10 top-0 z-20 hidden h-full w-[43px] overflow-hidden md:block"
+        >
+          <path
+            d="M41.5 52 L1.5 60 L41.5 68 Z"
+            fill="hsl(var(--card) / 0.88)"
+            stroke="none"
+          />
+          <path
+            className="stroke-border transition-colors duration-200 group-hover:stroke-primary/40"
+            d="M41.5 0 V52 L1.5 60 L41.5 68 V5000"
+            fill="none"
+            strokeWidth={3}
+            strokeLinejoin="miter"
+            strokeLinecap="butt"
           />
         </svg>
 
-        <article className="pixel-panel !shadow-none group relative overflow-visible border border-border/40 bg-card/88 px-5 py-6 transition-colors duration-200 hover:border-primary/40 md:px-8 md:py-8 lg:px-10 lg:py-10">
+        <article className="relative z-10 overflow-visible border-[3px] border-l-transparent border-r-border border-y-border bg-card/88 px-5 py-6 transition-colors duration-200 group-hover:border-r-primary/40 group-hover:border-y-primary/40 md:px-8 md:py-8 lg:px-10 lg:py-10">
         <div className="border-b border-border/60 pb-5">
           <div className="space-y-4">
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-2">
