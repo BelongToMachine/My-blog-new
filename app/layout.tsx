@@ -17,6 +17,7 @@ const siteName = "Jie"
 const defaultTitle = `${siteName} | Front-End Developer & AI Engineer`
 const defaultDescription =
   "Portfolio of Jie — a front-end developer building polished React, Next.js, TypeScript, and AI experiences."
+const iconVersion = "20260623b"
 
 export const metadata: Metadata = {
   applicationName: siteName,
@@ -37,6 +38,29 @@ export const metadata: Metadata = {
     title: defaultTitle,
     description: defaultDescription,
     type: "website",
+  },
+  icons: {
+    shortcut: [
+      {
+        url: `/icons/jie-tab-icon.png?v=${iconVersion}`,
+        type: "image/png",
+        sizes: "64x64",
+      },
+    ],
+    icon: [
+      {
+        url: `/icons/jie-tab-icon.png?v=${iconVersion}`,
+        type: "image/png",
+        sizes: "64x64",
+      },
+    ],
+    apple: [
+      {
+        url: `/icons/jie-apple-icon.png?v=${iconVersion}`,
+        type: "image/png",
+        sizes: "180x180",
+      },
+    ],
   },
 }
 
