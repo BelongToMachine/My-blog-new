@@ -266,7 +266,7 @@
   position: absolute;
   left: 50%;
   top: var(--reaction-center-y, calc(var(--wind-face-height) / 2));
-  z-index: 2;
+  z-index: 1;
   transform: translate(-50%, -50%);
   pointer-events: auto;
 }
@@ -274,7 +274,7 @@
 .wind__lane {
   position: absolute;
   left: 0;
-  z-index: 0;
+  z-index: 2;
   pointer-events: none;
   width: calc(100% + 64px);
   height: 24px;
