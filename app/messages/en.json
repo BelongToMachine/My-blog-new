@@ -337,13 +337,13 @@
     "emailRequired": "Please enter your email address so Jie can reply."
   },
   "meta": {
-    "homeTitle": "Developer — Front-End Developer & AI Prompt Engineer",
-    "homeDescription": "Portfolio of Developer — a front-end developer specializing in React, Next.js, TypeScript, and AI.",
-    "aiTitle": "Ask Jie AI",
+    "homeTitle": "Front-End Developer & AI Engineer",
+    "homeDescription": "Portfolio of Jie — a front-end developer specializing in React, Next.js, TypeScript, and AI.",
+    "aiTitle": "AI Lab",
     "aiDescription": "AI assistant focused on Jie's portfolio, front-end work, and project decisions.",
-    "mdxArticlesTitle": "MDX Articles",
+    "mdxArticlesTitle": "Articles & Notes",
     "mdxArticlesDescription": "MDX notes focused on long-form writing, custom components, and interactive reading experiments.",
-    "contactTitle": "Contact Jie — Get in Touch",
+    "contactTitle": "Contact",
     "contactDescription": "Get in touch with Jie, a front-end developer & AI prompt engineer. Use AI to draft a professional email in seconds."
   }
 }

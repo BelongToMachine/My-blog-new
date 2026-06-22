@@ -337,13 +337,13 @@
     "emailRequired": "请输入你的邮箱地址，以便 Jie 回复你。"
   },
   "meta": {
-    "homeTitle": "开发者 — 前端开发工程师 & AI 提示词工程师",
-    "homeDescription": "开发者（Developer）的作品集，专注于 React、Next.js、TypeScript 和 AI 集成。",
-    "aiTitle": "问我 AI 助手",
+    "homeTitle": "前端开发工程师与 AI 工程实践",
+    "homeDescription": "Jie 的作品集，专注于 React、Next.js、TypeScript 和 AI 集成。",
+    "aiTitle": "AI 实验室",
     "aiDescription": "围绕开发者本人、作品集、前端能力与项目决策的 AI 助手。",
-    "mdxArticlesTitle": "MDX 文章实验区",
+    "mdxArticlesTitle": "文章与笔记",
     "mdxArticlesDescription": "以 MDX 为核心的长文笔记、组件化内容块与交互式阅读实验。",
-    "contactTitle": "联系 Jie — 取得联系",
+    "contactTitle": "联系我",
     "contactDescription": "与前端开发工程师 & AI 提示词工程师 Jie 取得联系。使用 AI 快速生成专业邮件。"
   }
 }
