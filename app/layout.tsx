@@ -13,10 +13,18 @@ import { bebasNeue } from "@/lib/fonts"
 const analyticsEnabled =
   process.env.NEXT_PUBLIC_ENABLE_VERCEL_ANALYTICS === "true"
 
+const siteName = "Jie"
+const defaultTitle = `${siteName} | Front-End Developer & AI Engineer`
+const defaultDescription =
+  "Portfolio of Jie — a front-end developer building polished React, Next.js, TypeScript, and AI experiences."
+
 export const metadata: Metadata = {
-  title: "Developer — Front-End Developer & AI Prompt Engineer",
-  description:
-    "Portfolio of Developer (开发者) — a front-end developer specializing in React, Next.js, TypeScript, and AI integrations. Open to remote opportunities worldwide.",
+  applicationName: siteName,
+  title: {
+    default: defaultTitle,
+    template: `%s | ${siteName}`,
+  },
+  description: defaultDescription,
   keywords: [
     "front-end developer",
     "React",
@@ -26,9 +34,8 @@ export const metadata: Metadata = {
     "remote developer",
   ],
   openGraph: {
-    title: "Developer — Front-End Developer",
-    description:
-      "React / Next.js portfolio with AI chatbot, bilingual writing, and polished front-end engineering",
+    title: defaultTitle,
+    description: defaultDescription,
     type: "website",
   },
 }
