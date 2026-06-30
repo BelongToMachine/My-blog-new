@@ -1,16 +1,22 @@
 import React from "react"
 import { cn } from "@/lib/utils"
 import Image from "next/image"
+import { ArrowRight } from "lucide-react"
 import selfieOutlined from "@/public/images/selfie-no-background-outlined-wide-padded-focus-orange-1080.webp"
 import { getTranslations } from "next-intl/server"
 import { Link } from "@/app/i18n/navigation"
 import HeroDeferredMotion from "./HeroDeferredMotion"
+import { RoundedButton } from "./system/RoundedButton"
 
 interface Props {
   showBackLink?: boolean
+  roundedButtons?: boolean
 }
 
-export default async function Hero({ showBackLink = true }: Props) {
+export default async function Hero({
+  showBackLink = true,
+  roundedButtons = false,
+}: Props) {
   const t = await getTranslations("hero")
   const heroPortrait = selfieOutlined
   const portraitImageClass =
@@ -63,15 +69,32 @@ export default async function Hero({ showBackLink = true }: Props) {
                 {t("shortIntro")}
               </p>
               <div className="flex flex-wrap gap-3">
-                <Link
-                  href="/ai"
-                  className="ai-cta-shimmer group inline-flex min-h-10 items-center gap-2 border-2 border-primary/35 bg-primary/[0.04] px-3 py-2.5 text-sm font-medium tracking-[0.02em] text-primary transition-all duration-200 hover:border-primary/70 hover:bg-primary/[0.09] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 min-[480px]:min-h-11 min-[480px]:px-4 min-[480px]:py-3 md:px-4 md:py-2.5 lg:min-h-0 lg:px-3.5 lg:py-2"
-                >
-                  <span>{t("aiCtaLabel")}</span>
-                  <span className="transition-transform duration-200 group-hover:translate-x-0.5">
-                    →
-                  </span>
-                </Link>
+                {roundedButtons ? (
+                  <RoundedButton
+                    asChild
+                    tone="hero"
+                    size="hero"
+                    className="ai-cta-shimmer focus-visible:ring-primary/50"
+                  >
+                    <Link href="/ai">
+                      <span>{t("aiCtaLabel")}</span>
+                      <ArrowRight
+                        aria-hidden
+                        className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
+                      />
+                    </Link>
+                  </RoundedButton>
+                ) : (
+                  <Link
+                    href="/ai"
+                    className="ai-cta-shimmer group inline-flex min-h-10 items-center gap-2 border-2 border-primary/35 bg-primary/[0.04] px-3 py-2.5 text-sm font-medium tracking-[0.02em] text-primary transition-all duration-200 hover:border-primary/70 hover:bg-primary/[0.09] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 min-[480px]:min-h-11 min-[480px]:px-4 min-[480px]:py-3 md:px-4 md:py-2.5 lg:min-h-0 lg:px-3.5 lg:py-2"
+                  >
+                    <span>{t("aiCtaLabel")}</span>
+                    <span className="transition-transform duration-200 group-hover:translate-x-0.5">
+                      →
+                    </span>
+                  </Link>
+                )}
               </div>
             </div>
           </div>

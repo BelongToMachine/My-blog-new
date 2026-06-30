@@ -1,7 +1,9 @@
 import type { CSSProperties } from "react"
+import { ExternalLink } from "lucide-react"
 import { getTranslations } from "next-intl/server"
 import { cn } from "@/lib/utils"
 import styles from "./WaveFlagCard.module.css"
+import { RoundedButton } from "../system/RoundedButton"
 
 const DALI_INTRO_URL =
   "https://www.fabionodariphoto.com/en/dali-yunnan-things-to-do/"
@@ -18,8 +20,10 @@ const flagStarsImage = generateFlagStarsDataUri()
 
 export default async function WaveFlagCard({
   className,
+  roundedLink = false,
 }: {
   className?: string
+  roundedLink?: boolean
 }) {
   const t = await getTranslations("funFacts.flag")
 
@@ -47,14 +51,28 @@ export default async function WaveFlagCard({
         {t("body") ? (
           <p className="text-sm leading-6 text-foreground/78">{t("body")}</p>
         ) : null}
-        <a
-          href={DALI_INTRO_URL}
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex text-sm font-medium leading-6 text-primary transition-colors hover:text-primary/75"
-        >
-          {t("linkLabel")}
-        </a>
+        {roundedLink ? (
+          <RoundedButton
+            asChild
+            tone="accent"
+            size="accent"
+            className="focus-visible:ring-primary/40"
+          >
+            <a href={DALI_INTRO_URL} target="_blank" rel="noreferrer">
+              {t("linkLabel")}
+              <ExternalLink aria-hidden className="h-3.5 w-3.5" />
+            </a>
+          </RoundedButton>
+        ) : (
+          <a
+            href={DALI_INTRO_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex text-sm font-medium leading-6 text-primary transition-colors hover:text-primary/75"
+          >
+            {t("linkLabel")}
+          </a>
+        )}
       </div>
     </article>
   )

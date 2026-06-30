@@ -111,9 +111,21 @@
   background: transparent !important;
   box-shadow: none !important;
   transition:
+    transform var(--motion-duration-fast, 180ms) ease-out,
+    box-shadow var(--motion-duration-fast, 180ms) ease-out,
     background-color var(--motion-duration-fast, 180ms) ease-out,
     border-color var(--motion-duration-fast, 180ms) ease-out,
     color var(--motion-duration-fast, 180ms) ease-out;
+}
+
+.roundedReactionButton {
+  box-shadow: 0 12px 26px hsl(var(--foreground) / 0.07) !important;
+  padding-inline: clamp(0.9rem, 2vw, 1.15rem);
+}
+
+.roundedReactionButton:hover,
+.roundedReactionButton:focus-visible {
+  box-shadow: 0 16px 32px hsl(var(--foreground) / 0.1) !important;
 }
 
 .likeButton {

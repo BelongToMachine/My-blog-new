@@ -4,6 +4,7 @@ import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { useTranslations } from "next-intl"
 import { Button } from "@/app/components/ui/button"
+import { RoundedButton } from "@/app/components/system/RoundedButton"
 import Wind from "./Wind"
 import Image from "next/image"
 import fan from "@/public/images/fan_8bit-256.webp"
@@ -15,6 +16,7 @@ interface ArticleFooterProps {
   fullWidth?: boolean
   compact?: boolean
   showHeader?: boolean
+  roundedControls?: boolean
 }
 
 const ArticleFooter = ({
@@ -23,6 +25,7 @@ const ArticleFooter = ({
   fullWidth = false,
   compact = false,
   showHeader = true,
+  roundedControls = false,
 }: ArticleFooterProps) => {
   const t = useTranslations("article")
   const [likes, setLikes] = useState(initialLikes)
@@ -45,28 +48,57 @@ const ArticleFooter = ({
 
       {/* Reaction controls */}
       <div className={styles.footerReactions}>
-        <Button
-          variant="outline"
-          size="sm"
-          className={cn(styles.reactionButton, styles.likeButton, "!shadow-none")}
-          onClick={() => setLikes((v) => v + 1)}
-        >
-          LIKES ({likes})
-        </Button>
+        {roundedControls ? (
+          <RoundedButton
+            tone="reaction"
+            size="reaction"
+            className={cn(
+              styles.reactionButton,
+              styles.roundedReactionButton,
+              styles.likeButton,
+            )}
+            onClick={() => setLikes((v) => v + 1)}
+          >
+            LIKES ({likes})
+          </RoundedButton>
+        ) : (
+          <Button
+            variant="outline"
+            size="sm"
+            className={cn(styles.reactionButton, styles.likeButton, "!shadow-none")}
+            onClick={() => setLikes((v) => v + 1)}
+          >
+            LIKES ({likes})
+          </Button>
+        )}
 
         <div className={styles.windFanRig}>
           <Wind className={styles.windTrack}>
-            <Button
-              variant="outline"
-              size="sm"
-              className={cn(
-                styles.reactionButton,
-                styles.dislikeButton,
-                "!shadow-none",
-              )}
-            >
-              DISLIKE
-            </Button>
+            {roundedControls ? (
+              <RoundedButton
+                tone="reaction"
+                size="reaction"
+                className={cn(
+                  styles.reactionButton,
+                  styles.roundedReactionButton,
+                  styles.dislikeButton,
+                )}
+              >
+                DISLIKE
+              </RoundedButton>
+            ) : (
+              <Button
+                variant="outline"
+                size="sm"
+                className={cn(
+                  styles.reactionButton,
+                  styles.dislikeButton,
+                  "!shadow-none",
+                )}
+              >
+                DISLIKE
+              </Button>
+            )}
           </Wind>
           <Image
             src={fan}

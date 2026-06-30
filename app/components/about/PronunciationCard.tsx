@@ -4,11 +4,14 @@ import { useEffect, useState } from "react"
 import { Volume2 } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { cn } from "@/lib/utils"
+import { RoundedIconButton } from "../system/RoundedIconButton"
 
 export default function PronunciationCard({
   className,
+  roundedButton = false,
 }: {
   className?: string
+  roundedButton?: boolean
 }) {
   const t = useTranslations("funFacts.pronunciation")
   const [canSpeak, setCanSpeak] = useState(false)
@@ -59,25 +62,49 @@ export default function PronunciationCard({
         <p className="font-editorial text-[clamp(2.35rem,5vw,4.1rem)] leading-[0.9] tracking-[-0.08em] text-foreground">
           <span className="whitespace-nowrap">{t("phonetic")}</span>
         </p>
-        <button
-          type="button"
-          aria-label={t("buttonLabel")}
-          onClick={handleSpeak}
-          disabled={!canSpeak}
-          className={cn(
-            "group flex h-11 w-11 shrink-0 items-center justify-center border-2 border-primary/35 bg-primary/[0.04] text-primary transition-colors duration-200 ease-out hover:border-[color-mix(in_srgb,hsl(var(--primary))_78%,hsl(var(--border)))] hover:bg-[color-mix(in_srgb,hsl(var(--primary))_14%,hsl(var(--accent)))] hover:text-foreground focus-visible:border-[color-mix(in_srgb,hsl(var(--primary))_78%,hsl(var(--border)))] focus-visible:bg-[color-mix(in_srgb,hsl(var(--primary))_14%,hsl(var(--accent)))] focus-visible:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:border-border/60 disabled:bg-background/72 disabled:text-muted-foreground",
-            isSpeaking && "border-primary/55 bg-primary/[0.09] text-foreground",
-          )}
-        >
-          <span
+        {roundedButton ? (
+          <RoundedIconButton
+            type="button"
+            aria-label={t("buttonLabel")}
+            onClick={handleSpeak}
+            disabled={!canSpeak}
+            tone="accent"
+            size="xl"
             className={cn(
-              "inline-flex h-7 w-7 items-center justify-center bg-transparent transition-transform duration-200 ease-out group-hover:-translate-y-px group-hover:scale-[1.06]",
-              isSpeaking && "text-foreground",
+              "focus-visible:ring-primary/50 focus-visible:ring-offset-background",
+              isSpeaking && "border-primary/55 bg-primary/[0.09] text-foreground",
             )}
           >
-            <Volume2 className="h-[18px] w-[18px]" />
-          </span>
-        </button>
+            <span
+              className={cn(
+                "inline-flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 transition-transform duration-200 ease-out group-hover:-translate-y-px group-hover:scale-[1.06]",
+                isSpeaking && "text-foreground",
+              )}
+            >
+              <Volume2 className="h-[18px] w-[18px]" />
+            </span>
+          </RoundedIconButton>
+        ) : (
+          <button
+            type="button"
+            aria-label={t("buttonLabel")}
+            onClick={handleSpeak}
+            disabled={!canSpeak}
+            className={cn(
+              "group flex h-11 w-11 shrink-0 items-center justify-center border-2 border-primary/35 bg-primary/[0.04] text-primary transition-colors duration-200 ease-out hover:border-[color-mix(in_srgb,hsl(var(--primary))_78%,hsl(var(--border)))] hover:bg-[color-mix(in_srgb,hsl(var(--primary))_14%,hsl(var(--accent)))] hover:text-foreground focus-visible:border-[color-mix(in_srgb,hsl(var(--primary))_78%,hsl(var(--border)))] focus-visible:bg-[color-mix(in_srgb,hsl(var(--primary))_14%,hsl(var(--accent)))] focus-visible:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:border-border/60 disabled:bg-background/72 disabled:text-muted-foreground",
+              isSpeaking && "border-primary/55 bg-primary/[0.09] text-foreground",
+            )}
+          >
+            <span
+              className={cn(
+                "inline-flex h-7 w-7 items-center justify-center bg-transparent transition-transform duration-200 ease-out group-hover:-translate-y-px group-hover:scale-[1.06]",
+                isSpeaking && "text-foreground",
+              )}
+            >
+              <Volume2 className="h-[18px] w-[18px]" />
+            </span>
+          </button>
+        )}
       </div>
 
       <p className="mx-auto max-w-[16ch] text-balance text-[clamp(1.2rem,2.2vw,1.75rem)] leading-[1.28] tracking-[-0.03em] text-foreground/92">

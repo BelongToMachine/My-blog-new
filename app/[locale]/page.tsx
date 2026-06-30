@@ -20,6 +20,7 @@ export default function IndexPage({ params }: Props) {
       sectionId="home-about-section"
       showBackLink={false}
       pinHeroUnderDesktop
+      roundedButtons
     />
   )
 }

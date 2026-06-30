@@ -21,6 +21,7 @@ interface Props {
   sectionId?: string
   showBackLink?: boolean
   pinHeroUnderDesktop?: boolean
+  roundedButtons?: boolean
 }
 
 export default async function AboutSections({
@@ -29,6 +30,7 @@ export default async function AboutSections({
   sectionId,
   showBackLink = true,
   pinHeroUnderDesktop = false,
+  roundedButtons = false,
 }: Props) {
   const content = (
     <section
@@ -48,7 +50,7 @@ export default async function AboutSections({
         )}
       >
         <Suspense fallback={<DeferredHomeSectionsFallback />}>
-          <DeferredHomeSections />
+          <DeferredHomeSections roundedButtons={roundedButtons} />
         </Suspense>
       </Container>
     </section>
@@ -56,7 +58,9 @@ export default async function AboutSections({
 
   if (pinHeroUnderDesktop) {
     return (
-      <AboutPinnedHeroShell hero={<Hero showBackLink={showBackLink} />}>
+      <AboutPinnedHeroShell
+        hero={<Hero showBackLink={showBackLink} roundedButtons={roundedButtons} />}
+      >
         {content}
       </AboutPinnedHeroShell>
     )
@@ -69,7 +73,7 @@ export default async function AboutSections({
     >
       <div className="home-about-bridge">
         <Container className="pb-14 md:pb-20">
-          <Hero showBackLink={showBackLink} />
+          <Hero showBackLink={showBackLink} roundedButtons={roundedButtons} />
         </Container>
       </div>
       {content}
@@ -77,10 +81,14 @@ export default async function AboutSections({
   )
 }
 
-async function DeferredHomeSections() {
+async function DeferredHomeSections({
+  roundedButtons,
+}: {
+  roundedButtons: boolean
+}) {
   return (
     <>
-      <FunFactsSection />
+      <FunFactsSection roundedButtons={roundedButtons} />
       <ProjectsSection />
       <section className="pt-8 md:pt-12 lg:pt-14">
         <SummaryHeader />

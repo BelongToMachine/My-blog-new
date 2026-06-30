@@ -175,7 +175,10 @@ export default function LiveDistanceCard() {
         : t("mapAriaUnavailable")
 
   return (
-    <article ref={articleRef} className={cn(cardShell, "grid h-full gap-0 p-0")}>
+    <article
+      ref={articleRef}
+      className={cn(cardShell, "flex h-full flex-col p-0")}
+    >
       <div className="bg-[linear-gradient(180deg,hsl(var(--accent))/0.44,transparent)] p-3 sm:p-4 md:p-5">
         <div className="overflow-hidden bg-[linear-gradient(180deg,#cfe6f2_0%,#d9ecf6_100%)]">
           <DistanceMapGraphic
@@ -186,8 +189,8 @@ export default function LiveDistanceCard() {
         </div>
       </div>
 
-      <div className="grid gap-5 p-5 sm:p-6 md:p-6">
-        <div className="space-y-3">
+      <div className="flex flex-1 items-center p-5 sm:p-6 md:p-6">
+        <div className="w-full space-y-3">
           <p className="max-w-[60ch] text-pretty text-[15px] leading-7 text-foreground/82 md:text-base md:leading-8">
             {body}
           </p>
@@ -223,7 +226,7 @@ function DistanceMapGraphic({
     <div
       role="img"
       aria-label={ariaLabel}
-      className="relative aspect-[1.72/1] w-full overflow-hidden bg-[#121b26] sm:aspect-[1.9/1] md:aspect-[2/1]"
+      className="relative aspect-[1.72/1] w-full overflow-hidden bg-[#121b26] sm:aspect-[1.9/1] md:aspect-[2/1] lg:aspect-[1.84/1]"
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_12%,rgba(67,92,126,0.2),transparent_30%),linear-gradient(180deg,#192432_0%,#111a25_100%)]" />
       <div
