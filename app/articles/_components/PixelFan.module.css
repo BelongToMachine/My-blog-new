@@ -44,3 +44,11 @@
     transform: scaleX(1);
   }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .fanBlades {
+    animation: none;
+    transform: scaleX(1);
+    will-change: auto;
+  }
+}

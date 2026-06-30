@@ -1,6 +1,6 @@
 "use client"
 
-import { AnimatePresence, motion } from "framer-motion"
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import { useMemo, useState } from "react"
 import styles from "./jquery-article-experience.module.css"
 
@@ -140,6 +140,7 @@ function highlightLine(line: string) {
 
 export default function JQueryArticleExperience() {
   const [activeId, setActiveId] = useState<DemoId>("selector")
+  const shouldReduceMotion = useReducedMotion()
   const activeDemo = useMemo(
     () => demos.find((demo) => demo.id === activeId) ?? demos[0],
     [activeId]
@@ -212,10 +213,20 @@ export default function JQueryArticleExperience() {
                 <motion.div
                   key={activeDemo.id}
                   className={styles.demoSurface}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -18 }}
-                  transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                  initial={shouldReduceMotion ? false : { opacity: 0, y: 20 }}
+                  animate={
+                    shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }
+                  }
+                  exit={
+                    shouldReduceMotion
+                      ? { opacity: 1 }
+                      : { opacity: 0, y: -18 }
+                  }
+                  transition={
+                    shouldReduceMotion
+                      ? { duration: 0 }
+                      : { duration: 0.28, ease: [0.16, 1, 0.3, 1] }
+                  }
                 >
                   <div className={styles.demoHeading}>
                     <div>

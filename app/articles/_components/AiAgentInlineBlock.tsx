@@ -1,6 +1,6 @@
 "use client"
 
-import { AnimatePresence, motion } from "framer-motion"
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import { useLocale } from "next-intl"
 import { useMemo, useState } from "react"
 import styles from "./ai-agent-inline.module.css"
@@ -277,6 +277,7 @@ function resolveLocale(raw: string): Locale {
 
 function PillarsBlock({ copy }: { copy: LocalizedCopy }) {
   const [activeId, setActiveId] = useState<PillarId>("loop")
+  const shouldReduceMotion = useReducedMotion()
   const active = useMemo(
     () => copy.pillars.find((item) => item.id === activeId) ?? copy.pillars[0],
     [activeId, copy.pillars],
@@ -313,10 +314,10 @@ function PillarsBlock({ copy }: { copy: LocalizedCopy }) {
           <motion.div
             key={active.id}
             className={styles.spotlight}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.22 }}
+            initial={shouldReduceMotion ? false : { opacity: 0, y: 12 }}
+            animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
+            exit={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: -10 }}
+            transition={{ duration: shouldReduceMotion ? 0 : 0.22 }}
           >
             <div className={styles.spotlightLabel}>{copy.ui.spotlightLabel}</div>
             <h4>

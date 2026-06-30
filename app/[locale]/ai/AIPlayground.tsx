@@ -8,7 +8,7 @@ import React, {
   useRef,
   useState,
 } from "react"
-import { AnimatePresence, motion } from "framer-motion"
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import { isToolUIPart, type UIMessage } from "ai"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
@@ -468,6 +468,7 @@ const ChatMessagesViewport = React.memo(function ChatMessagesViewport({
   loadingLabel: string
 }) {
   const scrollViewportRef = useRef<HTMLDivElement>(null)
+  const shouldReduceMotion = useReducedMotion()
 
   useBrowserLayoutEffect(() => {
     const viewport = scrollViewportRef.current
@@ -475,9 +476,9 @@ const ChatMessagesViewport = React.memo(function ChatMessagesViewport({
 
     viewport.scrollTo({
       top: viewport.scrollHeight,
-      behavior: isBusy ? "auto" : "smooth",
+      behavior: isBusy || shouldReduceMotion ? "auto" : "smooth",
     })
-  }, [messages, isBusy])
+  }, [messages, isBusy, shouldReduceMotion])
 
   return (
     <div
@@ -957,6 +958,7 @@ function formatRelativeTime(ts: number, locale: string): string {
 export default function AIPlayground() {
   const t = useTranslations("ai")
   const locale = useLocale()
+  const shouldReduceMotion = useReducedMotion()
   const {
     hydrated,
     threads,
@@ -1120,10 +1122,10 @@ export default function AIPlayground() {
                   {activeThread ? (
                     <motion.div
                       key={activeThread.id}
-                      initial={{ opacity: 0 }}
+                      initial={shouldReduceMotion ? false : { opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.12 }}
+                      exit={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
+                      transition={{ duration: shouldReduceMotion ? 0 : 0.12 }}
                       className="h-full"
                     >
                       <ChatThreadView
@@ -1135,10 +1137,10 @@ export default function AIPlayground() {
                   ) : (
                     <motion.div
                       key="empty"
-                      initial={{ opacity: 0 }}
+                      initial={shouldReduceMotion ? false : { opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.12 }}
+                      exit={shouldReduceMotion ? { opacity: 1 } : { opacity: 0 }}
+                      transition={{ duration: shouldReduceMotion ? 0 : 0.12 }}
                       className="flex h-full items-center justify-center px-6 text-center"
                     >
                       <p className="max-w-2xl text-[11px] leading-7 tracking-[0.02em] text-muted-foreground/72">

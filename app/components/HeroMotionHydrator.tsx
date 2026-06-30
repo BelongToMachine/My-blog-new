@@ -40,6 +40,15 @@ const ENTRY_ANIMATIONS = [
   },
 ]
 
+function clearHeroScrollTransforms(root: HTMLElement | null) {
+  const scrollElements = root?.querySelectorAll<HTMLElement>("[data-hero-scroll]")
+
+  scrollElements?.forEach((element) => {
+    element.style.transform = ""
+    element.style.willChange = ""
+  })
+}
+
 export default function HeroMotionHydrator() {
   const reduceMotion = useReducedMotion()
   const rootRef = useRef<HTMLElement | null>(null)
@@ -104,6 +113,7 @@ export default function HeroMotionHydrator() {
   useEffect(() => {
     if (reduceMotion || !hasResolvedViewport || !rootRef.current) {
       rawProgress.set(0)
+      clearHeroScrollTransforms(rootRef.current)
       return
     }
 
@@ -151,6 +161,10 @@ export default function HeroMotionHydrator() {
   }, [hasResolvedViewport, rawProgress, reduceMotion])
 
   useMotionValueEvent(smoothWelcomeLift, "change", (latest) => {
+    if (reduceMotion) {
+      return
+    }
+
     const welcome = rootRef.current?.querySelector<HTMLElement>(
       '[data-hero-scroll="welcome"]',
     )
@@ -164,6 +178,10 @@ export default function HeroMotionHydrator() {
   })
 
   useMotionValueEvent(smoothContentLift, "change", (latest) => {
+    if (reduceMotion) {
+      return
+    }
+
     const contentBlocks = rootRef.current?.querySelectorAll<HTMLElement>(
       '[data-hero-scroll="content"]',
     )

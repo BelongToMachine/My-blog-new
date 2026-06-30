@@ -3,6 +3,7 @@
 import { useDefaultCursorStore, useVirtualCursorStore } from "@/app/service/Store"
 import { cn } from "@/lib/utils"
 import { useEffect, useRef, type MouseEvent, type ReactNode } from "react"
+import { useReducedMotion } from "framer-motion"
 
 const WIND_TILE_WIDTH = 64
 const WIND_TARGET_FOLLOW_MS = 240
@@ -73,6 +74,7 @@ const Wind = ({
   children?: ReactNode
   className?: string
 }) => {
+  const shouldReduceMotion = useReducedMotion()
   const isMagicCursor = useDefaultCursorStore((state) => state.isMagicCursor)
   const switchMagicCursor = useDefaultCursorStore(
     (state) => state.switchMagicCursor
@@ -90,6 +92,8 @@ const Wind = ({
   const struggleImpulseRef = useRef(0)
 
   const handleMouseEnter = (event: MouseEvent<HTMLDivElement>) => {
+    if (shouldReduceMotion) return
+
     const position = { x: event.clientX, y: event.clientY }
     lastInputPositionRef.current = position
     struggleImpulseRef.current = 0
@@ -99,6 +103,8 @@ const Wind = ({
   }
 
   const handleMouseMove = (event: MouseEvent<HTMLDivElement>) => {
+    if (shouldReduceMotion) return
+
     const nextPosition = { x: event.clientX, y: event.clientY }
     const lastInputPosition = lastInputPositionRef.current
 
@@ -123,6 +129,8 @@ const Wind = ({
   }
 
   const handleMouseLeave = () => {
+    if (shouldReduceMotion) return
+
     lastInputPositionRef.current = null
     struggleImpulseRef.current = 0
     setCursorVariant("arrow")
@@ -130,7 +138,13 @@ const Wind = ({
   }
 
   useEffect(() => {
-    if (!isMagicCursor) return
+    if (shouldReduceMotion && isMagicCursor) {
+      switchMagicCursor(false)
+    }
+  }, [isMagicCursor, shouldReduceMotion, switchMagicCursor])
+
+  useEffect(() => {
+    if (!isMagicCursor || shouldReduceMotion) return
 
     let animationFrameId: number
     let prevTime: number | undefined
@@ -198,15 +212,15 @@ const Wind = ({
     return () => {
       if (animationFrameId) window.cancelAnimationFrame(animationFrameId)
     }
-  }, [isMagicCursor])
+  }, [isMagicCursor, shouldReduceMotion])
 
   return (
     <div
       ref={windRef}
       className={cn("wind", className)}
-      onMouseEnter={handleMouseEnter}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      onMouseEnter={shouldReduceMotion ? undefined : handleMouseEnter}
+      onMouseMove={shouldReduceMotion ? undefined : handleMouseMove}
+      onMouseLeave={shouldReduceMotion ? undefined : handleMouseLeave}
     >
       {children ? (
         <div ref={controlRef} className="wind__control">

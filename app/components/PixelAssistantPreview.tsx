@@ -214,11 +214,15 @@ export function FloatingPixelAssistant() {
           ? { y: 0, scale: 1 }
           : { y: [0, -4, 0], scale: [1, 1.015, 1] }
       }
-      transition={{
-        duration: 2.8,
-        repeat: Infinity,
-        ease: [0.25, 1, 0.5, 1],
-      }}
+      transition={
+        reduceMotion
+          ? { duration: 0 }
+          : {
+              duration: 2.8,
+              repeat: Infinity,
+              ease: [0.25, 1, 0.5, 1],
+            }
+      }
     >
       <MechanicalCatSvg frame={frame} />
     </motion.div>
