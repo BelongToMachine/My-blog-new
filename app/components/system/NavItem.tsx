@@ -2,57 +2,33 @@
 
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
-import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
-
-const navItemVariants = cva(
-  "inline-flex items-center border-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-  {
-    variants: {
-      variant: {
-        desktop:
-          "border-transparent px-2.5 py-1.5 font-sans text-[14px] uppercase leading-none tracking-[0.08em] text-muted-foreground hover:border-border hover:bg-accent/60 hover:text-foreground",
-        dropdown:
-          "w-full justify-between border-border px-3 py-2.5 font-sans text-[14px] uppercase tracking-[0.08em] text-foreground hover:bg-accent hover:text-accent-foreground",
-      },
-      active: {
-        true: "",
-        false: "",
-      },
-    },
-    compoundVariants: [
-      {
-        variant: "desktop",
-        active: true,
-        className: "border-primary bg-primary/10 text-foreground",
-      },
-      {
-        variant: "dropdown",
-        active: true,
-        className: "bg-accent/70 text-accent-foreground",
-      },
-    ],
-    defaultVariants: {
-      variant: "desktop",
-      active: false,
-    },
-  }
-)
+import { roundedButtonVariants } from "./RoundedButton"
 
 export interface NavItemProps
-  extends React.HTMLAttributes<HTMLElement>,
-    VariantProps<typeof navItemVariants> {
+  extends React.HTMLAttributes<HTMLElement> {
   asChild?: boolean
+  variant?: "desktop" | "dropdown"
+  active?: boolean
 }
 
 const NavItem = React.forwardRef<HTMLElement, NavItemProps>(
   ({ className, variant, active, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "span"
+    const tone =
+      variant === "dropdown"
+        ? active
+          ? "dropdownActive"
+          : "dropdown"
+        : active
+          ? "navActive"
+          : "nav"
+    const size = variant === "dropdown" ? "dropdown" : "nav"
 
     return (
       <Comp
-        className={cn(navItemVariants({ variant, active, className }))}
+        className={cn(roundedButtonVariants({ tone, size, className }))}
         ref={ref}
         {...props}
       />
@@ -62,4 +38,4 @@ const NavItem = React.forwardRef<HTMLElement, NavItemProps>(
 
 NavItem.displayName = "NavItem"
 
-export { NavItem, navItemVariants }
+export { NavItem }

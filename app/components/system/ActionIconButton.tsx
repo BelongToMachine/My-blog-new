@@ -2,36 +2,14 @@
 
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
-import { cva, type VariantProps } from "class-variance-authority"
+import { type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
-
-const actionIconButtonVariants = cva(
-  "inline-flex items-center justify-center border text-muted-foreground transition-[background-color,color,border-color,box-shadow] duration-200 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50",
-  {
-    variants: {
-      tone: {
-        quiet: "border-border/70 bg-transparent shadow-[3px_3px_0_hsl(var(--foreground)/0.14)] hover:border-primary/60 hover:bg-accent/60",
-        surface:
-          "border-border/80 bg-background/80 shadow-[4px_4px_0_hsl(var(--foreground)/0.18)] hover:border-primary/60 hover:bg-accent/80",
-        borderless: "border-transparent bg-transparent hover:bg-accent/50",
-      },
-      size: {
-        sm: "h-8 w-8",
-        default: "h-9 w-9",
-        lg: "h-10 w-10",
-      },
-    },
-    defaultVariants: {
-      tone: "quiet",
-      size: "default",
-    },
-  }
-)
+import { roundedIconButtonVariants } from "./RoundedIconButton"
 
 export interface ActionIconButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof actionIconButtonVariants> {
+    VariantProps<typeof roundedIconButtonVariants> {
   asChild?: boolean
 }
 
@@ -43,7 +21,7 @@ const ActionIconButton = React.forwardRef<
 
   return (
     <Comp
-      className={cn(actionIconButtonVariants({ tone, size, className }))}
+      className={cn(roundedIconButtonVariants({ tone, size, className }))}
       ref={ref}
       {...props}
     />
@@ -52,4 +30,4 @@ const ActionIconButton = React.forwardRef<
 
 ActionIconButton.displayName = "ActionIconButton"
 
-export { ActionIconButton, actionIconButtonVariants }
+export { ActionIconButton }

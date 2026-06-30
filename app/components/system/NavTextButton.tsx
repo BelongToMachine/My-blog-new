@@ -2,17 +2,14 @@
 
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
-import { cva, type VariantProps } from "class-variance-authority"
+import { type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
-
-const navTextButtonVariants = cva(
-  "inline-flex min-h-9 items-center justify-center border border-transparent px-3 font-sans text-[14px] font-medium uppercase tracking-[0.08em] text-muted-foreground transition-[background-color,color,border-color] duration-200 hover:border-border/70 hover:bg-accent/70 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50"
-)
+import { roundedButtonVariants } from "./RoundedButton"
 
 export interface NavTextButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof navTextButtonVariants> {
+    VariantProps<typeof roundedButtonVariants> {
   asChild?: boolean
 }
 
@@ -22,7 +19,7 @@ const NavTextButton = React.forwardRef<HTMLButtonElement, NavTextButtonProps>(
 
     return (
       <Comp
-        className={cn(navTextButtonVariants({ className }))}
+        className={cn(roundedButtonVariants({ tone: "nav", size: "nav", className }))}
         ref={ref}
         {...props}
       />
@@ -32,4 +29,4 @@ const NavTextButton = React.forwardRef<HTMLButtonElement, NavTextButtonProps>(
 
 NavTextButton.displayName = "NavTextButton"
 
-export { NavTextButton, navTextButtonVariants }
+export { NavTextButton }
