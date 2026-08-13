@@ -1,9 +1,9 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, type ReactNode } from "react"
 import { useLocale, useTranslations } from "next-intl"
 import {
-  HANGZHOU_LOCATION,
+  GUANGZHOU_LOCATION,
   type ApproximateGeoPoint,
   type DistanceCardLocationResponse,
 } from "@/app/lib/funFactsGeo"
@@ -161,8 +161,10 @@ export default function LiveDistanceCard() {
 
   const body =
     loadState === "ready"
-      ? t("bodyReady", {
-          distance: formattedDistance ?? t("distancePendingValue"),
+      ? t.rich("bodyReady", {
+          city: (chunks) => <Highlight>{chunks}</Highlight>,
+          distance: (chunks) => <Highlight>{chunks}</Highlight>,
+          distanceValue: formattedDistance ?? t("distancePendingValue"),
         })
       : loadState === "loading"
         ? t("bodyLoading")
@@ -191,7 +193,7 @@ export default function LiveDistanceCard() {
 
       <div className="flex flex-1 items-center p-5 sm:p-6 md:p-6">
         <div className="w-full space-y-3">
-          <p className="max-w-[60ch] text-pretty text-[15px] leading-7 text-foreground/82 md:text-base md:leading-8">
+          <p className="mx-auto max-w-[60ch] text-center text-pretty text-base leading-7 text-foreground/82 md:text-lg md:leading-8">
             {body}
           </p>
         </div>
@@ -210,8 +212,8 @@ function DistanceMapGraphic({
   visitor?: ApproximateGeoPoint
 }) {
   const homePoint = projectPoint(
-    HANGZHOU_LOCATION.latitude,
-    HANGZHOU_LOCATION.longitude,
+    GUANGZHOU_LOCATION.latitude,
+    GUANGZHOU_LOCATION.longitude,
   )
   const visitorPoint =
     visitor?.latitude != null && visitor?.longitude != null
@@ -261,6 +263,14 @@ function DistanceMapGraphic({
         <HomePinMarker point={homePoint} />
       </svg>
     </div>
+  )
+}
+
+function Highlight({ children }: { children: ReactNode }) {
+  return (
+    <span className="bg-[#fcc31e] px-1.5 py-0.5 font-bold text-black">
+      {children}
+    </span>
   )
 }
 

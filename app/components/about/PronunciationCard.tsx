@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, type ReactNode } from "react"
 import { Volume2 } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { cn } from "@/lib/utils"
@@ -59,7 +59,7 @@ export default function PronunciationCard({
       )}
     >
       <div className="flex w-full flex-wrap items-start justify-center gap-3">
-        <p className="font-editorial text-[clamp(2.35rem,5vw,4.1rem)] leading-[0.9] tracking-[-0.08em] text-foreground">
+        <p className="font-rounded-display text-[clamp(2.35rem,5vw,4.1rem)] font-semibold leading-[0.9] tracking-[-0.06em] text-foreground">
           <span className="whitespace-nowrap">{t("phonetic")}</span>
         </p>
         {roundedButton ? (
@@ -108,8 +108,11 @@ export default function PronunciationCard({
       </div>
 
       <p className="mx-auto max-w-[16ch] text-balance text-[clamp(1.2rem,2.2vw,1.75rem)] leading-[1.28] tracking-[-0.03em] text-foreground/92">
-        {t("sentencePrefix", { name: t("name") })}{" "}
-        <span className="font-editorial text-[1.08em] italic tracking-[-0.05em] text-primary">
+        {t.rich("sentencePrefix", {
+          name: t("name"),
+          highlight: (chunks) => <Highlight>{chunks}</Highlight>,
+        })}{" "}
+        <span className="font-rounded-display text-[1.08em] font-medium tracking-[-0.04em] text-primary">
           {t("phonetic")}
         </span>
         {t("sentenceSuffix")}
@@ -119,5 +122,13 @@ export default function PronunciationCard({
         {t("hint")}
       </p>
     </article>
+  )
+}
+
+function Highlight({ children }: { children: ReactNode }) {
+  return (
+    <span className="bg-[#fcc31e] px-1.5 py-0.5 font-bold text-black">
+      {children}
+    </span>
   )
 }

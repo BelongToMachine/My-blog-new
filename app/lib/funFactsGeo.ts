@@ -1,8 +1,8 @@
-export const HANGZHOU_LOCATION = {
-  city: "Hangzhou",
+export const GUANGZHOU_LOCATION = {
+  city: "Guangzhou",
   country: "CN",
-  latitude: 30.2741,
-  longitude: 120.1551,
+  latitude: 23.1291,
+  longitude: 113.2644,
 } as const
 
 export interface ApproximateGeoPoint {
@@ -18,7 +18,7 @@ export interface DistanceCardLocationResponse {
   status: "ok" | "unavailable"
   source: "vercel-ip" | "mock"
   visitor: ApproximateGeoPoint
-  home: typeof HANGZHOU_LOCATION
+  home: typeof GUANGZHOU_LOCATION
   distanceKm: number | null
 }
 

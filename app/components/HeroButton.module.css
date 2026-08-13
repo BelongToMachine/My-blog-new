@@ -1,0 +1,95 @@
+.giffgaffHover::before,
+.giffgaffHover::after {
+  content: "";
+  position: absolute;
+  display: block;
+  width: 1rem;
+  height: 1rem;
+  background-size: 100%;
+  filter: drop-shadow(0.5px 0 #000) drop-shadow(-0.5px 0 #000)
+    drop-shadow(0 0.5px #000) drop-shadow(0 -0.5px #000);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.giffgaffHover.giffgaffHoverPink::before,
+.giffgaffHover.giffgaffHoverPink::after {
+  filter: drop-shadow(0.5px 0 #eb5f8e) drop-shadow(-0.5px 0 #eb5f8e)
+    drop-shadow(0 0.5px #eb5f8e) drop-shadow(0 -0.5px #eb5f8e);
+}
+
+.giffgaffHover.giffgaffHoverPink::before {
+  background-image: url("/images/cta-doodle-left-pink.svg");
+}
+
+.giffgaffHover.giffgaffHoverPink::after {
+  background-image: url("/images/cta-doodle-right-pink.svg");
+}
+
+@media (hover: hover) {
+  .giffgaffHover::before {
+    top: -0.25rem;
+    left: -0.75rem;
+    background-image: url("/images/cta-doodle-left.svg");
+  }
+
+  .giffgaffHover::after {
+    right: -0.75rem;
+    bottom: -0.25rem;
+    background-image: url("/images/cta-doodle-right.svg");
+  }
+
+  .giffgaffHover:hover::before,
+  .giffgaffHover:focus-visible::before {
+    animation: doodle-pop-left 300ms ease-in-out both;
+  }
+
+  .giffgaffHover:hover::after,
+  .giffgaffHover:focus-visible::after {
+    animation: doodle-pop-right 300ms ease-in-out both;
+  }
+}
+
+@keyframes doodle-pop-left {
+  from {
+    opacity: 0;
+    transform: translate(0.25rem, 0.25rem) scale(0.95);
+  }
+
+  60% {
+    opacity: 1;
+    transform: translate(-0.125rem, -0.125rem) scale(1.02);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(0) scale(1);
+  }
+}
+
+@keyframes doodle-pop-right {
+  from {
+    opacity: 0;
+    transform: translate(-0.25rem, -0.25rem) scale(0.95);
+  }
+
+  60% {
+    opacity: 1;
+    transform: translate(0.125rem, 0.125rem) scale(1.02);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .giffgaffHover:hover::before,
+  .giffgaffHover:hover::after,
+  .giffgaffHover:focus-visible::before,
+  .giffgaffHover:focus-visible::after {
+    animation: none;
+    opacity: 1;
+  }
+}

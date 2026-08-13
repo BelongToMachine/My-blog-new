@@ -3,6 +3,7 @@ import { ExternalLink } from "lucide-react"
 import { getTranslations } from "next-intl/server"
 import { cn } from "@/lib/utils"
 import styles from "./WaveFlagCard.module.css"
+import ctaStyles from "../HeroButton.module.css"
 import { RoundedButton } from "../system/RoundedButton"
 
 const DALI_INTRO_URL =
@@ -45,7 +46,7 @@ export default async function WaveFlagCard({
       </div>
 
       <div className="space-y-2">
-        <h3 className="font-editorial text-[clamp(1.25rem,2vw,1.55rem)] leading-[1.08] tracking-[-0.03em] text-foreground">
+        <h3 className="font-rounded-display text-[clamp(1.25rem,2vw,1.55rem)] font-semibold leading-[1.12] tracking-[-0.02em] text-foreground">
           {t("title")}
         </h3>
         {t("body") ? (
@@ -54,9 +55,13 @@ export default async function WaveFlagCard({
         {roundedLink ? (
           <RoundedButton
             asChild
-            tone="accent"
+            tone="hero"
             size="accent"
-            className="focus-visible:ring-primary/40"
+            className={cn(
+              ctaStyles.giffgaffHover,
+              ctaStyles.giffgaffHoverPink,
+              "w-full justify-center whitespace-nowrap font-extrabold focus-visible:ring-black/70",
+            )}
           >
             <a href={DALI_INTRO_URL} target="_blank" rel="noreferrer">
               {t("linkLabel")}

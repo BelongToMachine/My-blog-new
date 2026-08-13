@@ -1,5 +1,5 @@
 import {
-  HANGZHOU_LOCATION,
+  GUANGZHOU_LOCATION,
   MOCK_VISITOR_NYC,
   haversineKm,
   type DistanceCardLocationResponse,
@@ -33,8 +33,8 @@ export function GET(request: Request) {
     distanceKm = haversineKm(
       latitude,
       longitude,
-      HANGZHOU_LOCATION.latitude,
-      HANGZHOU_LOCATION.longitude,
+      GUANGZHOU_LOCATION.latitude,
+      GUANGZHOU_LOCATION.longitude,
     )
   }
 
@@ -42,15 +42,15 @@ export function GET(request: Request) {
     const mockDistanceKm = haversineKm(
       MOCK_VISITOR_NYC.latitude!,
       MOCK_VISITOR_NYC.longitude!,
-      HANGZHOU_LOCATION.latitude,
-      HANGZHOU_LOCATION.longitude,
+      GUANGZHOU_LOCATION.latitude,
+      GUANGZHOU_LOCATION.longitude,
     )
 
     const response: DistanceCardLocationResponse = {
       status: "ok",
       source: "mock",
       visitor: MOCK_VISITOR_NYC,
-      home: HANGZHOU_LOCATION,
+      home: GUANGZHOU_LOCATION,
       distanceKm: mockDistanceKm,
     }
 
@@ -65,7 +65,7 @@ export function GET(request: Request) {
     status: hasCoordinates ? "ok" : "unavailable",
     source: "vercel-ip",
     visitor,
-    home: HANGZHOU_LOCATION,
+    home: GUANGZHOU_LOCATION,
     distanceKm,
   }
 
