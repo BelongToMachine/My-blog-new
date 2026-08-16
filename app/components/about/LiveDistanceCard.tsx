@@ -193,7 +193,7 @@ export default function LiveDistanceCard() {
 
       <div className="flex flex-1 items-center p-5 sm:p-6 md:p-6">
         <div className="w-full space-y-3">
-          <p className="mx-auto max-w-[60ch] text-center text-pretty text-base leading-7 text-foreground/82 md:text-lg md:leading-8">
+          <p className="mx-auto max-w-[60ch] text-center text-pretty text-lg leading-8 text-foreground/82 md:text-xl md:leading-9">
             {body}
           </p>
         </div>
