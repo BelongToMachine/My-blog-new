@@ -461,6 +461,28 @@ html.dark .wind__lane {
 }
 
 @layer utilities {
+  @keyframes jie-logo-line-tilt-top {
+    0%,
+    100% {
+      transform: rotate(0deg);
+    }
+
+    45% {
+      transform: rotate(-5deg);
+    }
+  }
+
+  @keyframes jie-logo-line-tilt-bottom {
+    0%,
+    100% {
+      transform: rotate(0deg);
+    }
+
+    45% {
+      transform: rotate(5deg);
+    }
+  }
+
   @keyframes jie-logo-word-tilt-left {
     0%,
     100% {
