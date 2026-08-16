@@ -250,7 +250,7 @@ function DistanceMapGraphic({
                 key={path}
                 d={path}
                 fill="none"
-                stroke="#ff235d"
+                stroke="#fcc31e"
                 strokeWidth="7"
                 strokeLinecap="round"
                 strokeDasharray="4 16"
