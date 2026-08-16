@@ -461,6 +461,47 @@ html.dark .wind__lane {
 }
 
 @layer utilities {
+  @keyframes jie-logo-line-jitter {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) rotate(0deg);
+    }
+
+    25% {
+      transform: translate3d(-0.7px, 0.4px, 0) rotate(-3deg);
+    }
+
+    50% {
+      transform: translate3d(0.8px, -0.4px, 0) rotate(2.5deg);
+    }
+
+    75% {
+      transform: translate3d(-0.4px, 0, 0) rotate(-1.5deg);
+    }
+  }
+
+  @keyframes jie-logo-word-tilt-left {
+    0%,
+    100% {
+      transform: translateY(0) rotate(0deg);
+    }
+
+    45% {
+      transform: translateY(-1px) rotate(-2deg);
+    }
+  }
+
+  @keyframes jie-logo-word-tilt-right {
+    0%,
+    100% {
+      transform: translateY(0) rotate(0deg);
+    }
+
+    45% {
+      transform: translateY(-1px) rotate(2deg);
+    }
+  }
+
   .panel-grid {
     background-image:
       linear-gradient(
