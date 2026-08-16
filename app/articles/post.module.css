@@ -92,12 +92,12 @@
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  gap: clamp(0.5rem, 2vw, 1rem);
+  gap: clamp(0.25rem, 0.8vw, 0.5rem);
   width: 100%;
   min-height: 130px;
   max-width: 100%;
   min-width: 0;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .likeButton,
@@ -107,9 +107,6 @@
 }
 
 .reactionButton {
-  border-width: 2px !important;
-  background: transparent !important;
-  box-shadow: none !important;
   transition:
     transform var(--motion-duration-fast, 180ms) ease-out,
     box-shadow var(--motion-duration-fast, 180ms) ease-out,
@@ -119,13 +116,16 @@
 }
 
 .roundedReactionButton {
-  box-shadow: 0 12px 26px hsl(var(--foreground) / 0.07) !important;
   padding-inline: clamp(0.9rem, 2vw, 1.15rem);
 }
 
-.roundedReactionButton:hover,
-.roundedReactionButton:focus-visible {
-  box-shadow: 0 16px 32px hsl(var(--foreground) / 0.1) !important;
+.reactionCtaButton {
+  border: 2px solid #000 !important;
+  border-radius: 9999px !important;
+  background: #fcc31e !important;
+  color: #000 !important;
+  font-weight: 800 !important;
+  box-shadow: 0 4px 0 #000 !important;
 }
 
 .likeButton {
@@ -134,22 +134,6 @@
   margin-top: calc(
     var(--reaction-center-y) - (var(--reaction-button-height) / 2)
   );
-  border-color: color-mix(
-    in srgb,
-    hsl(var(--primary)) 64%,
-    hsl(var(--border))
-  ) !important;
-  background:
-    linear-gradient(
-      180deg,
-      color-mix(in srgb, hsl(var(--primary)) 10%, hsl(var(--background))),
-      color-mix(in srgb, hsl(var(--primary)) 6%, hsl(var(--background)))
-    ) !important;
-  color: color-mix(
-    in srgb,
-    hsl(var(--primary)) 66%,
-    hsl(var(--foreground))
-  ) !important;
 }
 
 .windFanRig {
@@ -160,7 +144,8 @@
   height: 130px;
   max-width: min(100%, 430px);
   min-width: 0;
-  overflow: hidden;
+  margin-left: clamp(-1rem, -1vw, -0.5rem);
+  overflow: visible;
 }
 
 .windTrack {
@@ -172,60 +157,29 @@
 
 .dislikeButton {
   min-width: clamp(7rem, 12vw, 8.6rem);
-  border-color: color-mix(
-    in srgb,
-    hsl(var(--signal-amber)) 34%,
-    hsl(var(--border))
-  ) !important;
-  background:
-    linear-gradient(
-      180deg,
-      color-mix(
-        in srgb,
-        hsl(var(--signal-amber)) 8%,
-        hsl(var(--background))
-      ),
-      color-mix(in srgb, hsl(var(--signal-rose)) 4%, hsl(var(--background)))
-    ) !important;
-  color: color-mix(
-    in srgb,
-    hsl(var(--signal-amber)) 42%,
-    hsl(var(--foreground))
-  ) !important;
 }
 
-.likeButton:hover,
-.likeButton:focus-visible {
-  border-color: color-mix(
-    in srgb,
-    hsl(var(--primary)) 78%,
-    hsl(var(--border))
-  ) !important;
-  background: color-mix(
-    in srgb,
-    hsl(var(--primary)) 14%,
-    hsl(var(--accent))
-  ) !important;
-  color: hsl(var(--foreground)) !important;
+.dislikeButton.reactionCtaButton {
+  background: #ffb891 !important;
 }
 
-.dislikeButton:hover,
-.dislikeButton:focus-visible {
-  border-color: color-mix(
-    in srgb,
-    hsl(var(--signal-amber)) 42%,
-    hsl(var(--border))
-  ) !important;
-  background: color-mix(
-    in srgb,
-    hsl(var(--signal-amber)) 11%,
-    hsl(var(--accent))
-  ) !important;
-  color: color-mix(
-    in srgb,
-    hsl(var(--signal-amber)) 52%,
-    hsl(var(--foreground))
-  ) !important;
+.reactionCtaButton:hover,
+.reactionCtaButton:focus-visible {
+  border-color: #000 !important;
+  background: #ffd966 !important;
+  color: #000 !important;
+  box-shadow: 0 4px 0 #000 !important;
+  transform: translateY(0) !important;
+}
+
+.dislikeButton.reactionCtaButton:hover,
+.dislikeButton.reactionCtaButton:focus-visible {
+  background: #ffd2b8 !important;
+}
+
+.reactionCtaButton:active {
+  transform: translateY(4px) !important;
+  box-shadow: none !important;
 }
 
 .fanImage {
@@ -239,7 +193,7 @@
 @media (max-width: 640px) {
   .footerReactions {
     justify-content: center;
-    gap: clamp(0.25rem, 1.5vw, 0.5rem);
+    gap: 0;
     --reaction-center-y: 50.5px;
     min-height: 101px;
   }
@@ -253,6 +207,7 @@
   .windFanRig {
     flex: 1 1 auto;
     height: 101px;
+    margin-left: -0.25rem;
   }
 
   .windTrack {

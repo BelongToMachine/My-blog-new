@@ -9,6 +9,7 @@ import Wind from "./Wind"
 import Image from "next/image"
 import fan from "@/public/images/fan_8bit-256.webp"
 import styles from "@/app/articles/post.module.css"
+import ctaStyles from "@/app/components/HeroButton.module.css"
 
 interface ArticleFooterProps {
   initialLikes?: number
@@ -50,11 +51,15 @@ const ArticleFooter = ({
       <div className={styles.footerReactions}>
         {roundedControls ? (
           <RoundedButton
-            tone="reaction"
-            size="reaction"
+            tone="hero"
+            size="hero"
             className={cn(
+              "relative",
+              ctaStyles.giffgaffHover,
+              ctaStyles.giffgaffHoverPink,
               styles.reactionButton,
               styles.roundedReactionButton,
+              styles.reactionCtaButton,
               styles.likeButton,
             )}
             onClick={() => setLikes((v) => v + 1)}
@@ -63,9 +68,16 @@ const ArticleFooter = ({
           </RoundedButton>
         ) : (
           <Button
-            variant="outline"
+            variant="default"
             size="sm"
-            className={cn(styles.reactionButton, styles.likeButton, "!shadow-none")}
+            className={cn(
+              "relative",
+              ctaStyles.giffgaffHover,
+              ctaStyles.giffgaffHoverPink,
+              styles.reactionButton,
+              styles.reactionCtaButton,
+              styles.likeButton,
+            )}
             onClick={() => setLikes((v) => v + 1)}
           >
             LIKES ({likes})
@@ -76,11 +88,15 @@ const ArticleFooter = ({
           <Wind className={styles.windTrack}>
             {roundedControls ? (
               <RoundedButton
-                tone="reaction"
-                size="reaction"
+                tone="hero"
+                size="hero"
                 className={cn(
+                  "relative",
+                  ctaStyles.giffgaffHover,
+                  ctaStyles.giffgaffHoverPink,
                   styles.reactionButton,
                   styles.roundedReactionButton,
+                  styles.reactionCtaButton,
                   styles.dislikeButton,
                 )}
               >
@@ -88,12 +104,15 @@ const ArticleFooter = ({
               </RoundedButton>
             ) : (
               <Button
-                variant="outline"
+                variant="default"
                 size="sm"
                 className={cn(
+                  "relative",
+                  ctaStyles.giffgaffHover,
+                  ctaStyles.giffgaffHoverPink,
                   styles.reactionButton,
+                  styles.reactionCtaButton,
                   styles.dislikeButton,
-                  "!shadow-none",
                 )}
               >
                 DISLIKE
