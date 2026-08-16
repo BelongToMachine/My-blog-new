@@ -14,7 +14,7 @@ export default function JieBrand() {
         Jie
       </span>
       <JieLogoMark />
-      <span className="motion-reduce:animate-none group-hover:animate-[jie-logo-word-tilt-right_420ms_ease-out]">
+      <span className="motion-reduce:animate-none group-hover:animate-[jie-logo-word-tilt-left_420ms_ease-out]">
         Craft
       </span>
     </Link>
