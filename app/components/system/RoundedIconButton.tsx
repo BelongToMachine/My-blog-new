@@ -17,6 +17,8 @@ const roundedIconButtonVariants = cva(
           "border-border/60 bg-background/12 shadow-[0_10px_24px_hsl(var(--foreground)/0.08)] hover:border-primary/55 hover:bg-background/22 hover:text-foreground hover:shadow-[0_14px_30px_hsl(var(--foreground)/0.12)]",
         surface:
           "border-border/70 bg-background/20 shadow-[0_12px_26px_hsl(var(--foreground)/0.1)] hover:border-primary/60 hover:bg-background/30 hover:text-foreground hover:shadow-[0_16px_34px_hsl(var(--foreground)/0.14)]",
+        nav:
+          "rounded-none border-2 border-transparent bg-transparent text-muted-foreground shadow-none hover:!translate-y-0 hover:border-[#fcc31e] hover:bg-transparent hover:text-foreground",
         borderless:
           "border-transparent bg-transparent hover:border-border/45 hover:bg-background/16 hover:text-foreground",
       },

@@ -67,7 +67,7 @@ const ThemeToggle = ({ className }: ThemeToggleProps) => {
       aria-label={`Switch to ${nextMode} mode`}
       onClick={() => setColorMode(nextMode)}
       type="button"
-      tone="borderless"
+      tone="nav"
       className={cn("theme-toggle", className)}
     >
       {colorMode === "light"
