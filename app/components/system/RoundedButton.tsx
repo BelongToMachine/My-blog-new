@@ -16,13 +16,13 @@ const roundedButtonVariants = cva(
         accent:
           "border-2 border-primary/30 bg-primary/[0.06] text-primary shadow-none hover:border-primary/50 hover:bg-primary/[0.1] hover:text-foreground hover:shadow-none active:translate-y-0",
         nav:
-          "border-transparent bg-transparent text-muted-foreground hover:border-border/60 hover:bg-background/16 hover:text-foreground",
+          "border-2 border-transparent bg-transparent text-muted-foreground hover:!translate-y-0 hover:border-[#fcc31e] hover:bg-transparent hover:text-foreground",
         navActive:
-          "border-2 border-primary/80 bg-primary/12 text-foreground shadow-none",
+          "border-2 border-[#fcc31e] bg-[#fcc31e]/10 text-foreground shadow-none hover:!translate-y-0",
         dropdown:
-          "w-full justify-between border-border/60 bg-background/36 text-foreground hover:border-primary/35 hover:bg-accent/90 hover:text-accent-foreground",
+          "w-full justify-between border-2 border-transparent bg-transparent text-foreground hover:!translate-y-0 hover:border-[#fcc31e] hover:bg-transparent hover:text-foreground",
         dropdownActive:
-          "w-full justify-between border-2 border-primary/45 bg-primary/10 text-foreground shadow-none",
+          "w-full justify-between border-2 border-[#fcc31e] bg-[#fcc31e]/10 text-foreground shadow-none hover:!translate-y-0",
         reaction:
           "border-transparent bg-transparent text-foreground shadow-[0_12px_26px_hsl(var(--foreground)/0.07)] hover:shadow-[0_16px_32px_hsl(var(--foreground)/0.1)] active:translate-y-0",
       },

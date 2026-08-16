@@ -1,15 +1,14 @@
 "use client"
 import React, { useEffect, useMemo, useState } from "react"
-import NextLink from "next/link"
 import LanguageToggle from "./LanguageToggle"
 import ThemeToggle from "./ThemeToggle"
 import { ActionIconButton } from "../system/ActionIconButton"
-import PixelGithubIcon from "./PixelGithubIcon"
 import PixelMenuIcon from "../system/PixelMenuIcon"
 import { Link, usePathname } from "@/app/i18n/navigation"
 import { useTranslations } from "next-intl"
 import { NavItem } from "../system/NavItem"
 import { cn } from "@/lib/utils"
+import JieBrand from "./JieBrand"
 
 const MobileNav = () => {
   const t = useTranslations("nav")
@@ -32,17 +31,7 @@ const MobileNav = () => {
   return (
     <div className="relative px-4 py-2.5">
       <div className="flex items-center justify-between gap-2">
-        <ActionIconButton
-          asChild
-          aria-label="Open GitHub profile"
-          className="shrink-0 self-center"
-          tone="borderless"
-          size="sm"
-        >
-          <NextLink href="https://github.com/BelongToMachine">
-            <PixelGithubIcon className="h-5 w-5" />
-          </NextLink>
-        </ActionIconButton>
+        <JieBrand />
 
         <div className="flex items-center gap-1">
           <LanguageToggle />

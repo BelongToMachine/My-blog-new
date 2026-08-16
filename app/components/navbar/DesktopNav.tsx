@@ -1,15 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client"
-import NextLink from "next/link"
 import React, { useMemo } from "react"
 import { Link, usePathname } from "@/app/i18n/navigation"
 import { useTranslations } from "next-intl"
 import LanguageToggle from "./LanguageToggle"
 import ThemeToggle from "./ThemeToggle"
-import { ActionIconButton } from "../system/ActionIconButton"
 import { cn } from "@/lib/utils"
 import { NavItem } from "../system/NavItem"
-import PixelGithubIcon from "./PixelGithubIcon"
+import JieBrand from "./JieBrand"
 
 interface NavLinkItem {
   label: string
@@ -19,17 +17,9 @@ interface NavLinkItem {
 const DesktopNav = () => {
   return (
     <div className="flex h-16 items-center justify-between px-5">
-      {/* Left: GitHub + nav links */}
-      <div className="flex items-center gap-6">
-        <ActionIconButton
-          asChild
-          aria-label="Open GitHub profile"
-          tone="borderless"
-        >
-          <NextLink href="https://github.com/BelongToMachine">
-            <PixelGithubIcon />
-          </NextLink>
-        </ActionIconButton>
+      {/* Left: brand + nav links */}
+      <div className="flex items-center gap-5">
+        <JieBrand />
         <div className="hidden md:block">
           <NavLinks />
         </div>

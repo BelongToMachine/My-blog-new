@@ -77,7 +77,7 @@
     --text-strong: 210 30% 10%;
     --text-soft: 212 18% 34%;
     --text-link: 191 92% 36%;
-    --home-about-bridge: 0 0% 100%;
+    --home-about-bridge: 210 30% 97%;
     --signal-amber: 36 95% 54%;
     --signal-rose: 344 88% 58%;
     --signal-green: 147 60% 42%;
@@ -494,6 +494,12 @@ html.dark .wind__lane {
 
   .font-rounded-display {
     font-family: var(--font-rounded), sans-serif;
+  }
+
+  .font-juvenile-rounded {
+    font-family:
+      "Yuanti SC", "YouYuan", "SF Pro Rounded", "Arial Rounded MT Bold",
+      var(--font-sans), sans-serif;
   }
 
   .font-display-face {
