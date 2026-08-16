@@ -16,7 +16,7 @@ interface NavLinkItem {
 
 const DesktopNav = () => {
   return (
-    <div className="flex h-16 items-center justify-between px-5">
+    <div className="mx-auto flex h-16 w-full max-w-[1300px] items-center justify-between px-5 2xl:px-8">
       {/* Left: brand + nav links */}
       <div className="flex items-center gap-5">
         <JieBrand />
@@ -46,32 +46,23 @@ const NavLinks = () => {
       { label: t("ai"), href: "/ai" },
       { label: t("contact"), href: "/contact" },
     ],
-    [t]
+    [t],
   )
 
   const styledTag = useMemo(
     () => (link: NavLinkItem) =>
       cn(
         "text-muted-foreground hover:text-foreground",
-        link.href === currentPath && "text-foreground"
+        link.href === currentPath && "text-foreground",
       ),
-    [currentPath]
+    [currentPath],
   )
 
   return (
-    <ul
-      className={cn(
-        "flex flex-wrap items-center gap-4",
-        "relative top-1"
-      )}
-    >
+    <ul className={cn("flex flex-wrap items-center gap-4", "relative top-1")}>
       {links.map((link) => (
         <li key={link.href}>
-          <NavItem
-            asChild
-            active={link.href === currentPath}
-            variant="desktop"
-          >
+          <NavItem asChild active={link.href === currentPath} variant="desktop">
             <Link className={styledTag(link)} href={link.href}>
               {link.label}
             </Link>
