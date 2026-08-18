@@ -4,7 +4,7 @@ import { useEffect, useState, type ReactNode } from "react"
 import { Volume2 } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { cn } from "@/lib/utils"
-import { RoundedIconButton } from "../system/RoundedIconButton"
+import { RoundedButton } from "../system/RoundedButton"
 
 export default function PronunciationCard({
   className,
@@ -63,27 +63,20 @@ export default function PronunciationCard({
           <span className="whitespace-nowrap">{t("phonetic")}</span>
         </p>
         {roundedButton ? (
-          <RoundedIconButton
+          <RoundedButton
             type="button"
             aria-label={t("buttonLabel")}
             onClick={handleSpeak}
             disabled={!canSpeak}
-            tone="accent"
-            size="xl"
+            tone="hero"
+            size="accent"
             className={cn(
-              "focus-visible:ring-primary/50 focus-visible:ring-offset-background",
-              isSpeaking && "border-primary/55 bg-primary/[0.09] text-foreground",
+              "h-10 w-10 shrink-0 p-0 focus-visible:ring-black/70",
+              isSpeaking && "bg-[#ffd966]",
             )}
           >
-            <span
-              className={cn(
-                "inline-flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 transition-transform duration-200 ease-out group-hover:-translate-y-px group-hover:scale-[1.06]",
-                isSpeaking && "text-foreground",
-              )}
-            >
-              <Volume2 className="h-[18px] w-[18px]" />
-            </span>
-          </RoundedIconButton>
+            <Volume2 className="h-[18px] w-[18px]" />
+          </RoundedButton>
         ) : (
           <button
             type="button"
