@@ -97,6 +97,16 @@ export const DEV_GEO_PRESETS = [
     longitude: GUANGZHOU_LOCATION.longitude,
     timezone: "Asia/Shanghai",
   },
+  {
+    id: "hong-kong",
+    labelKey: "devLocations.hongKong",
+    city: "Hong Kong",
+    country: "HK",
+    countryRegion: "Hong Kong",
+    latitude: 22.3193,
+    longitude: 114.1694,
+    timezone: "Asia/Hong_Kong",
+  },
 ] as const
 
 export type DevGeoPresetId = (typeof DEV_GEO_PRESETS)[number]["id"]

@@ -22,6 +22,8 @@ const maxNearbyMapZoom = 2.4
 const veryNearbyPointThreshold = 60
 const veryNearbyPointTargetDistance = 300
 const maxVeryNearbyMapZoom = 3.6
+const mobileMarkerScale = 2
+const mapZoomAnimationDurationMs = 3000
 const isDevMode =
   process.env.NODE_ENV === "development" ||
   process.env.NEXT_PUBLIC_DEV_MODE === "dev"
@@ -55,7 +57,7 @@ export default function LiveDistanceCard() {
     null,
   )
   const [selectedDevLocation, setSelectedDevLocation] =
-    useState<DevGeoPresetId | null>(null)
+    useState<DevGeoPresetId | null>(isDevMode ? "beijing" : null)
   const articleRef = useRef<HTMLElement | null>(null)
 
   useEffect(() => {
@@ -134,9 +136,12 @@ export default function LiveDistanceCard() {
       }
 
       if (typeof window.requestIdleCallback === "function") {
-        idleCallbackId = window.requestIdleCallback(() => {
-          void loadGeo()
-        }, { timeout: 1500 })
+        idleCallbackId = window.requestIdleCallback(
+          () => {
+            void loadGeo()
+          },
+          { timeout: 1500 },
+        )
         return
       }
 
@@ -296,7 +301,10 @@ function DistanceMapGraphic({
   visitor?: ApproximateGeoPoint
 }) {
   const mapRef = useRef<HTMLDivElement | null>(null)
+  const mapTransformRef = useRef<HTMLDivElement | null>(null)
   const [hasBeenViewed, setHasBeenViewed] = useState(false)
+  const [isMobileViewport, setIsMobileViewport] = useState(false)
+  const [isZoomAnimationReady, setIsZoomAnimationReady] = useState(false)
   const homePoint = projectPoint(
     GUANGZHOU_LOCATION.latitude,
     GUANGZHOU_LOCATION.longitude,
@@ -310,9 +318,14 @@ function DistanceMapGraphic({
     ? buildRoutePaths(visitorPoint, homePoint)
     : []
   const mapView = getMapView(visitorPoint, homePoint)
-  const mapTransform = hasBeenViewed && mapView.shouldZoom
+  const baseMapTransform = "translate(0%, 0%) scale(1)"
+  const mapTargetTransform = mapView.shouldZoom
     ? `translate(${mapView.translateX}%,${mapView.translateY}%) scale(${mapView.scale})`
-    : "translate(0%, 0%) scale(1)"
+    : baseMapTransform
+  const mapTransform =
+    hasBeenViewed && mapView.shouldZoom && isZoomAnimationReady
+      ? mapTargetTransform
+      : baseMapTransform
 
   useEffect(() => {
     const mapElement = mapRef.current
@@ -343,6 +356,85 @@ function DistanceMapGraphic({
     return () => observer.disconnect()
   }, [])
 
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 639px)")
+    const updateViewport = () => setIsMobileViewport(mediaQuery.matches)
+
+    updateViewport()
+    mediaQuery.addEventListener("change", updateViewport)
+
+    return () => mediaQuery.removeEventListener("change", updateViewport)
+  }, [])
+
+  useEffect(() => {
+    if (!hasBeenViewed || !mapView.shouldZoom) {
+      setIsZoomAnimationReady(false)
+      return
+    }
+
+    setIsZoomAnimationReady(false)
+    let firstFrameId: number | null = null
+    let secondFrameId: number | null = null
+
+    firstFrameId = window.requestAnimationFrame(() => {
+      secondFrameId = window.requestAnimationFrame(() => {
+        setIsZoomAnimationReady(true)
+      })
+    })
+
+    return () => {
+      if (firstFrameId !== null) {
+        window.cancelAnimationFrame(firstFrameId)
+      }
+
+      if (secondFrameId !== null) {
+        window.cancelAnimationFrame(secondFrameId)
+      }
+    }
+  }, [
+    hasBeenViewed,
+    mapView.shouldZoom,
+    mapView.scale,
+    mapView.translateX,
+    mapView.translateY,
+  ])
+
+  useEffect(() => {
+    const mapElement = mapTransformRef.current
+
+    if (
+      !hasBeenViewed ||
+      !mapView.shouldZoom ||
+      !isZoomAnimationReady ||
+      !mapElement ||
+      typeof mapElement.animate !== "function"
+    ) {
+      return
+    }
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches
+    const animation = mapElement.animate(
+      [{ transform: baseMapTransform }, { transform: mapTargetTransform }],
+      {
+        duration: prefersReducedMotion ? 0.01 : mapZoomAnimationDurationMs,
+        easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+        fill: "both",
+      },
+    )
+
+    return () => animation.cancel()
+  }, [
+    baseMapTransform,
+    hasBeenViewed,
+    isZoomAnimationReady,
+    mapTargetTransform,
+    mapView.shouldZoom,
+  ])
+
+  const markerScale = isMobileViewport ? mobileMarkerScale : 1
+
   return (
     <div
       ref={mapRef}
@@ -352,7 +444,8 @@ function DistanceMapGraphic({
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_12%,rgba(67,92,126,0.2),transparent_30%),linear-gradient(180deg,#192432_0%,#111a25_100%)]" />
       <div
-        className="absolute inset-0 transform-gpu transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
+        ref={mapTransformRef}
+        className="absolute inset-0 transform-gpu transition-transform duration-[3000ms] ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
         style={{
           transform: mapTransform,
           transformOrigin: "50% 50%",
@@ -391,12 +484,14 @@ function DistanceMapGraphic({
               point={visitorPoint}
               fill={markerColor}
               mapScale={mapView.scale}
+              sizeMultiplier={markerScale}
             />
           ) : null}
 
           <MapAvatarMarker
             point={homePoint}
             mapScale={mapView.scale}
+            sizeMultiplier={markerScale}
           />
         </svg>
       </div>
@@ -417,12 +512,14 @@ function MapPinMarker({
   point,
   fill,
   mapScale,
+  sizeMultiplier,
 }: {
   point: { x: number; y: number }
   fill: string
   mapScale: number
+  sizeMultiplier: number
 }) {
-  const markerSize = 44 / mapScale
+  const markerSize = (44 * sizeMultiplier) / mapScale
   const markerX = point.x - markerSize / 2
   const markerY = point.y - markerSize * (22 / 24)
 
@@ -435,12 +532,7 @@ function MapPinMarker({
         fill="#05080d"
         opacity={0.38}
       />
-      <LocationPin
-        x={markerX}
-        y={markerY}
-        size={markerSize}
-        fill={fill}
-      />
+      <LocationPin x={markerX} y={markerY} size={markerSize} fill={fill} />
     </g>
   )
 }
@@ -448,11 +540,13 @@ function MapPinMarker({
 function MapAvatarMarker({
   point,
   mapScale,
+  sizeMultiplier,
 }: {
   point: { x: number; y: number }
   mapScale: number
+  sizeMultiplier: number
 }) {
-  const avatarSize = 72 / mapScale
+  const avatarSize = (72 * sizeMultiplier) / mapScale
   const avatarX = point.x - avatarSize / 2
   const avatarY = point.y - avatarSize * (1037 / 1254)
 
