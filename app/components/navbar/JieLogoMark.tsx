@@ -12,7 +12,7 @@ const JieLogoMark = React.forwardRef<SVGSVGElement, JieLogoMarkProps>(
       ref={ref}
       aria-hidden="true"
       className={cn(
-        "h-10 w-8 shrink-0 overflow-visible text-black dark:text-white",
+        "h-8 w-7 shrink-0 overflow-visible text-black dark:text-white -translate-y-1",
         className,
       )}
       fill="none"
@@ -22,18 +22,18 @@ const JieLogoMark = React.forwardRef<SVGSVGElement, JieLogoMarkProps>(
     >
       <path
         className="origin-center motion-reduce:animate-none group-hover:animate-[jie-logo-line-tilt-top_420ms_ease-out_forwards]"
-        d="M3.5 9.5c1.5 2.4 2.8 5.3 4.6 6.2 1.8.9 3.5-4.3 4.8-6.6 1.2-2.2 2.3 3.5 3.8 5.5 1.1 1.5 2.2 1.7 3.2.6 1.4-1.5 2.1-3.6 3.1-5.7"
+        d="M3.5 9.5L8.5 16L13.5 9.5L18.5 16L24.5 9.5"
         stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+        strokeLinecap="square"
+        strokeLinejoin="miter"
         strokeWidth="3.2"
       />
       <path
         className="origin-center motion-reduce:animate-none group-hover:[animation-delay:35ms] group-hover:animate-[jie-logo-line-tilt-bottom_420ms_ease-out_forwards]"
-        d="M7.5 34.6c1.8-2.9 4.1-6.9 6.3-9.7 2.1 2.7 4.5 6.7 6.7 9.8"
+        d="M7.5 34.5L14 24.5L20.5 34.5"
         stroke="currentColor"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+        strokeLinecap="square"
+        strokeLinejoin="miter"
         strokeWidth="3.2"
       />
     </svg>

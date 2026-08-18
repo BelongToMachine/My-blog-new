@@ -445,7 +445,7 @@ function DistanceMapGraphic({
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_12%,rgba(67,92,126,0.2),transparent_30%),linear-gradient(180deg,#192432_0%,#111a25_100%)]" />
       <div
         ref={mapTransformRef}
-        className="absolute inset-0 transform-gpu transition-transform duration-[3000ms] ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
+        className="absolute inset-0 transition-transform duration-[3000ms] ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
         style={{
           transform: mapTransform,
           transformOrigin: "50% 50%",
