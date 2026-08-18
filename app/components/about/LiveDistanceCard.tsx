@@ -16,6 +16,12 @@ const cardShell =
 const mapWidth = 800
 const mapHeight = 400
 const markerColor = "#f09150"
+const nearbyPointThreshold = 120
+const nearbyPointTargetDistance = 220
+const maxNearbyMapZoom = 2.4
+const veryNearbyPointThreshold = 60
+const veryNearbyPointTargetDistance = 300
+const maxVeryNearbyMapZoom = 3.6
 const isDevMode =
   process.env.NODE_ENV === "development" ||
   process.env.NEXT_PUBLIC_DEV_MODE === "dev"
@@ -289,6 +295,8 @@ function DistanceMapGraphic({
   loadState: LoadState
   visitor?: ApproximateGeoPoint
 }) {
+  const mapRef = useRef<HTMLDivElement | null>(null)
+  const [hasBeenViewed, setHasBeenViewed] = useState(false)
   const homePoint = projectPoint(
     GUANGZHOU_LOCATION.latitude,
     GUANGZHOU_LOCATION.longitude,
@@ -301,55 +309,99 @@ function DistanceMapGraphic({
   const routePaths = visitorPoint
     ? buildRoutePaths(visitorPoint, homePoint)
     : []
+  const mapView = getMapView(visitorPoint, homePoint)
+  const mapTransform = hasBeenViewed && mapView.shouldZoom
+    ? `translate(${mapView.translateX}%,${mapView.translateY}%) scale(${mapView.scale})`
+    : "translate(0%, 0%) scale(1)"
+
+  useEffect(() => {
+    const mapElement = mapRef.current
+
+    if (!mapElement) {
+      return
+    }
+
+    if (typeof IntersectionObserver === "undefined") {
+      setHasBeenViewed(true)
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) {
+          return
+        }
+
+        setHasBeenViewed(true)
+        observer.disconnect()
+      },
+      { threshold: 0.25 },
+    )
+
+    observer.observe(mapElement)
+
+    return () => observer.disconnect()
+  }, [])
 
   return (
     <div
+      ref={mapRef}
       role="img"
       aria-label={ariaLabel}
       className="relative aspect-[1.72/1] w-full overflow-hidden bg-[#121b26] sm:aspect-[1.9/1] md:aspect-[2/1] lg:aspect-[1.84/1]"
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_12%,rgba(67,92,126,0.2),transparent_30%),linear-gradient(180deg,#192432_0%,#111a25_100%)]" />
       <div
-        aria-hidden
-        style={worldMapMaskStyle}
-        className="absolute inset-[4.5%_0_4%_0] bg-[#2c3d54] opacity-95"
-      />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-[linear-gradient(180deg,transparent,rgba(9,14,20,0.48))]" />
-
-      <svg
-        viewBox={`0 0 ${mapWidth} ${mapHeight}`}
-        aria-hidden
-        className="absolute inset-0 h-full w-full"
+        className="absolute inset-0 transform-gpu transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
+        style={{
+          transform: mapTransform,
+          transformOrigin: "50% 50%",
+        }}
       >
-        {routePaths.length > 0 ? (
-          <g>
-            {routePaths.map((path) => (
-              <path
-                key={path}
-                d={path}
-                fill="none"
-                stroke="#fcc31e"
-                strokeWidth="7"
-                strokeLinecap="round"
-                strokeDasharray="4 16"
-                opacity={loadState === "loading" ? 0.55 : 0.92}
-              />
-            ))}
-          </g>
-        ) : null}
-
-        {visitorPoint ? (
-          <MapPinMarker
-            point={visitorPoint}
-            fill={markerColor}
-          />
-        ) : null}
-
-        <MapPinMarker
-          point={homePoint}
-          fill={markerColor}
+        <div
+          aria-hidden
+          style={worldMapMaskStyle}
+          className="absolute inset-[4.5%_0_4%_0] bg-[#2c3d54] opacity-95"
         />
-      </svg>
+
+        <svg
+          viewBox={`0 0 ${mapWidth} ${mapHeight}`}
+          aria-hidden
+          className="absolute inset-0 h-full w-full"
+        >
+          {routePaths.length > 0 ? (
+            <g>
+              {routePaths.map((path) => (
+                <path
+                  key={path}
+                  d={path}
+                  fill="none"
+                  stroke="#fcc31e"
+                  strokeWidth={7 / mapView.scale}
+                  strokeLinecap="round"
+                  strokeDasharray={`${4 / mapView.scale} ${16 / mapView.scale}`}
+                  opacity={loadState === "loading" ? 0.55 : 0.92}
+                />
+              ))}
+            </g>
+          ) : null}
+
+          {visitorPoint ? (
+            <MapPinMarker
+              point={visitorPoint}
+              fill={markerColor}
+              mapScale={mapView.scale}
+            />
+          ) : null}
+
+          <MapPinMarker
+            point={homePoint}
+            fill={markerColor}
+            mapScale={mapView.scale}
+          />
+        </svg>
+      </div>
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-[linear-gradient(180deg,transparent,rgba(9,14,20,0.48))]" />
     </div>
   )
 }
@@ -365,11 +417,13 @@ function Highlight({ children }: { children: ReactNode }) {
 function MapPinMarker({
   point,
   fill,
+  mapScale,
 }: {
   point: { x: number; y: number }
   fill: string
+  mapScale: number
 }) {
-  const markerSize = 44
+  const markerSize = 44 / mapScale
   const markerX = point.x - markerSize / 2
   const markerY = point.y - markerSize * (22 / 24)
 
@@ -377,7 +431,7 @@ function MapPinMarker({
     <g>
       <LocationPin
         x={markerX}
-        y={markerY + 1.5}
+        y={markerY + 1.5 / mapScale}
         size={markerSize}
         fill="#05080d"
         opacity={0.38}
@@ -478,11 +532,75 @@ function projectPoint(latitude: number, longitude: number) {
   }
 }
 
+function getMapView(
+  visitorPoint: { x: number; y: number } | null,
+  homePoint: { x: number; y: number },
+) {
+  if (!visitorPoint) {
+    return {
+      shouldZoom: false,
+      scale: 1,
+      translateX: 0,
+      translateY: 0,
+    }
+  }
+
+  const deltaX = homePoint.x - visitorPoint.x
+  const deltaY = homePoint.y - visitorPoint.y
+  const pointDistance = Math.hypot(deltaX, deltaY)
+  const isVeryNearby = pointDistance < veryNearbyPointThreshold
+
+  if (pointDistance >= nearbyPointThreshold) {
+    return {
+      shouldZoom: false,
+      scale: 1,
+      translateX: 0,
+      translateY: 0,
+    }
+  }
+
+  const midpointX = (visitorPoint.x + homePoint.x) / 2
+  const midpointY = (visitorPoint.y + homePoint.y) / 2
+  const targetDistance = isVeryNearby
+    ? veryNearbyPointTargetDistance
+    : nearbyPointTargetDistance
+  const maxMapZoom = isVeryNearby ? maxVeryNearbyMapZoom : maxNearbyMapZoom
+  const scale = Math.min(
+    maxMapZoom,
+    targetDistance / Math.max(pointDistance, 1),
+  )
+  const midpointXPercent = (midpointX / mapWidth) * 100
+  const midpointYPercent = (midpointY / mapHeight) * 100
+
+  return {
+    shouldZoom: true,
+    scale,
+    translateX: (50 - midpointXPercent) * scale,
+    translateY: (50 - midpointYPercent) * scale,
+  }
+}
+
 function buildRoutePaths(
   visitorPoint: { x: number; y: number },
   homePoint: { x: number; y: number },
 ) {
-  return [buildCurvePath(visitorPoint, homePoint)]
+  const pointDistance = Math.hypot(
+    homePoint.x - visitorPoint.x,
+    homePoint.y - visitorPoint.y,
+  )
+
+  return [
+    pointDistance < veryNearbyPointThreshold
+      ? buildStraightPath(visitorPoint, homePoint)
+      : buildCurvePath(visitorPoint, homePoint),
+  ]
+}
+
+function buildStraightPath(
+  start: { x: number; y: number },
+  end: { x: number; y: number },
+) {
+  return `M ${start.x} ${start.y} L ${end.x} ${end.y}`
 }
 
 function buildCurvePath(
