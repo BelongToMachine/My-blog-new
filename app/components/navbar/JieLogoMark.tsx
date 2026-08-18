@@ -12,7 +12,7 @@ const JieLogoMark = React.forwardRef<SVGSVGElement, JieLogoMarkProps>(
       ref={ref}
       aria-hidden="true"
       className={cn(
-        "h-10 w-8 shrink-0 overflow-visible text-[#fcc31e] dark:text-[#fcc31e]",
+        "h-10 w-8 shrink-0 overflow-visible text-black dark:text-white",
         className,
       )}
       fill="none"
