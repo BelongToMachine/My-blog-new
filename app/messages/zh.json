@@ -212,7 +212,19 @@
       "distanceUnavailableValue": "暂不可用",
       "mapAriaReady": "从 {visitor} 到中国广州的近似地图路线",
       "mapAriaLoading": "正在加载到中国广州的近似访客路线",
-      "mapAriaUnavailable": "近似访客路线不可用，目前仅显示广州位置"
+      "mapAriaUnavailable": "近似访客路线不可用，目前仅显示广州位置",
+      "devToolsLabel": "开发 GEO",
+      "devToolsHint": "选择访客位置",
+      "devToolsReset": "真实位置",
+      "devLocations": {
+        "newYork": "纽约",
+        "london": "伦敦",
+        "tokyo": "东京",
+        "beijing": "北京",
+        "sydney": "悉尼",
+        "singapore": "新加坡",
+        "guangzhou": "广州"
+      }
     },
     "pronunciation": {
       "eyebrow": "名字怎么念",

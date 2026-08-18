@@ -1,6 +1,7 @@
 import {
   GUANGZHOU_LOCATION,
   MOCK_VISITOR_NYC,
+  getDevGeoPreset,
   haversineKm,
   type DistanceCardLocationResponse,
 } from "@/app/lib/funFactsGeo"
@@ -13,7 +14,7 @@ const isDevMode =
   process.env.NEXT_PUBLIC_DEV_MODE === "dev"
 
 export function GET(request: Request) {
-  const visitor = {
+  const vercelVisitor = {
     city: decodeHeaderValue(request.headers.get("x-vercel-ip-city")),
     country: request.headers.get("x-vercel-ip-country"),
     countryRegion: decodeHeaderValue(
@@ -24,9 +25,19 @@ export function GET(request: Request) {
     timezone: request.headers.get("x-vercel-ip-timezone"),
   }
 
+  const vercelHasCoordinates =
+    vercelVisitor.latitude !== null && vercelVisitor.longitude !== null
+  const requestedMock = isDevMode
+    ? getDevGeoPreset(new URL(request.url).searchParams.get("mock"))
+    : null
+  const fallbackMock = !vercelHasCoordinates && isDevMode
+    ? MOCK_VISITOR_NYC
+    : null
+  const visitor = requestedMock ?? fallbackMock ?? vercelVisitor
+  const source = requestedMock || fallbackMock ? "mock" : "vercel-ip"
   const latitude = visitor.latitude
   const longitude = visitor.longitude
-  const hasCoordinates = latitude !== null && longitude !== null
+  const hasCoordinates = latitude != null && longitude != null
   let distanceKm: number | null = null
 
   if (hasCoordinates) {
@@ -38,32 +49,9 @@ export function GET(request: Request) {
     )
   }
 
-  if (!hasCoordinates && isDevMode) {
-    const mockDistanceKm = haversineKm(
-      MOCK_VISITOR_NYC.latitude!,
-      MOCK_VISITOR_NYC.longitude!,
-      GUANGZHOU_LOCATION.latitude,
-      GUANGZHOU_LOCATION.longitude,
-    )
-
-    const response: DistanceCardLocationResponse = {
-      status: "ok",
-      source: "mock",
-      visitor: MOCK_VISITOR_NYC,
-      home: GUANGZHOU_LOCATION,
-      distanceKm: mockDistanceKm,
-    }
-
-    return Response.json(response, {
-      headers: {
-        "Cache-Control": "no-store",
-      },
-    })
-  }
-
   const response: DistanceCardLocationResponse = {
     status: hasCoordinates ? "ok" : "unavailable",
-    source: "vercel-ip",
+    source,
     visitor,
     home: GUANGZHOU_LOCATION,
     distanceKm,
@@ -71,7 +59,10 @@ export function GET(request: Request) {
 
   return Response.json(response, {
     headers: {
-      "Cache-Control": "private, max-age=300, stale-while-revalidate=600",
+      "Cache-Control":
+        source === "mock"
+          ? "no-store"
+          : "private, max-age=300, stale-while-revalidate=600",
     },
   })
 }

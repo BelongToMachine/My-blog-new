@@ -3,7 +3,9 @@
 import { useEffect, useRef, useState, type ReactNode } from "react"
 import { useLocale, useTranslations } from "next-intl"
 import {
+  DEV_GEO_PRESETS,
   GUANGZHOU_LOCATION,
+  type DevGeoPresetId,
   type ApproximateGeoPoint,
   type DistanceCardLocationResponse,
 } from "@/app/lib/funFactsGeo"
@@ -13,6 +15,10 @@ const cardShell =
   "pixel-panel !shadow-none overflow-hidden border border-border/80 bg-card/88 transition-colors duration-200 hover:border-primary/50"
 const mapWidth = 800
 const mapHeight = 400
+const markerColor = "#f09150"
+const isDevMode =
+  process.env.NODE_ENV === "development" ||
+  process.env.NEXT_PUBLIC_DEV_MODE === "dev"
 const worldMapMaskStyle = {
   WebkitMaskImage: "url('/maps/world-equirectangular.svg')",
   WebkitMaskPosition: "center",
@@ -42,6 +48,8 @@ export default function LiveDistanceCard() {
   const [geoData, setGeoData] = useState<DistanceCardLocationResponse | null>(
     null,
   )
+  const [selectedDevLocation, setSelectedDevLocation] =
+    useState<DevGeoPresetId | null>(null)
   const articleRef = useRef<HTMLElement | null>(null)
 
   useEffect(() => {
@@ -49,9 +57,11 @@ export default function LiveDistanceCard() {
     const abortController = new AbortController()
     let timeoutId: number | null = null
     let idleCallbackId: number | null = null
+    let observer: IntersectionObserver | null = null
+    const mockLocationId = isDevMode ? selectedDevLocation : null
 
     async function loadGeo() {
-      if (navigator.connection?.saveData) {
+      if (!mockLocationId && navigator.connection?.saveData) {
         if (isMounted) {
           setLoadState("unavailable")
         }
@@ -59,7 +69,10 @@ export default function LiveDistanceCard() {
       }
 
       const effectiveType = navigator.connection?.effectiveType
-      if (effectiveType === "slow-2g" || effectiveType === "2g") {
+      if (
+        !mockLocationId &&
+        (effectiveType === "slow-2g" || effectiveType === "2g")
+      ) {
         if (isMounted) {
           setLoadState("unavailable")
         }
@@ -67,7 +80,10 @@ export default function LiveDistanceCard() {
       }
 
       try {
-        const response = await fetch("/api/fun-facts/location", {
+        const endpoint = mockLocationId
+          ? `/api/fun-facts/location?mock=${encodeURIComponent(mockLocationId)}`
+          : "/api/fun-facts/location"
+        const response = await fetch(endpoint, {
           signal: abortController.signal,
         })
 
@@ -92,6 +108,20 @@ export default function LiveDistanceCard() {
       }
     }
 
+    const cleanup = () => {
+      isMounted = false
+      observer?.disconnect()
+      abortController.abort()
+
+      if (idleCallbackId !== null) {
+        window.cancelIdleCallback?.(idleCallbackId)
+      }
+
+      if (timeoutId !== null) {
+        window.clearTimeout(timeoutId)
+      }
+    }
+
     const scheduleLoad = () => {
       if (abortController.signal.aborted) {
         return
@@ -109,7 +139,12 @@ export default function LiveDistanceCard() {
       }, 300)
     }
 
-    const observer = new IntersectionObserver(
+    if (mockLocationId) {
+      void loadGeo()
+      return cleanup
+    }
+
+    observer = new IntersectionObserver(
       (entries) => {
         const [entry] = entries
 
@@ -117,7 +152,7 @@ export default function LiveDistanceCard() {
           return
         }
 
-        observer.disconnect()
+        observer?.disconnect()
         scheduleLoad()
       },
       {
@@ -128,25 +163,13 @@ export default function LiveDistanceCard() {
     const currentArticle = articleRef.current
 
     if (currentArticle) {
-      observer.observe(currentArticle)
+      observer?.observe(currentArticle)
     } else {
       scheduleLoad()
     }
 
-    return () => {
-      isMounted = false
-      observer.disconnect()
-      abortController.abort()
-
-      if (idleCallbackId !== null) {
-        window.cancelIdleCallback?.(idleCallbackId)
-      }
-
-      if (timeoutId !== null) {
-        window.clearTimeout(timeoutId)
-      }
-    }
-  }, [])
+    return cleanup
+  }, [selectedDevLocation])
 
   const visitor = geoData?.visitor
   const visitorLabel = formatVisitorLocation(
@@ -181,6 +204,61 @@ export default function LiveDistanceCard() {
       ref={articleRef}
       className={cn(cardShell, "flex h-full flex-col p-0")}
     >
+      {isDevMode ? (
+        <div className="border-b border-border/60 bg-background/40 px-3 py-2 sm:px-4 md:px-5">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="font-pixel text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
+              {t("devToolsLabel")}
+            </span>
+            <span className="text-xs text-muted-foreground/80">
+              {t("devToolsHint")}
+            </span>
+          </div>
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {DEV_GEO_PRESETS.map((preset) => {
+              const isSelected = selectedDevLocation === preset.id
+
+              return (
+                <button
+                  key={preset.id}
+                  type="button"
+                  aria-pressed={isSelected}
+                  onClick={() => {
+                    setGeoData(null)
+                    setLoadState("loading")
+                    setSelectedDevLocation(preset.id)
+                  }}
+                  className={cn(
+                    "border px-2 py-1 text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50",
+                    isSelected
+                      ? "border-[#fcc31e] bg-[#fcc31e]/15 text-foreground"
+                      : "border-border/60 bg-background/60 text-muted-foreground hover:border-primary/60 hover:text-foreground",
+                  )}
+                >
+                  {t(preset.labelKey)}
+                </button>
+              )
+            })}
+            <button
+              type="button"
+              aria-pressed={selectedDevLocation === null}
+              onClick={() => {
+                setGeoData(null)
+                setLoadState("loading")
+                setSelectedDevLocation(null)
+              }}
+              className={cn(
+                "border px-2 py-1 text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50",
+                selectedDevLocation === null
+                  ? "border-primary/70 bg-primary/10 text-foreground"
+                  : "border-border/60 bg-background/60 text-muted-foreground hover:border-primary/60 hover:text-foreground",
+              )}
+            >
+              {t("devToolsReset")}
+            </button>
+          </div>
+        </div>
+      ) : null}
       <div className="bg-[linear-gradient(180deg,hsl(var(--accent))/0.44,transparent)] p-3 sm:p-4 md:p-5">
         <div className="overflow-hidden bg-[linear-gradient(180deg,#cfe6f2_0%,#d9ecf6_100%)]">
           <DistanceMapGraphic
@@ -260,7 +338,17 @@ function DistanceMapGraphic({
           </g>
         ) : null}
 
-        <HomePinMarker point={homePoint} />
+        {visitorPoint ? (
+          <MapPinMarker
+            point={visitorPoint}
+            fill={markerColor}
+          />
+        ) : null}
+
+        <MapPinMarker
+          point={homePoint}
+          fill={markerColor}
+        />
       </svg>
     </div>
   )
@@ -274,27 +362,69 @@ function Highlight({ children }: { children: ReactNode }) {
   )
 }
 
-function HomePinMarker({ point }: { point: { x: number; y: number } }) {
-  const pinTop = point.y - 24
+function MapPinMarker({
+  point,
+  fill,
+}: {
+  point: { x: number; y: number }
+  fill: string
+}) {
+  const markerSize = 44
+  const markerX = point.x - markerSize / 2
+  const markerY = point.y - markerSize * (22 / 24)
 
   return (
     <g>
-      <ellipse
-        cx={point.x}
-        cy={point.y + 11}
-        rx="8"
-        ry="4.5"
+      <LocationPin
+        x={markerX}
+        y={markerY + 1.5}
+        size={markerSize}
         fill="#05080d"
-        opacity="0.42"
+        opacity={0.38}
       />
-      <path
-        d={`M ${point.x} ${point.y + 2} L ${point.x - 10} ${pinTop + 24} A 22 22 0 1 1 ${point.x + 10} ${pinTop + 24} Z`}
-        fill="#aeb7c0"
-        stroke="#6c7885"
-        strokeWidth="2"
+      <LocationPin
+        x={markerX}
+        y={markerY}
+        size={markerSize}
+        fill={fill}
       />
-      <circle cx={point.x} cy={pinTop + 16} r="9.5" fill="#f7f7f6" />
     </g>
+  )
+}
+
+function LocationPin({
+  x,
+  y,
+  size,
+  fill,
+  opacity,
+}: {
+  x: number
+  y: number
+  size: number
+  fill: string
+  opacity?: number
+}) {
+  return (
+    <svg
+      x={x}
+      y={y}
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill={fill}
+      stroke={opacity == null ? "#0b1520" : "none"}
+      strokeWidth="0.9"
+      paintOrder="stroke"
+      opacity={opacity}
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path d="M12 2C8.13 2 5 5.13 5 9c0 1.74.5 3.37 1.41 4.84.95 1.54 2.2 2.86 3.16 4.4.47.75.81 1.45 1.17 2.26.26.55.47 1.5 1.26 1.5s1-.95 1.25-1.5c.37-.81.7-1.51 1.17-2.26.96-1.53 2.21-2.85 3.16-4.4C18.5 12.37 19 10.74 19 9c0-3.87-3.13-7-7-7z" />
+      {opacity == null ? (
+        <circle cx="12" cy="9" r="2.5" fill="#f7f7f6" stroke="none" />
+      ) : null}
+    </svg>
   )
 }
 
@@ -352,42 +482,7 @@ function buildRoutePaths(
   visitorPoint: { x: number; y: number },
   homePoint: { x: number; y: number },
 ) {
-  const directDistance = Math.abs(homePoint.x - visitorPoint.x)
-
-  if (directDistance <= mapWidth / 2) {
-    return [buildCurvePath(visitorPoint, homePoint)]
-  }
-
-  if (visitorPoint.x < homePoint.x) {
-    const wrappedHome = { x: homePoint.x - mapWidth, y: homePoint.y }
-    const edgePoint = interpolateAtX(visitorPoint, wrappedHome, 0)
-
-    return [
-      buildCurvePath(visitorPoint, edgePoint),
-      buildCurvePath({ x: mapWidth, y: edgePoint.y }, homePoint),
-    ]
-  }
-
-  const wrappedHome = { x: homePoint.x + mapWidth, y: homePoint.y }
-  const edgePoint = interpolateAtX(visitorPoint, wrappedHome, mapWidth)
-
-  return [
-    buildCurvePath(visitorPoint, edgePoint),
-    buildCurvePath({ x: 0, y: edgePoint.y }, homePoint),
-  ]
-}
-
-function interpolateAtX(
-  start: { x: number; y: number },
-  end: { x: number; y: number },
-  x: number,
-) {
-  const progress = (x - start.x) / (end.x - start.x)
-
-  return {
-    x,
-    y: start.y + (end.y - start.y) * progress,
-  }
+  return [buildCurvePath(visitorPoint, homePoint)]
 }
 
 function buildCurvePath(

@@ -212,7 +212,19 @@
       "distanceUnavailableValue": "Unavailable",
       "mapAriaReady": "Approximate map from {visitor} to Guangzhou, China",
       "mapAriaLoading": "Loading approximate visitor route to Guangzhou, China",
-      "mapAriaUnavailable": "Approximate visitor route unavailable; Guangzhou location remains visible"
+      "mapAriaUnavailable": "Approximate visitor route unavailable; Guangzhou location remains visible",
+      "devToolsLabel": "Dev geo",
+      "devToolsHint": "Choose visitor location",
+      "devToolsReset": "Real geo",
+      "devLocations": {
+        "newYork": "New York",
+        "london": "London",
+        "tokyo": "Tokyo",
+        "beijing": "Beijing",
+        "sydney": "Sydney",
+        "singapore": "Singapore",
+        "guangzhou": "Guangzhou"
+      }
     },
     "pronunciation": {
       "eyebrow": "Say it right",

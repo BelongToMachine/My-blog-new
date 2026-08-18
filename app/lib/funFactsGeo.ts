@@ -31,6 +31,84 @@ export const MOCK_VISITOR_NYC: ApproximateGeoPoint = {
   timezone: "America/New_York",
 }
 
+export const DEV_GEO_PRESETS = [
+  {
+    id: "new-york",
+    labelKey: "devLocations.newYork",
+    ...MOCK_VISITOR_NYC,
+  },
+  {
+    id: "london",
+    labelKey: "devLocations.london",
+    city: "London",
+    country: "GB",
+    countryRegion: "England",
+    latitude: 51.5074,
+    longitude: -0.1278,
+    timezone: "Europe/London",
+  },
+  {
+    id: "tokyo",
+    labelKey: "devLocations.tokyo",
+    city: "Tokyo",
+    country: "JP",
+    countryRegion: "Tokyo",
+    latitude: 35.6762,
+    longitude: 139.6503,
+    timezone: "Asia/Tokyo",
+  },
+  {
+    id: "beijing",
+    labelKey: "devLocations.beijing",
+    city: "Beijing",
+    country: "CN",
+    countryRegion: "Beijing",
+    latitude: 39.9042,
+    longitude: 116.4074,
+    timezone: "Asia/Shanghai",
+  },
+  {
+    id: "sydney",
+    labelKey: "devLocations.sydney",
+    city: "Sydney",
+    country: "AU",
+    countryRegion: "New South Wales",
+    latitude: -33.8688,
+    longitude: 151.2093,
+    timezone: "Australia/Sydney",
+  },
+  {
+    id: "singapore",
+    labelKey: "devLocations.singapore",
+    city: "Singapore",
+    country: "SG",
+    countryRegion: "Singapore",
+    latitude: 1.3521,
+    longitude: 103.8198,
+    timezone: "Asia/Singapore",
+  },
+  {
+    id: "guangzhou",
+    labelKey: "devLocations.guangzhou",
+    city: "Guangzhou",
+    country: "CN",
+    countryRegion: "Guangdong",
+    latitude: GUANGZHOU_LOCATION.latitude,
+    longitude: GUANGZHOU_LOCATION.longitude,
+    timezone: "Asia/Shanghai",
+  },
+] as const
+
+export type DevGeoPresetId = (typeof DEV_GEO_PRESETS)[number]["id"]
+
+export function getDevGeoPreset(id: string | null) {
+  if (!id) {
+    return null
+  }
+
+  return DEV_GEO_PRESETS.find((preset) => preset.id === id) ?? null
+}
+
 export function haversineKm(
   latitudeA: number,
   longitudeA: number,
