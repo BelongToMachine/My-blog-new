@@ -394,9 +394,8 @@ function DistanceMapGraphic({
             />
           ) : null}
 
-          <MapPinMarker
+          <MapAvatarMarker
             point={homePoint}
-            fill={markerColor}
             mapScale={mapView.scale}
           />
         </svg>
@@ -441,6 +440,40 @@ function MapPinMarker({
         y={markerY}
         size={markerSize}
         fill={fill}
+      />
+    </g>
+  )
+}
+
+function MapAvatarMarker({
+  point,
+  mapScale,
+}: {
+  point: { x: number; y: number }
+  mapScale: number
+}) {
+  const avatarSize = 72 / mapScale
+  const avatarX = point.x - avatarSize / 2
+  const avatarY = point.y - avatarSize * (1037 / 1254)
+
+  return (
+    <g>
+      <ellipse
+        cx={point.x}
+        cy={point.y + 1.5 / mapScale}
+        rx={10 / mapScale}
+        ry={4 / mapScale}
+        fill="#05080d"
+        opacity={0.42}
+      />
+      <image
+        href="/images/map-avatar-jie.png"
+        x={avatarX}
+        y={avatarY}
+        width={avatarSize}
+        height={avatarSize}
+        preserveAspectRatio="xMidYMid meet"
+        aria-hidden="true"
       />
     </g>
   )
