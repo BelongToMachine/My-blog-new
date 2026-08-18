@@ -40,10 +40,14 @@ const MobileNav = () => {
             aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
             aria-controls="mobile-site-navigation"
             aria-expanded={isMenuOpen}
-            className="shadow-none"
+            className={cn(
+              "shadow-none",
+              isMenuOpen &&
+                "!border-[#fcc31e] !bg-[#fcc31e]/10 !text-foreground",
+            )}
             onClick={() => setIsMenuOpen((open) => !open)}
             size="sm"
-            tone="quiet"
+            tone="nav"
             type="button"
           >
             <PixelMenuIcon isOpen={isMenuOpen} />

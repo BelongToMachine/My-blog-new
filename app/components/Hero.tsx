@@ -77,7 +77,7 @@ export default async function Hero({
                     size="hero"
                     className={cn(
                       styles.giffgaffHover,
-                      "focus-visible:ring-black/70",
+                      "w-fit whitespace-nowrap max-[639px]:px-3 focus-visible:ring-black/70",
                     )}
                   >
                     <Link href="/ai">
