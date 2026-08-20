@@ -21,7 +21,7 @@ export default async function Hero({
   const t = await getTranslations("hero")
   const heroPortrait = selfieOutlined
   const portraitImageClass =
-    "h-full w-full object-contain object-bottom scale-[1.08]"
+    "hero-interactive h-full w-full object-contain object-bottom scale-[1.08] transition-transform hover:scale-[1.095] active:scale-[1.12] [clip-path:inset(13.61%_18.89%_1.85%_20%)] motion-reduce:hover:scale-[1.08] motion-reduce:active:scale-[1.08]"
   const code = t.raw("code") as string
 
   return (
@@ -45,28 +45,28 @@ export default async function Hero({
       >
         <span
           className={cn(
-            "font-display-face hero-welcome-mobile-drift inline-block origin-top text-[clamp(10.5rem,40vw,13rem)] font-normal uppercase leading-[0.8] tracking-[0.04em] text-foreground/[0.12] [font-synthesis-weight:none] subpixel-antialiased dark:text-foreground/[0.14] md:text-[clamp(6.5rem,28vw,17rem)] md:font-normal md:leading-none md:tracking-[0.06em] md:text-foreground/[0.08] md:[font-synthesis-weight:none] md:subpixel-antialiased md:dark:text-foreground/[0.1] md:scale-x-[1.12] md:scale-y-[1.5] lg:text-[clamp(6.5rem,26vw,18rem)]",
+            "hero-interactive font-display-face hero-welcome-mobile-drift inline-block origin-[50%_0%] transition-[transform,color] hover:scale-[1.015] hover:text-white active:scale-[1.04] motion-reduce:hover:scale-100 motion-reduce:active:scale-100 text-[clamp(10.5rem,40vw,13rem)] font-normal uppercase leading-[0.8] tracking-[0.04em] text-foreground/[0.12] [font-synthesis-weight:none] subpixel-antialiased dark:text-foreground/[0.14] md:text-[clamp(6.5rem,28vw,17rem)] md:font-normal md:leading-none md:tracking-[0.06em] md:text-foreground/[0.08] md:[font-synthesis-weight:none] md:subpixel-antialiased md:dark:text-foreground/[0.1] md:scale-x-[1.12] md:scale-y-[1.5] md:hover:scale-x-[1.137] md:hover:scale-y-[1.5225] md:active:scale-x-[1.165] md:active:scale-y-[1.56] lg:text-[clamp(6.5rem,26vw,18rem)]",
           )}
         >
           Welcome
         </span>
       </div>
-      <div className="relative z-10 grid grid-cols-12 gap-y-8 md:items-start md:gap-x-0 lg:gap-x-4 xl:gap-x-6">
+      <div className="pointer-events-none relative z-10 grid grid-cols-12 gap-y-8 md:items-start md:gap-x-0 lg:gap-x-4 xl:gap-x-6">
         <div
           data-hero-enter="left"
           data-hero-scroll="content"
-          className="relative z-30 col-span-6 pt-44 min-[550px]:pt-36 min-[580px]:pl-16 md:z-20 md:col-span-4 md:pl-12 md:pt-24 lg:col-span-3 lg:pt-44 lg:pl-24 xl:pt-48 xl:pl-28"
+          className="pointer-events-none relative z-30 col-span-6 pt-44 min-[550px]:pt-36 min-[580px]:pl-16 md:z-20 md:col-span-4 md:pl-12 md:pt-24 lg:col-span-3 lg:pt-44 lg:pl-24 xl:pt-48 xl:pl-28"
         >
           <div className="max-w-[11.5rem] space-y-4 min-[390px]:max-w-[12.25rem] min-[480px]:max-w-[14rem] sm:max-w-[15rem] md:w-[18rem] md:max-w-none md:space-y-6 lg:w-[24rem] xl:w-[26rem]">
             <h1
               className={cn(
-                "font-display-face relative top-14 lg:top-2 md:left-0 lg:-left-14 lg:ml-10 whitespace-nowrap text-[clamp(4.8rem,15vw,6rem)] font-black uppercase leading-[0.92] tracking-[0.03em] text-foreground md:text-[clamp(5rem,13vw,7.1rem)] lg:text-[clamp(8.0rem,10vw,8.8rem)]",
+                "hero-interactive font-display-face relative top-14 inline-block origin-bottom-right lg:top-2 md:left-0 lg:-left-14 lg:ml-10 whitespace-nowrap text-[clamp(4.8rem,15vw,6rem)] font-black uppercase leading-[0.92] tracking-[0.03em] text-foreground transition-transform hover:scale-[1.03] active:scale-[1.08] motion-reduce:hover:scale-100 motion-reduce:active:scale-100 md:text-[clamp(5rem,13vw,7.1rem)] lg:text-[clamp(8.0rem,10vw,8.8rem)]",
               )}
             >
               I&apos;M JIE
             </h1>
             <div className="space-y-4 md:max-w-[19rem] lg:-translate-x-2 translate-y-4 lg:-translate-y-8 lg:max-w-none lg:space-y-6 xl:-translate-x-3 xl:-translate-y-10">
-              <p className="text-[15px] min-[480px]:text-base md:text-[1.05rem] lg:text-[1.05rem] leading-[1.75] tracking-[0.01em] min-[480px]:max-w-[24ch] sm:max-w-[28ch] md:max-w-[40ch] lg:max-w-[36ch] xl:max-w-[38ch] ml-2 lg:-ml-24 mt-10 text-muted-foreground [text-wrap:pretty]">
+              <p className="hero-interactive origin-left text-[15px] min-[480px]:text-base md:text-[1.05rem] lg:text-[1.05rem] leading-[1.75] tracking-[0.01em] min-[480px]:max-w-[24ch] sm:max-w-[28ch] md:max-w-[40ch] lg:max-w-[36ch] xl:max-w-[38ch] ml-2 lg:-ml-24 mt-10 text-muted-foreground [text-wrap:pretty] transition-transform hover:scale-[1.03] active:scale-[1.08] motion-reduce:hover:scale-100 motion-reduce:active:scale-100">
                 {t("shortIntro")}
               </p>
               <div className="flex flex-wrap gap-3">
@@ -77,21 +77,18 @@ export default async function Hero({
                     size="hero"
                     className={cn(
                       styles.giffgaffHover,
-                      "w-fit whitespace-nowrap max-[639px]:px-3 focus-visible:ring-black/70",
+                      "pointer-events-auto w-fit whitespace-nowrap max-[639px]:px-3 focus-visible:ring-black/70",
                     )}
                   >
                     <Link href="/ai">
                       <span>{t("aiCtaLabel")}</span>
-                      <ArrowRight
-                        aria-hidden
-                        className="h-4 w-4"
-                      />
+                      <ArrowRight aria-hidden className="h-4 w-4" />
                     </Link>
                   </RoundedButton>
                 ) : (
                   <Link
                     href="/ai"
-                    className="ai-cta-shimmer group inline-flex min-h-10 items-center gap-2 border-2 border-primary/35 bg-primary/[0.04] px-3 py-2.5 text-sm font-medium tracking-[0.02em] text-primary transition-all duration-200 hover:border-primary/70 hover:bg-primary/[0.09] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 min-[480px]:min-h-11 min-[480px]:px-4 min-[480px]:py-3 md:px-4 md:py-2.5 lg:min-h-0 lg:px-3.5 lg:py-2"
+                    className="pointer-events-auto ai-cta-shimmer group inline-flex min-h-10 items-center gap-2 border-2 border-primary/35 bg-primary/[0.04] px-3 py-2.5 text-sm font-medium tracking-[0.02em] text-primary transition-all duration-200 hover:border-primary/70 hover:bg-primary/[0.09] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 min-[480px]:min-h-11 min-[480px]:px-4 min-[480px]:py-3 md:px-4 md:py-2.5 lg:min-h-0 lg:px-3.5 lg:py-2"
                   >
                     <span>{t("aiCtaLabel")}</span>
                     <span className="transition-transform duration-200 group-hover:translate-x-0.5">
@@ -104,7 +101,7 @@ export default async function Hero({
           </div>
         </div>
         <div
-          className="pointer-events-none col-span-6 z-10 md:pointer-events-auto md:col-span-4 md:self-start lg:col-span-5 lg:-mx-2 xl:-mx-4"
+          className="pointer-events-none col-span-6 z-10 md:col-span-4 md:self-start lg:col-span-5 lg:-mx-2 xl:-mx-4"
           data-hero-enter="image"
         >
           <div
@@ -112,14 +109,16 @@ export default async function Hero({
             data-mobile-hero-avatar
           >
             <div className="relative aspect-[4/4.7] sm:aspect-[4/5]">
-              <Image
-                src={heroPortrait}
-                alt={t("imageAlt")}
-                fill
-                sizes="(min-width: 1280px) 880px, (min-width: 1024px) 46vw, (min-width: 768px) 40vw, 72vw"
-                className={portraitImageClass}
-                priority
-              />
+              <div className="absolute inset-x-0 bottom-0 aspect-square">
+                <Image
+                  src={heroPortrait}
+                  alt={t("imageAlt")}
+                  fill
+                  sizes="(min-width: 1280px) 880px, (min-width: 1024px) 46vw, (min-width: 768px) 40vw, 72vw"
+                  className={portraitImageClass}
+                  priority
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -128,7 +127,7 @@ export default async function Hero({
           data-hero-scroll="content"
           className="max-[767px]:hidden absolute right-0 top-[14.25rem] z-30 flex w-[8.75rem] justify-end min-[390px]:top-[15rem] min-[390px]:w-[9.75rem] min-[480px]:top-[15.75rem] min-[480px]:w-[11.5rem] md:relative md:right-auto md:top-auto md:col-span-4 md:mt-0 md:w-auto md:pt-24 lg:col-span-4 lg:justify-start lg:pt-0 lg:pb-6"
         >
-          <div className="w-full md:w-[316px] md:translate-x-2 lg:w-[364px] lg:-translate-x-8 lg:translate-y-32 xl:w-[500px] xl:-translate-x-10 xl:translate-y-36 2xl:w-[508px]">
+          <div className="w-full md:w-[316px] md:translate-x-2 lg:w-[364px] lg:-translate-x-8 lg:translate-y-32 xl:w-[500px] xl:-translate-x-5 xl:translate-y-40 2xl:w-[508px]">
             <div className="mb-2 flex items-center justify-between border-b border-border/50 pb-1.5 text-[8px] font-medium tracking-[0.08em] text-muted-foreground min-[390px]:text-[8px] min-[480px]:text-[9px] md:mb-3 md:pb-2 md:text-[10px] md:tracking-[0.12em]">
               <span>Profile Snapshot</span>
               <span>coder.ts</span>
@@ -155,15 +154,29 @@ function HeroCodeBlock({
   const lines = code.split("\n")
 
   return (
-    <div className={cn("overflow-hidden border-2 border-border", className)}>
+    <div
+      className={cn(
+        "hero-interactive origin-bottom-left overflow-hidden border-2 border-border transition-[transform,border-color,box-shadow] hover:scale-[1.015] hover:border-white/90 hover:ring-1 hover:ring-white/90 active:scale-[1.04] motion-reduce:hover:scale-100 motion-reduce:active:scale-100",
+        className,
+      )}
+    >
       <div
         className="flex h-9 items-center border-b-2 border-border px-3"
         style={{ background: "var(--codeblock-taskbar-bg, #232937)" }}
       >
         <div className="flex items-center gap-1.5">
-          <span className="block h-3.5 w-3.5" style={{ background: "#ff5f57" }} />
-          <span className="block h-3.5 w-3.5" style={{ background: "#ffbd2e" }} />
-          <span className="block h-3.5 w-3.5" style={{ background: "#28c840" }} />
+          <span
+            className="block h-3.5 w-3.5"
+            style={{ background: "#ff5f57" }}
+          />
+          <span
+            className="block h-3.5 w-3.5"
+            style={{ background: "#ffbd2e" }}
+          />
+          <span
+            className="block h-3.5 w-3.5"
+            style={{ background: "#28c840" }}
+          />
         </div>
       </div>
       <div style={{ background: "var(--codeblock-body-bg, #0d1118)" }}>
