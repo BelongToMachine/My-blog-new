@@ -85,7 +85,9 @@
     --shadow-overlay: 0 22px 50px -26px rgba(7, 16, 24, 0.36);
     --motion-duration-fast: 180ms;
     --motion-duration-base: 240ms;
+    --motion-duration-interactive: 300ms;
     --motion-duration-slow: 420ms;
+    --motion-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   @media (min-width: 768px) {
@@ -236,7 +238,7 @@
     transition-property:
       background-color, border-color, color, fill, stroke, box-shadow;
     transition-duration: var(--motion-duration-slow);
-    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    transition-timing-function: var(--motion-ease-out);
   }
 }
 
@@ -461,6 +463,19 @@ html.dark .wind__lane {
 }
 
 @layer utilities {
+  .hero-interactive {
+    pointer-events: auto;
+    cursor: pointer;
+    transition-duration: var(--motion-duration-interactive) !important;
+    transition-timing-function: var(--motion-ease-out) !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-interactive {
+      transition-duration: 0.01ms !important;
+    }
+  }
+
   @keyframes jie-logo-line-tilt-top {
     0% {
       transform: rotate(0deg);
