@@ -196,25 +196,43 @@ function ProjectTimelineCard({
         alt=""
         width={36}
         height={36}
-        className="hero-interactive relative z-10 mt-6 h-9 w-9 origin-center transition-transform hover:scale-[1.095] active:scale-[1.12] motion-reduce:hover:scale-100 motion-reduce:active:scale-100 md:mt-8 md:h-10 md:w-10"
+        className="hero-interactive relative z-30 mt-6 h-9 w-9 origin-center transition-transform hover:scale-[1.095] active:scale-[1.12] motion-reduce:hover:scale-100 motion-reduce:active:scale-100 md:mt-8 md:h-10 md:w-10"
         aria-hidden="true"
       />
       </div>
 
-      <div className="group relative">
+      <div className="group relative min-w-0">
         {/* Left border and tail share one path, so no rectangular border segment exists behind the tail. */}
         <svg
           aria-hidden="true"
-          className="pointer-events-none absolute -left-10 top-0 z-20 h-full w-[43px] overflow-hidden md:hidden"
+          className="pointer-events-none absolute -left-10 top-0 z-20 h-full w-[43px] overflow-hidden sm:hidden"
         >
           <path
-            d="M41.5 40 L1.5 48 L41.5 56 Z"
+            d="M41.5 34 L14 42 L41.5 50 Z"
             fill="hsl(var(--card) / 0.88)"
             stroke="none"
           />
           <path
             className="stroke-border transition-colors duration-200 group-hover:stroke-primary/40"
-            d="M41.5 0 V40 L1.5 48 L41.5 56 V5000"
+            d="M41.5 0 V34 L14 42 L41.5 50 V5000"
+            fill="none"
+            strokeWidth={3}
+            strokeLinejoin="miter"
+            strokeLinecap="butt"
+          />
+        </svg>
+        <svg
+          aria-hidden="true"
+          className="pointer-events-none absolute -left-10 top-0 z-20 hidden h-full w-[43px] overflow-hidden sm:block md:hidden"
+        >
+          <path
+            d="M41.5 34 L2 42 L41.5 50 Z"
+            fill="hsl(var(--card) / 0.88)"
+            stroke="none"
+          />
+          <path
+            className="stroke-border transition-colors duration-200 group-hover:stroke-primary/40"
+            d="M41.5 0 V34 L2 42 L41.5 50 V5000"
             fill="none"
             strokeWidth={3}
             strokeLinejoin="miter"
@@ -240,23 +258,23 @@ function ProjectTimelineCard({
           />
         </svg>
 
-        <article className="relative z-10 overflow-visible border-[3px] border-l-transparent border-r-border border-y-border bg-card/88 px-5 py-6 transition-colors duration-200 group-hover:border-r-primary/40 group-hover:border-y-primary/40 md:px-8 md:py-8 lg:px-10 lg:py-10">
+        <article className="relative z-10 cursor-pointer overflow-visible border-[3px] border-l-transparent border-r-border border-y-border bg-card/88 px-5 py-6 transition-colors duration-200 group-hover:border-r-primary/40 group-hover:border-y-primary/40 md:px-8 md:py-8 lg:px-10 lg:py-10">
         <div className="border-b border-border/60 pb-5">
           <div className="space-y-4">
-            <div className="flex flex-nowrap items-baseline gap-x-3">
-              <h3 className="whitespace-nowrap text-[clamp(1.2rem,2.2vw,2rem)] font-semibold leading-[1.08] tracking-[-0.025em] text-foreground">
+            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-2 md:flex-nowrap">
+              <h3 className="min-w-0 cursor-text text-[clamp(1.2rem,2.2vw,2rem)] font-semibold leading-[1.08] tracking-[-0.025em] text-foreground md:whitespace-nowrap">
                 {title}
               </h3>
-              <p className="shrink-0 text-[clamp(0.85rem,1.25vw,1.1rem)] font-medium leading-none tracking-[-0.02em] text-muted-foreground/78">
+              <p className="shrink-0 cursor-text text-[clamp(0.85rem,1.25vw,1.1rem)] font-medium leading-none tracking-[-0.02em] text-muted-foreground/78">
                 ({period})
               </p>
             </div>
             {subtitle ? (
-              <p className="max-w-[72ch] text-sm font-medium leading-[1.5] text-muted-foreground/80 md:text-[15px]">
+              <p className="max-w-[72ch] cursor-text text-sm font-medium leading-[1.5] text-muted-foreground/80 md:text-[15px]">
                 {subtitle}
               </p>
             ) : null}
-            <p className="max-w-[72ch] text-pretty text-[15px] leading-[1.7] text-foreground/78 md:text-base md:leading-[1.75]">
+            <p className="max-w-[72ch] cursor-text text-pretty text-[15px] leading-[1.7] text-foreground/78 md:text-base md:leading-[1.75]">
               {description}
             </p>
             {tags?.length ? (
@@ -264,7 +282,7 @@ function ProjectTimelineCard({
                 {tags.map((tag) => (
                   <span
                     key={tag}
-                    className="inline-flex items-center border-2 border-primary/30 bg-primary/[0.04] px-2.5 py-1.5 font-pixel text-[10px] font-medium uppercase leading-none tracking-[0.18em] text-primary/85 transition-[background-color,border-color,color] duration-200 hover:border-primary/70 hover:bg-primary/[0.09] hover:text-foreground"
+                    className="hero-interactive inline-flex origin-center items-center border-2 border-primary/30 bg-primary/[0.04] px-2.5 py-1.5 font-pixel text-[10px] font-medium uppercase leading-none tracking-[0.18em] text-primary/85 transition-[transform,background-color,border-color,color] hover:scale-[1.03] hover:border-primary/70 hover:bg-primary/[0.09] hover:text-foreground active:scale-[1.08] motion-reduce:hover:scale-100 motion-reduce:active:scale-100"
                   >
                     {tag}
                   </span>
@@ -282,14 +300,14 @@ function ProjectTimelineCard({
                 className={cn(index > 0 && "border-t border-border/60 pt-7")}
               >
                 <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
-                  <h4 className="text-[clamp(1.1rem,1.65vw,1.45rem)] font-semibold leading-[1.2] tracking-[-0.02em] text-foreground">
+                  <h4 className="cursor-text text-[clamp(1.1rem,1.65vw,1.45rem)] font-semibold leading-[1.2] tracking-[-0.02em] text-foreground">
                     <span>{project.label}:</span>{" "}
                     <span className="text-foreground/92">{project.title}</span>
                   </h4>
                 </div>
 
                 <div className="mt-5">
-                  <p className={accentLabelClassName}>{contributionsLabel}</p>
+                  <p className={cn(accentLabelClassName, "cursor-text")}>{contributionsLabel}</p>
                   <ol className="mt-3 space-y-3">
                     {project.highlights.map((highlight, highlightIndex) => (
                       <li
@@ -299,7 +317,7 @@ function ProjectTimelineCard({
                         <span className="pt-0.5 text-[13px] font-semibold leading-none text-primary/76">
                           {highlightIndex + 1}.
                         </span>
-                        <span className="text-[14px] leading-relaxed text-foreground/80">
+                        <span className="cursor-text text-[14px] leading-relaxed text-foreground/80">
                           {highlight}
                         </span>
                       </li>
