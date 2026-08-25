@@ -1,8 +1,9 @@
 import dynamic from "next/dynamic"
 import { cn } from "@/lib/utils"
-import ArticleFooter from "@/app/articles/_components/ArticleFooter"
+// Pending cards are documented in docs/fun-facts-cards-pending.md.
+// import ArticleFooter from "@/app/articles/_components/ArticleFooter"
 import WaveFlagCard from "./WaveFlagCard"
-import TurkeyVolunteerCard from "./TurkeyVolunteerCard"
+// import TurkeyVolunteerCard from "./TurkeyVolunteerCard"
 
 const sharedCardShell =
   "pixel-panel !shadow-none overflow-hidden border border-border/60 bg-card/88 transition-colors duration-200 hover:border-primary/40"
@@ -40,6 +41,11 @@ export default async function FunFactsSection({
 
         <div className="grid gap-5 md:grid-cols-12 md:items-start">
           <div className="order-3 grid gap-5 md:col-span-8 md:content-start">
+            {/*
+              Pending cards: backpacking and fan/dislike.
+              See docs/fun-facts-cards-pending.md before restoring them.
+            */}
+            {/*
             <TurkeyVolunteerCard
               className={cn(
                 sharedCardShell,
@@ -59,6 +65,7 @@ export default async function FunFactsSection({
                 roundedControls={roundedButtons}
               />
             </article>
+            */}
           </div>
         </div>
       </div>
