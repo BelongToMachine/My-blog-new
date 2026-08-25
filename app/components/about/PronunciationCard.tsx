@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, type ReactNode } from "react"
+import { useEffect, useRef, useState, type ReactNode } from "react"
 import { Volume2 } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { cn } from "@/lib/utils"
@@ -16,39 +16,41 @@ export default function PronunciationCard({
   const t = useTranslations("funFacts.pronunciation")
   const [canSpeak, setCanSpeak] = useState(false)
   const [isSpeaking, setIsSpeaking] = useState(false)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
 
   useEffect(() => {
-    setCanSpeak(typeof window !== "undefined" && "speechSynthesis" in window)
+    const audio = new Audio("/audio/jie-pronunciation.mp3")
+    audio.preload = "auto"
+    audioRef.current = audio
+    setCanSpeak(audio.canPlayType("audio/mpeg") !== "")
+
+    const resetSpeakingState = () => setIsSpeaking(false)
+    audio.addEventListener("ended", resetSpeakingState)
+    audio.addEventListener("error", resetSpeakingState)
 
     return () => {
-      if (typeof window !== "undefined" && "speechSynthesis" in window) {
-        window.speechSynthesis.cancel()
-      }
+      audio.pause()
+      audio.currentTime = 0
+      audio.removeEventListener("ended", resetSpeakingState)
+      audio.removeEventListener("error", resetSpeakingState)
+      audioRef.current = null
     }
   }, [])
 
   const handleSpeak = () => {
-    if (!canSpeak) return
-
-    window.speechSynthesis.cancel()
+    const audio = audioRef.current
+    if (!canSpeak || !audio) return
 
     if (isSpeaking) {
+      audio.pause()
+      audio.currentTime = 0
       setIsSpeaking(false)
       return
     }
 
-    const utterance = new SpeechSynthesisUtterance(
-      `${t("name")}. ${t("phonetic")}.`,
-    )
-
-    utterance.lang = "en-US"
-    utterance.rate = 0.82
-    utterance.pitch = 1.02
-    utterance.onend = () => setIsSpeaking(false)
-    utterance.onerror = () => setIsSpeaking(false)
-
+    audio.currentTime = 0
     setIsSpeaking(true)
-    window.speechSynthesis.speak(utterance)
+    void audio.play().catch(() => setIsSpeaking(false))
   }
 
   return (
@@ -58,8 +60,8 @@ export default function PronunciationCard({
         "flex flex-col items-center gap-5 p-4 text-center md:p-4 lg:p-5",
       )}
     >
-      <div className="flex w-full flex-wrap items-start justify-center gap-3">
-        <p className="font-rounded-display text-[clamp(2.35rem,5vw,4.1rem)] font-semibold leading-[0.9] tracking-[-0.06em] text-foreground">
+      <div className="flex w-full flex-wrap items-center justify-center gap-3">
+        <p className="hero-interactive origin-center font-rounded-display text-[clamp(2.1rem,4.5vw,3.6rem)] font-semibold leading-[0.9] tracking-[-0.06em] text-foreground transition-transform hover:scale-[1.03] active:scale-[1.08] motion-reduce:hover:scale-100 motion-reduce:active:scale-100">
           <span className="whitespace-nowrap">{t("phonetic")}</span>
         </p>
         {roundedButton ? (
@@ -105,8 +107,8 @@ export default function PronunciationCard({
           name: t("name"),
           highlight: (chunks) => <Highlight>{chunks}</Highlight>,
         })}{" "}
-        <span className="font-rounded-display text-[1.08em] font-medium tracking-[-0.04em] text-primary">
-          {t("phonetic")}
+        <span className="font-rounded-display text-[1.08em] font-medium tracking-[-0.04em] text-[#eb5f8e]">
+          {t("sentencePhonetic")}
         </span>
         {t("sentenceSuffix")}
       </p>
