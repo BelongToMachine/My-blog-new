@@ -66,7 +66,7 @@ export default async function Hero({
               I&apos;M JIE
             </h1>
             <div className="space-y-4 md:max-w-[19rem] lg:-translate-x-2 translate-y-4 lg:-translate-y-8 lg:max-w-none lg:space-y-6 xl:-translate-x-3 xl:-translate-y-10">
-              <p className="hero-interactive origin-left text-[15px] min-[480px]:text-base md:text-[1.05rem] lg:text-[1.05rem] leading-[1.75] tracking-[0.01em] min-[480px]:max-w-[24ch] sm:max-w-[28ch] md:max-w-[40ch] lg:max-w-[36ch] xl:max-w-[38ch] ml-2 lg:-ml-24 mt-10 text-muted-foreground [text-wrap:pretty] transition-transform hover:scale-[1.03] active:scale-[1.08] motion-reduce:hover:scale-100 motion-reduce:active:scale-100">
+              <p className="hero-interactive origin-left text-[15px] min-[480px]:text-base md:text-[1.05rem] lg:text-[1.05rem] leading-[1.75] tracking-[0.01em] min-[480px]:max-w-[24ch] sm:max-w-[28ch] md:max-w-[38ch] ml-2 lg:-ml-32 mt-12 text-muted-foreground [text-wrap:pretty] transition-transform hover:scale-[1.03] active:scale-[1.08] motion-reduce:hover:scale-100 motion-reduce:active:scale-100">
                 {t("shortIntro")}
               </p>
               <div className="flex flex-wrap gap-3">
