@@ -144,7 +144,6 @@
     "stackLabel": "技术栈",
     "projectLabel": "项目 {index}",
     "contributionsLabel": "核心工作",
-    "toolsUsedLabel": "使用工具",
     "roles": {
       "frontend": "前端开发",
       "fullstack": "全栈工程师"
@@ -155,16 +154,41 @@
       "agentProduct": "Agent 对话产品"
     },
     "stateStreet": {
-      "period": "2024-至今",
-      "company": "State Street Corporation",
-      "roleTitle": "State Street Corporation 前端开发工程师",
+      "period": "2025.3 - 至今",
+      "company": "State Street（美国道富银行）",
+      "roleTitle": "咨询顾问 · 用户体验工程师 · React、AI Agent Harness 工程与 AI 集成",
+      "tags": {
+        "ux": "UX 设计探索",
+        "mfe": "E2E 微前端架构",
+        "knowledge": "企业级 RAG · AI SDLC"
+      },
       "workstream1": "交易管理系统",
       "workstream2": "UX Agent",
-      "description": "在 State Street 的两条内部产品线上持续交付，一条是遗留交易平台的前端架构重构，一条是面向产品团队的 AI 驱动 UX Agent。整体工作覆盖前端架构拆分、数据看板交互、设计系统迁移，以及基于自然语言的页面生成能力。",
+      "description": "参与 State Street 内部产品及开发者体验（DevEx）相关建设，覆盖 UX 与技术方案设计、前端架构以及 AI 赋能的软件工程流程。推动核心银行业务流程的微前端架构现代化，涉及交易处理、跨境汇款、直通式处理（STP）、报表、通知及权限控制等模块，并通过完善单元测试及 AI 辅助的遗留 UI 组件渐进式迁移，提升系统的可维护性。同时参与内部 Developer Portal 的全栈架构建设，集成 AI 辅助的软件开发生命周期（SDLC）工作流，并建设基于向量数据库基础设施的 RAG 知识平台。",
       "highlight1": "用 Module Federation 将遗留交易单体拆分为 5+ 个可独立开发部署的功能域",
       "highlight2": "搭建可拖拽数据看板，统一请求处理逻辑，并补齐响应式持久化与单元测试覆盖",
       "highlight3": "设计并实现 UX Agent，让产品需求描述可以直接生成符合规范的 React 页面",
       "highlight4": "交付迁移与编排工具，推动 50+ 自研组件在保留旧系统可用性的前提下渐进升级"
+    },
+    "xiaoAn": {
+      "period": "2023.10 - 2024.3",
+      "company": "晓安科技",
+      "roleTitle": "前端开发工程师 · React + Twig · Drupal VR 可视化编辑器 SaaS",
+      "tags": {
+        "visualEditor": "VR 3D Editor",
+        "cms": "Drupal CMS"
+      },
+      "description": "作为前端开发工程师，参与基于 Drupal CMS 的 VR/360°全景可视化编辑器 SaaS 平台开发。使用 React 构建可视化编辑器的界面与交互，并结合 Twig 和 Drupal 页面模板完成 CMS 集成；同时集成 Photo Sphere Viewer，实现 360°全景内容的渲染、浏览与交互。工作重点包括 React 编辑器功能开发、全景场景展示，以及 React 应用与 Drupal/Twig 内容管理体系之间的数据和页面协作。"
+    },
+    "sscTech": {
+      "period": "2024.7 - 2025.2",
+      "company": "SS&C 科技 · Hubwise 英国财富管理",
+      "roleTitle": "咨询顾问 · SS&C Hubwise 前端开发工程师（React / Backbone）",
+      "tags": {
+        "architecture": "渐进式架构升级",
+        "integration": "遗留技术栈整合"
+      },
+      "description": "作为 React 前端咨询顾问，负责 SS&C Hubwise 金融服务平台的新页面交付与前端演进。在 jQuery、Backbone 与 React 共存的遗留系统中，推动平台向 React 渐进式现代化，并支持养老金与反洗钱（AML）相关业务流程。"
     },
     "financial": {
       "title": "交易管理系统 · State Street Corporation",
@@ -231,13 +255,14 @@
       "eyebrow": "名字怎么念",
       "name": "Jie",
       "phoneticLabel": "读作",
-      "phonetic": "jee-eh",
-      "body": "可以理解成先读一个轻一点的 “jee”，后面快速带出一个 “eh”，整体要短一点、干净一点。",
+      "phonetic": "/dʒeɪ/",
+      "body": "Jie 读作 /dʒeɪ/，和英文字母 J 的读音一样。",
       "breakdownLabel": "记忆方式",
-      "breakdownValue": "先发 “jee”，结尾轻轻收住，不要拖长。",
+      "breakdownValue": "直接读英文字母 J：“jay”。",
       "audioLabel": "音频 mock",
-      "sentencePrefix": "我的名字 <highlight>{name}</highlight> 读作",
-      "sentenceSuffix": "。",
+      "sentencePrefix": "我的名字是 <highlight>{name}</highlight>，读音和英文名",
+      "sentencePhonetic": "“Jay”",
+      "sentenceSuffix": "一样。",
       "hint": "点击喇叭，听一遍机器发音。",
       "buttonLabel": "听 Jie 的发音"
     },

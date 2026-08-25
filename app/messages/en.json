@@ -144,7 +144,6 @@
     "stackLabel": "Stack",
     "projectLabel": "Project {index}",
     "contributionsLabel": "Key contributions",
-    "toolsUsedLabel": "Tools used",
     "roles": {
       "frontend": "Frontend",
       "fullstack": "Fullstack"
@@ -155,16 +154,41 @@
       "agentProduct": "Agent conversation product"
     },
     "stateStreet": {
-      "period": "2024-present",
-      "company": "State Street Corporation",
-      "roleTitle": "Frontend Developer at State Street Corporation",
+      "period": "2025.3 - present",
+      "company": "State Street Technology Co., Ltd.",
+      "roleTitle": "Consultant · User Experience Engineer · React, AI Agent Harness Engineering & AI Integration",
+      "tags": {
+        "ux": "UX Design Exploration",
+        "mfe": "E2E MFE Architecture",
+        "knowledge": "Enterprise RAG & AI SDLC"
+      },
       "workstream1": "Trading Management System",
       "workstream2": "UX Agent",
-      "description": "Worked across two internal State Street initiatives: modernizing a legacy trading platform and building an AI-powered UX Agent for product teams. The scope spanned frontend architecture, dashboard interaction patterns, design-system migration, and agent-assisted page generation.",
+      "description": "Contributed to State Street’s internal product and developer experience (DevEx) initiatives, spanning UX and technical design, frontend architecture, and AI-enabled engineering workflows. Drove micro-frontend modernization across core banking workflows, including transaction processing, cross-border wires, straight-through processing (STP), reporting, notifications, and access control, while improving maintainability through unit testing and AI-assisted migration of legacy UI components. Contributed to the full-stack architecture of an internal Developer Portal, integrating AI-assisted SDLC workflows and a RAG-based knowledge platform backed by vector-database infrastructure.",
       "highlight1": "Split a legacy trading monolith into 5+ independently deployable domains with Module Federation",
       "highlight2": "Built a draggable dashboard with unified request handling, responsive persistence, and solid unit test coverage",
       "highlight3": "Created a UX Agent that turns natural-language product specs into spec-compliant React pages",
       "highlight4": "Shipped migration and orchestration tooling to modernize 50+ custom components alongside the existing system"
+    },
+    "xiaoAn": {
+      "period": "2023.10 - 2024.3",
+      "company": "Xiao-An Technology",
+      "roleTitle": "Frontend Engineer · React + Twig · Drupal-based VR Visual Editor SaaS",
+      "tags": {
+        "visualEditor": "VR 3D Editor",
+        "cms": "Drupal CMS"
+      },
+      "description": "Worked as a frontend engineer on a Drupal-based CMS SaaS platform for creating and managing interactive VR/360° panorama content. Built React-powered visual editor interfaces and interactions, integrated the editor with Drupal pages and Twig templates, and used Photo Sphere Viewer to render and interact with 360° spherical panoramas. The work focused on editor development, panorama visualization, and the integration between the React application and Drupal’s CMS layer."
+    },
+    "sscTech": {
+      "period": "2024.7 - 2025.2",
+      "company": "SS&C Technologies · Hubwise Platform",
+      "roleTitle": "Consultant · SS&C Hubwise Frontend Engineer (React / Backbone)",
+      "tags": {
+        "architecture": "Progressive Architecture Modernization",
+        "integration": "Legacy Stack Integration"
+      },
+      "description": "Frontend Engineering Consultant for Hubwise, a UK pension and wealth-management platform within SS&C Technologies. Worked across a legacy frontend stack built with jQuery and Backbone, while designing and delivering new React pages and helping drive the platform’s gradual modernization toward React across pension and Anti-Money Laundering workflows."
     },
     "financial": {
       "title": "Trading Management System · State Street Corporation",
@@ -231,12 +255,13 @@
       "eyebrow": "Say it right",
       "name": "Jie",
       "phoneticLabel": "Pronounced",
-      "phonetic": "jee-eh",
-      "body": "Think of it as a clean \"jee\" followed by a quick \"eh\". Short, light, and easy to repeat once you've heard it.",
+      "phonetic": "/dʒeɪ/",
+      "body": "Jie is pronounced /dʒeɪ/, like the letter J — \"jay.\"",
       "breakdownLabel": "Quick cue",
-      "breakdownValue": "Start with \"jee\", then let the ending fall off softly.",
+      "breakdownValue": "Say the letter J: \"jay.\"",
       "audioLabel": "Audio mock",
-      "sentencePrefix": "My name is <highlight>{name}</highlight>, which is pronounced as",
+      "sentencePrefix": "My name is <highlight>{name}</highlight>, pronounced as English name",
+      "sentencePhonetic": "\"Jay\"",
       "sentenceSuffix": ".",
       "hint": "Click to hear a robot say it.",
       "buttonLabel": "Hear how Jie is pronounced"

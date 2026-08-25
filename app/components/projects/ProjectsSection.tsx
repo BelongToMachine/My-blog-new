@@ -1,6 +1,6 @@
 import type { ReactNode } from "react"
 import { getTranslations } from "next-intl/server"
-import { Pencil } from "lucide-react"
+import Image from "next/image"
 import { cn } from "@/lib/utils"
 import {
   DatabaseDollarIcon,
@@ -29,9 +29,7 @@ interface ProjectConfig {
 interface FeaturedProjectSection {
   label: string
   title: string
-  description: string
   highlights: string[]
-  tech: string[]
 }
 
 const projects: ProjectConfig[] = [
@@ -92,23 +90,8 @@ function accentIconShell(color: ProjectConfig["accentColor"]) {
 export default async function ProjectsSection() {
   const t = await getTranslations("projects")
   const timelineProjectKeys: ProjectKey[] = ["financial", "uxAgent"]
-  const stateStreetProjects = projects.filter((project) =>
-    timelineProjectKeys.includes(project.key),
-  )
   const secondaryProjects = projects.filter(
     (project) => !timelineProjectKeys.includes(project.key),
-  )
-  const featuredProjectSections: FeaturedProjectSection[] = stateStreetProjects.map(
-    (project, index) => ({
-      label: t("projectLabel", { index: index + 1 }),
-      title: t(`stateStreet.workstream${index + 1}`),
-      description: t(`${project.key}.description`),
-      highlights: Array.from(
-        { length: project.highlightsCount },
-        (_, highlightIndex) => t(`${project.key}.highlight${highlightIndex + 1}`),
-      ),
-      tech: project.tech,
-    }),
   )
 
   return (
@@ -120,14 +103,45 @@ export default async function ProjectsSection() {
         <div className="h-px flex-1 bg-border/40" />
       </div>
 
-      <ProjectTimelineCard
-        period={t("stateStreet.period")}
-        title={t("stateStreet.roleTitle")}
-        description={t("stateStreet.description")}
-        projects={featuredProjectSections}
-        contributionsLabel={t("contributionsLabel")}
-        toolsUsedLabel={t("toolsUsedLabel")}
-      />
+      <div className="relative">
+        <div className="pointer-events-none absolute bottom-0 left-[27px] top-0 w-[2px] bg-border/90 sm:left-[35px] md:left-[43px]" />
+        <div className="relative z-10 space-y-5">
+          <ProjectTimelineCard
+            period={t("stateStreet.period")}
+            title={t("stateStreet.company")}
+            subtitle={t("stateStreet.roleTitle")}
+            description={t("stateStreet.description")}
+            tags={[
+              t("stateStreet.tags.ux"),
+              t("stateStreet.tags.mfe"),
+              t("stateStreet.tags.knowledge"),
+            ]}
+            projects={[]}
+            contributionsLabel={t("contributionsLabel")}
+            logoSrc="/icons/state-street-symbol.png"
+          />
+          <ProjectTimelineCard
+            period={t("sscTech.period")}
+            title={t("sscTech.company")}
+            subtitle={t("sscTech.roleTitle")}
+            description={t("sscTech.description")}
+            tags={[t("sscTech.tags.architecture"), t("sscTech.tags.integration")]}
+            projects={[]}
+            contributionsLabel={t("contributionsLabel")}
+            logoSrc="/icons/ssc-tech.png"
+          />
+          <ProjectTimelineCard
+            period={t("xiaoAn.period")}
+            title={t("xiaoAn.company")}
+            subtitle={t("xiaoAn.roleTitle")}
+            description={t("xiaoAn.description")}
+            tags={[t("xiaoAn.tags.visualEditor"), t("xiaoAn.tags.cms")]}
+            projects={[]}
+            contributionsLabel={t("contributionsLabel")}
+            logoSrc="/icons/xiao-an-symbol.svg"
+          />
+        </div>
+      </div>
 
       {secondaryProjects.length > 0 ? (
         <div className="mt-5 grid gap-5 lg:grid-cols-2">
@@ -157,27 +171,34 @@ export default async function ProjectsSection() {
 function ProjectTimelineCard({
   period,
   title,
+  subtitle,
   description,
+  tags,
   projects,
   contributionsLabel,
-  toolsUsedLabel,
+  logoSrc,
 }: {
   period: string
   title: string
+  subtitle?: string
   description: string
+  tags?: string[]
   projects: FeaturedProjectSection[]
   contributionsLabel: string
-  toolsUsedLabel: string
+  logoSrc: string
 }) {
   return (
     <div className="grid grid-cols-[56px_minmax(0,1fr)] items-stretch gap-4 sm:grid-cols-[72px_minmax(0,1fr)] sm:gap-5 md:grid-cols-[88px_minmax(0,1fr)] md:gap-6">
       <div className="relative flex justify-center">
         <div className="absolute bottom-0 left-1/2 top-0 w-[2px] -translate-x-1/2 bg-border/90 md:w-[3px]" />
-        <div className="relative z-10 mt-6 flex h-12 w-12 items-center justify-center border border-border/55 bg-background/96 md:mt-8 md:h-14 md:w-14">
-          <div className="flex h-9 w-9 items-center justify-center bg-primary text-primary-foreground md:h-10 md:w-10">
-            <Pencil className="h-4 w-4 stroke-[2.2] md:h-[18px] md:w-[18px]" />
-          </div>
-        </div>
+      <Image
+        src={logoSrc}
+        alt=""
+        width={36}
+        height={36}
+        className="hero-interactive relative z-10 mt-6 h-9 w-9 origin-center transition-transform hover:scale-[1.095] active:scale-[1.12] motion-reduce:hover:scale-100 motion-reduce:active:scale-100 md:mt-8 md:h-10 md:w-10"
+        aria-hidden="true"
+      />
       </div>
 
       <div className="group relative">
@@ -222,70 +243,74 @@ function ProjectTimelineCard({
         <article className="relative z-10 overflow-visible border-[3px] border-l-transparent border-r-border border-y-border bg-card/88 px-5 py-6 transition-colors duration-200 group-hover:border-r-primary/40 group-hover:border-y-primary/40 md:px-8 md:py-8 lg:px-10 lg:py-10">
         <div className="border-b border-border/60 pb-5">
           <div className="space-y-4">
-            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-2">
-              <h3 className="max-w-[24ch] text-[clamp(1.75rem,2.6vw,2.5rem)] font-semibold leading-[1.08] tracking-[-0.025em] text-foreground">
+            <div className="flex flex-nowrap items-baseline gap-x-3">
+              <h3 className="whitespace-nowrap text-[clamp(1.2rem,2.2vw,2rem)] font-semibold leading-[1.08] tracking-[-0.025em] text-foreground">
                 {title}
               </h3>
-              <p className="text-[clamp(0.98rem,1.55vw,1.3rem)] font-medium leading-none tracking-[-0.02em] text-muted-foreground/78">
+              <p className="shrink-0 text-[clamp(0.85rem,1.25vw,1.1rem)] font-medium leading-none tracking-[-0.02em] text-muted-foreground/78">
                 ({period})
               </p>
             </div>
+            {subtitle ? (
+              <p className="max-w-[72ch] text-sm font-medium leading-[1.5] text-muted-foreground/80 md:text-[15px]">
+                {subtitle}
+              </p>
+            ) : null}
             <p className="max-w-[72ch] text-pretty text-[15px] leading-[1.7] text-foreground/78 md:text-base md:leading-[1.75]">
               {description}
             </p>
+            {tags?.length ? (
+              <div className="flex flex-wrap gap-2 pt-1">
+                {tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="inline-flex items-center border-2 border-primary/30 bg-primary/[0.04] px-2.5 py-1.5 font-pixel text-[10px] font-medium uppercase leading-none tracking-[0.18em] text-primary/85 transition-[background-color,border-color,color] duration-200 hover:border-primary/70 hover:bg-primary/[0.09] hover:text-foreground"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            ) : null}
           </div>
         </div>
 
-        <div className="mt-6 space-y-7">
-          {projects.map((project, index) => (
-            <section
-              key={project.label}
-              className={cn(index > 0 && "border-t border-border/60 pt-7")}
-            >
-              <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
-                <h4 className="text-[clamp(1.1rem,1.65vw,1.45rem)] font-semibold leading-[1.2] tracking-[-0.02em] text-foreground">
-                  <span>{project.label}:</span>{" "}
-                  <span className="text-foreground/92">{project.title}</span>
-                </h4>
-              </div>
+        {projects.length > 0 ? (
+          <div className="mt-6 space-y-7">
+            {projects.map((project, index) => (
+              <section
+                key={project.label}
+                className={cn(index > 0 && "border-t border-border/60 pt-7")}
+              >
+                <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                  <h4 className="text-[clamp(1.1rem,1.65vw,1.45rem)] font-semibold leading-[1.2] tracking-[-0.02em] text-foreground">
+                    <span>{project.label}:</span>{" "}
+                    <span className="text-foreground/92">{project.title}</span>
+                  </h4>
+                </div>
 
-              <p className="mt-3 max-w-[72ch] text-pretty text-[15px] leading-[1.7] text-foreground/78 md:text-base md:leading-[1.75]">
-                {project.description}
-              </p>
+                <div className="mt-5">
+                  <p className={accentLabelClassName}>{contributionsLabel}</p>
+                  <ol className="mt-3 space-y-3">
+                    {project.highlights.map((highlight, highlightIndex) => (
+                      <li
+                        key={highlight}
+                        className="grid grid-cols-[auto_minmax(0,1fr)] items-start gap-3"
+                      >
+                        <span className="pt-0.5 text-[13px] font-semibold leading-none text-primary/76">
+                          {highlightIndex + 1}.
+                        </span>
+                        <span className="text-[14px] leading-relaxed text-foreground/80">
+                          {highlight}
+                        </span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
 
-              <div className="mt-5">
-                <p className={accentLabelClassName}>{contributionsLabel}</p>
-                <ol className="mt-3 space-y-3">
-                  {project.highlights.map((highlight, highlightIndex) => (
-                    <li
-                      key={highlight}
-                      className="grid grid-cols-[auto_minmax(0,1fr)] items-start gap-3"
-                    >
-                      <span className="pt-0.5 text-[13px] font-semibold leading-none text-primary/76">
-                        {highlightIndex + 1}.
-                      </span>
-                      <span className="text-[14px] leading-relaxed text-foreground/80">
-                        {highlight}
-                      </span>
-                    </li>
-                  ))}
-                </ol>
-              </div>
-
-              <div className="mt-5">
-                <p className={accentLabelClassName}>{toolsUsedLabel}</p>
-                <ul className="mt-3 grid gap-2 text-[14px] leading-relaxed text-foreground/80 sm:grid-cols-2">
-                  {project.tech.map((item) => (
-                    <li key={item} className="flex items-start gap-2.5">
-                      <span className="mt-[9px] block h-[5px] w-[5px] shrink-0 rounded-full bg-primary/62" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </section>
-          ))}
-        </div>
+              </section>
+            ))}
+          </div>
+        ) : null}
       </article>
       </div>
     </div>
