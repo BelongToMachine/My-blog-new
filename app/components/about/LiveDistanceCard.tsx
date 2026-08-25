@@ -16,6 +16,7 @@ const cardShell =
 const mapWidth = 800
 const mapHeight = 400
 const markerColor = "#f09150"
+const markerOutlineWidth = 0.5
 const nearbyPointThreshold = 120
 const nearbyPointTargetDistance = 220
 const maxNearbyMapZoom = 2.4
@@ -462,6 +463,39 @@ function DistanceMapGraphic({
           aria-hidden
           className="absolute inset-0 h-full w-full"
         >
+          <defs>
+            <filter
+              id="map-avatar-outline"
+              x="-25%"
+              y="-25%"
+              width="150%"
+              height="150%"
+              colorInterpolationFilters="sRGB"
+            >
+              <feMorphology
+                in="SourceAlpha"
+                operator="dilate"
+                radius={markerOutlineWidth}
+                result="expanded"
+              />
+              <feFlood
+                floodColor="#ffffff"
+                floodOpacity="1"
+                result="outlineColor"
+              />
+              <feComposite
+                in="outlineColor"
+                in2="expanded"
+                operator="in"
+                result="outline"
+              />
+              <feMerge>
+                <feMergeNode in="outline" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+
           {routePaths.length > 0 ? (
             <g>
               {routePaths.map((path) => (
@@ -532,7 +566,17 @@ function MapPinMarker({
         fill="#05080d"
         opacity={0.38}
       />
-      <LocationPin x={markerX} y={markerY} size={markerSize} fill={fill} />
+      <g className="group cursor-pointer">
+        <g className="origin-center transition-transform duration-200 ease-out [transform-box:fill-box] group-hover:scale-[1.07] motion-reduce:transition-none motion-reduce:group-hover:scale-100">
+          <LocationPin
+            x={markerX}
+            y={markerY}
+            size={markerSize}
+            fill={fill}
+            className="transition-[stroke,stroke-width] duration-200 group-hover:stroke-white group-hover:[stroke-width:1.35px] motion-reduce:transition-none"
+          />
+        </g>
+      </g>
     </g>
   )
 }
@@ -551,7 +595,7 @@ function MapAvatarMarker({
   const avatarY = point.y - avatarSize * (1037 / 1254)
 
   return (
-    <g>
+    <g className="group cursor-pointer">
       <ellipse
         cx={point.x}
         cy={point.y + 1.5 / mapScale}
@@ -560,15 +604,28 @@ function MapAvatarMarker({
         fill="#05080d"
         opacity={0.42}
       />
-      <image
-        href="/images/map-avatar-jie.png"
-        x={avatarX}
-        y={avatarY}
-        width={avatarSize}
-        height={avatarSize}
-        preserveAspectRatio="xMidYMid meet"
-        aria-hidden="true"
-      />
+      <g className="origin-center transition-transform duration-200 ease-out [transform-box:fill-box] group-hover:scale-[1.07] motion-reduce:transition-none motion-reduce:group-hover:scale-100">
+        <image
+          href="/images/map-avatar-jie.png"
+          x={avatarX}
+          y={avatarY}
+          width={avatarSize}
+          height={avatarSize}
+          preserveAspectRatio="xMidYMid meet"
+          filter="url(#map-avatar-outline)"
+          className="opacity-0 transition-opacity duration-200 group-hover:opacity-100 motion-reduce:transition-none"
+          aria-hidden="true"
+        />
+        <image
+          href="/images/map-avatar-jie.png"
+          x={avatarX}
+          y={avatarY}
+          width={avatarSize}
+          height={avatarSize}
+          preserveAspectRatio="xMidYMid meet"
+          aria-hidden="true"
+        />
+      </g>
     </g>
   )
 }
@@ -579,12 +636,14 @@ function LocationPin({
   size,
   fill,
   opacity,
+  className,
 }: {
   x: number
   y: number
   size: number
   fill: string
   opacity?: number
+  className?: string
 }) {
   return (
     <svg
@@ -598,6 +657,7 @@ function LocationPin({
       strokeWidth="0.9"
       paintOrder="stroke"
       opacity={opacity}
+      className={className}
       aria-hidden="true"
       focusable="false"
     >

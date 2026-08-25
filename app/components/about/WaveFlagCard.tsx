@@ -33,7 +33,10 @@ export default async function WaveFlagCard({
       <div
         role="img"
         aria-label={t("ariaLabel")}
-        className={cn(styles.flag, "mx-auto")}
+        className={cn(
+          styles.flag,
+          "hero-interactive origin-center mx-auto transition-transform hover:scale-[1.03] active:scale-[1.08] motion-reduce:hover:scale-100 motion-reduce:active:scale-100",
+        )}
         style={{ width: `min(${friendlyWidth}px, 100%)` }}
       >
         {Array.from({ length: numOfColumns }, (_, index) => (
