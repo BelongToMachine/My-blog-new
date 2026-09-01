@@ -33,7 +33,7 @@ export default async function Hero({
       {showBackLink ? (
         <Link
           href="/"
-          className="absolute -left-1 top-3 z-30 inline-flex items-center gap-1.5 border-2 border-primary/30 bg-background/80 px-2.5 py-1.5 text-sm font-medium tracking-[0.02em] text-primary backdrop-blur-sm transition-all duration-200 hover:border-primary/60 hover:bg-background hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 md:-left-1 md:top-5"
+          className="absolute -left-1 top-3 z-30 inline-flex items-center gap-1.5 border-2 border-primary/30 bg-background/80 px-2.5 py-1.5 text-sm font-medium tracking-[0.02em] text-primary backdrop-blur-sm transition-[background-color,border-color,color,box-shadow] duration-200 hover:border-primary/60 hover:bg-background hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 md:-left-1 md:top-5"
         >
           <span>←</span>
           <span>{t("backToNav")}</span>
@@ -45,7 +45,7 @@ export default async function Hero({
       >
         <span
           className={cn(
-            "hero-interactive font-display-face hero-welcome-mobile-drift inline-block origin-[50%_0%] transition-[transform,color] hover:scale-[1.015] hover:text-white active:scale-[1.04] motion-reduce:hover:scale-100 motion-reduce:active:scale-100 text-[clamp(10.5rem,40vw,13rem)] font-normal uppercase leading-[0.8] tracking-[0.04em] text-foreground/[0.12] [font-synthesis-weight:none] subpixel-antialiased dark:text-foreground/[0.14] md:text-[clamp(6.5rem,28vw,17rem)] md:font-normal md:leading-none md:tracking-[0.06em] md:text-foreground/[0.08] md:[font-synthesis-weight:none] md:subpixel-antialiased md:dark:text-foreground/[0.1] md:scale-x-[1.12] md:scale-y-[1.5] md:hover:scale-x-[1.137] md:hover:scale-y-[1.5225] md:active:scale-x-[1.165] md:active:scale-y-[1.56] lg:text-[clamp(6.5rem,26vw,18rem)]",
+            "hero-interactive font-display-face inline-block origin-[50%_0%] transition-[transform,color] hover:scale-[1.015] hover:text-white active:scale-[1.04] motion-reduce:hover:scale-100 motion-reduce:active:scale-100 text-[clamp(10.5rem,40vw,13rem)] font-normal uppercase leading-[0.8] tracking-[0.04em] text-foreground/[0.12] [font-synthesis-weight:none] subpixel-antialiased dark:text-foreground/[0.14] md:text-[clamp(6.5rem,28vw,17rem)] md:font-normal md:leading-none md:tracking-[0.06em] md:text-foreground/[0.08] md:[font-synthesis-weight:none] md:subpixel-antialiased md:dark:text-foreground/[0.1] md:scale-x-[1.12] md:scale-y-[1.5] md:hover:scale-x-[1.137] md:hover:scale-y-[1.5225] md:active:scale-x-[1.165] md:active:scale-y-[1.56] lg:text-[clamp(6.5rem,26vw,18rem)]",
           )}
         >
           Welcome
@@ -88,7 +88,7 @@ export default async function Hero({
                 ) : (
                   <Link
                     href="/ai"
-                    className="pointer-events-auto ai-cta-shimmer group inline-flex min-h-10 items-center gap-2 border-2 border-primary/35 bg-primary/[0.04] px-3 py-2.5 text-sm font-medium tracking-[0.02em] text-primary transition-all duration-200 hover:border-primary/70 hover:bg-primary/[0.09] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 min-[480px]:min-h-11 min-[480px]:px-4 min-[480px]:py-3 md:px-4 md:py-2.5 lg:min-h-0 lg:px-3.5 lg:py-2"
+                    className="pointer-events-auto ai-cta-shimmer group inline-flex min-h-10 items-center gap-2 border-2 border-primary/35 bg-primary/[0.04] px-3 py-2.5 text-sm font-medium tracking-[0.02em] text-primary transition-[background-color,border-color,color,box-shadow] duration-200 hover:border-primary/70 hover:bg-primary/[0.09] hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 min-[480px]:min-h-11 min-[480px]:px-4 min-[480px]:py-3 md:px-4 md:py-2.5 lg:min-h-0 lg:px-3.5 lg:py-2"
                   >
                     <span>{t("aiCtaLabel")}</span>
                     <span className="transition-transform duration-200 group-hover:translate-x-0.5">

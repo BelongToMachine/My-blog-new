@@ -1,52 +1,39 @@
 "use client"
-import React, { useCallback, useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import DesktopNav from "./components/navbar/DesktopNav"
 import MobileNav from "./components/navbar/MobileNav"
 import { cn } from "@/lib/utils"
-import { isDesktopViewport } from "./lib/responsive"
 import { usePathname } from "@/app/i18n/navigation"
 import { useTheme } from "@/app/hooks/useTheme"
+import { useAdaptiveMotion } from "@/app/hooks/useAdaptiveMotion"
 import { colorMode } from "@/app/context/DarkModeContext"
 
 const NavBar = () => {
-  const [windowWidth, setWindowWidth] = useState<number>(0)
-  const [shouldReduceMotion, setShouldReduceMotion] = useState(false)
+  const [isDesktopViewport, setIsDesktopViewport] = useState<boolean | null>(
+    null,
+  )
   const [shouldScrollAwayWithHero, setShouldScrollAwayWithHero] =
     useState(false)
   const pathname = usePathname()
   const isHomepage = pathname === "/"
   const { setColorMode } = useTheme()
+  const { shouldAnimateSpatialMotion } = useAdaptiveMotion()
   const prevHomepageRef = useRef(false)
   const savedModeRef = useRef<colorMode | null>(null)
   const navRef = useRef<HTMLElement | null>(null)
   const previousHeroScrollStateRef = useRef(false)
+  const heroScrollStateRef = useRef(false)
   const reentryAnimationRef = useRef<Animation | null>(null)
 
-  const updateWindowValue = useCallback(() => {
-    setWindowWidth(window.innerWidth)
-  }, [])
-
   useEffect(() => {
-    setWindowWidth(window.innerWidth)
-    window.addEventListener("resize", updateWindowValue)
+    const mediaQuery = window.matchMedia("(min-width: 768px)")
+    const updateViewport = () => setIsDesktopViewport(mediaQuery.matches)
+
+    updateViewport()
+    mediaQuery.addEventListener("change", updateViewport)
 
     return () => {
-      window.removeEventListener("resize", updateWindowValue)
-    }
-  }, [updateWindowValue])
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)")
-
-    const updateReducedMotion = () => {
-      setShouldReduceMotion(mediaQuery.matches)
-    }
-
-    updateReducedMotion()
-    mediaQuery.addEventListener("change", updateReducedMotion)
-
-    return () => {
-      mediaQuery.removeEventListener("change", updateReducedMotion)
+      mediaQuery.removeEventListener("change", updateViewport)
     }
   }, [])
 
@@ -65,6 +52,7 @@ const NavBar = () => {
 
   useEffect(() => {
     if (!isHomepage) {
+      heroScrollStateRef.current = false
       setShouldScrollAwayWithHero(false)
       return
     }
@@ -77,6 +65,7 @@ const NavBar = () => {
       const heroSection = document.getElementById("about-me-section")
 
       if (!heroSection) {
+        heroScrollStateRef.current = false
         setShouldScrollAwayWithHero(false)
         return
       }
@@ -84,8 +73,12 @@ const NavBar = () => {
       const heroBounds = heroSection.getBoundingClientRect()
       const hasStartedScrolling = window.scrollY > 0
       const isStillInsideHero = heroBounds.bottom > 0
+      const nextShouldScrollAway = hasStartedScrolling && isStillInsideHero
 
-      setShouldScrollAwayWithHero(hasStartedScrolling && isStillInsideHero)
+      if (heroScrollStateRef.current !== nextShouldScrollAway) {
+        heroScrollStateRef.current = nextShouldScrollAway
+        setShouldScrollAwayWithHero(nextShouldScrollAway)
+      }
     }
 
     const requestVisibilitySync = () => {
@@ -112,7 +105,7 @@ const NavBar = () => {
 
     if (
       !isHomepage ||
-      shouldReduceMotion ||
+      !shouldAnimateSpatialMotion ||
       shouldScrollAwayWithHero ||
       !wasScrollingAwayWithHero ||
       window.scrollY <= 0
@@ -145,9 +138,13 @@ const NavBar = () => {
     return () => {
       animation.cancel()
     }
-  }, [isHomepage, shouldReduceMotion, shouldScrollAwayWithHero])
+  }, [
+    isHomepage,
+    shouldAnimateSpatialMotion,
+    shouldScrollAwayWithHero,
+  ])
 
-  if (windowWidth === 0) {
+  if (isDesktopViewport === null) {
     return null
   }
 
@@ -160,7 +157,7 @@ const NavBar = () => {
         shouldScrollAwayWithHero ? "!absolute" : "!fixed",
       )}
     >
-      {isDesktopViewport(windowWidth) ? (
+      {isDesktopViewport ? (
         <DesktopNav />
       ) : (
         <MobileNav />

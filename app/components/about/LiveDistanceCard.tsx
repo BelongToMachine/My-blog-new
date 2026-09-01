@@ -9,6 +9,7 @@ import {
   type ApproximateGeoPoint,
   type DistanceCardLocationResponse,
 } from "@/app/lib/funFactsGeo"
+import { useAdaptiveMotion } from "@/app/hooks/useAdaptiveMotion"
 import { cn } from "@/lib/utils"
 
 const cardShell =
@@ -24,7 +25,8 @@ const veryNearbyPointThreshold = 60
 const veryNearbyPointTargetDistance = 300
 const maxVeryNearbyMapZoom = 3.6
 const mobileMarkerScale = 2
-const mapZoomAnimationDurationMs = 3000
+const mapZoomAnimationDurationMs = 900
+const limitedMapZoomAnimationDurationMs = 320
 const isDevMode =
   process.env.NODE_ENV === "development" ||
   process.env.NEXT_PUBLIC_DEV_MODE === "dev"
@@ -301,11 +303,11 @@ function DistanceMapGraphic({
   loadState: LoadState
   visitor?: ApproximateGeoPoint
 }) {
+  const { isMotionReady, motionLevel } = useAdaptiveMotion()
   const mapRef = useRef<HTMLDivElement | null>(null)
   const mapTransformRef = useRef<HTMLDivElement | null>(null)
   const [hasBeenViewed, setHasBeenViewed] = useState(false)
   const [isMobileViewport, setIsMobileViewport] = useState(false)
-  const [isZoomAnimationReady, setIsZoomAnimationReady] = useState(false)
   const homePoint = projectPoint(
     GUANGZHOU_LOCATION.latitude,
     GUANGZHOU_LOCATION.longitude,
@@ -323,10 +325,6 @@ function DistanceMapGraphic({
   const mapTargetTransform = mapView.shouldZoom
     ? `translate(${mapView.translateX}%,${mapView.translateY}%) scale(${mapView.scale})`
     : baseMapTransform
-  const mapTransform =
-    hasBeenViewed && mapView.shouldZoom && isZoomAnimationReady
-      ? mapTargetTransform
-      : baseMapTransform
 
   useEffect(() => {
     const mapElement = mapRef.current
@@ -368,58 +366,33 @@ function DistanceMapGraphic({
   }, [])
 
   useEffect(() => {
-    if (!hasBeenViewed || !mapView.shouldZoom) {
-      setIsZoomAnimationReady(false)
-      return
-    }
-
-    setIsZoomAnimationReady(false)
-    let firstFrameId: number | null = null
-    let secondFrameId: number | null = null
-
-    firstFrameId = window.requestAnimationFrame(() => {
-      secondFrameId = window.requestAnimationFrame(() => {
-        setIsZoomAnimationReady(true)
-      })
-    })
-
-    return () => {
-      if (firstFrameId !== null) {
-        window.cancelAnimationFrame(firstFrameId)
-      }
-
-      if (secondFrameId !== null) {
-        window.cancelAnimationFrame(secondFrameId)
-      }
-    }
-  }, [
-    hasBeenViewed,
-    mapView.shouldZoom,
-    mapView.scale,
-    mapView.translateX,
-    mapView.translateY,
-  ])
-
-  useEffect(() => {
     const mapElement = mapTransformRef.current
 
-    if (
-      !hasBeenViewed ||
-      !mapView.shouldZoom ||
-      !isZoomAnimationReady ||
-      !mapElement ||
-      typeof mapElement.animate !== "function"
-    ) {
+    if (!isMotionReady || !mapElement) {
       return
     }
 
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches
+    if (!hasBeenViewed || !mapView.shouldZoom) {
+      mapElement.style.transform = baseMapTransform
+      return
+    }
+
+    const duration =
+      motionLevel === "reduced"
+        ? 0
+        : motionLevel === "limited"
+          ? limitedMapZoomAnimationDurationMs
+          : mapZoomAnimationDurationMs
+
+    if (duration === 0 || typeof mapElement.animate !== "function") {
+      mapElement.style.transform = mapTargetTransform
+      return
+    }
+
     const animation = mapElement.animate(
       [{ transform: baseMapTransform }, { transform: mapTargetTransform }],
       {
-        duration: prefersReducedMotion ? 0.01 : mapZoomAnimationDurationMs,
+        duration,
         easing: "cubic-bezier(0.16, 1, 0.3, 1)",
         fill: "both",
       },
@@ -429,9 +402,10 @@ function DistanceMapGraphic({
   }, [
     baseMapTransform,
     hasBeenViewed,
-    isZoomAnimationReady,
+    isMotionReady,
     mapTargetTransform,
     mapView.shouldZoom,
+    motionLevel,
   ])
 
   const markerScale = isMobileViewport ? mobileMarkerScale : 1
@@ -446,9 +420,9 @@ function DistanceMapGraphic({
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_12%,rgba(67,92,126,0.2),transparent_30%),linear-gradient(180deg,#192432_0%,#111a25_100%)]" />
       <div
         ref={mapTransformRef}
-        className="absolute inset-0 transition-transform duration-[3000ms] ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none"
+        className="absolute inset-0"
         style={{
-          transform: mapTransform,
+          transform: baseMapTransform,
           transformOrigin: "50% 50%",
         }}
       >

@@ -92,7 +92,7 @@ export default function ArticleDetailLayout({ article }: ArticleDetailLayoutProp
           <aside
             id="article-toc-sidebar"
             className={cn(
-              "fixed inset-y-0 left-0 z-30 border-r-2 border-border/60 bg-background/95 backdrop-blur-sm transition-all duration-200 ease-out lg:hidden",
+              "fixed inset-y-0 left-0 z-30 border-r-2 border-border/60 bg-background/95 backdrop-blur-sm transition-[transform,opacity] duration-200 ease-out lg:hidden",
               "w-[min(280px,85vw)]",
               sidebarOpen
                 ? "translate-x-0 opacity-100"

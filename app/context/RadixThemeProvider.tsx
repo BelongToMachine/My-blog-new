@@ -7,8 +7,8 @@ const RadixThemeProvider = ({ children }: { children: ReactNode }) => {
   return (
     <Theme
       appearance="inherit"
-      accentColor="sky"
-      radius="small"
+      accentColor="cyan"
+      radius="none"
     >
       {children}
     </Theme>

@@ -1,7 +1,8 @@
 "use client"
 
-import { motion, useReducedMotion } from "framer-motion"
+import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
+import { useAdaptiveMotion } from "@/app/hooks/useAdaptiveMotion"
 
 type AssistantFrame =
   | "idle"
@@ -175,11 +176,11 @@ function MechanicalCatSvg({ frame }: { frame: AssistantFrame }) {
 }
 
 export function FloatingPixelAssistant() {
-  const reduceMotion = useReducedMotion()
+  const { shouldAnimateDecorations } = useAdaptiveMotion()
   const [frame, setFrame] = useState<AssistantFrame>("idle")
 
   useEffect(() => {
-    if (reduceMotion) {
+    if (!shouldAnimateDecorations) {
       setFrame("idle")
       return
     }
@@ -188,6 +189,11 @@ export function FloatingPixelAssistant() {
     let timeoutId: number | undefined
 
     const play = () => {
+      if (document.hidden) {
+        setFrame("idle")
+        return
+      }
+
       const step = SEQUENCE[index]
       setFrame(step.frame)
       timeoutId = window.setTimeout(() => {
@@ -196,32 +202,50 @@ export function FloatingPixelAssistant() {
       }, step.duration)
     }
 
+    const handleVisibilityChange = () => {
+      if (timeoutId !== undefined) {
+        window.clearTimeout(timeoutId)
+        timeoutId = undefined
+      }
+
+      if (document.hidden) {
+        setFrame("idle")
+        return
+      }
+
+      index = 0
+      play()
+    }
+
     play()
+    document.addEventListener("visibilitychange", handleVisibilityChange)
 
     return () => {
       if (timeoutId !== undefined) {
         window.clearTimeout(timeoutId)
       }
+
+      document.removeEventListener("visibilitychange", handleVisibilityChange)
     }
-  }, [reduceMotion])
+  }, [shouldAnimateDecorations])
 
   return (
     <motion.div
       aria-hidden="true"
       className="pointer-events-none absolute left-0 top-[17.5rem] z-20 w-[5.25rem] select-none sm:left-2 sm:top-[18rem] sm:w-[5.75rem] md:-left-1 md:top-[19rem] md:w-[6.5rem] lg:-left-16 lg:top-auto lg:bottom-0 lg:w-[7.5rem] xl:-left-20 xl:bottom-1 xl:w-[8.25rem]"
       animate={
-        reduceMotion
-          ? { y: 0, scale: 1 }
-          : { y: [0, -4, 0], scale: [1, 1.015, 1] }
+        shouldAnimateDecorations
+          ? { y: [0, -4, 0], scale: [1, 1.015, 1] }
+          : { y: 0, scale: 1 }
       }
       transition={
-        reduceMotion
-          ? { duration: 0 }
-          : {
+        shouldAnimateDecorations
+          ? {
               duration: 2.8,
               repeat: Infinity,
               ease: [0.25, 1, 0.5, 1],
             }
+          : { duration: 0 }
       }
     >
       <MechanicalCatSvg frame={frame} />

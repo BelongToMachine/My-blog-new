@@ -1,14 +1,14 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 import {
   animate,
   useMotionValue,
   useMotionValueEvent,
-  useReducedMotion,
   useSpring,
   useTransform,
 } from "framer-motion"
+import { useAdaptiveMotion } from "@/app/hooks/useAdaptiveMotion"
 
 const ENTRY_ANIMATIONS = [
   {
@@ -50,9 +50,13 @@ function clearHeroScrollTransforms(root: HTMLElement | null) {
 }
 
 export default function HeroMotionHydrator() {
-  const reduceMotion = useReducedMotion()
+  const {
+    isMotionReady,
+    shouldAnimateSpatialMotion,
+    shouldReduceMotion,
+    shouldUseLimitedMotion,
+  } = useAdaptiveMotion()
   const rootRef = useRef<HTMLElement | null>(null)
-  const [hasResolvedViewport, setHasResolvedViewport] = useState(false)
   const rawProgress = useMotionValue(0)
   const welcomeLift = useTransform(rawProgress, [0, 1], [0, -120])
   const contentLift = useTransform(rawProgress, [0, 1], [0, -80])
@@ -69,24 +73,14 @@ export default function HeroMotionHydrator() {
 
   useEffect(() => {
     rootRef.current = document.querySelector<HTMLElement>("[data-hero-root]")
-
-    const updateViewportWidth = () => {
-      setHasResolvedViewport(true)
-    }
-
-    updateViewportWidth()
-    window.addEventListener("resize", updateViewportWidth)
-
-    return () => {
-      window.removeEventListener("resize", updateViewportWidth)
-    }
   }, [])
 
   useEffect(() => {
-    if (reduceMotion || !rootRef.current) {
+    if (!isMotionReady || shouldReduceMotion || !rootRef.current) {
       return
     }
 
+    const animatedElements: HTMLElement[] = []
     const controls = ENTRY_ANIMATIONS.flatMap((config) => {
       const element = rootRef.current?.querySelector<HTMLElement>(
         config.selector,
@@ -96,10 +90,15 @@ export default function HeroMotionHydrator() {
         return []
       }
 
+      animatedElements.push(element)
+      const keyframes = shouldUseLimitedMotion
+        ? [{ opacity: 0 }, { opacity: 1 }]
+        : config.keyframes
+
       return [
-        animate(element, [...config.keyframes] as any, {
-          duration: config.duration,
-          delay: config.delay,
+        animate(element, [...keyframes] as any, {
+          duration: shouldUseLimitedMotion ? 0.28 : config.duration,
+          delay: shouldUseLimitedMotion ? Math.min(config.delay, 0.08) : config.delay,
           ease: [0.22, 1, 0.36, 1],
         }),
       ]
@@ -107,11 +106,15 @@ export default function HeroMotionHydrator() {
 
     return () => {
       controls.forEach((control) => control.stop())
+      animatedElements.forEach((element) => {
+        element.style.opacity = ""
+        element.style.transform = ""
+      })
     }
-  }, [reduceMotion])
+  }, [isMotionReady, shouldReduceMotion, shouldUseLimitedMotion])
 
   useEffect(() => {
-    if (reduceMotion || !hasResolvedViewport || !rootRef.current) {
+    if (!shouldAnimateSpatialMotion || !rootRef.current) {
       rawProgress.set(0)
       clearHeroScrollTransforms(rootRef.current)
       return
@@ -157,11 +160,13 @@ export default function HeroMotionHydrator() {
 
       window.removeEventListener("scroll", requestSync)
       window.removeEventListener("resize", requestSync)
+      rawProgress.set(0)
+      clearHeroScrollTransforms(rootRef.current)
     }
-  }, [hasResolvedViewport, rawProgress, reduceMotion])
+  }, [rawProgress, shouldAnimateSpatialMotion])
 
   useMotionValueEvent(smoothWelcomeLift, "change", (latest) => {
-    if (reduceMotion) {
+    if (!shouldAnimateSpatialMotion) {
       return
     }
 
@@ -174,11 +179,12 @@ export default function HeroMotionHydrator() {
     }
 
     welcome.style.transform = `translate3d(0, ${latest}px, 0)`
-    welcome.style.willChange = "transform"
+    welcome.style.willChange =
+      latest < -0.1 && latest > -119.9 ? "transform" : ""
   })
 
   useMotionValueEvent(smoothContentLift, "change", (latest) => {
-    if (reduceMotion) {
+    if (!shouldAnimateSpatialMotion) {
       return
     }
 
@@ -188,7 +194,8 @@ export default function HeroMotionHydrator() {
 
     contentBlocks?.forEach((element) => {
       element.style.transform = `translate3d(0, ${latest}px, 0)`
-      element.style.willChange = "transform"
+      element.style.willChange =
+        latest < -0.1 && latest > -79.9 ? "transform" : ""
     })
   })
 

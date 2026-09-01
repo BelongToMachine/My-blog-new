@@ -4,14 +4,17 @@ import React, {
   ReactNode,
   useState,
   useEffect,
-  useRef,
 } from "react"
 import { PostCssProperties } from "../service/ThemeService"
 
 export type colorMode = "light" | "dark"
 const THEME_STORAGE_KEY = "color-mode"
-const THEME_TRANSITION_CLASS = "theme-transition"
-const THEME_TRANSITION_DURATION_MS = 420
+
+interface ViewTransitionDocument extends Document {
+  startViewTransition?: (updateCallback: () => void) => {
+    finished: Promise<void>
+  }
+}
 
 const getCssProperties = (value: colorMode) => {
   if (typeof window.GET_JIE_BLOG_CSS_PROPERTIES === "function") {
@@ -45,8 +48,6 @@ export const ThemeContext = createContext<ThemeContextType | undefined>(
 )
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  const transitionTimeoutRef = useRef<number | null>(null)
-
   const readColorModeFromDom = (): colorMode => {
     const root = window.document.documentElement
     const datasetValue = root.dataset.colorMode
@@ -86,30 +87,34 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     rawSetColorMode(readColorModeFromDom())
-
-    return () => {
-      if (transitionTimeoutRef.current !== null) {
-        window.clearTimeout(transitionTimeoutRef.current)
-      }
-    }
   }, [])
 
   const setColorMode = (value: colorMode) => {
-    const root = window.document.documentElement
-
-    if (transitionTimeoutRef.current !== null) {
-      window.clearTimeout(transitionTimeoutRef.current)
+    if (readColorModeFromDom() === value) {
+      rawSetColorMode(value)
+      return
     }
 
-    root.classList.add(THEME_TRANSITION_CLASS)
-    rawSetColorMode(value)
-    window.localStorage.setItem(THEME_STORAGE_KEY, value)
-    applyColorMode(value)
+    const commitColorMode = () => {
+      rawSetColorMode(value)
+      window.localStorage.setItem(THEME_STORAGE_KEY, value)
+      applyColorMode(value)
+    }
+    const transitionDocument = window.document as ViewTransitionDocument
+    const shouldReduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches
 
-    transitionTimeoutRef.current = window.setTimeout(() => {
-      root.classList.remove(THEME_TRANSITION_CLASS)
-      transitionTimeoutRef.current = null
-    }, THEME_TRANSITION_DURATION_MS)
+    if (
+      !shouldReduceMotion &&
+      document.visibilityState === "visible" &&
+      typeof transitionDocument.startViewTransition === "function"
+    ) {
+      transitionDocument.startViewTransition(commitColorMode)
+      return
+    }
+
+    commitColorMode()
   }
 
   return (

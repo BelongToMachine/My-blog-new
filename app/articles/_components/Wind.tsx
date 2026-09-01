@@ -1,9 +1,15 @@
 "use client"
 
 import { useDefaultCursorStore, useVirtualCursorStore } from "@/app/service/Store"
+import { useAdaptiveMotion } from "@/app/hooks/useAdaptiveMotion"
 import { cn } from "@/lib/utils"
-import { useEffect, useRef, type MouseEvent, type ReactNode } from "react"
-import { useReducedMotion } from "framer-motion"
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  type MouseEvent,
+  type ReactNode,
+} from "react"
 
 const WIND_TILE_WIDTH = 64
 const WIND_TARGET_FOLLOW_MS = 240
@@ -11,6 +17,12 @@ const FREE_TARGET_FOLLOW_MS = 42
 const WIND_STRUGGLE_RESPONSE = 0.14
 const WIND_STRUGGLE_DECAY_MS = 110
 const WIND_STRUGGLE_MAX = 3.2
+
+interface WindMetrics {
+  buttonRect: DOMRect | null
+  bounds: ReturnType<typeof getWindFieldBounds>
+  speedPxPerMs: number
+}
 
 function parseAnimationDurationMs(value: string) {
   const firstDuration = value.split(",")[0]?.trim() ?? ""
@@ -74,7 +86,7 @@ const Wind = ({
   children?: ReactNode
   className?: string
 }) => {
-  const shouldReduceMotion = useReducedMotion()
+  const { canUseFinePointerMotion } = useAdaptiveMotion()
   const isMagicCursor = useDefaultCursorStore((state) => state.isMagicCursor)
   const switchMagicCursor = useDefaultCursorStore(
     (state) => state.switchMagicCursor
@@ -90,20 +102,39 @@ const Wind = ({
   const controlRef = useRef<HTMLDivElement>(null)
   const lastInputPositionRef = useRef<{ x: number; y: number } | null>(null)
   const struggleImpulseRef = useRef(0)
+  const metricsRef = useRef<WindMetrics | null>(null)
+
+  const syncMetrics = useCallback(() => {
+    const windElement = windRef.current
+
+    if (!windElement) {
+      metricsRef.current = null
+      return
+    }
+
+    metricsRef.current = {
+      bounds: getWindFieldBounds(windElement),
+      buttonRect:
+        controlRef.current?.querySelector("button")?.getBoundingClientRect() ??
+        null,
+      speedPxPerMs: getWindSpeedPxPerMs(windElement),
+    }
+  }, [])
 
   const handleMouseEnter = (event: MouseEvent<HTMLDivElement>) => {
-    if (shouldReduceMotion) return
+    if (!canUseFinePointerMotion) return
 
     const position = { x: event.clientX, y: event.clientY }
     lastInputPositionRef.current = position
     struggleImpulseRef.current = 0
     setCursorPosition(position)
     setCursorVariant("arrow")
+    syncMetrics()
     switchMagicCursor(true)
   }
 
   const handleMouseMove = (event: MouseEvent<HTMLDivElement>) => {
-    if (shouldReduceMotion) return
+    if (!canUseFinePointerMotion) return
 
     const nextPosition = { x: event.clientX, y: event.clientY }
     const lastInputPosition = lastInputPositionRef.current
@@ -129,7 +160,7 @@ const Wind = ({
   }
 
   const handleMouseLeave = () => {
-    if (shouldReduceMotion) return
+    if (!canUseFinePointerMotion) return
 
     lastInputPositionRef.current = null
     struggleImpulseRef.current = 0
@@ -138,35 +169,47 @@ const Wind = ({
   }
 
   useEffect(() => {
-    if (shouldReduceMotion && isMagicCursor) {
+    if (!canUseFinePointerMotion && isMagicCursor) {
       switchMagicCursor(false)
     }
-  }, [isMagicCursor, shouldReduceMotion, switchMagicCursor])
+  }, [canUseFinePointerMotion, isMagicCursor, switchMagicCursor])
 
   useEffect(() => {
-    if (!isMagicCursor || shouldReduceMotion) return
+    if (!isMagicCursor || !canUseFinePointerMotion) return
 
     let animationFrameId: number
+    let metricsFrameId = 0
     let prevTime: number | undefined
+
+    const requestMetricsSync = () => {
+      if (metricsFrameId) return
+
+      metricsFrameId = window.requestAnimationFrame(() => {
+        metricsFrameId = 0
+        syncMetrics()
+      })
+    }
+
+    syncMetrics()
+    window.addEventListener("scroll", requestMetricsSync, { passive: true })
+    window.addEventListener("resize", requestMetricsSync)
 
     const step = (currTime: number) => {
       if (!prevTime) prevTime = currTime
       const timeDelta = Math.min(24, Math.max(8, currTime - prevTime))
       prevTime = currTime
 
-      const windElement = windRef.current
       const cursorState = useVirtualCursorStore.getState()
       const targetPosition = cursorState.targetPosition
+      const metrics = metricsRef.current
 
-      if (!windElement || !targetPosition) {
+      if (!metrics || !targetPosition) {
         animationFrameId = window.requestAnimationFrame(step)
         return
       }
 
-      const windBounds = getWindFieldBounds(windElement)
-      const buttonRect =
-        controlRef.current?.querySelector("button")?.getBoundingClientRect() ??
-        null
+      const windBounds = metrics.bounds
+      const buttonRect = metrics.buttonRect
       const currentPosition = cursorState.position ?? targetPosition
       const isTargetInWindField = isPointInsideRect(targetPosition, windBounds)
       const isCursorInWindField = isPointInsideRect(currentPosition, windBounds)
@@ -175,7 +218,7 @@ const Wind = ({
         timeDelta,
         isWindActive ? WIND_TARGET_FOLLOW_MS : FREE_TARGET_FOLLOW_MS
       )
-      const windSpeed = isWindActive ? getWindSpeedPxPerMs(windElement) : 0
+      const windSpeed = isWindActive ? metrics.speedPxPerMs : 0
       const strugglePushX = struggleImpulseRef.current * (timeDelta / 16)
       const struggleDecay = Math.exp(-timeDelta / WIND_STRUGGLE_DECAY_MS)
       const freeFollowX =
@@ -211,16 +254,19 @@ const Wind = ({
     animationFrameId = window.requestAnimationFrame(step)
     return () => {
       if (animationFrameId) window.cancelAnimationFrame(animationFrameId)
+      if (metricsFrameId) window.cancelAnimationFrame(metricsFrameId)
+      window.removeEventListener("scroll", requestMetricsSync)
+      window.removeEventListener("resize", requestMetricsSync)
     }
-  }, [isMagicCursor, shouldReduceMotion])
+  }, [canUseFinePointerMotion, isMagicCursor, syncMetrics])
 
   return (
     <div
       ref={windRef}
       className={cn("wind", className)}
-      onMouseEnter={shouldReduceMotion ? undefined : handleMouseEnter}
-      onMouseMove={shouldReduceMotion ? undefined : handleMouseMove}
-      onMouseLeave={shouldReduceMotion ? undefined : handleMouseLeave}
+      onMouseEnter={canUseFinePointerMotion ? handleMouseEnter : undefined}
+      onMouseMove={canUseFinePointerMotion ? handleMouseMove : undefined}
+      onMouseLeave={canUseFinePointerMotion ? handleMouseLeave : undefined}
     >
       {children ? (
         <div ref={controlRef} className="wind__control">

@@ -58,7 +58,7 @@ const MobileNav = () => {
       <aside
         id="mobile-site-navigation"
         className={cn(
-          "fixed bottom-0 right-0 top-[var(--app-nav-offset)] z-30 w-[min(280px,85vw)] border-l-2 border-border/60 bg-background/95 px-4 py-4 backdrop-blur-sm transition-all duration-200 ease-out",
+          "fixed bottom-0 right-0 top-[var(--app-nav-offset)] z-30 w-[min(280px,85vw)] border-l-2 border-border/60 bg-background/95 px-4 py-4 backdrop-blur-sm transition-[transform,opacity] duration-200 ease-out",
           isMenuOpen
             ? "translate-x-0 opacity-100"
             : "pointer-events-none translate-x-full opacity-0",

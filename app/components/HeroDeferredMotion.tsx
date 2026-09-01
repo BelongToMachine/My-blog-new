@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import dynamic from "next/dynamic"
+import { useAdaptiveMotion } from "@/app/hooks/useAdaptiveMotion"
 
 const HeroMotionHydrator = dynamic(() => import("./HeroMotionHydrator"), {
   ssr: false,
@@ -10,9 +11,15 @@ const HeroMotionHydrator = dynamic(() => import("./HeroMotionHydrator"), {
 const FONT_READY_EVENT = "deferred-fonts-ready"
 
 export default function HeroDeferredMotion() {
+  const { isMotionReady, shouldAnimateSpatialMotion } = useAdaptiveMotion()
   const [shouldLoadAnimation, setShouldLoadAnimation] = useState(false)
 
   useEffect(() => {
+    if (!isMotionReady || !shouldAnimateSpatialMotion) {
+      setShouldLoadAnimation(false)
+      return
+    }
+
     let timeoutId: ReturnType<typeof setTimeout> | number = 0
     let idleId: number | ReturnType<typeof requestIdleCallback> = 0
     let cancelled = false
@@ -53,7 +60,7 @@ export default function HeroDeferredMotion() {
         window.cancelIdleCallback(idleId)
       }
     }
-  }, [])
+  }, [isMotionReady, shouldAnimateSpatialMotion])
 
   return shouldLoadAnimation ? <HeroMotionHydrator /> : null
 }

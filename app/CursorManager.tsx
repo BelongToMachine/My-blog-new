@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useRef } from "react"
+import { useEffect } from "react"
 import {
   useDefaultCursorStore,
   useVirtualCursorStore,
@@ -105,8 +105,6 @@ const CursorManager = () => {
   const isMagicCursor = useDefaultCursorStore((state) => state.isMagicCursor)
   const position = useVirtualCursorStore((state) => state.position)
   const cursorVariant = useVirtualCursorStore((state) => state.cursorVariant)
-  const setCursorRect = useVirtualCursorStore((state) => state.setCursorRect)
-  const cursorRef = useRef<HTMLDivElement>(null)
   const cursorConfig = CURSOR_CONFIG[cursorVariant]
   const CursorIcon = CURSOR_ICONS[cursorVariant]
 
@@ -126,17 +124,6 @@ const CursorManager = () => {
     color: "hsl(var(--foreground))",
   }
 
-  const updateCursorRect = useCallback(() => {
-    if (cursorRef.current) {
-      const rect = cursorRef.current.getBoundingClientRect()
-      setCursorRect(rect)
-    }
-  }, [setCursorRect])
-
-  useEffect(() => {
-    window.requestAnimationFrame(updateCursorRect)
-  }, [cursorVariant, position, updateCursorRect])
-
   useEffect(() => {
     document.body.classList.toggle("magic-cursor-active", isMagicCursor)
 
@@ -147,7 +134,6 @@ const CursorManager = () => {
 
   return (
     <div
-      ref={cursorRef}
       aria-hidden="true"
       className="virtual-cursor"
       style={virtualCursorStyles}

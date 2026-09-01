@@ -1040,7 +1040,7 @@ export default function AIPlayground() {
           <aside
             id="chat-sidebar"
             className={cn(
-              "ai-lab-sidebar-pane absolute inset-y-0 left-0 z-30 w-[min(290px,86vw)] border-r border-border/45 transition-all duration-200 ease-out md:hidden",
+              "ai-lab-sidebar-pane absolute inset-y-0 left-0 z-30 w-[min(290px,86vw)] border-r border-border/45 transition-[transform,opacity] duration-200 ease-out md:hidden",
               sidebarOpen ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0",
             )}
           >

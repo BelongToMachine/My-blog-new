@@ -66,8 +66,10 @@ export default function RoleFitReportBlock({
           </span>
           <div className="h-2 flex-1 bg-muted">
             <div
-              className="h-full bg-primary transition-all"
-              style={{ width: `${Math.max(0, Math.min(100, fitScore))}%` }}
+              className="h-full origin-left bg-primary transition-transform duration-300 ease-out motion-reduce:transition-none"
+              style={{
+                transform: `scaleX(${Math.max(0, Math.min(100, fitScore)) / 100})`,
+              }}
             />
           </div>
           <span className="text-[11px] font-semibold tracking-[0.04em] text-primary">

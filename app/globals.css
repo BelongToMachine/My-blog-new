@@ -231,14 +231,48 @@
     color: hsl(var(--text-link));
   }
 
-  html.theme-transition,
-  html.theme-transition *,
-  html.theme-transition *::before,
-  html.theme-transition *::after {
-    transition-property:
-      background-color, border-color, color, fill, stroke, box-shadow;
-    transition-duration: var(--motion-duration-slow);
-    transition-timing-function: var(--motion-ease-out);
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--motion-duration-base);
+  animation-timing-function: var(--motion-ease-out);
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  animation-name: theme-fade-out;
+}
+
+::view-transition-new(root) {
+  animation-name: theme-fade-in;
+}
+
+@keyframes theme-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes theme-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes hero-limited-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (max-width: 767px), (hover: none), (pointer: coarse) {
+  [data-hero-enter] {
+    animation: hero-limited-fade-in 280ms var(--motion-ease-out) both;
+  }
+
+  [data-hero-enter="image"] {
+    animation-delay: 40ms;
   }
 }
 
@@ -258,11 +292,10 @@
     transition-duration: 0.01ms !important;
   }
 
-  html.theme-transition,
-  html.theme-transition *,
-  html.theme-transition *::before,
-  html.theme-transition *::after {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
     transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
   }
 }
 
@@ -390,6 +423,16 @@ html.dark .wind__lane {
     animation: none;
     opacity: var(--wind-opacity-soft, 0.3);
     transform: translate3d(0, var(--wind-y, 0), 0);
+    will-change: auto;
+  }
+}
+
+@media (max-width: 767px), (hover: none), (pointer: coarse) {
+  .wind__lane {
+    animation: none;
+    opacity: var(--wind-opacity-soft, 0.3);
+    transform: translate3d(0, var(--wind-y, 0), 0);
+    will-change: auto;
   }
 }
 
@@ -840,7 +883,7 @@ html.dark .wind__lane {
 
   .ai-lab-featured-chip:hover .ai-lab-featured-chip__sparkle,
   .ai-lab-featured-chip:focus-visible .ai-lab-featured-chip__sparkle {
-    animation: ai-lab-pixel-sparkle 1.25s steps(3, end) infinite;
+    animation: ai-lab-pixel-sparkle 1.25s steps(3, end) 1 both;
   }
 
   .ai-lab-featured-chip:hover,
@@ -1281,35 +1324,6 @@ ul li {
   letter-spacing: 0.03em;
 }
 
-@keyframes hero-welcome-mobile-drift {
-  0%,
-  100% {
-    translate: 0 0;
-  }
-
-  28% {
-    translate: -6.25rem 0;
-  }
-
-  72% {
-    translate: 6.25rem 0;
-  }
-}
-
-@media (max-width: 499px) {
-  .hero-welcome-mobile-drift {
-    animation: hero-welcome-mobile-drift 5.4s ease-in-out infinite;
-    will-change: translate;
-  }
-}
-
-@media (max-width: 499px) and (prefers-reduced-motion: reduce) {
-  .hero-welcome-mobile-drift {
-    animation: none;
-    translate: 0 0;
-  }
-}
-
 @keyframes shimmer-sweep {
   0% {
     background-position: -200% 0;
@@ -1338,4 +1352,12 @@ ul li {
   background-size: 200% 100%;
   animation: shimmer-sweep 4.5s ease-in-out infinite;
   pointer-events: none;
+}
+
+@media (max-width: 767px), (hover: none), (pointer: coarse) {
+  .ai-cta-shimmer::before {
+    animation: none;
+    background-position: 50% 0;
+    opacity: 0.45;
+  }
 }

@@ -13,6 +13,7 @@ import QueryClientProvider from "../QueryClientProvider"
 import ReactQueryDevtoolsMount from "../ReactQueryDevtoolsMount"
 import CursorManager from "../CursorManager"
 import { ThemeProvider } from "../context/DarkModeContext"
+import { AdaptiveMotionProvider } from "../context/AdaptiveMotionContext"
 import RadixThemeProvider from "../context/RadixThemeProvider"
 import { locales } from "../i18n/routing"
 
@@ -61,12 +62,14 @@ export default async function LocaleLayout({
       <div className="app-shell">
         <QueryClientProvider>
           <ThemeProvider>
-            <RadixThemeProvider>
-              <NavBar />
-              <CursorManager />
-              <MainShell>{children}</MainShell>
-              <Footer />
-            </RadixThemeProvider>
+            <AdaptiveMotionProvider>
+              <RadixThemeProvider>
+                <NavBar />
+                <CursorManager />
+                <MainShell>{children}</MainShell>
+                <Footer />
+              </RadixThemeProvider>
+            </AdaptiveMotionProvider>
             <ReactQueryDevtoolsMount />
           </ThemeProvider>
         </QueryClientProvider>
