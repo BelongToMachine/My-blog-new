@@ -124,7 +124,7 @@
     "ctaAi": "AI 解决方案",
     "scrollDown": "向下滚动",
     "tapToContinue": "轻点继续",
-    "code": "const coder = {\n  name: \"开发者\",\n  role: [\"全栈开发工程师\"],\n  skill: [\"React\", \"Next.js\"],\n  location: \"中国杭州\",\n  welcomeMessage: () => {\n    return \"很高兴认识你！\"\n  }\n}"
+    "code": "const coder = {\n  name: \"开发者\",\n  role: [\"AI 产品工程师\"],\n  skill: [\"React\", \"Next.js\"],\n  location: \"中国广州\",\n  welcomeMessage: () => {\n    return \"很高兴认识你！\"\n  }\n}"
   },
   "home": {
     "blogSummary": "我的博客总结",
@@ -338,8 +338,8 @@
     "fanDescription": "\u6211\u559c\u6b22\u5199\u4e00\u4e9b\u5947\u5947\u602a\u602a\u7684\u4ee3\u7801\u3002\u51e0\u4e2a\u6708\u524d\u6211\u505a\u4e86\u8fd9\u4e2a\u300c\u53cd\u70b9\u8e29\u300d\u98ce\u6247\u2014\u2014\u5b83\u4f1a\u628a dislike \u6309\u94ae\u4ece\u4f60\u5149\u6807\u5e95\u4e0b\u5439\u8d70\u3002\u7eaf\u5c5e\u5a31\u4e50\uff0c\u6211\u5e76\u4e0d\u662f\u4e00\u4e2a\u4e13\u65ad\u7684\u4eba\u3002"
   },
   "footer": {
-    "identity": "开发者",
-    "tagline": "前端开发工程师 & AI 提示词工程师",
+    "identity": "全栈 AI 产品工程师",
+    "tagline": "前端与 UX · AI Agent · 云与 DevOps",
     "navigate": "导航",
     "connect": "联系",
     "copyright": "© {year} 开发者"
@@ -349,7 +349,9 @@
     "title": "联系我",
     "subtitle": "有兴趣一起合作吗？填写以下信息，让 AI 帮你起草一封专业的邮件给 Jie。发送前你可以随意编辑。",
     "infoSection": "关于你",
-    "infoHint": "尽量填写你能提供的信息 — 其余的 AI 会帮你补充。",
+    "infoHint": "姓名、邮箱和留言为必填；公司与业务 / 目的为可选。",
+    "requiredLabel": "必填",
+    "optionalLabel": "可选",
     "nameLabel": "你的名字",
     "namePlaceholder": "张三",
     "companyLabel": "公司",
@@ -362,6 +364,10 @@
     "customPromptPlaceholder": "告诉 Jie 你的来意 — 提供越多背景信息，AI 生成的邮件会越精准...",
     "generateButton": "用 AI 生成邮件",
     "generating": "生成中...",
+    "requiredFieldsHint": "请填写姓名、有效邮箱和留言，完成后即可生成邮件。",
+    "requiredFieldsError": "请先填写所有必填项。",
+    "invalidEmail": "请输入有效的邮箱地址。",
+    "readyToGenerate": "必填项已完成，可以生成邮件。",
     "generated": "邮件已生成！发送前你可以随意修改。",
     "previewSection": "邮件预览",
     "emptyPreview": "在左侧填写你的信息，然后点击“用 AI 生成邮件”来创建草稿。",
@@ -371,7 +377,13 @@
     "sending": "发送中...",
     "emailSent": "邮件已发送！Jie 会尽快回复你。",
     "emailError": "邮件发送失败，请重试。",
+    "successNoticeLabel": "操作完成",
+    "errorNoticeLabel": "需要处理",
+    "dismissNotice": "关闭提示",
     "generateError": "邮件生成失败，请提供更多信息后重试。",
+    "rateLimitError": "请求次数已达到临时上限，请等待几分钟后再试。",
+    "serviceUnavailableError": "邮件服务暂时不可用，请稍后再试。",
+    "emailContentRequired": "请先填写邮件主题和正文。",
     "emailRequired": "请输入你的邮箱地址，以便 Jie 回复你。"
   },
   "meta": {

@@ -9,6 +9,8 @@ let _redis: Redis | null = null
 let redisBypassUntil = 0
 let lastRedisNotice = ""
 
+export type ContactRateLimitKind = "generate-email" | "send-email"
+
 function hasRedisConfig() {
   const url = process.env.UPSTASH_REDIS_REST_URL
   const token = process.env.UPSTASH_REDIS_REST_TOKEN
@@ -63,9 +65,22 @@ function getRedis(): Redis {
 
 let _ratelimitIp: Ratelimit | null = null
 let _ratelimitSession: Ratelimit | null = null
+const _contactRatelimits: Partial<Record<ContactRateLimitKind, Ratelimit>> = {}
+const localContactRateMap = new Map<
+  string,
+  { count: number; resetAt: number }
+>()
 
 const WEIGHTED_LIMIT_WINDOW_MS = 5 * 60 * 1000
 const WEIGHTED_LIMIT_MAX_CREDITS = 30
+
+const CONTACT_RATE_LIMITS: Record<
+  ContactRateLimitKind,
+  { requests: number; window: "10 m" }
+> = {
+  "generate-email": { requests: 5, window: "10 m" },
+  "send-email": { requests: 3, window: "10 m" },
+}
 
 function getIpRatelimit(): Ratelimit {
   if (_ratelimitIp) return _ratelimitIp
@@ -85,6 +100,58 @@ function getSessionRatelimit(): Ratelimit {
     analytics: false,
   })
   return _ratelimitSession
+}
+
+function getContactRatelimit(kind: ContactRateLimitKind): Ratelimit {
+  const existing = _contactRatelimits[kind]
+  if (existing) return existing
+
+  const config = CONTACT_RATE_LIMITS[kind]
+  const ratelimit = new Ratelimit({
+    redis: getRedis(),
+    limiter: Ratelimit.slidingWindow(config.requests, config.window),
+    analytics: false,
+  })
+
+  _contactRatelimits[kind] = ratelimit
+  return ratelimit
+}
+
+function checkLocalContactRateLimit(
+  req: Request,
+  kind: ContactRateLimitKind,
+): RateLimitResult {
+  const now = Date.now()
+  const config = CONTACT_RATE_LIMITS[kind]
+  const key = `contact:${kind}:${getIp(req)}`
+  const entry = localContactRateMap.get(key)
+
+  if (!entry || now >= entry.resetAt) {
+    localContactRateMap.set(key, {
+      count: 1,
+      resetAt: now + 10 * 60 * 1000,
+    })
+    return {
+      allowed: true,
+      remaining: config.requests - 1,
+      resetAt: now + 10 * 60 * 1000,
+    }
+  }
+
+  if (entry.count >= config.requests) {
+    return {
+      allowed: false,
+      remaining: 0,
+      resetAt: entry.resetAt,
+    }
+  }
+
+  entry.count += 1
+  return {
+    allowed: true,
+    remaining: config.requests - entry.count,
+    resetAt: entry.resetAt,
+  }
 }
 
 /* ─── Client identifiers ─── */
@@ -126,6 +193,16 @@ export interface RateLimitResult {
   remaining: number
   resetAt: number
   reason?: "ip" | "session"
+  unavailable?: boolean
+}
+
+function unavailableRateLimitResult(): RateLimitResult {
+  return {
+    allowed: false,
+    remaining: 0,
+    resetAt: Date.now() + RATE_LIMIT_BYPASS_MS,
+    unavailable: true,
+  }
 }
 
 export async function checkIpRateLimit(req: Request): Promise<RateLimitResult> {
@@ -165,6 +242,39 @@ export async function checkSessionRateLimit(
   } catch (error) {
     markRedisUnavailable(error)
     return { allowed: true, remaining: 999, resetAt: Date.now() + 60000 }
+  }
+}
+
+/**
+ * Contact endpoints are cost-bearing side effects. Unlike the AI playground,
+ * they fail closed when Redis is not available so a deployment cannot silently
+ * become an unlimited email sender.
+ */
+export async function checkContactRateLimit(
+  req: Request,
+  kind: ContactRateLimitKind,
+): Promise<RateLimitResult> {
+  if (shouldBypassRedis()) {
+    if (process.env.NODE_ENV !== "production") {
+      return checkLocalContactRateLimit(req, kind)
+    }
+
+    return unavailableRateLimitResult()
+  }
+
+  try {
+    const result = await getContactRatelimit(kind).limit(
+      `contact:${kind}:${getIp(req)}`,
+    )
+
+    return {
+      allowed: result.success,
+      remaining: result.remaining,
+      resetAt: result.reset,
+    }
+  } catch (error) {
+    markRedisUnavailable(error)
+    return unavailableRateLimitResult()
   }
 }
 
