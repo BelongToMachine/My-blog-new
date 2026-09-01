@@ -124,7 +124,7 @@
     "ctaAi": "Get AI solution",
     "scrollDown": "Scroll down",
     "tapToContinue": "Tap to continue",
-    "code": "const coder = {\n  name: \"Jie\",\n  role: [\"Full stack developer\"],\n  skill: [\"React\", \"Next.js\"],\n  location: \"Hangzhou, China\",\n  welcomeMessage: () => {\n    return \"Happy to meet you!\"\n  }\n}"
+    "code": "const coder = {\n  name: \"Jie\",\n  role: [\"AI Product Engineer\"],\n  skill: [\"React\", \"Next.js\"],\n  location: \"Guangzhou, China\",\n  welcomeMessage: () => {\n    return \"Happy to meet you!\"\n  }\n}"
   },
   "home": {
     "blogSummary": "My Blog Summary",
@@ -338,8 +338,8 @@
     "fanDescription": "I enjoy building weird stuff with code. A few months ago, I made this anti-dislike wind generator that literally blows the dislike button away from your cursor. It\u2019s just for fun :)"
   },
   "footer": {
-    "identity": "Developer",
-    "tagline": "Front-End Developer & AI Prompt Engineer",
+    "identity": "Full-Stack AI Product Engineer",
+    "tagline": "Frontend & UX · AI Agents · Cloud & DevOps",
     "navigate": "Navigate",
     "connect": "Connect",
     "copyright": "© {year} Developer"
@@ -349,7 +349,9 @@
     "title": "Get in Touch",
     "subtitle": "Interested in working together? Fill in a few details below and let AI help you draft a professional email to Jie. You can edit it before sending.",
     "infoSection": "About You",
-    "infoHint": "Fill in what you can — AI will handle the rest.",
+    "infoHint": "Name, email, and message are required. Company and business / purpose are optional.",
+    "requiredLabel": "Required",
+    "optionalLabel": "Optional",
     "nameLabel": "Your Name",
     "namePlaceholder": "Jane Smith",
     "companyLabel": "Company",
@@ -362,6 +364,10 @@
     "customPromptPlaceholder": "Tell Jie what brings you here — the more context, the better the AI-generated email will be...",
     "generateButton": "Generate Email with AI",
     "generating": "Generating...",
+    "requiredFieldsHint": "Add your name, a valid email, and a message to enable email generation.",
+    "requiredFieldsError": "Please complete all required fields first.",
+    "invalidEmail": "Please enter a valid email address.",
+    "readyToGenerate": "Required fields complete. Ready to generate.",
     "generated": "Email generated! You can edit it before sending.",
     "previewSection": "Email Preview",
     "emptyPreview": "Fill in your details on the left and click \"Generate Email with AI\" to create a draft.",
@@ -371,7 +377,13 @@
     "sending": "Sending...",
     "emailSent": "Email sent! Jie will get back to you soon.",
     "emailError": "Failed to send email. Please try again.",
+    "successNoticeLabel": "Completed",
+    "errorNoticeLabel": "Action needed",
+    "dismissNotice": "Dismiss notification",
     "generateError": "Failed to generate email. Please try again with more details.",
+    "rateLimitError": "You've reached the temporary request limit. Please wait a few minutes and try again.",
+    "serviceUnavailableError": "The email service is temporarily unavailable. Please try again later.",
+    "emailContentRequired": "Please add a subject and message before sending.",
     "emailRequired": "Please enter your email address so Jie can reply."
   },
   "meta": {

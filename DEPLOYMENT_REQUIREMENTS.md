@@ -49,6 +49,8 @@ bunx prisma migrate dev --name init
 - Weighted credits: 短输入 1 / 中输入 3 / 长输入 5
 - Thread 并发锁: 每 thread 1 个 in-flight
 - IP 并发锁: 每 IP 2 个 in-flight
+- Contact email generation: 5 req / 10 min / IP
+- Contact email sending: 3 req / 10 min / IP
 
 ---
 
@@ -67,6 +69,16 @@ bunx prisma migrate dev --name init
 **注意**: 不需要自建 AI 推理服务器，也不需要配置 `AI_PROVIDER` 或 MiniMax 环境变量。
 
 ---
+
+## 5. Contact 邮件服务（必需）
+
+| 服务 | 用途 | 配置方式 |
+|---|---|---|
+| **Resend** | AI 草稿生成后的邮件发送 | `RESEND_API_KEY`、`CONTACT_FROM_EMAIL`、`CONTACT_RECIPIENT_EMAIL` |
+
+`CONTACT_FROM_EMAIL` 必须使用 Resend 中已验证域名下的邮箱地址。`onboarding@resend.dev` 仅适合本地测试，生产环境无法发送到任意收件人。
+
+Contact 接口使用 Upstash Redis 做分布式 IP 限流；生产环境 Redis 配置缺失或不可用时会 fail-closed，避免邮件接口变成无限发送器。
 
 ---
 
@@ -89,6 +101,11 @@ DATABASE_URL="postgresql://..."
 # ─── AI Model ───
 DEEPSEEK_API_KEY="..."
 AI_THINKING_ENABLED="false"
+
+# ─── Resend ───
+RESEND_API_KEY="re_..."
+CONTACT_FROM_EMAIL="hello@your-verified-domain.com"
+CONTACT_RECIPIENT_EMAIL="your-email@gmail.com"
 
 # ─── Upstash Redis ───
 UPSTASH_REDIS_REST_URL="https://..."
@@ -120,6 +137,7 @@ UPSTASH_REDIS_REST_TOKEN="..."
 - [ ] 创建 PostgreSQL 数据库并获取连接字符串
 - [ ] 创建 Upstash Redis 实例并获取 REST URL + Token
 - [ ] 注册 DeepSeek 并获取 API Key
+- [ ] 在 Resend 验证发件域名，并配置 `CONTACT_FROM_EMAIL`
 - [ ] 在 Vercel 项目设置中填入上述所有环境变量
 - [ ] 执行 `bunx prisma migrate deploy`
 - [ ] 执行首次部署 `bun run build`
