@@ -308,6 +308,8 @@ function DistanceMapGraphic({
   const mapTransformRef = useRef<HTMLDivElement | null>(null)
   const [hasBeenViewed, setHasBeenViewed] = useState(false)
   const [isMobileViewport, setIsMobileViewport] = useState(false)
+  const [mapViewport, setMapViewport] = useState({ width: 0, height: 0 })
+  const [isMapSettled, setIsMapSettled] = useState(false)
   const homePoint = projectPoint(
     GUANGZHOU_LOCATION.latitude,
     GUANGZHOU_LOCATION.longitude,
@@ -366,16 +368,54 @@ function DistanceMapGraphic({
   }, [])
 
   useEffect(() => {
+    const mapElement = mapRef.current
+
+    if (!mapElement) {
+      return
+    }
+
+    const updateViewport = () => {
+      const { width, height } = mapElement.getBoundingClientRect()
+
+      setMapViewport((current) =>
+        current.width === width && current.height === height
+          ? current
+          : { width, height },
+      )
+    }
+
+    updateViewport()
+
+    if (typeof ResizeObserver === "undefined") {
+      return
+    }
+
+    const observer = new ResizeObserver(updateViewport)
+    observer.observe(mapElement)
+
+    return () => observer.disconnect()
+  }, [])
+
+  useEffect(() => {
     const mapElement = mapTransformRef.current
 
     if (!isMotionReady || !mapElement) {
       return
     }
 
-    if (!hasBeenViewed || !mapView.shouldZoom) {
+    if (!hasBeenViewed) {
       mapElement.style.transform = baseMapTransform
+      setIsMapSettled(false)
       return
     }
+
+    if (!mapView.shouldZoom) {
+      mapElement.style.transform = baseMapTransform
+      setIsMapSettled(true)
+      return
+    }
+
+    setIsMapSettled(false)
 
     const duration =
       motionLevel === "reduced"
@@ -386,6 +426,7 @@ function DistanceMapGraphic({
 
     if (duration === 0 || typeof mapElement.animate !== "function") {
       mapElement.style.transform = mapTargetTransform
+      setIsMapSettled(true)
       return
     }
 
@@ -397,8 +438,12 @@ function DistanceMapGraphic({
         fill: "both",
       },
     )
+    animation.onfinish = () => setIsMapSettled(true)
 
-    return () => animation.cancel()
+    return () => {
+      animation.onfinish = null
+      animation.cancel()
+    }
   }, [
     baseMapTransform,
     hasBeenViewed,
@@ -409,6 +454,15 @@ function DistanceMapGraphic({
   ])
 
   const markerScale = isMobileViewport ? mobileMarkerScale : 1
+  const showAvatarOverlay =
+    hasBeenViewed &&
+    isMapSettled &&
+    mapView.shouldZoom &&
+    mapViewport.width > 0 &&
+    mapViewport.height > 0
+  const avatarPoint = showAvatarOverlay
+    ? getMapOverlayPoint(homePoint, mapView, mapViewport)
+    : homePoint
 
   return (
     <div
@@ -496,13 +550,61 @@ function DistanceMapGraphic({
             />
           ) : null}
 
-          <MapAvatarMarker
-            point={homePoint}
-            mapScale={mapView.scale}
-            sizeMultiplier={markerScale}
-          />
+          {!showAvatarOverlay ? (
+            <MapAvatarMarker
+              point={homePoint}
+              mapScale={mapView.scale}
+              sizeMultiplier={markerScale}
+            />
+          ) : null}
         </svg>
       </div>
+      {showAvatarOverlay ? (
+        <svg
+          viewBox={`0 0 ${mapWidth} ${mapHeight}`}
+          aria-hidden
+          className="pointer-events-none absolute inset-0 h-full w-full"
+        >
+          <defs>
+            <filter
+              id="map-avatar-outline-overlay"
+              x="-25%"
+              y="-25%"
+              width="150%"
+              height="150%"
+              colorInterpolationFilters="sRGB"
+            >
+              <feMorphology
+                in="SourceAlpha"
+                operator="dilate"
+                radius={markerOutlineWidth}
+                result="expanded"
+              />
+              <feFlood
+                floodColor="#ffffff"
+                floodOpacity="1"
+                result="outlineColor"
+              />
+              <feComposite
+                in="outlineColor"
+                in2="expanded"
+                operator="in"
+                result="outline"
+              />
+              <feMerge>
+                <feMergeNode in="outline" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+          <MapAvatarMarker
+            point={avatarPoint}
+            mapScale={1}
+            sizeMultiplier={markerScale}
+            outlineFilterId="map-avatar-outline-overlay"
+          />
+        </svg>
+      ) : null}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-14 bg-[linear-gradient(180deg,transparent,rgba(9,14,20,0.48))]" />
     </div>
   )
@@ -559,17 +661,23 @@ function MapAvatarMarker({
   point,
   mapScale,
   sizeMultiplier,
+  outlineFilterId = "map-avatar-outline",
 }: {
   point: { x: number; y: number }
   mapScale: number
   sizeMultiplier: number
+  outlineFilterId?: string
 }) {
-  const avatarSize = (72 * sizeMultiplier) / mapScale
+  // Keep the source image large inside the SVG, then compensate for the map
+  // zoom on its wrapper. This prevents a small raster image from being
+  // enlarged by the map transform on nearby mobile views.
+  const avatarSize = 72 * sizeMultiplier
   const avatarX = point.x - avatarSize / 2
   const avatarY = point.y - avatarSize * (1037 / 1254)
+  const avatarTransform = `translate(${point.x} ${point.y}) scale(${1 / mapScale}) translate(${-point.x} ${-point.y})`
 
   return (
-    <g className="group cursor-pointer">
+    <g className="group pointer-events-auto cursor-pointer">
       <ellipse
         cx={point.x}
         cy={point.y + 1.5 / mapScale}
@@ -578,27 +686,29 @@ function MapAvatarMarker({
         fill="#05080d"
         opacity={0.42}
       />
-      <g className="origin-center transition-transform duration-200 ease-out [transform-box:fill-box] group-hover:scale-[1.07] motion-reduce:transition-none motion-reduce:group-hover:scale-100">
-        <image
-          href="/images/map-avatar-jie.png"
-          x={avatarX}
-          y={avatarY}
-          width={avatarSize}
-          height={avatarSize}
-          preserveAspectRatio="xMidYMid meet"
-          filter="url(#map-avatar-outline)"
-          className="opacity-0 transition-opacity duration-200 group-hover:opacity-100 motion-reduce:transition-none"
-          aria-hidden="true"
-        />
-        <image
-          href="/images/map-avatar-jie.png"
-          x={avatarX}
-          y={avatarY}
-          width={avatarSize}
-          height={avatarSize}
-          preserveAspectRatio="xMidYMid meet"
-          aria-hidden="true"
-        />
+      <g transform={avatarTransform}>
+        <g className="origin-center transition-transform duration-200 ease-out [transform-box:fill-box] group-hover:scale-[1.07] motion-reduce:transition-none motion-reduce:group-hover:scale-100">
+          <image
+            href="/images/map-avatar-jie.png"
+            x={avatarX}
+            y={avatarY}
+            width={avatarSize}
+            height={avatarSize}
+            preserveAspectRatio="xMidYMid meet"
+            filter={`url(#${outlineFilterId})`}
+            className="opacity-0 transition-opacity duration-200 group-hover:opacity-100 motion-reduce:transition-none"
+            aria-hidden="true"
+          />
+          <image
+            href="/images/map-avatar-jie.png"
+            x={avatarX}
+            y={avatarY}
+            width={avatarSize}
+            height={avatarSize}
+            preserveAspectRatio="xMidYMid meet"
+            aria-hidden="true"
+          />
+        </g>
       </g>
     </g>
   )
@@ -690,6 +800,36 @@ function projectPoint(latitude: number, longitude: number) {
   return {
     x: ((longitude + 180) / 360) * mapWidth,
     y: ((90 - latitude) / 180) * mapHeight,
+  }
+}
+
+function getMapOverlayPoint(
+  point: { x: number; y: number },
+  mapView: ReturnType<typeof getMapView>,
+  viewport: { width: number; height: number },
+) {
+  const svgScale = Math.min(
+    viewport.width / mapWidth,
+    viewport.height / mapHeight,
+  )
+  const svgOffsetX = (viewport.width - mapWidth * svgScale) / 2
+  const svgOffsetY = (viewport.height - mapHeight * svgScale) / 2
+  const baseX = svgOffsetX + point.x * svgScale
+  const baseY = svgOffsetY + point.y * svgScale
+  const translateX = (mapView.translateX / 100) * viewport.width
+  const translateY = (mapView.translateY / 100) * viewport.height
+  const transformedX =
+    viewport.width / 2 +
+    (baseX - viewport.width / 2) * mapView.scale +
+    translateX
+  const transformedY =
+    viewport.height / 2 +
+    (baseY - viewport.height / 2) * mapView.scale +
+    translateY
+
+  return {
+    x: (transformedX - svgOffsetX) / svgScale,
+    y: (transformedY - svgOffsetY) / svgScale,
   }
 }
 
