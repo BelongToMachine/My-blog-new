@@ -266,14 +266,12 @@
   }
 }
 
-@media (max-width: 767px), (hover: none), (pointer: coarse) {
-  [data-hero-enter] {
-    animation: hero-limited-fade-in 280ms var(--motion-ease-out) both;
-  }
+html[data-motion-level="limited"] [data-hero-enter] {
+  animation: hero-limited-fade-in 280ms var(--motion-ease-out) both;
+}
 
-  [data-hero-enter="image"] {
-    animation-delay: 40ms;
-  }
+html[data-motion-level="limited"] [data-hero-enter="image"] {
+  animation-delay: 40ms;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -427,13 +425,11 @@ html.dark .wind__lane {
   }
 }
 
-@media (max-width: 767px), (hover: none), (pointer: coarse) {
-  .wind__lane {
-    animation: none;
-    opacity: var(--wind-opacity-soft, 0.3);
-    transform: translate3d(0, var(--wind-y, 0), 0);
-    will-change: auto;
-  }
+html[data-motion-level="limited"] .wind__lane {
+  animation: none;
+  opacity: var(--wind-opacity-soft, 0.3);
+  transform: translate3d(0, var(--wind-y, 0), 0);
+  will-change: auto;
 }
 
 .magic-cursor-active,
@@ -1354,10 +1350,8 @@ ul li {
   pointer-events: none;
 }
 
-@media (max-width: 767px), (hover: none), (pointer: coarse) {
-  .ai-cta-shimmer::before {
-    animation: none;
-    background-position: 50% 0;
-    opacity: 0.45;
-  }
+html[data-motion-level="limited"] .ai-cta-shimmer::before {
+  animation: none;
+  background-position: 50% 0;
+  opacity: 0.45;
 }

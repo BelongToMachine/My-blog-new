@@ -22,7 +22,6 @@ interface AdaptiveNavigator extends Navigator {
 
 interface DeviceMotionContext {
   hasFinePointer: boolean
-  isCompactViewport: boolean
   isResolved: boolean
   isSaveDataEnabled: boolean
   isSlowConnection: boolean
@@ -41,7 +40,6 @@ export interface AdaptiveMotionValue {
 
 const initialDeviceContext: DeviceMotionContext = {
   hasFinePointer: false,
-  isCompactViewport: true,
   isResolved: false,
   isSaveDataEnabled: false,
   isSlowConnection: false,
@@ -60,7 +58,6 @@ export function AdaptiveMotionProvider({ children }: { children: ReactNode }) {
     useState<DeviceMotionContext>(initialDeviceContext)
 
   useEffect(() => {
-    const compactViewportQuery = window.matchMedia("(max-width: 767px)")
     const finePointerQuery = window.matchMedia("(pointer: fine)")
     const hoverQuery = window.matchMedia("(hover: hover)")
     const connection = (window.navigator as AdaptiveNavigator).connection
@@ -68,7 +65,6 @@ export function AdaptiveMotionProvider({ children }: { children: ReactNode }) {
     const syncDeviceContext = () => {
       setDeviceContext({
         hasFinePointer: finePointerQuery.matches,
-        isCompactViewport: compactViewportQuery.matches,
         isResolved: true,
         isSaveDataEnabled: connection?.saveData === true,
         isSlowConnection: slowConnectionTypes.has(
@@ -79,13 +75,11 @@ export function AdaptiveMotionProvider({ children }: { children: ReactNode }) {
     }
 
     syncDeviceContext()
-    compactViewportQuery.addEventListener("change", syncDeviceContext)
     finePointerQuery.addEventListener("change", syncDeviceContext)
     hoverQuery.addEventListener("change", syncDeviceContext)
     connection?.addEventListener("change", syncDeviceContext)
 
     return () => {
-      compactViewportQuery.removeEventListener("change", syncDeviceContext)
       finePointerQuery.removeEventListener("change", syncDeviceContext)
       hoverQuery.removeEventListener("change", syncDeviceContext)
       connection?.removeEventListener("change", syncDeviceContext)
@@ -95,15 +89,10 @@ export function AdaptiveMotionProvider({ children }: { children: ReactNode }) {
   const value = useMemo<AdaptiveMotionValue>(() => {
     const motionLevel: MotionLevel = prefersReducedMotion
       ? "reduced"
-      : deviceContext.isCompactViewport ||
-          !deviceContext.hasFinePointer ||
-          !deviceContext.supportsHover ||
-          deviceContext.isSaveDataEnabled ||
-          deviceContext.isSlowConnection
+      : deviceContext.isSaveDataEnabled || deviceContext.isSlowConnection
         ? "limited"
         : "full"
-    const isFullMotionReady =
-      deviceContext.isResolved && motionLevel === "full"
+    const isFullMotionReady = deviceContext.isResolved && motionLevel === "full"
 
     return {
       isMotionReady: deviceContext.isResolved,
@@ -118,6 +107,16 @@ export function AdaptiveMotionProvider({ children }: { children: ReactNode }) {
         deviceContext.supportsHover,
     }
   }, [deviceContext, prefersReducedMotion])
+
+  useEffect(() => {
+    document.documentElement.dataset.motionLevel = value.motionLevel
+
+    return () => {
+      if (document.documentElement.dataset.motionLevel === value.motionLevel) {
+        delete document.documentElement.dataset.motionLevel
+      }
+    }
+  }, [value.motionLevel])
 
   return (
     <AdaptiveMotionContext.Provider value={value}>
