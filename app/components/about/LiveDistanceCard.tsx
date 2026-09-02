@@ -454,15 +454,19 @@ function DistanceMapGraphic({
   ])
 
   const markerScale = isMobileViewport ? mobileMarkerScale : 1
-  const showAvatarOverlay =
+  const showMapMarkerOverlay =
     hasBeenViewed &&
     isMapSettled &&
     mapView.shouldZoom &&
     mapViewport.width > 0 &&
     mapViewport.height > 0
-  const avatarPoint = showAvatarOverlay
+  const avatarPoint = showMapMarkerOverlay
     ? getMapOverlayPoint(homePoint, mapView, mapViewport)
     : homePoint
+  const visitorOverlayPoint =
+    showMapMarkerOverlay && visitorPoint
+      ? getMapOverlayPoint(visitorPoint, mapView, mapViewport)
+      : visitorPoint
 
   return (
     <div
@@ -542,15 +546,17 @@ function DistanceMapGraphic({
           ) : null}
 
           {visitorPoint ? (
-            <MapPinMarker
-              point={visitorPoint}
-              fill={markerColor}
-              mapScale={mapView.scale}
-              sizeMultiplier={markerScale}
-            />
+            !showMapMarkerOverlay ? (
+              <MapPinMarker
+                point={visitorPoint}
+                fill={markerColor}
+                mapScale={mapView.scale}
+                sizeMultiplier={markerScale}
+              />
+            ) : null
           ) : null}
 
-          {!showAvatarOverlay ? (
+          {!showMapMarkerOverlay ? (
             <MapAvatarMarker
               point={homePoint}
               mapScale={mapView.scale}
@@ -559,7 +565,7 @@ function DistanceMapGraphic({
           ) : null}
         </svg>
       </div>
-      {showAvatarOverlay ? (
+      {showMapMarkerOverlay ? (
         <svg
           viewBox={`0 0 ${mapWidth} ${mapHeight}`}
           aria-hidden
@@ -597,6 +603,14 @@ function DistanceMapGraphic({
               </feMerge>
             </filter>
           </defs>
+          {visitorOverlayPoint ? (
+            <MapPinMarker
+              point={visitorOverlayPoint}
+              fill={markerColor}
+              mapScale={1}
+              sizeMultiplier={markerScale}
+            />
+          ) : null}
           <MapAvatarMarker
             point={avatarPoint}
             mapScale={1}
@@ -642,7 +656,7 @@ function MapPinMarker({
         fill="#05080d"
         opacity={0.38}
       />
-      <g className="group cursor-pointer">
+      <g className="group pointer-events-auto cursor-pointer">
         <g className="origin-center transition-transform duration-200 ease-out [transform-box:fill-box] group-hover:scale-[1.07] motion-reduce:transition-none motion-reduce:group-hover:scale-100">
           <LocationPin
             x={markerX}
