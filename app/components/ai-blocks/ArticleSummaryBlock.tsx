@@ -40,10 +40,10 @@ export default function ArticleSummaryBlock({
               {article.description}
             </p>
             <div className="flex items-center gap-3">
-              <span className="text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground/72">
+              <span className="text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
                 {article.publishedOn}
               </span>
-              <span className="text-[10px] font-medium uppercase tracking-[0.12em] text-primary/68">
+              <span className="text-[10px] font-medium uppercase tracking-[0.12em] text-primary">
                 {article.locale}
               </span>
             </div>

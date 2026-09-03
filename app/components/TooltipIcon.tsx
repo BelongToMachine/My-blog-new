@@ -15,7 +15,7 @@ const TooltipIcon = () => {
           <button
             type="button"
             aria-label={isZh ? "查看联系提示" : "View contact guidance"}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-transparent bg-transparent text-primary transition-colors hover:border-border hover:bg-accent"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-transparent bg-transparent text-primary transition-colors hover:border-border hover:bg-accent"
           >
             <RxInfoCircled aria-hidden="true" />
           </button>
@@ -28,7 +28,7 @@ const TooltipIcon = () => {
             <Text as="p" className="text-foreground">
               {isZh ? "在这里，您每天仅可发送一次邮箱" : "You can send one email per day here."}
             </Text>
-            <Text as="p" className="pt-2 text-foreground/80">
+            <Text as="p" className="pt-2 text-foreground">
               {isZh
                 ? "想立即与我取得联系，请使用 LinkedIn"
                 : "For an immediate response, please use LinkedIn."}

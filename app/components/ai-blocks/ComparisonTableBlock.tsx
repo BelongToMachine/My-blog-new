@@ -26,13 +26,13 @@ export default function ComparisonTableBlock({
         <table className="w-full border-collapse text-[12px] md:text-[13px]">
           <thead>
             <tr className="border-b-2 border-border">
-              <th className="px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground/82">
+              <th className="px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground">
                 {headers[0] ?? t("comparisonFirstColumn")}
               </th>
               {headers.slice(1).map((header, index) => (
                 <th
                   key={index}
-                  className="px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground/82"
+                  className="px-3 py-2.5 text-left text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground"
                 >
                   {header}
                 </th>

@@ -224,7 +224,7 @@ export default function LiveDistanceCard() {
             <span className="font-pixel text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
               {t("devToolsLabel")}
             </span>
-            <span className="text-xs text-muted-foreground/80">
+            <span className="text-xs text-muted-foreground">
               {t("devToolsHint")}
             </span>
           </div>
@@ -285,7 +285,7 @@ export default function LiveDistanceCard() {
 
       <div className="flex flex-1 items-center p-5 sm:p-6 md:p-6">
         <div className="w-full space-y-3">
-          <p className="mx-auto max-w-[60ch] text-center text-pretty text-lg leading-8 text-foreground/82 md:text-xl md:leading-9">
+          <p className="mx-auto max-w-[60ch] text-center text-pretty text-lg leading-8 text-foreground md:text-xl md:leading-9">
             {body}
           </p>
         </div>

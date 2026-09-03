@@ -92,7 +92,7 @@ export default function ArticlePickerModal({
           <button
             type="button"
             onClick={onClose}
-            className="ai-lab-pixel-button h-10 w-10 shrink-0 text-foreground"
+            className="ai-lab-pixel-button h-11 w-11 shrink-0 text-foreground"
             aria-label={locale.startsWith("zh") ? "关闭" : "Close"}
           >
             <X className="h-4 w-4" />

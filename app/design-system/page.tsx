@@ -63,7 +63,7 @@ const DesignSystemPage = () => {
                             ["ink", "bg-foreground text-background"],
                         ].map(([label, className]) => (
                             <div key={label} className={`min-h-24 border border-border/70 p-4 ${className}`}>
-                                <div className="font-pixel text-[10px] uppercase tracking-[0.24em] opacity-80">{label}</div>
+                                <div className="font-pixel text-[10px] uppercase tracking-[0.24em] text-foreground">{label}</div>
                             </div>
                         ))}
                     </div>

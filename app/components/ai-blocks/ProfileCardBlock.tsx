@@ -39,21 +39,21 @@ export default function ProfileCardBlock({
 
       {experience ? (
         <div>
-          <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-primary/76">
+          <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-primary">
             {t("profileExperience")}
           </p>
-          <p className="text-[12px] leading-6 tracking-[0.04em] text-foreground/90">{experience}</p>
+          <p className="text-[12px] leading-6 tracking-[0.04em] text-foreground">{experience}</p>
         </div>
       ) : null}
 
       {focus.length > 0 ? (
         <div>
-          <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-primary/76">
+          <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-primary">
             {t("profileFocus")}
           </p>
           <ul className="space-y-1">
             {focus.map((item, index) => (
-              <li key={index} className="text-[12px] leading-6 tracking-[0.04em] text-foreground/90">
+              <li key={index} className="text-[12px] leading-6 tracking-[0.04em] text-foreground">
                 {item}
               </li>
             ))}
@@ -63,12 +63,12 @@ export default function ProfileCardBlock({
 
       {productAreas.length > 0 ? (
         <div>
-          <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-primary/76">
+          <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-primary">
             {t("profileProductAreas")}
           </p>
           <ul className="space-y-1">
             {productAreas.map((item, index) => (
-              <li key={index} className="text-[12px] leading-6 tracking-[0.04em] text-foreground/90">
+              <li key={index} className="text-[12px] leading-6 tracking-[0.04em] text-foreground">
                 {item}
               </li>
             ))}
@@ -78,10 +78,10 @@ export default function ProfileCardBlock({
 
       {contact ? (
         <div>
-          <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-primary/76">
+          <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-primary">
             {t("profileContact")}
           </p>
-          <div className="space-y-1 text-[12px] leading-6 tracking-[0.04em] text-foreground/90">
+          <div className="space-y-1 text-[12px] leading-6 tracking-[0.04em] text-foreground">
             {contact.email ? <p>{contact.email}</p> : null}
             {contact.github ? <p>{contact.github}</p> : null}
             {contact.linkedin ? <p>{contact.linkedin}</p> : null}

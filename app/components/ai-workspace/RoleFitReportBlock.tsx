@@ -61,7 +61,7 @@ export default function RoleFitReportBlock({
 
       {typeof fitScore === "number" ? (
         <div className="flex items-center gap-3">
-          <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-primary/78">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-primary">
             {t("roleFitScore")}
           </span>
           <div className="h-2 flex-1 bg-muted">
@@ -80,14 +80,14 @@ export default function RoleFitReportBlock({
 
       {strengths.length > 0 ? (
         <div>
-          <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-primary/78">
+          <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-primary">
             {t("roleFitStrengths")}
           </p>
           <ul className="space-y-1.5">
             {strengths.map((strength, index) => (
               <li
                 key={index}
-                className="flex items-start gap-2 text-[12px] leading-6 tracking-[0.04em] text-foreground/90"
+                className="flex items-start gap-2 text-[12px] leading-6 tracking-[0.04em] text-foreground"
               >
                 <span className="mt-1.5 block h-1.5 w-1.5 shrink-0 bg-primary" />
                 {strength}
@@ -99,7 +99,7 @@ export default function RoleFitReportBlock({
 
       {matchedProjects.length > 0 ? (
         <div>
-          <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-primary/78">
+          <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-primary">
             {t("roleFitMatchedProjects")}
           </p>
           <div className="space-y-2">
@@ -115,7 +115,7 @@ export default function RoleFitReportBlock({
 
       {matchedArticles.length > 0 ? (
         <div>
-          <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-primary/78">
+          <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-primary">
             {t("roleFitMatchedArticles")}
           </p>
           <div className="space-y-2">
@@ -132,14 +132,14 @@ export default function RoleFitReportBlock({
 
       {possibleRisks.length > 0 ? (
         <div>
-          <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-primary/78">
+          <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-primary">
             {t("roleFitPossibleRisks")}
           </p>
           <ul className="space-y-1.5">
             {possibleRisks.map((risk, index) => (
               <li
                 key={index}
-                className="flex items-start gap-2 text-[12px] leading-6 tracking-[0.04em] text-foreground/90"
+                className="flex items-start gap-2 text-[12px] leading-6 tracking-[0.04em] text-foreground"
               >
                 <span className="mt-1.5 block h-1.5 w-1.5 shrink-0 bg-destructive" />
                 {risk}
@@ -151,14 +151,14 @@ export default function RoleFitReportBlock({
 
       {recommendedTalkingPoints.length > 0 ? (
         <div>
-          <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-primary/78">
+          <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-primary">
             {t("roleFitRecommendedTalkingPoints")}
           </p>
           <ul className="space-y-1.5">
             {recommendedTalkingPoints.map((point, index) => (
               <li
                 key={index}
-                className="flex items-start gap-2 text-[12px] leading-6 tracking-[0.04em] text-foreground/90"
+                className="flex items-start gap-2 text-[12px] leading-6 tracking-[0.04em] text-foreground"
               >
                 <span className="mt-1.5 block h-1.5 w-1.5 shrink-0 bg-primary" />
                 {point}

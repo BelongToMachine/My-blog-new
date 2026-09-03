@@ -51,7 +51,7 @@ export default function ProjectGridBlock({
                 {(project.highlights ?? []).map((h: string, i: number) => (
                   <span
                     key={i}
-                    className="border border-primary/30 bg-primary/[0.06] px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.12em] text-primary/80"
+                    className="border border-primary/30 bg-primary/[0.06] px-2 py-0.5 text-[10px] font-medium uppercase tracking-[0.12em] text-primary"
                   >
                     {h}
                   </span>

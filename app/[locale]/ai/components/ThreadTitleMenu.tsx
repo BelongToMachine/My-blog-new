@@ -148,7 +148,7 @@ export default function ThreadTitleMenu({
                 setIsRenaming(false)
               }
             }}
-            className="min-w-[12rem] bg-transparent text-[11px] font-medium tracking-[0.02em] text-foreground outline-none placeholder:text-muted-foreground/48"
+            className="min-w-[12rem] bg-transparent text-[11px] font-medium tracking-[0.02em] text-foreground outline-none placeholder:text-muted-foreground"
             placeholder={t("renamePlaceholder")}
             aria-label={t("renameChat")}
           />

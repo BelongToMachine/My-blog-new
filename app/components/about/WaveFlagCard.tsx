@@ -53,7 +53,7 @@ export default async function WaveFlagCard({
           {t("title")}
         </h3>
         {t("body") ? (
-          <p className="text-sm leading-6 text-foreground/78">{t("body")}</p>
+          <p className="text-sm leading-6 text-foreground">{t("body")}</p>
         ) : null}
         {roundedLink ? (
           <RoundedButton
@@ -66,7 +66,12 @@ export default async function WaveFlagCard({
               "w-full justify-center whitespace-nowrap font-extrabold focus-visible:ring-black/70",
             )}
           >
-            <a href={DALI_INTRO_URL} target="_blank" rel="noreferrer">
+            <a
+              href={DALI_INTRO_URL}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={`${t("linkLabel")} (${t("externalLinkHint")})`}
+            >
               {t("linkLabel")}
               <ExternalLink aria-hidden className="h-3.5 w-3.5" />
             </a>
@@ -76,7 +81,8 @@ export default async function WaveFlagCard({
             href={DALI_INTRO_URL}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex text-sm font-medium leading-6 text-primary transition-colors hover:text-primary/75"
+            aria-label={`${t("linkLabel")} (${t("externalLinkHint")})`}
+            className="inline-flex text-sm font-medium leading-6 text-primary transition-colors hover:text-primary"
           >
             {t("linkLabel")}
           </a>

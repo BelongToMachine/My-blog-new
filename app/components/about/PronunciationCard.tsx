@@ -16,6 +16,7 @@ export default function PronunciationCard({
   const t = useTranslations("funFacts.pronunciation")
   const [canSpeak, setCanSpeak] = useState(false)
   const [isSpeaking, setIsSpeaking] = useState(false)
+  const [audioError, setAudioError] = useState(false)
   const audioRef = useRef<HTMLAudioElement | null>(null)
 
   useEffect(() => {
@@ -25,14 +26,18 @@ export default function PronunciationCard({
     setCanSpeak(audio.canPlayType("audio/mpeg") !== "")
 
     const resetSpeakingState = () => setIsSpeaking(false)
+    const handleAudioError = () => {
+      setIsSpeaking(false)
+      setAudioError(true)
+    }
     audio.addEventListener("ended", resetSpeakingState)
-    audio.addEventListener("error", resetSpeakingState)
+    audio.addEventListener("error", handleAudioError)
 
     return () => {
       audio.pause()
       audio.currentTime = 0
       audio.removeEventListener("ended", resetSpeakingState)
-      audio.removeEventListener("error", resetSpeakingState)
+      audio.removeEventListener("error", handleAudioError)
       audioRef.current = null
     }
   }, [])
@@ -49,9 +54,20 @@ export default function PronunciationCard({
     }
 
     audio.currentTime = 0
+    setAudioError(false)
     setIsSpeaking(true)
-    void audio.play().catch(() => setIsSpeaking(false))
+    void audio.play().catch(() => {
+      setIsSpeaking(false)
+      setAudioError(true)
+    })
   }
+
+  const buttonLabel = isSpeaking ? t("stopButtonLabel") : t("buttonLabel")
+  const audioStatus = audioError
+    ? t("audioError")
+    : isSpeaking
+      ? t("audioPlaying")
+      : ""
 
   return (
     <article
@@ -67,13 +83,14 @@ export default function PronunciationCard({
         {roundedButton ? (
           <RoundedButton
             type="button"
-            aria-label={t("buttonLabel")}
+            aria-label={buttonLabel}
+            aria-pressed={isSpeaking}
             onClick={handleSpeak}
             disabled={!canSpeak}
             tone="hero"
             size="accent"
             className={cn(
-              "h-10 w-10 shrink-0 p-0 focus-visible:ring-black/70",
+              "h-11 w-11 shrink-0 p-0 focus-visible:ring-black/70",
               isSpeaking && "bg-[#ffd966]",
             )}
           >
@@ -82,7 +99,8 @@ export default function PronunciationCard({
         ) : (
           <button
             type="button"
-            aria-label={t("buttonLabel")}
+            aria-label={buttonLabel}
+            aria-pressed={isSpeaking}
             onClick={handleSpeak}
             disabled={!canSpeak}
             className={cn(
@@ -102,7 +120,16 @@ export default function PronunciationCard({
         )}
       </div>
 
-      <p className="mx-auto max-w-[16ch] text-balance text-[clamp(1.2rem,2.2vw,1.75rem)] leading-[1.28] tracking-[-0.03em] text-foreground/92">
+      <p
+        className="sr-only"
+        role={audioError ? "alert" : "status"}
+        aria-live={audioError ? "assertive" : "polite"}
+        aria-atomic="true"
+      >
+        {audioStatus}
+      </p>
+
+      <p className="mx-auto max-w-[16ch] text-balance text-[clamp(1.2rem,2.2vw,1.75rem)] leading-[1.28] tracking-[-0.03em] text-foreground">
         {t.rich("sentencePrefix", {
           name: t("name"),
           highlight: (chunks) => <Highlight>{chunks}</Highlight>,
@@ -113,7 +140,7 @@ export default function PronunciationCard({
         {t("sentenceSuffix")}
       </p>
 
-      <p className="mx-auto max-w-[13ch] text-balance text-base leading-[1.45] text-foreground/78">
+      <p className="mx-auto max-w-[13ch] text-balance text-base leading-[1.45] text-foreground">
         {t("hint")}
       </p>
     </article>

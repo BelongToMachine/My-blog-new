@@ -40,7 +40,7 @@ export function ContactFeedbackToast({
       />
       <div className="panel-grid grid grid-cols-[2.25rem_minmax(0,1fr)_2rem] items-start gap-3 px-3 py-3">
         <div
-          className={`flex h-9 w-9 items-center justify-center border ${
+          className={`flex h-11 w-11 items-center justify-center border ${
             isSuccess
               ? "border-[hsl(var(--signal-green)/0.6)] bg-[hsl(var(--signal-green)/0.12)] text-[hsl(var(--signal-green))]"
               : "border-destructive/60 bg-destructive/10 text-danger"
@@ -62,7 +62,7 @@ export function ContactFeedbackToast({
         <button
           type="button"
           onClick={() => toast.dismiss(notification.id)}
-          className="flex h-8 w-8 items-center justify-center border border-border/80 text-muted-foreground transition-colors duration-200 hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
+          className="flex h-11 w-11 items-center justify-center border border-border/80 text-muted-foreground transition-colors duration-200 hover:border-primary hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
           aria-label={dismissLabel}
         >
           <X className="h-3.5 w-3.5" strokeWidth={2.5} />

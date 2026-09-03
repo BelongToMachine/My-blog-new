@@ -31,7 +31,7 @@ export default function WorkspaceHeader({
   return (
     <div className="flex items-center justify-between border-b-2 border-border/60 px-4 py-3 md:px-5">
       <div className="min-w-0">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/70">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
           {t("workspaceEyebrow")}
         </p>
         <div className="flex items-center gap-2">
@@ -39,7 +39,7 @@ export default function WorkspaceHeader({
             {threadTitle}
           </p>
           {isBusy ? (
-            <span className="text-[8px] font-semibold uppercase tracking-[0.18em] text-primary/70">
+            <span className="text-[8px] font-semibold uppercase tracking-[0.18em] text-primary">
               {t("workspaceLive")}
             </span>
           ) : null}
@@ -47,7 +47,7 @@ export default function WorkspaceHeader({
       </div>
 
       <div className="flex items-center gap-2">
-        <span className="text-[9px] font-medium uppercase tracking-[0.16em] text-muted-foreground/50">
+          <span className="text-[9px] font-medium uppercase tracking-[0.16em] text-muted-foreground">
           {artifactCount}{" "}
           {artifactCount === 1 ? t("artifactSingular") : t("artifactPlural")}
         </span>
@@ -55,7 +55,7 @@ export default function WorkspaceHeader({
           <button
             type="button"
             onClick={handleClear}
-            className="px-2 py-1 text-[9px] font-medium uppercase tracking-[0.16em] text-muted-foreground/50 transition-colors hover:text-danger"
+            className="px-2 py-1 text-[9px] font-medium uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-danger"
             aria-label={t("clearWorkspace")}
             title={t("clearWorkspace")}
           >

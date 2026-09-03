@@ -44,7 +44,7 @@ export default async function ArticlesPage({ params }: Props) {
                 <h2 className="mdx-index-card-title font-pixel text-xl tracking-[0.04em] text-foreground transition-colors group-hover:text-primary md:text-2xl">
                   {article.title}
                 </h2>
-                <p className="mdx-index-card-copy max-w-3xl text-sm leading-7 text-foreground/70">
+                <p className="mdx-index-card-copy max-w-3xl text-sm leading-7 text-foreground">
                   {article.description}
                 </p>
                 <div className="flex items-center gap-2 pt-1 text-xs text-primary">

@@ -28,12 +28,12 @@ const roundedButtonVariants = cva(
       },
       size: {
         hero:
-          "min-h-10 gap-2 px-4 py-2.5 text-sm tracking-[0.02em] min-[480px]:min-h-11 min-[480px]:px-5 min-[480px]:py-3 md:px-4 md:py-2.5 lg:min-h-0 lg:px-4 lg:py-2",
+          "min-h-11 gap-2 px-4 py-2.5 text-sm tracking-[0.02em] min-[480px]:px-5 min-[480px]:py-3 md:px-4 md:py-2.5 lg:min-h-0 lg:px-4 lg:py-2",
         accent: "gap-1.5 px-3 py-1.5 text-sm leading-none",
         nav: "px-4 py-2 font-sans text-[14px] uppercase leading-none tracking-[0.08em]",
         dropdown:
           "px-4 py-3 font-sans text-[14px] uppercase tracking-[0.08em]",
-        reaction: "h-9 px-3 font-pixel text-[10px] uppercase tracking-[0.22em]",
+        reaction: "h-11 px-3 font-pixel text-[10px] uppercase tracking-[0.22em] md:h-9",
       },
     },
     defaultVariants: {

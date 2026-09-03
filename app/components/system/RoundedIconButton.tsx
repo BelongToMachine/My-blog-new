@@ -23,9 +23,9 @@ const roundedIconButtonVariants = cva(
           "border-transparent bg-transparent hover:border-border/45 hover:bg-background/16 hover:text-foreground",
       },
       size: {
-        sm: "h-8 w-8",
-        default: "h-9 w-9",
-        lg: "h-10 w-10",
+        sm: "h-11 w-11 md:h-8 md:w-8",
+        default: "h-11 w-11 md:h-9 md:w-9",
+        lg: "h-11 w-11 md:h-10 md:w-10",
         xl: "h-11 w-11",
       },
     },

@@ -21,6 +21,7 @@
     "youLabel": "You",
     "assistantLabel": "AI assistant",
     "assistantResponseReady": "The assistant response is complete.",
+    "externalLinkHint": "opens in a new tab",
     "toolError": "Tool error",
     "tokenCountLabel": "tokens",
     "textPromptPlaceholder": "Ask about project context, technical choices, interface details, article ideas, or what Jie is exploring lately...",
@@ -142,7 +143,9 @@
     "nonTech": "Non-Tech",
     "nonTechShort": "Non-Tech",
     "latestBlogs": "Latest Blogs",
-    "loadingMore": "Loading..."
+    "loadingMore": "Loading...",
+    "chartLabel": "Blog status chart",
+    "chartSummary": "Web development: {open}. AI: {inProgress}. Non-technical: {closed}."
   },
   "projects": {
     "heading": "Projects",
@@ -271,7 +274,10 @@
       "sentencePhonetic": "\"Jay\"",
       "sentenceSuffix": ".",
       "hint": "Click to hear a robot say it.",
-      "buttonLabel": "Hear how Jie is pronounced"
+      "buttonLabel": "Hear how Jie is pronounced",
+      "stopButtonLabel": "Stop pronunciation",
+      "audioPlaying": "Pronunciation is playing.",
+      "audioError": "Pronunciation audio could not be played."
     },
     "flag": {
       "eyebrow": "Origin",
@@ -279,7 +285,8 @@
       "title": "I am from big, sunny Dali, China.",
       "body": "",
       "linkLabel": "Get to know my hometown",
-      "ariaLabel": "Animated People's Republic of China flag waving in staggered columns",
+      "externalLinkHint": "opens in a new tab",
+      "ariaLabel": "People's Republic of China flag",
       "techniqueLabel": "Built with",
       "techniqueValue": "Front-end animation & SVG",
       "motionLabel": "Starts alive",
@@ -347,6 +354,10 @@
     "CLOSED": "Non-Tech"
   },
   "article": {
+    "reactionLabel": "ARTICLE REACTION",
+    "likeButton": "Likes ({count})",
+    "dislikeButton": "Dislike",
+    "likeStatus": "Liked. Total likes: {count}.",
     "fanDescription": "I enjoy building weird stuff with code. A few months ago, I made this anti-dislike wind generator that literally blows the dislike button away from your cursor. It\u2019s just for fun :)"
   },
   "footer": {
@@ -354,6 +365,11 @@
     "tagline": "Frontend & UX · AI Agents · Cloud & DevOps",
     "navigate": "Navigate",
     "connect": "Connect",
+    "externalLinkHint": "opens in a new tab",
+    "motionPreferenceLabel": "Animation preference",
+    "motionPreferenceSystem": "Follow system",
+    "motionPreferenceFull": "Full motion",
+    "motionPreferenceReduced": "Reduced motion",
     "copyright": "© 2023–Present Jie · All rights reserved"
   },
   "contact": {

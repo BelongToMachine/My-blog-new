@@ -10,7 +10,7 @@ import {
 const metaTextClassName =
   "text-[11px] font-medium leading-none tracking-[0.04em] text-muted-foreground"
 const accentLabelClassName =
-  "text-[13px] font-semibold uppercase tracking-[0.08em] text-primary/76"
+  "text-[13px] font-semibold uppercase tracking-[0.08em] text-primary"
 
 type ProjectKey = "financial" | "uxAgent"
 type ProjectRoleKey = "frontend" | "fullstack"
@@ -74,8 +74,8 @@ function accentBullet(color: ProjectConfig["accentColor"]) {
 }
 
 function accentText(color: ProjectConfig["accentColor"]) {
-  if (color === "amber") return "!text-[hsl(var(--signal-amber))]/76"
-  if (color === "green") return "!text-primary/78"
+  if (color === "amber") return "!text-[hsl(var(--signal-amber))]"
+  if (color === "green") return "!text-primary"
   return ""
 }
 
@@ -97,7 +97,7 @@ export default async function ProjectsSection() {
   return (
     <section id="projects">
       <div className="mb-4 flex items-center gap-3 md:mb-5">
-        <span className="font-pixel text-[10px] font-medium uppercase tracking-[0.22em] text-muted-foreground/70">
+        <span className="font-pixel text-[10px] font-medium uppercase tracking-[0.22em] text-muted-foreground">
           {t("featuredLabel")}
         </span>
         <div className="h-px flex-1 bg-border/40" />
@@ -265,16 +265,16 @@ function ProjectTimelineCard({
               <h3 className="min-w-0 cursor-text text-[clamp(1.2rem,2.2vw,2rem)] font-semibold leading-[1.08] tracking-[-0.025em] text-foreground md:whitespace-nowrap">
                 {title}
               </h3>
-              <p className="shrink-0 cursor-text text-[clamp(0.85rem,1.25vw,1.1rem)] font-medium leading-none tracking-[-0.02em] text-muted-foreground/78">
+              <p className="shrink-0 cursor-text text-[clamp(0.85rem,1.25vw,1.1rem)] font-medium leading-none tracking-[-0.02em] text-muted-foreground">
                 ({period})
               </p>
             </div>
             {subtitle ? (
-              <p className="w-full max-w-none cursor-text text-sm font-medium leading-[1.5] text-muted-foreground/80 md:text-[15px]">
+              <p className="w-full max-w-none cursor-text text-sm font-medium leading-[1.5] text-muted-foreground md:text-[15px]">
                 {subtitle}
               </p>
             ) : null}
-            <p className="w-full max-w-none cursor-text text-pretty text-[15px] leading-[1.7] text-foreground/78 md:text-base md:leading-[1.75]">
+            <p className="w-full max-w-none cursor-text text-pretty text-[15px] leading-[1.7] text-foreground md:text-base md:leading-[1.75]">
               {description}
             </p>
             {tags?.length ? (
@@ -282,7 +282,7 @@ function ProjectTimelineCard({
                 {tags.map((tag) => (
                   <span
                     key={tag}
-                    className="hero-interactive inline-flex origin-center items-center border-2 border-primary/30 bg-primary/[0.04] px-2.5 py-1.5 font-pixel text-[10px] font-medium uppercase leading-none tracking-[0.18em] text-primary/85 transition-[transform,background-color,border-color,color] hover:scale-[1.03] hover:border-primary/70 hover:bg-primary/[0.09] hover:text-foreground active:scale-[1.08] motion-reduce:hover:scale-100 motion-reduce:active:scale-100"
+                    className="hero-interactive inline-flex origin-center items-center border-2 border-primary/30 bg-primary/[0.04] px-2.5 py-1.5 font-pixel text-[10px] font-medium uppercase leading-none tracking-[0.18em] text-primary transition-[transform,background-color,border-color,color] hover:scale-[1.03] hover:border-primary/70 hover:bg-primary/[0.09] hover:text-foreground active:scale-[1.08] motion-reduce:hover:scale-100 motion-reduce:active:scale-100"
                   >
                     {tag}
                   </span>
@@ -302,7 +302,7 @@ function ProjectTimelineCard({
                 <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
                   <h4 className="cursor-text text-[clamp(1.1rem,1.65vw,1.45rem)] font-semibold leading-[1.2] tracking-[-0.02em] text-foreground">
                     <span>{project.label}:</span>{" "}
-                    <span className="text-foreground/92">{project.title}</span>
+                    <span className="text-foreground">{project.title}</span>
                   </h4>
                 </div>
 
@@ -314,10 +314,10 @@ function ProjectTimelineCard({
                         key={highlight}
                         className="grid grid-cols-[auto_minmax(0,1fr)] items-start gap-3"
                       >
-                        <span className="pt-0.5 text-[13px] font-semibold leading-none text-primary/76">
+                        <span className="pt-0.5 text-[13px] font-semibold leading-none text-primary">
                           {highlightIndex + 1}.
                         </span>
-                        <span className="cursor-text text-[14px] leading-relaxed text-foreground/80">
+                        <span className="cursor-text text-[14px] leading-relaxed text-foreground">
                           {highlight}
                         </span>
                       </li>
@@ -384,7 +384,7 @@ function ProjectSupportCard({
         <h3 className="max-w-[20ch] text-[clamp(1.4rem,2vw,2rem)] font-semibold leading-[1.08] tracking-[-0.02em] text-foreground">
           {title}
         </h3>
-        <p className="mt-3 text-pretty text-[15px] leading-[1.7] text-foreground/78">
+        <p className="mt-3 text-pretty text-[15px] leading-[1.7] text-foreground">
           {description}
         </p>
       </div>
@@ -393,7 +393,7 @@ function ProjectSupportCard({
         {highlights.map((highlight) => (
           <div key={highlight} className="flex items-start gap-2.5">
             <span className={cn("mt-[5px] block h-4 w-[2px] shrink-0 rounded-full", accentBullet(project.accentColor))} />
-            <span className="text-[14px] leading-relaxed text-foreground/80">{highlight}</span>
+            <span className="text-[14px] leading-relaxed text-foreground">{highlight}</span>
           </div>
         ))}
       </div>

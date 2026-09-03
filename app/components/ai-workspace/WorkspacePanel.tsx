@@ -58,7 +58,7 @@ function PendingArtifactState({
   return (
     <div className="space-y-5 border-2 border-dashed border-primary/28 bg-background/78 p-5 shadow-[inset_0_0_0_1px_hsl(var(--background)/0.18)]">
       <div className="space-y-2">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-primary/80">
+        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-primary">
           {label}
         </p>
         <p className="text-sm leading-7 text-muted-foreground">{description}</p>
@@ -127,10 +127,10 @@ export default function WorkspacePanel({
           <div className="flex h-full flex-col items-center justify-center gap-6 px-4 text-center">
             <div className="text-4xl text-primary/20">◈</div>
             <div className="space-y-2">
-              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground/50">
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">
                 {t("workspaceEmpty")}
               </p>
-              <p className="max-w-xs text-[10px] font-medium leading-relaxed tracking-[0.08em] text-muted-foreground/30">
+              <p className="max-w-xs text-[10px] font-medium leading-relaxed tracking-[0.08em] text-muted-foreground">
                 {t("workspaceEmptyHint")}
               </p>
             </div>
@@ -148,11 +148,11 @@ export default function WorkspacePanel({
           <div className="space-y-4">
             <div className="space-y-2 border-b border-border/30 pb-4">
               <div className="flex flex-wrap items-center gap-2">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-primary/80">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-primary">
                   {activeArtifact.title || activeTypeLabel}
                 </p>
                 {showUpdatingBadge || activeArtifact.status === "updating" ? (
-                  <span className="text-[8px] font-semibold uppercase tracking-[0.18em] text-primary/70">
+                  <span className="text-[8px] font-semibold uppercase tracking-[0.18em] text-primary">
                     {t("artifactUpdating")}
                   </span>
                 ) : null}
@@ -167,7 +167,7 @@ export default function WorkspacePanel({
                 <p className="text-sm leading-7 text-muted-foreground">{activeSummary}</p>
               ) : null}
 
-              <div className="flex flex-wrap gap-x-4 gap-y-1 text-[9px] font-medium uppercase tracking-[0.16em] text-muted-foreground/55">
+              <div className="flex flex-wrap gap-x-4 gap-y-1 text-[9px] font-medium uppercase tracking-[0.16em] text-muted-foreground">
                 {activeTypeLabel ? (
                   <span>
                     {t("artifactTypeMetaLabel")}: {activeTypeLabel}
@@ -185,7 +185,7 @@ export default function WorkspacePanel({
         ) : (
           <div className="flex h-full flex-col items-center justify-center gap-6 px-4 text-center">
             <div className="text-4xl text-primary/20">◈</div>
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground/50">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">
               {t("workspaceEmpty")}
             </p>
           </div>

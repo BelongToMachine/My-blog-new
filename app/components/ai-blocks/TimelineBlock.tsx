@@ -33,7 +33,7 @@ export default function TimelineBlock({
               ) : null}
             </div>
             <div className="pb-5">
-              <span className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.14em] text-primary/78">
+              <span className="mb-1 block text-[10px] font-semibold uppercase tracking-[0.14em] text-primary">
                 {item.period}
               </span>
               <p className="mb-1 text-[12px] font-medium tracking-[0.02em] text-foreground">
