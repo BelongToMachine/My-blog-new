@@ -124,7 +124,7 @@
     "ctaAi": "Get AI solution",
     "scrollDown": "Scroll down",
     "tapToContinue": "Tap to continue",
-    "code": "const coder = {\n  name: \"Jie\",\n  role: [\"Full stack developer\"],\n  skill: [\"React\", \"Next.js\"],\n  location: \"Hangzhou, China\",\n  welcomeMessage: () => {\n    return \"Happy to meet you!\"\n  }\n}"
+    "code": "const coder = {\n  name: \"Jie\",\n  role: [\"AI Product Engineer\"],\n  skill: [\"React\", \"Next.js\"],\n  location: \"Guangzhou, China\",\n  welcomeMessage: () => {\n    return \"Happy to meet you!\"\n  }\n}"
   },
   "home": {
     "blogSummary": "My Blog Summary",
@@ -338,11 +338,11 @@
     "fanDescription": "I enjoy building weird stuff with code. A few months ago, I made this anti-dislike wind generator that literally blows the dislike button away from your cursor. It\u2019s just for fun :)"
   },
   "footer": {
-    "identity": "Developer",
-    "tagline": "Front-End Developer & AI Prompt Engineer",
+    "identity": "Full-Stack AI Product Engineer",
+    "tagline": "Frontend & UX · AI Agents · Cloud & DevOps",
     "navigate": "Navigate",
     "connect": "Connect",
-    "copyright": "© {year} Developer"
+    "copyright": "© 2023–Present Jie · All rights reserved"
   },
   "contact": {
     "eyebrow": "Contact",

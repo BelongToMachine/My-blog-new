@@ -124,7 +124,7 @@
     "ctaAi": "AI 解决方案",
     "scrollDown": "向下滚动",
     "tapToContinue": "轻点继续",
-    "code": "const coder = {\n  name: \"开发者\",\n  role: [\"全栈开发工程师\"],\n  skill: [\"React\", \"Next.js\"],\n  location: \"中国杭州\",\n  welcomeMessage: () => {\n    return \"很高兴认识你！\"\n  }\n}"
+    "code": "const coder = {\n  name: \"开发者\",\n  role: [\"AI 产品工程师\"],\n  skill: [\"React\", \"Next.js\"],\n  location: \"中国广州\",\n  welcomeMessage: () => {\n    return \"很高兴认识你！\"\n  }\n}"
   },
   "home": {
     "blogSummary": "我的博客总结",
@@ -338,11 +338,11 @@
     "fanDescription": "\u6211\u559c\u6b22\u5199\u4e00\u4e9b\u5947\u5947\u602a\u602a\u7684\u4ee3\u7801\u3002\u51e0\u4e2a\u6708\u524d\u6211\u505a\u4e86\u8fd9\u4e2a\u300c\u53cd\u70b9\u8e29\u300d\u98ce\u6247\u2014\u2014\u5b83\u4f1a\u628a dislike \u6309\u94ae\u4ece\u4f60\u5149\u6807\u5e95\u4e0b\u5439\u8d70\u3002\u7eaf\u5c5e\u5a31\u4e50\uff0c\u6211\u5e76\u4e0d\u662f\u4e00\u4e2a\u4e13\u65ad\u7684\u4eba\u3002"
   },
   "footer": {
-    "identity": "开发者",
-    "tagline": "前端开发工程师 & AI 提示词工程师",
+    "identity": "全栈 AI 产品工程师",
+    "tagline": "前端与 UX · AI Agent · 云与 DevOps",
     "navigate": "导航",
     "connect": "联系",
-    "copyright": "© {year} 开发者"
+    "copyright": "© 2023-2026 Jie · 保留所有权利"
   },
   "contact": {
     "eyebrow": "联系",
