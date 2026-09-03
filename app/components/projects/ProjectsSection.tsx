@@ -270,11 +270,11 @@ function ProjectTimelineCard({
               </p>
             </div>
             {subtitle ? (
-              <p className="max-w-[72ch] cursor-text text-sm font-medium leading-[1.5] text-muted-foreground/80 md:text-[15px]">
+              <p className="w-full max-w-none cursor-text text-sm font-medium leading-[1.5] text-muted-foreground/80 md:text-[15px]">
                 {subtitle}
               </p>
             ) : null}
-            <p className="max-w-[72ch] cursor-text text-pretty text-[15px] leading-[1.7] text-foreground/78 md:text-base md:leading-[1.75]">
+            <p className="w-full max-w-none cursor-text text-pretty text-[15px] leading-[1.7] text-foreground/78 md:text-base md:leading-[1.75]">
               {description}
             </p>
             {tags?.length ? (
