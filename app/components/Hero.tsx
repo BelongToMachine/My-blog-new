@@ -45,7 +45,7 @@ export default async function Hero({
       >
         <span
           className={cn(
-            "hero-interactive font-display-face inline-block origin-[50%_0%] transition-[transform,color] hover:scale-[1.015] hover:text-white active:scale-[1.04] motion-reduce:hover:scale-100 motion-reduce:active:scale-100 text-[clamp(10.5rem,40vw,13rem)] font-normal uppercase leading-[0.8] tracking-[0.04em] text-foreground/[0.12] [font-synthesis-weight:none] subpixel-antialiased dark:text-foreground/[0.14] md:text-[clamp(6.5rem,28vw,17rem)] md:font-normal md:leading-none md:tracking-[0.06em] md:text-foreground/[0.08] md:[font-synthesis-weight:none] md:subpixel-antialiased md:dark:text-foreground/[0.1] md:scale-x-[1.12] md:scale-y-[1.5] md:hover:scale-x-[1.137] md:hover:scale-y-[1.5225] md:active:scale-x-[1.165] md:active:scale-y-[1.56] lg:text-[clamp(6.5rem,26vw,18rem)]",
+            "hero-interactive font-display-face hero-welcome-mobile-drift inline-block origin-[50%_0%] transition-[transform,color] hover:scale-[1.015] hover:text-white active:scale-[1.04] motion-reduce:hover:scale-100 motion-reduce:active:scale-100 text-[clamp(10.5rem,40vw,13rem)] font-normal uppercase leading-[0.8] tracking-[0.04em] text-foreground/[0.12] [font-synthesis-weight:none] subpixel-antialiased dark:text-foreground/[0.14] md:text-[clamp(6.5rem,28vw,17rem)] md:font-normal md:leading-none md:tracking-[0.06em] md:text-foreground/[0.08] md:[font-synthesis-weight:none] md:subpixel-antialiased md:dark:text-foreground/[0.1] md:scale-x-[1.12] md:scale-y-[1.5] md:hover:scale-x-[1.137] md:hover:scale-y-[1.5225] md:active:scale-x-[1.165] md:active:scale-y-[1.56] lg:text-[clamp(6.5rem,26vw,18rem)]",
           )}
         >
           Welcome

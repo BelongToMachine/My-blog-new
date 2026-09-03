@@ -1320,6 +1320,43 @@ ul li {
   letter-spacing: 0.03em;
 }
 
+@keyframes hero-welcome-mobile-drift {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+
+  28% {
+    translate: var(--hero-welcome-drift-left) 0;
+  }
+
+  72% {
+    translate: var(--hero-welcome-drift-right) 0;
+  }
+}
+
+@media (max-width: 499px) {
+  html[data-motion-level="full"] .hero-welcome-mobile-drift {
+    --hero-welcome-drift-left: -6.25rem;
+    --hero-welcome-drift-right: 6.25rem;
+    animation: hero-welcome-mobile-drift 5.4s ease-in-out infinite;
+    will-change: translate;
+  }
+
+  html[data-motion-level="limited"] .hero-welcome-mobile-drift {
+    --hero-welcome-drift-left: -2.5rem;
+    --hero-welcome-drift-right: 2.5rem;
+    animation: hero-welcome-mobile-drift 4.8s ease-in-out 1;
+    will-change: translate;
+  }
+
+  html[data-motion-level="reduced"] .hero-welcome-mobile-drift {
+    animation: none;
+    translate: 0 0;
+    will-change: auto;
+  }
+}
+
 @keyframes shimmer-sweep {
   0% {
     background-position: -200% 0;
