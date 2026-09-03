@@ -3,6 +3,7 @@
 import { useTheme } from "@/app/hooks/useTheme"
 import { ActionIconButton } from "../system/ActionIconButton"
 import { cn } from "@/lib/utils"
+import { useLocale } from "next-intl"
 
 const PixelSun = () => (
   <svg
@@ -60,11 +61,16 @@ interface ThemeToggleProps {
 
 const ThemeToggle = ({ className }: ThemeToggleProps) => {
   const { colorMode, setColorMode } = useTheme()
+  const locale = useLocale()
   const nextMode = colorMode === "light" ? "dark" : "light"
 
   return (
     <ActionIconButton
-      aria-label={`Switch to ${nextMode} mode`}
+      aria-label={
+        locale === "zh"
+          ? `切换到${nextMode === "dark" ? "深色" : "浅色"}模式`
+          : `Switch to ${nextMode} mode`
+      }
       onClick={() => setColorMode(nextMode)}
       type="button"
       tone="nav"

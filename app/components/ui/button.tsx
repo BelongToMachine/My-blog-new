@@ -10,15 +10,15 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "border-primary bg-primary/18 text-primary shadow-[4px_4px_0_hsl(var(--foreground)/0.28)] hover:bg-primary hover:text-primary-foreground",
+          "border-primary bg-primary/18 text-link shadow-[4px_4px_0_hsl(var(--foreground)/0.28)] hover:bg-primary hover:text-primary-foreground",
         destructive:
-          "border-destructive bg-destructive/12 text-destructive shadow-[4px_4px_0_hsl(var(--foreground)/0.28)] hover:bg-destructive hover:text-destructive-foreground",
+          "border-destructive bg-destructive/12 text-danger shadow-[4px_4px_0_hsl(var(--foreground)/0.28)] hover:bg-destructive hover:text-destructive-foreground",
         outline:
           "border-border/80 bg-card/70 text-foreground shadow-[4px_4px_0_hsl(var(--foreground)/0.16)] hover:border-primary/60 hover:bg-accent/60 hover:text-foreground",
         secondary:
           "border-border/70 bg-secondary/78 text-secondary-foreground shadow-[4px_4px_0_hsl(var(--foreground)/0.18)] hover:bg-secondary",
         ghost: "border-transparent bg-transparent text-muted-foreground hover:border-border/70 hover:bg-accent/50 hover:text-foreground",
-        link: "border-transparent bg-transparent px-0 text-primary underline-offset-4 hover:text-primary/80 hover:underline",
+        link: "border-transparent bg-transparent px-0 text-link underline-offset-4 hover:text-link hover:underline",
       },
       size: {
         default: "h-11 px-4 py-2",

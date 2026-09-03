@@ -2,14 +2,22 @@ import React from "react"
 import * as Tooltip from "@radix-ui/react-tooltip"
 import { RxInfoCircled } from "react-icons/rx"
 import { Text } from "@radix-ui/themes"
+import { useLocale } from "next-intl"
 
 const TooltipIcon = () => {
+  const locale = useLocale()
+  const isZh = locale === "zh"
+
   return (
     <Tooltip.Provider>
       <Tooltip.Root>
         <Tooltip.Trigger asChild>
-          <button className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-transparent bg-transparent text-primary transition-colors hover:border-border hover:bg-accent">
-            <RxInfoCircled />
+          <button
+            type="button"
+            aria-label={isZh ? "查看联系提示" : "View contact guidance"}
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-transparent bg-transparent text-primary transition-colors hover:border-border hover:bg-accent"
+          >
+            <RxInfoCircled aria-hidden="true" />
           </button>
         </Tooltip.Trigger>
         <Tooltip.Portal>
@@ -18,10 +26,12 @@ const TooltipIcon = () => {
             sideOffset={5}
           >
             <Text as="p" className="text-foreground">
-              在这里，您每天仅可发送一次邮箱
+              {isZh ? "在这里，您每天仅可发送一次邮箱" : "You can send one email per day here."}
             </Text>
             <Text as="p" className="pt-2 text-foreground/80">
-              想立即与我取得联系，请使用LinkedIn
+              {isZh
+                ? "想立即与我取得联系，请使用 LinkedIn"
+                : "For an immediate response, please use LinkedIn."}
             </Text>
             <Tooltip.Arrow className="fill-card" />
           </Tooltip.Content>

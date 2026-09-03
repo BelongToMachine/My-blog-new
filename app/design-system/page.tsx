@@ -119,8 +119,8 @@ const DesignSystemPage = () => {
                         <CardFooter className="justify-between">
                             <span className="terminal-label">micro interaction</span>
                             <div className="flex gap-2">
-                                <ActionIconButton tone="quiet"><PlusIcon /></ActionIconButton>
-                                <ActionIconButton tone="surface"><PlusIcon /></ActionIconButton>
+                                <ActionIconButton aria-label="Add item" tone="quiet"><PlusIcon aria-hidden="true" /></ActionIconButton>
+                                <ActionIconButton aria-label="Add item" tone="surface"><PlusIcon aria-hidden="true" /></ActionIconButton>
                             </div>
                         </CardFooter>
                     </Card>

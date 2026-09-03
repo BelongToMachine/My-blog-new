@@ -139,7 +139,7 @@ export default function ThreadSidebar({
                       event.stopPropagation()
                       onDeleteThread(thread.id)
                     }}
-                    className="absolute right-2 top-1/2 inline-block -translate-y-1/2 px-2 py-1 text-base font-medium leading-none text-muted-foreground/40 transition-colors hover:bg-transparent hover:text-destructive md:hidden"
+                    className="absolute right-2 top-1/2 inline-block -translate-y-1/2 px-2 py-1 text-base font-medium leading-none text-muted-foreground/40 transition-colors hover:bg-transparent hover:text-danger md:hidden"
                     aria-label={t("deleteChat") ?? "Delete chat"}
                     title={t("deleteChat") ?? "Delete chat"}
                   >
@@ -150,7 +150,7 @@ export default function ThreadSidebar({
                       event.stopPropagation()
                       onDeleteThread(thread.id)
                     }}
-                    className="absolute right-2 top-1/2 hidden -translate-y-1/2 px-2 py-1 text-base font-medium leading-none text-muted-foreground/40 transition-colors hover:bg-transparent hover:text-destructive md:group-hover:inline-block"
+                    className="absolute right-2 top-1/2 hidden -translate-y-1/2 px-2 py-1 text-base font-medium leading-none text-muted-foreground/40 transition-colors hover:bg-transparent hover:text-danger md:group-hover:inline-block"
                     aria-label={t("deleteChat") ?? "Delete chat"}
                     title={t("deleteChat") ?? "Delete chat"}
                   >

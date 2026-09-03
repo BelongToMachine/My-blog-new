@@ -563,7 +563,7 @@ const ChatMessagesViewport = React.memo(function ChatMessagesViewport({
                           return (
                             <div
                               key={sourceId}
-                              className="text-[10px] font-medium uppercase tracking-[0.12em] text-destructive"
+                              className="text-[10px] font-medium uppercase tracking-[0.12em] text-danger"
                             >
                               Error: {part.errorText}
                             </div>
@@ -685,7 +685,7 @@ const ChatComposer = React.memo(function ChatComposer({
     <div className="ai-lab-composer w-full shrink-0 px-4 pb-4 pt-3 md:px-8 md:pb-6">
       <div className="mx-auto max-w-[1120px] space-y-3">
         {error && errorLabel ? (
-          <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-destructive">
+          <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-danger">
             {errorLabel}
           </p>
         ) : null}
@@ -698,7 +698,7 @@ const ChatComposer = React.memo(function ChatComposer({
             <button
               type="button"
               onClick={stop}
-              className="ai-lab-pixel-button px-3 py-1.5 text-[10px] hover:border-destructive/70 hover:bg-destructive/10 hover:text-destructive"
+              className="ai-lab-pixel-button px-3 py-1.5 text-[10px] hover:border-destructive/70 hover:bg-destructive/10 hover:text-danger"
             >
               {cancelLabel}
             </button>
@@ -1069,7 +1069,10 @@ export default function AIPlayground() {
             />
           ) : null}
 
-          <main className="ai-lab-chat-pane relative flex flex-1 flex-col overflow-hidden">
+          <section
+            aria-label={locale === "zh" ? "聊天区域" : "Chat area"}
+            className="ai-lab-chat-pane relative flex flex-1 flex-col overflow-hidden"
+          >
             <div className="shrink-0 px-4 pb-2 pt-4 md:px-5 md:pb-3 md:pt-5">
               <div className="flex w-full items-start justify-between gap-3 md:justify-start">
                 <div className="flex min-w-0 items-center gap-3">
@@ -1151,7 +1154,7 @@ export default function AIPlayground() {
                 </AnimatePresence>
               )}
             </div>
-          </main>
+          </section>
         </div>
       </div>
     </div>

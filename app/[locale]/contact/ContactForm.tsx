@@ -266,7 +266,7 @@ export default function ContactForm() {
                 <div className="relative">
                   <span
                     aria-hidden="true"
-                    className="pointer-events-none absolute left-3 top-2.5 z-10 text-sm font-semibold text-destructive"
+                    className="pointer-events-none absolute left-3 top-2.5 z-10 text-sm font-semibold text-danger"
                   >
                     *
                   </span>
@@ -405,7 +405,7 @@ function InputWithIcon({
         {required ? (
           <span
             aria-hidden="true"
-            className="pointer-events-none absolute inset-y-0 left-9 z-10 flex items-center text-sm font-semibold text-destructive"
+            className="pointer-events-none absolute inset-y-0 left-9 z-10 flex items-center text-sm font-semibold text-danger"
           >
             *
           </span>
@@ -415,7 +415,7 @@ function InputWithIcon({
         </div>
       </div>
       {error ? (
-        <p id={errorId} className="text-xs text-destructive" role="alert">
+        <p id={errorId} className="text-xs text-danger" role="alert">
           {error}
         </p>
       ) : null}

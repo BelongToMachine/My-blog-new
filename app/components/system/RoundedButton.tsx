@@ -14,7 +14,7 @@ const roundedButtonVariants = cva(
         hero:
           "relative rounded-full border-2 border-black bg-[#fcc31e] font-extrabold text-black shadow-[0_4px_0_#000] duration-150 hover:translate-y-0 hover:bg-[#ffd966] active:translate-y-[4px] active:shadow-none",
         accent:
-          "border-2 border-primary/30 bg-primary/[0.06] text-primary shadow-none hover:border-primary/50 hover:bg-primary/[0.1] hover:text-foreground hover:shadow-none active:translate-y-0",
+          "border-2 border-primary/30 bg-primary/[0.06] text-link shadow-none hover:border-primary/50 hover:bg-primary/[0.1] hover:text-foreground hover:shadow-none active:translate-y-0",
         nav:
           "border-2 border-transparent bg-transparent text-muted-foreground hover:!translate-y-0 hover:border-[#fcc31e] hover:bg-transparent hover:text-foreground",
         navActive:

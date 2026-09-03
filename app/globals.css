@@ -50,7 +50,8 @@
     --popover: 210 36% 99%;
     --popover-foreground: 210 30% 10%;
 
-    --primary: 191 92% 36%;
+    /* Keep the brand hue while giving text links enough contrast on light surfaces. */
+    --primary: 191 92% 26%;
     --primary-foreground: 210 36% 98%;
 
     --secondary: 52 85% 90%;
@@ -67,7 +68,7 @@
 
     --border: 202 26% 78%;
     --input: 202 26% 78%;
-    --ring: 191 92% 36%;
+    --ring: 191 92% 26%;
 
     --radius: 0rem;
 
@@ -76,7 +77,10 @@
     --surface-overlay: 210 36% 99%;
     --text-strong: 210 30% 10%;
     --text-soft: 212 18% 34%;
-    --text-link: 191 92% 36%;
+    --text-link: 191 92% 26%;
+    --text-danger: 0 75% 40%;
+    --text-warning: 36 95% 30%;
+    --text-success: 147 60% 30%;
     --home-about-bridge: 210 30% 97%;
     --signal-amber: 36 95% 54%;
     --signal-rose: 344 88% 58%;
@@ -131,6 +135,9 @@
     --text-strong: 220 15% 94%;
     --text-soft: 220 10% 70%;
     --text-link: 190 100% 62%;
+    --text-danger: 0 90% 68%;
+    --text-warning: 43 100% 61%;
+    --text-success: 141 74% 56%;
     --home-about-bridge: 217 24% 18%;
     --signal-amber: 43 100% 61%;
     --signal-rose: 327 95% 65%;
@@ -181,6 +188,39 @@
       100% 100%;
     background-attachment: fixed;
     position: relative;
+  }
+
+  :where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 3px;
+  }
+
+  .skip-link {
+    position: fixed;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 2000;
+    transform: translateY(-200%);
+    border: 2px solid hsl(var(--foreground));
+    background: hsl(var(--foreground));
+    color: hsl(var(--background));
+    padding: 0.65rem 0.9rem;
+    font-family: var(--font-pixel), var(--font-sans), sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1.25;
+    transition: transform var(--motion-duration-fast) var(--motion-ease-out);
+  }
+
+  .skip-link:focus-visible {
+    transform: translateY(0);
+    outline: 3px solid hsl(var(--ring));
+    outline-offset: 3px;
+  }
+
+  #main-content {
+    scroll-margin-top: var(--app-nav-offset);
   }
 
   body::before {
@@ -816,6 +856,8 @@ html[data-motion-level="limited"] .wind__lane {
 
   .ai-lab-pixel-button:focus-visible {
     @apply border-border bg-accent/60 text-foreground outline-none ring-0;
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 3px;
   }
 
   .ai-lab-pixel-button:disabled {
@@ -905,7 +947,7 @@ html[data-motion-level="limited"] .wind__lane {
   }
 
   .ai-lab-pixel-menu-item--danger:hover {
-    @apply border-destructive/70 bg-destructive/10 text-destructive;
+    @apply border-destructive/70 bg-destructive/10 text-danger;
   }
 
   .ai-lab-workspace-pane {

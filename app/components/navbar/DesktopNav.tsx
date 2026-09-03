@@ -63,7 +63,11 @@ const NavLinks = () => {
       {links.map((link) => (
         <li key={link.href}>
           <NavItem asChild active={link.href === currentPath} variant="desktop">
-            <Link className={styledTag(link)} href={link.href}>
+            <Link
+              className={styledTag(link)}
+              href={link.href}
+              aria-current={link.href === currentPath ? "page" : undefined}
+            >
               {link.label}
             </Link>
           </NavItem>

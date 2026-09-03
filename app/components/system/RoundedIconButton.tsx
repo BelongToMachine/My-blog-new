@@ -12,7 +12,7 @@ const roundedIconButtonVariants = cva(
     variants: {
       tone: {
         accent:
-          "border-primary/35 bg-primary/[0.04] text-primary shadow-[0_12px_26px_hsl(var(--primary)/0.14)] hover:border-[color-mix(in_srgb,hsl(var(--primary))_78%,hsl(var(--border)))] hover:bg-[color-mix(in_srgb,hsl(var(--primary))_14%,hsl(var(--accent)))] hover:text-foreground hover:shadow-[0_16px_30px_hsl(var(--primary)/0.18)] active:translate-y-0",
+          "border-primary/35 bg-primary/[0.04] text-link shadow-[0_12px_26px_hsl(var(--primary)/0.14)] hover:border-[color-mix(in_srgb,hsl(var(--primary))_78%,hsl(var(--border)))] hover:bg-[color-mix(in_srgb,hsl(var(--primary))_14%,hsl(var(--accent)))] hover:text-foreground hover:shadow-[0_16px_30px_hsl(var(--primary)/0.18)] active:translate-y-0",
         quiet:
           "border-border/60 bg-background/12 shadow-[0_10px_24px_hsl(var(--foreground)/0.08)] hover:border-primary/55 hover:bg-background/22 hover:text-foreground hover:shadow-[0_14px_30px_hsl(var(--foreground)/0.12)]",
         surface:

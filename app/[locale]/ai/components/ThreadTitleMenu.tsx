@@ -178,7 +178,7 @@ export default function ThreadTitleMenu({
               setIsOpen(false)
               onDelete()
             }}
-            className="ai-lab-pixel-menu-item ai-lab-pixel-menu-item--danger text-[10px] text-destructive"
+            className="ai-lab-pixel-menu-item ai-lab-pixel-menu-item--danger text-[10px] text-danger"
             role="menuitem"
           >
             <Trash2 className="h-4 w-4" />

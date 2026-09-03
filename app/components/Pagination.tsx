@@ -34,25 +34,27 @@ const Pagination = ({ itemCounts, pageSize, currentPage }: Props) => {
   }
 
   return (
-    <RetroToolbar className="justify-between">
+    <nav aria-label={t("paginationLabel")}>
+      <RetroToolbar className="justify-between">
       <RetroBadge tone="neutral">
         {t("page", { current: currentPage, total: pageCount })}
       </RetroBadge>
       <div className="flex flex-wrap gap-2">
-        <Button variant="outline" size="icon" disabled={currentPage === 1} onClick={() => changePage(1)}>
-          <DoubleArrowLeftIcon />
+        <Button aria-label={t("firstPage")} variant="outline" size="icon" disabled={currentPage === 1} onClick={() => changePage(1)}>
+          <DoubleArrowLeftIcon aria-hidden="true" />
         </Button>
-        <Button variant="outline" size="icon" disabled={currentPage === 1} onClick={() => changePage(currentPage - 1)}>
-          <ChevronLeftIcon />
+        <Button aria-label={t("previousPage")} variant="outline" size="icon" disabled={currentPage === 1} onClick={() => changePage(currentPage - 1)}>
+          <ChevronLeftIcon aria-hidden="true" />
         </Button>
-        <Button variant="outline" size="icon" disabled={currentPage === pageCount} onClick={() => changePage(currentPage + 1)}>
-          <ChevronRightIcon />
+        <Button aria-label={t("nextPage")} variant="outline" size="icon" disabled={currentPage === pageCount} onClick={() => changePage(currentPage + 1)}>
+          <ChevronRightIcon aria-hidden="true" />
         </Button>
-        <Button variant="outline" size="icon" disabled={currentPage === pageCount} onClick={() => changePage(pageCount)}>
-          <DoubleArrowRightIcon />
+        <Button aria-label={t("lastPage")} variant="outline" size="icon" disabled={currentPage === pageCount} onClick={() => changePage(pageCount)}>
+          <DoubleArrowRightIcon aria-hidden="true" />
         </Button>
       </div>
-    </RetroToolbar>
+      </RetroToolbar>
+    </nav>
   )
 }
 

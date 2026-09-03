@@ -5,7 +5,7 @@ import ThemeToggle from "./ThemeToggle"
 import { ActionIconButton } from "../system/ActionIconButton"
 import PixelMenuIcon from "../system/PixelMenuIcon"
 import { Link, usePathname } from "@/app/i18n/navigation"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import { NavItem } from "../system/NavItem"
 import { cn } from "@/lib/utils"
 import JieBrand from "./JieBrand"
@@ -13,6 +13,7 @@ import JieBrand from "./JieBrand"
 const MobileNav = () => {
   const t = useTranslations("nav")
   const currentPath = usePathname()
+  const locale = useLocale()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const links = useMemo(
     () => [
@@ -37,7 +38,15 @@ const MobileNav = () => {
           <LanguageToggle />
           <ThemeToggle />
           <ActionIconButton
-            aria-label={isMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-label={
+              isMenuOpen
+                ? locale === "zh"
+                  ? "关闭导航菜单"
+                  : "Close navigation menu"
+                : locale === "zh"
+                  ? "打开导航菜单"
+                  : "Open navigation menu"
+            }
             aria-controls="mobile-site-navigation"
             aria-expanded={isMenuOpen}
             className={cn(
@@ -73,7 +82,11 @@ const MobileNav = () => {
                 variant="dropdown"
                 className="w-full"
               >
-                <Link href={link.href} onClick={() => setIsMenuOpen(false)}>
+                <Link
+                  href={link.href}
+                  onClick={() => setIsMenuOpen(false)}
+                  aria-current={link.href === currentPath ? "page" : undefined}
+                >
                   {link.label}
                 </Link>
               </NavItem>

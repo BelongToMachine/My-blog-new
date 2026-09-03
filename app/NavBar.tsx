@@ -4,6 +4,7 @@ import DesktopNav from "./components/navbar/DesktopNav"
 import MobileNav from "./components/navbar/MobileNav"
 import { cn } from "@/lib/utils"
 import { usePathname } from "@/app/i18n/navigation"
+import { useLocale } from "next-intl"
 import { useTheme } from "@/app/hooks/useTheme"
 import { useAdaptiveMotion } from "@/app/hooks/useAdaptiveMotion"
 import { colorMode } from "@/app/context/DarkModeContext"
@@ -16,6 +17,7 @@ const NavBar = () => {
     useState(false)
   const [isPastHero, setIsPastHero] = useState(false)
   const pathname = usePathname()
+  const locale = useLocale()
   const isHomepage = pathname === "/"
   const { setColorMode } = useTheme()
   const { shouldAnimateSpatialMotion } = useAdaptiveMotion()
@@ -163,6 +165,7 @@ const NavBar = () => {
   return (
     <nav
       ref={navRef}
+      aria-label={locale === "zh" ? "主导航" : "Primary navigation"}
       data-homepage={isHomepage || undefined}
       className={cn(
         "inset-x-0 top-0 z-[1200] shadow-[var(--shadow-elevated)] transition-[background-color] duration-200 ease-out",

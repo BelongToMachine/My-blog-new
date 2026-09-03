@@ -43,7 +43,7 @@ export function ContactFeedbackToast({
           className={`flex h-9 w-9 items-center justify-center border ${
             isSuccess
               ? "border-[hsl(var(--signal-green)/0.6)] bg-[hsl(var(--signal-green)/0.12)] text-[hsl(var(--signal-green))]"
-              : "border-destructive/60 bg-destructive/10 text-destructive"
+              : "border-destructive/60 bg-destructive/10 text-danger"
           }`}
           aria-hidden="true"
         >
@@ -52,7 +52,7 @@ export function ContactFeedbackToast({
         <div className="min-w-0 pt-0.5">
           <p
             className={`font-pixel text-[10px] uppercase tracking-[0.16em] ${
-              isSuccess ? "text-[hsl(var(--signal-green))]" : "text-destructive"
+              isSuccess ? "text-success" : "text-danger"
             }`}
           >
             {label}

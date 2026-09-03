@@ -13,7 +13,11 @@ export default function MainShell({ children }: Props) {
   const isHomepage = pathname === "/"
 
   return (
-    <main className={cn(!isHomepage && "pt-[3.5rem] md:pt-[4.75rem]")}>
+    <main
+      id="main-content"
+      tabIndex={-1}
+      className={cn(!isHomepage && "pt-[3.5rem] md:pt-[4.75rem]")}
+    >
       {children}
     </main>
   )

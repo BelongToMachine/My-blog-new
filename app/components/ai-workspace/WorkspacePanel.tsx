@@ -157,7 +157,7 @@ export default function WorkspacePanel({
                   </span>
                 ) : null}
                 {activeArtifact.status === "error" ? (
-                  <span className="text-[8px] font-semibold uppercase tracking-[0.18em] text-destructive">
+                  <span className="text-[8px] font-semibold uppercase tracking-[0.18em] text-danger">
                     {t("artifactError")}
                   </span>
                 ) : null}

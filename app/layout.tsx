@@ -97,6 +97,9 @@ export default async function RootLayout({
         <Script id="theme-script" src="/index.js" strategy="beforeInteractive" />
       </head>
       <body>
+        <a className="skip-link" href="#main-content">
+          {locale === "zh" ? "跳到主要内容" : "Skip to main content"}
+        </a>
         <GlobalChatRuntimeProvider>{children}</GlobalChatRuntimeProvider>
         <DeferredFontLoader />
         {shouldLoadAnalytics ? <Analytics /> : null}
