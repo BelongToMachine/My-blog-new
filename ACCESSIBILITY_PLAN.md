@@ -20,6 +20,16 @@
 
 验证结果：`bun lint`、`bunx tsc --noEmit`、`git diff --check` 均通过。浏览器、键盘和屏幕阅读器实测尚未执行。
 
+### 第二阶段：键盘与弹层焦点管理
+
+- [x] 新增可复用 `useFocusTrap`，统一处理 Escape、Tab 循环、背景 inert 和关闭后焦点恢复。
+- [x] MobileNav 关闭时不再暴露给屏幕阅读器，并在打开后把焦点移入导航区域。
+- [x] AI 移动端会话侧栏接入焦点循环、Escape 和触发按钮焦点恢复。
+- [x] 文章移动端目录接入焦点循环、Escape 和触发按钮焦点恢复。
+- [x] ArticlePicker 增加 Dialog 语义、标题/描述关联、初始搜索焦点和遮罩关闭。
+- [x] ThreadTitleMenu 增加方向键、Home/End、Escape 和 Tab 退出行为。
+- [ ] 在真实浏览器和屏幕阅读器中验证焦点顺序与响应式切换。
+
 ## 1. 结论
 
 当前项目已经具备动态语言标记、语义化页面骨架、基础焦点样式、响应式布局和 `prefers-reduced-motion` 等良好基础，但仍不能认为达到 WCAG 2.2 AA。

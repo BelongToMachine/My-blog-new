@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react"
 import { ChevronDown, PencilLine, Star, Trash2 } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { cn } from "@/lib/utils"
@@ -23,9 +23,18 @@ export default function ThreadTitleMenu({
   const t = useTranslations("ai")
   const rootRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const menuButtonRef = useRef<HTMLButtonElement>(null)
+  const menuItemsRef = useRef<Array<HTMLButtonElement | null>>([])
   const [isOpen, setIsOpen] = useState(false)
   const [isRenaming, setIsRenaming] = useState(false)
   const [draftTitle, setDraftTitle] = useState(title)
+
+  const closeMenu = useCallback((restoreFocus = true) => {
+    setIsOpen(false)
+    if (restoreFocus) {
+      window.requestAnimationFrame(() => menuButtonRef.current?.focus())
+    }
+  }, [])
 
   useEffect(() => {
     setDraftTitle(title)
@@ -40,6 +49,16 @@ export default function ThreadTitleMenu({
   }, [isRenaming])
 
   useEffect(() => {
+    if (!isOpen) return
+
+    const frameId = window.requestAnimationFrame(() => {
+      menuItemsRef.current[0]?.focus()
+    })
+
+    return () => window.cancelAnimationFrame(frameId)
+  }, [isOpen])
+
+  useEffect(() => {
     function handlePointerDown(event: PointerEvent) {
       if (!rootRef.current?.contains(event.target as Node)) {
         setIsOpen(false)
@@ -48,20 +67,50 @@ export default function ThreadTitleMenu({
       }
     }
 
-    function handleEscape(event: KeyboardEvent) {
-      if (event.key !== "Escape") return
-      setIsOpen(false)
-      setIsRenaming(false)
-      setDraftTitle(title)
-    }
-
     window.addEventListener("pointerdown", handlePointerDown)
-    window.addEventListener("keydown", handleEscape)
     return () => {
       window.removeEventListener("pointerdown", handlePointerDown)
-      window.removeEventListener("keydown", handleEscape)
     }
   }, [title])
+
+  const handleMenuKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    const items = menuItemsRef.current.filter(
+      (item): item is HTMLButtonElement => item !== null,
+    )
+
+    if (event.key === "Escape") {
+      event.preventDefault()
+      closeMenu()
+      return
+    }
+
+    if (event.key === "Tab") {
+      window.requestAnimationFrame(() => setIsOpen(false))
+      return
+    }
+
+    if (!items.length) return
+
+    const currentIndex = items.indexOf(
+      document.activeElement as HTMLButtonElement,
+    )
+    let nextIndex = currentIndex
+
+    if (event.key === "ArrowDown") {
+      nextIndex = currentIndex < items.length - 1 ? currentIndex + 1 : 0
+    } else if (event.key === "ArrowUp") {
+      nextIndex = currentIndex > 0 ? currentIndex - 1 : items.length - 1
+    } else if (event.key === "Home") {
+      nextIndex = 0
+    } else if (event.key === "End") {
+      nextIndex = items.length - 1
+    } else {
+      return
+    }
+
+    event.preventDefault()
+    items[nextIndex]?.focus()
+  }
 
   const commitRename = () => {
     const nextTitle = draftTitle.trim()
@@ -111,6 +160,8 @@ export default function ThreadTitleMenu({
   return (
     <div ref={rootRef} className="relative min-w-0">
       <button
+        ref={menuButtonRef}
+        id="thread-actions-trigger"
         type="button"
         onClick={() => setIsOpen((open) => !open)}
         className={cn(
@@ -119,6 +170,7 @@ export default function ThreadTitleMenu({
         )}
         aria-haspopup="menu"
         aria-expanded={isOpen}
+        aria-controls="thread-actions-menu"
         aria-label={t("threadActions")}
       >
         {isStarred ? (
@@ -137,14 +189,21 @@ export default function ThreadTitleMenu({
 
       {isOpen ? (
         <div
+          id="thread-actions-menu"
           className="absolute left-0 top-full z-40 mt-2 min-w-[220px] border-2 border-border bg-background p-2 shadow-[0_18px_42px_hsl(var(--background)/0.24)]"
           role="menu"
+          aria-labelledby="thread-actions-trigger"
+          tabIndex={-1}
+          onKeyDown={handleMenuKeyDown}
         >
           <button
+            ref={(element) => {
+              menuItemsRef.current[0] = element
+            }}
             type="button"
             onClick={() => {
               onToggleStar()
-              setIsOpen(false)
+              closeMenu()
             }}
             className={cn(
               "ai-lab-pixel-menu-item text-[10px]",
@@ -157,6 +216,9 @@ export default function ThreadTitleMenu({
           </button>
 
           <button
+            ref={(element) => {
+              menuItemsRef.current[1] = element
+            }}
             type="button"
             onClick={() => {
               setDraftTitle(title)
@@ -173,9 +235,12 @@ export default function ThreadTitleMenu({
           <div className="my-1 border-t-2 border-border/45" />
 
           <button
+            ref={(element) => {
+              menuItemsRef.current[2] = element
+            }}
             type="button"
             onClick={() => {
-              setIsOpen(false)
+              closeMenu()
               onDelete()
             }}
             className="ai-lab-pixel-menu-item ai-lab-pixel-menu-item--danger text-[10px] text-danger"

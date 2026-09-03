@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import LanguageToggle from "./LanguageToggle"
 import ThemeToggle from "./ThemeToggle"
 import { ActionIconButton } from "../system/ActionIconButton"
@@ -9,12 +9,15 @@ import { useLocale, useTranslations } from "next-intl"
 import { NavItem } from "../system/NavItem"
 import { cn } from "@/lib/utils"
 import JieBrand from "./JieBrand"
+import { useFocusTrap } from "@/app/hooks/useFocusTrap"
 
 const MobileNav = () => {
   const t = useTranslations("nav")
   const currentPath = usePathname()
   const locale = useLocale()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const menuButtonRef = useRef<HTMLButtonElement>(null)
+  const navigationRef = useRef<HTMLElement>(null)
   const links = useMemo(
     () => [
       { label: t("aboutMe"), href: "/" },
@@ -29,6 +32,15 @@ const MobileNav = () => {
     setIsMenuOpen(false)
   }, [currentPath])
 
+  const closeMenu = useCallback(() => setIsMenuOpen(false), [])
+
+  useFocusTrap({
+    active: isMenuOpen,
+    containerRef: navigationRef,
+    returnFocusRef: menuButtonRef,
+    onEscape: closeMenu,
+  })
+
   return (
     <div className="relative px-4 py-2.5">
       <div className="flex items-center justify-between gap-2">
@@ -38,6 +50,7 @@ const MobileNav = () => {
           <LanguageToggle />
           <ThemeToggle />
           <ActionIconButton
+            ref={menuButtonRef}
             aria-label={
               isMenuOpen
                 ? locale === "zh"
@@ -65,7 +78,11 @@ const MobileNav = () => {
       </div>
 
       <aside
+        ref={navigationRef}
         id="mobile-site-navigation"
+        aria-label={locale === "zh" ? "移动端导航" : "Mobile navigation"}
+        aria-hidden={!isMenuOpen}
+        tabIndex={-1}
         className={cn(
           "fixed bottom-0 right-0 top-[var(--app-nav-offset)] z-30 w-[min(280px,85vw)] border-l-2 border-border/60 bg-background/95 px-4 py-4 backdrop-blur-sm transition-[transform,opacity] duration-200 ease-out",
           isMenuOpen

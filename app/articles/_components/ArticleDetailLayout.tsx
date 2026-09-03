@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 import { Box, Container, Grid } from "@radix-ui/themes"
 import { cn } from "@/lib/utils"
 import PixelMenuIcon from "@/app/components/system/PixelMenuIcon"
@@ -12,6 +12,7 @@ import ArticleFooter from "@/app/articles/_components/ArticleFooter"
 import type { Heading } from "@/app/service/BlogParser"
 import { useReadingFontStore } from "@/app/service/Store"
 import styles from "@/app/articles/post.module.css"
+import { useFocusTrap } from "@/app/hooks/useFocusTrap"
 
 interface ArticleDetailLayoutProps {
   article: {
@@ -62,12 +63,23 @@ function FontToggle() {
 
 export default function ArticleDetailLayout({ article }: ArticleDetailLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const sidebarTriggerRef = useRef<HTMLButtonElement>(null)
+  const sidebarRef = useRef<HTMLElement>(null)
   const setNormalFont = useReadingFontStore((s) => s.setNormalFont)
 
   useEffect(() => {
     const stored = localStorage.getItem("reading-font-mode")
     setNormalFont(stored !== "pixel")
   }, [setNormalFont])
+
+  const closeSidebar = useCallback(() => setSidebarOpen(false), [])
+
+  useFocusTrap({
+    active: sidebarOpen,
+    containerRef: sidebarRef,
+    returnFocusRef: sidebarTriggerRef,
+    onEscape: closeSidebar,
+  })
 
   return (
     <Container>
@@ -77,6 +89,7 @@ export default function ArticleDetailLayout({ article }: ArticleDetailLayoutProp
         {/* Mobile TOC toggle — fixed, follows scroll */}
         <div className="fixed bottom-6 left-6 z-40 lg:hidden">
           <button
+            ref={sidebarTriggerRef}
             onClick={() => setSidebarOpen((s) => !s)}
             className="flex h-12 w-12 items-center justify-center border-2 border-border/70 bg-background/90 text-foreground shadow-[var(--shadow-elevated)] backdrop-blur-sm transition-colors hover:border-primary/60 hover:bg-primary/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
             aria-label={sidebarOpen ? "关闭目录" : "打开目录"}
@@ -90,7 +103,11 @@ export default function ArticleDetailLayout({ article }: ArticleDetailLayoutProp
         <div className="relative flex flex-row">
           {/* Mobile TOC sidebar */}
           <aside
+            ref={sidebarRef}
             id="article-toc-sidebar"
+            aria-label={article.locale === "zh" ? "文章目录" : "Article contents"}
+            aria-hidden={!sidebarOpen}
+            tabIndex={-1}
             className={cn(
               "fixed inset-y-0 left-0 z-30 border-r-2 border-border/60 bg-background/95 backdrop-blur-sm transition-[transform,opacity] duration-200 ease-out lg:hidden",
               "w-[min(280px,85vw)]",

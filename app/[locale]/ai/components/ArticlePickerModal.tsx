@@ -1,8 +1,9 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useId, useMemo, useRef, useState } from "react"
 import { Search, X } from "lucide-react"
 import { Input } from "@/app/components/ui/input"
+import { useFocusTrap } from "@/app/hooks/useFocusTrap"
 
 interface ArticlePickerModalProps {
   articles: Array<{ slug: string; title: string }>
@@ -20,22 +21,24 @@ export default function ArticlePickerModal({
   onSelect,
 }: ArticlePickerModalProps) {
   const [query, setQuery] = useState("")
+  const dialogRef = useRef<HTMLDivElement>(null)
+  const searchInputRef = useRef<HTMLInputElement>(null)
+  const titleId = useId()
+  const descriptionId = useId()
+  const searchLabelId = useId()
 
   useEffect(() => {
     if (!isOpen) {
       setQuery("")
-      return
     }
+  }, [isOpen])
 
-    function handleEscape(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        onClose()
-      }
-    }
-
-    window.addEventListener("keydown", handleEscape)
-    return () => window.removeEventListener("keydown", handleEscape)
-  }, [isOpen, onClose])
+  useFocusTrap({
+    active: isOpen,
+    containerRef: dialogRef,
+    initialFocusRef: searchInputRef,
+    onEscape: onClose,
+  })
 
   const filteredArticles = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase()
@@ -61,14 +64,27 @@ export default function ArticlePickerModal({
     : "No matching articles"
 
   return (
-    <div className="fixed inset-0 z-[1300] flex items-center justify-center bg-background/82 px-4 backdrop-blur-[2px]">
-      <div className="w-full max-w-[760px] border-2 border-border bg-background px-5 py-5 shadow-[0_24px_64px_hsl(var(--background)/0.5)] md:px-6 md:py-6">
+    <div
+      className="fixed inset-0 z-[1300] flex items-center justify-center bg-background/82 px-4 backdrop-blur-[2px]"
+      onPointerDown={(event) => {
+        if (event.target === event.currentTarget) onClose()
+      }}
+    >
+      <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        aria-describedby={descriptionId}
+        tabIndex={-1}
+        className="w-full max-w-[760px] border-2 border-border bg-background px-5 py-5 shadow-[0_24px_64px_hsl(var(--background)/0.5)] md:px-6 md:py-6"
+      >
         <div className="mb-5 flex items-start justify-between gap-4">
           <div className="space-y-2">
-            <h2 className="font-semibold text-[14px] tracking-[0.02em] text-foreground md:text-[16px]">
+            <h2 id={titleId} className="font-semibold text-[14px] tracking-[0.02em] text-foreground md:text-[16px]">
               {modalTitle}
             </h2>
-            <p className="text-[12px] leading-7 tracking-[0.04em] text-muted-foreground md:text-[13px]">
+            <p id={descriptionId} className="text-[12px] leading-7 tracking-[0.04em] text-muted-foreground md:text-[13px]">
               {modalHint}
             </p>
           </div>
@@ -84,8 +100,14 @@ export default function ArticlePickerModal({
         </div>
 
         <div className="mb-4 flex items-center gap-3 border-2 border-border bg-background px-3">
-          <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
+          <Search aria-hidden="true" className="h-4 w-4 shrink-0 text-muted-foreground" />
+          <label id={searchLabelId} className="sr-only" htmlFor="article-picker-search">
+            {locale.startsWith("zh") ? "搜索文章" : "Search articles"}
+          </label>
           <Input
+            ref={searchInputRef}
+            id="article-picker-search"
+            aria-labelledby={searchLabelId}
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder={searchPlaceholder}

@@ -24,6 +24,7 @@ import {
   resolveVisualToolOutputPayload,
 } from "@/app/hooks/useWorkspaceSync"
 import { cn } from "@/lib/utils"
+import { useFocusTrap } from "@/app/hooks/useFocusTrap"
 import type { TokenEstimate } from "@/lib/ai/token-estimate"
 import { formatTokenCount } from "@/lib/ai/token-estimate"
 import { ClientComponent } from "@/app/packages/ClientComponent"
@@ -973,6 +974,8 @@ export default function AIPlayground() {
   const { removeChat } = useGlobalChatRuntime()
 
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const mobileSidebarTriggerRef = useRef<HTMLButtonElement>(null)
+  const mobileSidebarRef = useRef<HTMLElement>(null)
 
   const threadDisplayLabels = useMemo(
     () => ({
@@ -1004,6 +1007,15 @@ export default function AIPlayground() {
     },
     [removeChat, deleteThread],
   )
+
+  const closeSidebar = useCallback(() => setSidebarOpen(false), [])
+
+  useFocusTrap({
+    active: sidebarOpen,
+    containerRef: mobileSidebarRef,
+    returnFocusRef: mobileSidebarTriggerRef,
+    onEscape: closeSidebar,
+  })
 
   return (
     <div
@@ -1038,7 +1050,11 @@ export default function AIPlayground() {
       <div className="ai-lab-shell relative flex h-full w-full flex-col overflow-hidden md:ml-[280px]">
         <div className="relative flex flex-1 overflow-hidden">
           <aside
+            ref={mobileSidebarRef}
             id="chat-sidebar"
+            aria-label={locale === "zh" ? "会话导航" : "Conversation navigation"}
+            aria-hidden={!sidebarOpen}
+            tabIndex={-1}
             className={cn(
               "ai-lab-sidebar-pane absolute inset-y-0 left-0 z-30 w-[min(290px,86vw)] border-r border-border/45 transition-[transform,opacity] duration-200 ease-out md:hidden",
               sidebarOpen ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0",
@@ -1064,7 +1080,7 @@ export default function AIPlayground() {
           {sidebarOpen ? (
             <div
               className="absolute inset-0 z-20 bg-background/72 backdrop-blur-sm md:hidden"
-              onClick={() => setSidebarOpen(false)}
+              onClick={closeSidebar}
               aria-hidden="true"
             />
           ) : null}
@@ -1077,6 +1093,7 @@ export default function AIPlayground() {
               <div className="flex w-full items-start justify-between gap-3 md:justify-start">
                 <div className="flex min-w-0 items-center gap-3">
                   <button
+                    ref={mobileSidebarTriggerRef}
                     onClick={() => setSidebarOpen((open) => !open)}
                     className="ai-lab-pixel-button h-10 w-10 shrink-0 bg-background text-foreground md:hidden"
                     aria-label={
