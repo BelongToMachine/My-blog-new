@@ -2,6 +2,7 @@
 
 import {
   createContext,
+  useCallback,
   useEffect,
   useMemo,
   useState,
@@ -10,6 +11,7 @@ import {
 import { useReducedMotion } from "framer-motion"
 
 export type MotionLevel = "full" | "limited" | "reduced"
+export type MotionPreference = "system" | "full" | "reduced"
 
 interface AdaptiveNetworkInformation extends EventTarget {
   effectiveType?: string
@@ -32,10 +34,12 @@ export interface AdaptiveMotionValue {
   canUseFinePointerMotion: boolean
   isMotionReady: boolean
   motionLevel: MotionLevel
+  motionPreference: MotionPreference
   shouldAnimateDecorations: boolean
   shouldAnimateSpatialMotion: boolean
   shouldReduceMotion: boolean
   shouldUseLimitedMotion: boolean
+  setMotionPreference: (preference: MotionPreference) => void
 }
 
 const initialDeviceContext: DeviceMotionContext = {
@@ -56,6 +60,34 @@ export function AdaptiveMotionProvider({ children }: { children: ReactNode }) {
   const prefersReducedMotion = useReducedMotion() ?? false
   const [deviceContext, setDeviceContext] =
     useState<DeviceMotionContext>(initialDeviceContext)
+  const [motionPreference, setMotionPreferenceState] =
+    useState<MotionPreference>("system")
+
+  const setMotionPreference = useCallback((preference: MotionPreference) => {
+    setMotionPreferenceState(preference)
+    try {
+      window.localStorage.setItem("motion-preference", preference)
+    } catch {
+      // A privacy-restricted storage context should not prevent the preference from applying.
+    }
+  }, [])
+
+  useEffect(() => {
+    let storedPreference: string | null = null
+    try {
+      storedPreference = window.localStorage.getItem("motion-preference")
+    } catch {
+      return
+    }
+
+    if (
+      storedPreference === "system" ||
+      storedPreference === "full" ||
+      storedPreference === "reduced"
+    ) {
+      setMotionPreferenceState(storedPreference)
+    }
+  }, [])
 
   useEffect(() => {
     const finePointerQuery = window.matchMedia("(pointer: fine)")
@@ -87,26 +119,34 @@ export function AdaptiveMotionProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const value = useMemo<AdaptiveMotionValue>(() => {
-    const motionLevel: MotionLevel = prefersReducedMotion
+    const systemMotionLevel: MotionLevel = prefersReducedMotion
       ? "reduced"
       : deviceContext.isSaveDataEnabled || deviceContext.isSlowConnection
         ? "limited"
         : "full"
+    const motionLevel: MotionLevel =
+      motionPreference === "full"
+        ? "full"
+        : motionPreference === "reduced"
+          ? "reduced"
+          : systemMotionLevel
     const isFullMotionReady = deviceContext.isResolved && motionLevel === "full"
 
     return {
       isMotionReady: deviceContext.isResolved,
       motionLevel,
+      motionPreference,
       shouldAnimateDecorations: isFullMotionReady,
       shouldAnimateSpatialMotion: isFullMotionReady,
       shouldReduceMotion: motionLevel === "reduced",
       shouldUseLimitedMotion: motionLevel === "limited",
+      setMotionPreference,
       canUseFinePointerMotion:
         isFullMotionReady &&
         deviceContext.hasFinePointer &&
         deviceContext.supportsHover,
     }
-  }, [deviceContext, prefersReducedMotion])
+  }, [deviceContext, motionPreference, prefersReducedMotion, setMotionPreference])
 
   useEffect(() => {
     document.documentElement.dataset.motionLevel = value.motionLevel

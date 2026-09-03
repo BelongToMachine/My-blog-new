@@ -8,7 +8,7 @@ import React, {
   useRef,
   useState,
 } from "react"
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion"
 import { isToolUIPart, type UIMessage } from "ai"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
@@ -25,6 +25,7 @@ import {
 } from "@/app/hooks/useWorkspaceSync"
 import { cn } from "@/lib/utils"
 import { useFocusTrap } from "@/app/hooks/useFocusTrap"
+import { useAdaptiveMotion } from "@/app/hooks/useAdaptiveMotion"
 import type { TokenEstimate } from "@/lib/ai/token-estimate"
 import { formatTokenCount } from "@/lib/ai/token-estimate"
 import { ClientComponent } from "@/app/packages/ClientComponent"
@@ -200,7 +201,7 @@ function PendingToolNotice({
         className="inline-block h-1.5 w-1.5 animate-pulse bg-primary"
         aria-hidden="true"
       />
-      <span className="text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground/86">
+      <span className="text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
         {getPendingToolLabel(toolName, input, t)}
       </span>
     </div>
@@ -229,7 +230,7 @@ function InlineToolResult({
         aria-atomic="true"
       >
         <span className="inline-block h-1.5 w-1.5 bg-primary" aria-hidden="true" />
-        <span className="text-[10px] font-medium uppercase tracking-[0.12em] text-primary/88">
+        <span className="text-[10px] font-medium uppercase tracking-[0.12em] text-primary">
           {summary}
         </span>
       </div>
@@ -247,7 +248,7 @@ function InlineToolResult({
         aria-atomic="true"
       >
         <span className="inline-block h-1.5 w-1.5 bg-primary" aria-hidden="true" />
-        <span className="text-[10px] font-medium uppercase tracking-[0.12em] text-primary/88">
+        <span className="text-[10px] font-medium uppercase tracking-[0.12em] text-primary">
           {summary}
         </span>
       </div>
@@ -356,6 +357,7 @@ function MarkdownRenderer({
   streamCodeBlocks?: boolean
 }) {
   const { colorMode } = useTheme()
+  const t = useTranslations("ai")
   const normalizedText = useMemo(() => normalizeChatMarkdown(text), [text])
 
   return (
@@ -374,9 +376,10 @@ function MarkdownRenderer({
             href={href}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-primary underline underline-offset-2 transition-colors hover:text-primary/80"
+            className="text-primary underline underline-offset-2 transition-colors hover:text-primary"
           >
             {children}
+            <span className="sr-only"> ({t("externalLinkHint")})</span>
           </a>
         ),
         h1: ({ children }) => (
@@ -395,14 +398,14 @@ function MarkdownRenderer({
           </h3>
         ),
         h4: ({ children }) => (
-          <h4 className="mb-1.5 mt-3 text-[11px] uppercase tracking-[0.12em] text-foreground/88">
+          <h4 className="mb-1.5 mt-3 text-[11px] uppercase tracking-[0.12em] text-foreground">
             {children}
           </h4>
         ),
         ul: ({ children }) => <ul className="mb-3 list-disc space-y-1 pl-5">{children}</ul>,
         ol: ({ children }) => <ol className="mb-3 list-decimal space-y-1 pl-5">{children}</ol>,
         li: ({ children }) => (
-          <li className="text-[12px] leading-6 tracking-[0.04em] text-foreground/92 md:text-[13px] md:leading-7">
+          <li className="text-[12px] leading-6 tracking-[0.04em] text-foreground md:text-[13px] md:leading-7">
             {children}
           </li>
         ),
@@ -454,12 +457,12 @@ function MarkdownRenderer({
         tbody: ({ children }) => <tbody className="divide-y divide-border/40">{children}</tbody>,
         tr: ({ children }) => <tr className="border-b border-border/40">{children}</tr>,
         th: ({ children }) => (
-          <th className="border border-border/60 px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground/86">
+          <th className="border border-border/60 px-3 py-2 text-left text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground">
             {children}
           </th>
         ),
         td: ({ children }) => (
-          <td className="border border-border/40 px-3 py-2 text-[12px] leading-6 tracking-[0.04em] text-foreground/90 md:text-[13px]">
+          <td className="border border-border/40 px-3 py-2 text-[12px] leading-6 tracking-[0.04em] text-foreground md:text-[13px]">
             {children}
           </td>
         ),
@@ -495,7 +498,8 @@ const ChatMessagesViewport = React.memo(function ChatMessagesViewport({
   toolErrorLabel: string
 }) {
   const scrollViewportRef = useRef<HTMLDivElement>(null)
-  const shouldReduceMotion = useReducedMotion()
+  const { motionLevel } = useAdaptiveMotion()
+  const shouldReduceMotion = motionLevel !== "full"
 
   useBrowserLayoutEffect(() => {
     const viewport = scrollViewportRef.current
@@ -537,7 +541,7 @@ const ChatMessagesViewport = React.memo(function ChatMessagesViewport({
                 <span
                   className={cn(
                     "mb-2 block text-[10px] font-semibold uppercase tracking-[0.16em]",
-                    isUser ? "text-primary/82" : "text-muted-foreground/60",
+                    isUser ? "text-primary" : "text-muted-foreground",
                   )}
                 >
                   {isUser ? userLabel : assistantLabel}
@@ -616,11 +620,11 @@ const ChatMessagesViewport = React.memo(function ChatMessagesViewport({
         {showThinking ? (
           <div className="flex justify-start">
             <div className="ai-lab-message-card ai-lab-message-card--assistant w-full max-w-none px-0 py-0">
-              <span className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground/60">
+              <span className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
                 {assistantLabel}
               </span>
               <div
-                className="text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground/84"
+                className="text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground"
                 role="status"
                 aria-live="polite"
                 aria-atomic="true"
@@ -742,7 +746,7 @@ const ChatComposer = React.memo(function ChatComposer({
         {statusLabel && !error ? (
           <div className="flex items-center justify-between gap-3">
             <p
-              className="text-[10px] font-medium uppercase tracking-[0.12em] text-amber-600"
+              className="text-[10px] font-medium uppercase tracking-[0.12em] text-warning"
               role="status"
               aria-live="polite"
               aria-atomic="true"
@@ -771,7 +775,7 @@ const ChatComposer = React.memo(function ChatComposer({
               value={input}
               onChange={(event) => setInput(event.target.value)}
               placeholder={placeholder}
-              className="min-h-[64px] flex-1 resize-none border-0 bg-transparent p-0 text-[12px] leading-8 tracking-[0.02em] shadow-none focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background placeholder:tracking-[0.02em] placeholder:text-muted-foreground/60"
+              className="min-h-[64px] flex-1 resize-none border-0 bg-transparent p-0 text-[12px] leading-8 tracking-[0.02em] shadow-none focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background placeholder:tracking-[0.02em] placeholder:text-muted-foreground"
               onKeyDown={(event) => {
                 if (event.key === "Enter" && !event.shiftKey) {
                   event.preventDefault()
@@ -798,7 +802,7 @@ const ChatComposer = React.memo(function ChatComposer({
         </form>
 
         <div className="flex flex-wrap items-center justify-between gap-2 px-1">
-          <p className="text-[9px] font-medium uppercase tracking-[0.12em] text-muted-foreground/68">
+          <p className="text-[9px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
             {shortcutHint}
           </p>
           <p className="text-[9px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
@@ -1062,7 +1066,8 @@ function formatRelativeTime(ts: number, locale: string): string {
 export default function AIPlayground() {
   const t = useTranslations("ai")
   const locale = useLocale()
-  const shouldReduceMotion = useReducedMotion()
+  const { motionLevel } = useAdaptiveMotion()
+  const shouldReduceMotion = motionLevel !== "full"
   const {
     hydrated,
     threads,
@@ -1199,7 +1204,7 @@ export default function AIPlayground() {
                     ref={mobileSidebarTriggerRef}
                     type="button"
                     onClick={() => setSidebarOpen((open) => !open)}
-                    className="ai-lab-pixel-button h-10 w-10 shrink-0 bg-background text-foreground md:hidden"
+                    className="ai-lab-pixel-button h-11 w-11 shrink-0 bg-background text-foreground md:hidden"
                     aria-label={
                       sidebarOpen
                         ? t("closeSidebar") ?? "Close sidebar"
@@ -1228,7 +1233,7 @@ export default function AIPlayground() {
                     createThread()
                   }}
                   aria-label={t("newChat")}
-                  className="ai-lab-pixel-button h-9 bg-background px-3 text-[10px] text-foreground md:hidden"
+                  className="ai-lab-pixel-button h-11 bg-background px-3 text-[10px] text-foreground md:hidden"
                 >
                   {t("newChat")}
                 </button>
@@ -1239,7 +1244,7 @@ export default function AIPlayground() {
               {!hydrated ? (
                 <div className="flex h-full items-center justify-center">
                   <p
-                    className="text-[10px] font-medium uppercase tracking-[0.16em] text-muted-foreground/68"
+                    className="text-[10px] font-medium uppercase tracking-[0.16em] text-muted-foreground"
                     role="status"
                     aria-live="polite"
                   >
@@ -1272,7 +1277,7 @@ export default function AIPlayground() {
                       transition={{ duration: shouldReduceMotion ? 0 : 0.12 }}
                       className="flex h-full items-center justify-center px-6 text-center"
                     >
-                      <p className="max-w-2xl text-[11px] leading-7 tracking-[0.02em] text-muted-foreground/72">
+                      <p className="max-w-2xl text-[11px] leading-7 tracking-[0.02em] text-muted-foreground">
                         {t("noChats") ?? "No conversations yet"}
                       </p>
                     </motion.div>

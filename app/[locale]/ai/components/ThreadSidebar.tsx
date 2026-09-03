@@ -2,10 +2,12 @@
 
 import { useMemo } from "react"
 import { useTranslations } from "next-intl"
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion"
 import { Star } from "lucide-react"
 import type { ChatThread } from "@/app/hooks/useChatThreads"
 import { cn } from "@/lib/utils"
+import MotionPreferenceControl from "@/app/components/MotionPreferenceControl"
+import { useAdaptiveMotion } from "@/app/hooks/useAdaptiveMotion"
 import { deriveThreadDisplayTitle } from "../threadDisplay"
 
 interface ThreadSidebarProps {
@@ -30,7 +32,8 @@ export default function ThreadSidebar({
   formatRelativeTime,
 }: ThreadSidebarProps) {
   const t = useTranslations("ai")
-  const shouldReduceMotion = useReducedMotion()
+  const { motionLevel } = useAdaptiveMotion()
+  const shouldReduceMotion = motionLevel !== "full"
 
   const displayLabels = useMemo(
     () => ({
@@ -57,7 +60,7 @@ export default function ThreadSidebar({
           type="button"
           onClick={onCreateThread}
           aria-label={t("newChat")}
-          className="ai-lab-pixel-button w-full gap-2 bg-background px-3 py-2.5 text-[10px] text-foreground"
+          className="ai-lab-pixel-button min-h-11 w-full gap-2 bg-background px-3 py-2.5 text-[10px] text-foreground"
         >
           <span className="text-lg leading-none" aria-hidden="true">
             +
@@ -68,11 +71,11 @@ export default function ThreadSidebar({
 
       <div className="flex-1 overflow-y-auto p-2.5 md:p-3">
         {!hydrated ? (
-          <p className="pt-6 text-center text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground/40">
+          <p className="pt-6 text-center text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
             {t("loadingChats")}
           </p>
         ) : preparedThreads.length === 0 ? (
-          <p className="pt-6 text-center text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground/50">
+          <p className="pt-6 text-center text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
             {t("noChats")}
           </p>
         ) : (
@@ -112,7 +115,7 @@ export default function ThreadSidebar({
 
                   <button
                     onClick={() => onSelectThread(thread.id)}
-                    className="w-full px-4 py-2.5 pr-9 text-left"
+                    className="w-full px-4 py-2.5 pr-12 text-left"
                     aria-current={isActive ? "page" : undefined}
                   >
                     <div className="flex items-center gap-2">
@@ -125,7 +128,7 @@ export default function ThreadSidebar({
                       <p
                         className={cn(
                           "truncate text-sm",
-                          isActive ? "text-foreground" : "text-foreground/90",
+                          "text-foreground",
                         )}
                       >
                         {displayTitle}
@@ -134,7 +137,7 @@ export default function ThreadSidebar({
                     <p
                       className={cn(
                         "mt-1 text-[9px] font-medium uppercase tracking-[0.14em]",
-                        isActive ? "text-primary/72" : "text-muted-foreground/46",
+                        isActive ? "text-primary" : "text-muted-foreground",
                       )}
                     >
                       {formatRelativeTime(thread.updatedAt, locale)}
@@ -146,7 +149,7 @@ export default function ThreadSidebar({
                       event.stopPropagation()
                       onDeleteThread(thread.id)
                     }}
-                    className="absolute right-2 top-1/2 inline-block -translate-y-1/2 px-2 py-1 text-base font-medium leading-none text-muted-foreground/40 transition-colors hover:bg-transparent hover:text-danger md:hidden"
+                    className="absolute right-1 top-1/2 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center text-base font-medium leading-none text-muted-foreground transition-colors hover:bg-transparent hover:text-danger md:hidden"
                     aria-label={t("deleteChat") ?? "Delete chat"}
                     title={t("deleteChat") ?? "Delete chat"}
                   >
@@ -157,7 +160,7 @@ export default function ThreadSidebar({
                       event.stopPropagation()
                       onDeleteThread(thread.id)
                     }}
-                    className="absolute right-2 top-1/2 hidden -translate-y-1/2 px-2 py-1 text-base font-medium leading-none text-muted-foreground/40 transition-colors hover:bg-transparent hover:text-danger md:group-hover:inline-block"
+                    className="absolute right-1 top-1/2 hidden h-11 w-11 -translate-y-1/2 items-center justify-center text-base font-medium leading-none text-muted-foreground transition-colors hover:bg-transparent hover:text-danger md:group-hover:inline-flex md:group-focus-within:inline-flex"
                     aria-label={t("deleteChat") ?? "Delete chat"}
                     title={t("deleteChat") ?? "Delete chat"}
                   >
@@ -172,13 +175,16 @@ export default function ThreadSidebar({
       </div>
 
       <div className="shrink-0 border-t border-border/35 px-3 py-2">
-        <p className="text-[9px] font-medium uppercase tracking-[0.2em] text-muted-foreground/40">
+        <p className="text-[9px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
           {hydrated ? threads.length : 0}{" "}
           {threads.length === 1
             ? t("chatSingular") ?? "chat"
             : t("chatPlural") ?? "chats"}{" "}
           · {t("autoSaved")}
         </p>
+        <div className="mt-3 border-t border-border/35 pt-3">
+          <MotionPreferenceControl />
+        </div>
       </div>
     </div>
   )

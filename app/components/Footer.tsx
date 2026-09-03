@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl"
 import { Link, usePathname } from "@/app/i18n/navigation"
 import { cn } from "@/lib/utils"
 import PixelGithubIcon from "./navbar/PixelGithubIcon"
+import MotionPreferenceControl from "./MotionPreferenceControl"
 
 const PixelLinkedInIcon = ({ className }: { className?: string }) => (
   <svg
@@ -84,7 +85,7 @@ export default function Footer() {
           </div>
 
           <div className="space-y-4">
-            <p className="font-pixel text-[11px] uppercase tracking-[0.28em] text-primary/80 sm:text-xs">
+            <p className="font-pixel text-[11px] uppercase tracking-[0.28em] text-primary sm:text-xs">
               {t("navigate")}
             </p>
             <ul className="grid gap-1.5">
@@ -99,7 +100,7 @@ export default function Footer() {
                     <span className="font-pixel text-sm uppercase tracking-[0.14em] text-foreground transition-colors duration-200 group-hover:text-primary sm:text-[15px]">
                       {link.label}
                     </span>
-                    <span className="font-pixel text-xs tracking-[0.16em] text-muted-foreground transition-colors duration-200 group-hover:text-primary/80 sm:text-sm">
+                    <span className="font-pixel text-xs tracking-[0.16em] text-muted-foreground transition-colors duration-200 group-hover:text-primary sm:text-sm">
                       0{index + 1}
                     </span>
                   </Link>
@@ -109,7 +110,7 @@ export default function Footer() {
           </div>
 
           <div className="space-y-4">
-            <p className="font-pixel text-[11px] uppercase tracking-[0.28em] text-primary/80 sm:text-xs">
+            <p className="font-pixel text-[11px] uppercase tracking-[0.28em] text-primary sm:text-xs">
               {t("connect")}
             </p>
             <div className="grid gap-3">
@@ -119,6 +120,7 @@ export default function Footer() {
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label={`${link.label}: ${link.detail} (${t("externalLinkHint")})`}
                   className="group flex items-center gap-3 border-b border-border/60 pb-3 transition-colors duration-200 hover:border-primary/40"
                 >
                   <span className="flex h-11 w-11 shrink-0 items-center justify-center border-2 border-border/80 bg-background/60 text-muted-foreground transition-colors duration-200 group-hover:border-primary/50 group-hover:text-primary">
@@ -139,7 +141,7 @@ export default function Footer() {
                 className="group flex items-center gap-3 border-b border-border/60 pb-3 transition-colors duration-200 hover:border-primary/40"
               >
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center border-2 border-border/80 bg-background/60 text-muted-foreground transition-colors duration-200 group-hover:border-primary/50 group-hover:text-primary">
-                  <PixelMailIcon className="h-4 w-4 text-primary/70 sm:h-5 sm:w-5" />
+                  <PixelMailIcon className="h-4 w-4 text-primary sm:h-5 sm:w-5" />
                 </span>
                 <span className="min-w-0">
                   <span className="block font-pixel text-sm uppercase tracking-[0.14em] text-foreground sm:text-[15px]">
@@ -155,9 +157,12 @@ export default function Footer() {
         </div>
 
         <div className="mt-8 border-t-2 border-border/80 pt-4 sm:mt-10 sm:pt-5 lg:mt-12">
-          <p className="font-pixel text-center text-sm tracking-[0.08em] text-muted-foreground sm:text-[15px]">
-            {t("copyright")}
-          </p>
+          <div className="flex flex-col items-center gap-4 min-[560px]:flex-row min-[560px]:justify-between min-[560px]:gap-6">
+            <MotionPreferenceControl compact className="w-full min-[560px]:w-auto" />
+            <p className="shrink-0 whitespace-nowrap font-pixel text-center text-[11px] tracking-[0.06em] text-muted-foreground sm:text-[15px] sm:tracking-[0.08em]">
+              {t("copyright")}
+            </p>
+          </div>
         </div>
       </div>
     </footer>

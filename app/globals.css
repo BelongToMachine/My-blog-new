@@ -674,7 +674,7 @@ html[data-motion-level="limited"] .wind__lane {
   }
 
   .retro-select {
-    @apply min-h-11 border-2 border-input bg-background/80 px-3 py-2 font-pixel text-[10px] uppercase tracking-[0.18em] text-foreground focus:border-primary focus:outline-none;
+    @apply min-h-11 border-2 border-input bg-background/80 px-3 py-2 font-pixel text-[10px] uppercase tracking-[0.18em] text-foreground focus:border-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background;
   }
 
   .pixelated {
@@ -939,7 +939,7 @@ html[data-motion-level="limited"] .wind__lane {
   }
 
   .ai-lab-pixel-menu-item {
-    @apply flex w-full items-center gap-3 border-2 border-transparent bg-transparent px-3 py-2 text-left text-foreground transition-colors duration-200;
+    @apply flex min-h-11 w-full items-center gap-3 border-2 border-transparent bg-transparent px-3 py-2 text-left text-foreground transition-colors duration-200;
   }
 
   .ai-lab-pixel-menu-item:hover {
@@ -1013,7 +1013,7 @@ html[data-motion-level="limited"] .wind__lane {
   }
 
   .section-kicker {
-    @apply font-pixel text-[10px] uppercase tracking-[0.28em] text-primary/80;
+    @apply font-pixel text-[10px] uppercase tracking-[0.28em] text-primary;
   }
 
   .section-copy {
@@ -1433,4 +1433,14 @@ html[data-motion-level="limited"] .ai-cta-shimmer::before {
   animation: none;
   background-position: 50% 0;
   opacity: 0.45;
+}
+
+/* The in-product reduced setting mirrors prefers-reduced-motion for CSS-only effects. */
+html[data-motion-level="reduced"] *,
+html[data-motion-level="reduced"] *::before,
+html[data-motion-level="reduced"] *::after {
+  animation: none !important;
+  scroll-behavior: auto !important;
+  transition-duration: 0.01ms !important;
+  transition-delay: 0ms !important;
 }
