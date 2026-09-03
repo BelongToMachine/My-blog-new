@@ -14,6 +14,7 @@ const NavBar = () => {
   )
   const [shouldScrollAwayWithHero, setShouldScrollAwayWithHero] =
     useState(false)
+  const [isPastHero, setIsPastHero] = useState(false)
   const pathname = usePathname()
   const isHomepage = pathname === "/"
   const { setColorMode } = useTheme()
@@ -23,6 +24,7 @@ const NavBar = () => {
   const navRef = useRef<HTMLElement | null>(null)
   const previousHeroScrollStateRef = useRef(false)
   const heroScrollStateRef = useRef(false)
+  const heroPassedStateRef = useRef(false)
   const reentryAnimationRef = useRef<Animation | null>(null)
 
   useEffect(() => {
@@ -53,7 +55,9 @@ const NavBar = () => {
   useEffect(() => {
     if (!isHomepage) {
       heroScrollStateRef.current = false
+      heroPassedStateRef.current = false
       setShouldScrollAwayWithHero(false)
+      setIsPastHero(false)
       return
     }
 
@@ -66,18 +70,26 @@ const NavBar = () => {
 
       if (!heroSection) {
         heroScrollStateRef.current = false
+        heroPassedStateRef.current = false
         setShouldScrollAwayWithHero(false)
+        setIsPastHero(false)
         return
       }
 
       const heroBounds = heroSection.getBoundingClientRect()
       const hasStartedScrolling = window.scrollY > 0
       const isStillInsideHero = heroBounds.bottom > 0
+      const nextIsPastHero = !isStillInsideHero
       const nextShouldScrollAway = hasStartedScrolling && isStillInsideHero
 
       if (heroScrollStateRef.current !== nextShouldScrollAway) {
         heroScrollStateRef.current = nextShouldScrollAway
         setShouldScrollAwayWithHero(nextShouldScrollAway)
+      }
+
+      if (heroPassedStateRef.current !== nextIsPastHero) {
+        heroPassedStateRef.current = nextIsPastHero
+        setIsPastHero(nextIsPastHero)
       }
     }
 
@@ -153,7 +165,10 @@ const NavBar = () => {
       ref={navRef}
       data-homepage={isHomepage || undefined}
       className={cn(
-        "inset-x-0 top-0 z-[1200] bg-[hsl(var(--home-about-bridge))] shadow-[var(--shadow-elevated)]",
+        "inset-x-0 top-0 z-[1200] shadow-[var(--shadow-elevated)] transition-[background-color] duration-200 ease-out",
+        isHomepage && !isPastHero
+          ? "bg-[hsl(var(--home-about-bridge))]"
+          : "bg-background",
         shouldScrollAwayWithHero ? "!absolute" : "!fixed",
       )}
     >
