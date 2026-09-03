@@ -371,7 +371,13 @@
     "sending": "Sending...",
     "emailSent": "Email sent! Jie will get back to you soon.",
     "emailError": "Failed to send email. Please try again.",
+    "successNoticeLabel": "Completed",
+    "errorNoticeLabel": "Action needed",
+    "dismissNotice": "Dismiss notification",
     "generateError": "Failed to generate email. Please try again with more details.",
+    "requiredFieldsError": "Please complete your name, valid email, and message.",
+    "emailContentRequired": "Please complete the email subject and body.",
+    "invalidEmail": "Please enter a valid email address.",
     "emailRequired": "Please enter your email address so Jie can reply."
   },
   "meta": {

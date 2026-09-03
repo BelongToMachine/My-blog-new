@@ -371,7 +371,13 @@
     "sending": "发送中...",
     "emailSent": "邮件已发送！Jie 会尽快回复你。",
     "emailError": "邮件发送失败，请重试。",
+    "successNoticeLabel": "操作完成",
+    "errorNoticeLabel": "需要处理",
+    "dismissNotice": "关闭提示",
     "generateError": "邮件生成失败，请提供更多信息后重试。",
+    "requiredFieldsError": "请先填写姓名、有效邮箱和留言。",
+    "emailContentRequired": "请先填写邮件主题和正文。",
+    "invalidEmail": "请输入有效的邮箱地址。",
     "emailRequired": "请输入你的邮箱地址，以便 Jie 回复你。"
   },
   "meta": {

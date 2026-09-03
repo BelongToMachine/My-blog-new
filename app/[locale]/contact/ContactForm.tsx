@@ -2,21 +2,36 @@
 
 import { useState, useCallback } from "react"
 import { useTranslations } from "next-intl"
-import { Send, Sparkles, Pencil, Mail, User, Building2, Briefcase, MessageSquare, Loader2 } from "lucide-react"
-import toast from "react-hot-toast"
+import {
+  Send,
+  Sparkles,
+  Pencil,
+  Mail,
+  User,
+  Building2,
+  Briefcase,
+  MessageSquare,
+  Loader2,
+} from "lucide-react"
+import toast, { Toaster } from "react-hot-toast"
 import { Input } from "@/app/components/ui/input"
 import { Textarea } from "@/app/components/ui/textarea"
+import { ContactFeedbackToast } from "./ContactFeedbackToast"
 
 interface GeneratedEmail {
   subject: string
   body: string
 }
 
+type FeedbackTone = "success" | "error"
+
 const contactCardClass =
   "pixel-panel panel-grid overflow-hidden border border-border/80 bg-card/88 backdrop-blur-sm"
 
 const contactCardHeaderClass =
   "border-b border-border/70 px-4 py-3.5 sm:px-5 sm:py-4"
+
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export default function ContactForm() {
   const t = useTranslations("contact")
@@ -33,12 +48,47 @@ export default function ContactForm() {
 
   const [isGenerating, setIsGenerating] = useState(false)
   const [isSending, setIsSending] = useState(false)
+  const [hasBlurredEmail, setHasBlurredEmail] = useState(false)
 
-  const canGenerate = name || company || business || customPrompt.trim()
-  const canSend = editedSubject.trim() && editedBody.trim() && userEmail.trim()
+  const trimmedEmail = userEmail.trim()
+  const emailIsInvalid =
+    Boolean(trimmedEmail) && !emailPattern.test(trimmedEmail)
+  const showEmailError = hasBlurredEmail && emailIsInvalid
+  const canGenerate = Boolean(
+    name.trim() && trimmedEmail && !emailIsInvalid && customPrompt.trim(),
+  )
+  const canSend = editedSubject.trim() && editedBody.trim()
+
+  const notify = useCallback(
+    (tone: FeedbackTone, message: string) => {
+      toast.custom(
+        (notification) => (
+          <ContactFeedbackToast
+            notification={notification}
+            tone={tone}
+            label={
+              tone === "success"
+                ? t("successNoticeLabel")
+                : t("errorNoticeLabel")
+            }
+            message={message}
+            dismissLabel={t("dismissNotice")}
+          />
+        ),
+        { duration: tone === "success" ? 5000 : 6500 },
+      )
+    },
+    [t],
+  )
 
   const handleGenerate = useCallback(async () => {
-    if (!canGenerate) return
+    if (!canGenerate) {
+      notify(
+        "error",
+        emailIsInvalid ? t("invalidEmail") : t("requiredFieldsError"),
+      )
+      return
+    }
 
     setIsGenerating(true)
     try {
@@ -46,14 +96,15 @@ export default function ContactForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: name.trim() || undefined,
+          name: name.trim(),
+          email: trimmedEmail,
           company: company.trim() || undefined,
           business: business.trim() || undefined,
-          customPrompt: customPrompt.trim() || undefined,
+          customPrompt: customPrompt.trim(),
         }),
       })
 
-      const data = await res.json()
+      const data = await res.json().catch(() => ({}))
       if (!res.ok) {
         throw new Error(data.error || "Generation failed")
       }
@@ -61,17 +112,30 @@ export default function ContactForm() {
       setGenerated(data)
       setEditedSubject(data.subject)
       setEditedBody(data.body)
-      toast.success(t("generated"))
-    } catch {
-      toast.error(t("generateError"))
+      notify("success", t("generated"))
+    } catch (error) {
+      notify(
+        "error",
+        error instanceof Error ? error.message : t("generateError"),
+      )
     } finally {
       setIsGenerating(false)
     }
-  }, [name, company, business, customPrompt, canGenerate, t])
+  }, [
+    name,
+    company,
+    business,
+    customPrompt,
+    trimmedEmail,
+    emailIsInvalid,
+    canGenerate,
+    notify,
+    t,
+  ])
 
   const handleSend = useCallback(async () => {
     if (!canSend) {
-      toast.error(t("emailRequired"))
+      notify("error", t("emailContentRequired"))
       return
     }
 
@@ -93,200 +157,268 @@ export default function ContactForm() {
         throw new Error(data.error || "Send failed")
       }
 
-      toast.success(t("emailSent"))
-    } catch {
-      toast.error(t("emailError"))
+      notify("success", t("emailSent"))
+    } catch (error) {
+      notify("error", error instanceof Error ? error.message : t("emailError"))
     } finally {
       setIsSending(false)
     }
-  }, [canSend, name, userEmail, editedSubject, editedBody, t])
+  }, [canSend, name, userEmail, editedSubject, editedBody, notify, t])
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
-      {/* Header */}
-      <div className="mb-10 flex flex-col items-center text-center md:mb-12">
-        <p className="text-xs font-medium uppercase tracking-[0.2em] text-primary">
-          {t("eyebrow")}
-        </p>
-        <h1 className="mt-3 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-          {t("title")}
-        </h1>
-        <p className="mt-4 max-w-xl text-sm leading-6 text-muted-foreground">
-          {t("subtitle")}
-        </p>
-      </div>
-
-      {/* Main grid */}
-      <div className="grid gap-6 lg:grid-cols-2">
-        {/* Left: Input panel */}
-        <div className="space-y-5">
-          {/* About You card */}
-          <section className={contactCardClass}>
-            <header className={contactCardHeaderClass}>
-              <div className="flex items-center gap-2">
-                <User className="h-4 w-4 text-primary" />
-                <div className="text-xs font-semibold uppercase tracking-[0.15em] text-foreground">
-                  {t("infoSection")}
-                </div>
-              </div>
-              <p className="mt-2 text-xs leading-5 text-muted-foreground">
-                {t("infoHint")}
-              </p>
-            </header>
-            <div className="space-y-4 px-4 py-3.5 sm:px-5 sm:py-4">
-              <InputWithIcon icon={<User className="h-4 w-4" />}>
-                <Input
-                  placeholder={t("namePlaceholder")}
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  aria-label={t("nameLabel")}
-                />
-              </InputWithIcon>
-              <InputWithIcon icon={<Building2 className="h-4 w-4" />}>
-                <Input
-                  placeholder={t("companyPlaceholder")}
-                  value={company}
-                  onChange={(e) => setCompany(e.target.value)}
-                  aria-label={t("companyLabel")}
-                />
-              </InputWithIcon>
-              <InputWithIcon icon={<Mail className="h-4 w-4" />}>
-                <Input
-                  type="email"
-                  placeholder={t("emailPlaceholder")}
-                  value={userEmail}
-                  onChange={(e) => setUserEmail(e.target.value)}
-                  aria-label={t("emailLabel")}
-                />
-              </InputWithIcon>
-              <InputWithIcon icon={<Briefcase className="h-4 w-4" />}>
-                <Input
-                  placeholder={t("businessPlaceholder")}
-                  value={business}
-                  onChange={(e) => setBusiness(e.target.value)}
-                  aria-label={t("businessLabel")}
-                />
-              </InputWithIcon>
-            </div>
-          </section>
-
-          {/* Custom prompt card */}
-          <section className={contactCardClass}>
-            <header className={contactCardHeaderClass}>
-              <div className="flex items-center gap-2">
-                <MessageSquare className="h-4 w-4 text-primary" />
-                <div className="text-xs font-semibold uppercase tracking-[0.15em] text-foreground">
-                  {t("customPromptLabel")}
-                </div>
-              </div>
-            </header>
-            <div className="px-4 py-3.5 sm:px-5 sm:py-4">
-              <Textarea
-                className="min-h-[100px]"
-                placeholder={t("customPromptPlaceholder")}
-                value={customPrompt}
-                onChange={(e) => setCustomPrompt(e.target.value)}
-              />
-            </div>
-          </section>
-
-          {/* Generate button */}
-          <button
-            onClick={handleGenerate}
-            disabled={!canGenerate || isGenerating}
-            className="inline-flex w-full items-center justify-center gap-2 border-2 border-border/60 bg-background/80 px-5 py-3 text-sm font-medium text-foreground backdrop-blur-sm transition-colors duration-200 hover:border-primary/50 hover:bg-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-40"
-          >
-            {isGenerating ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                {t("generating")}
-              </>
-            ) : (
-              <>
-                <Sparkles className="h-4 w-4" />
-                {t("generateButton")}
-              </>
-            )}
-          </button>
+    <>
+      <Toaster position="top-center" gutter={10} />
+      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="mb-10 flex flex-col items-center text-center md:mb-12">
+          <p className="text-xs font-medium uppercase tracking-[0.2em] text-primary">
+            {t("eyebrow")}
+          </p>
+          <h1 className="mt-3 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+            {t("title")}
+          </h1>
+          <p className="mt-4 max-w-xl text-sm leading-6 text-muted-foreground">
+            {t("subtitle")}
+          </p>
         </div>
 
-        {/* Right: Email preview */}
-        <div>
-          <div className="sticky top-24 space-y-5">
+        {/* Main grid */}
+        <div className="grid gap-6 lg:grid-cols-2">
+          {/* Left: Input panel */}
+          <div className="space-y-5">
+            {/* About You card */}
             <section className={contactCardClass}>
-              <header className={`${contactCardHeaderClass} flex items-center gap-2`}>
-                <Pencil className="h-4 w-4 text-primary" />
-                <div className="text-xs font-semibold uppercase tracking-[0.15em] text-foreground">
-                  {t("previewSection")}
+              <header className={contactCardHeaderClass}>
+                <div className="flex items-center gap-2">
+                  <User className="h-4 w-4 text-primary" />
+                  <div className="text-xs font-semibold uppercase tracking-[0.15em] text-foreground">
+                    {t("infoSection")}
+                  </div>
                 </div>
+                <p className="mt-2 text-xs leading-5 text-muted-foreground">
+                  {t("infoHint")}
+                </p>
               </header>
-
-              {generated ? (
-                <div className="space-y-4 px-4 py-3.5 sm:px-5 sm:py-4">
-                  <div>
-                    <label className="mb-1.5 block text-xs font-medium text-muted-foreground">
-                      {t("subjectLabel")}
-                    </label>
-                    <Input
-                      value={editedSubject}
-                      onChange={(e) => setEditedSubject(e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <label className="mb-1.5 block text-xs font-medium text-muted-foreground">
-                      {t("bodyLabel")}
-                    </label>
-                    <Textarea
-                      className="min-h-[260px]"
-                      value={editedBody}
-                      onChange={(e) => setEditedBody(e.target.value)}
-                    />
-                  </div>
-                </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center px-4 py-20 text-center">
-                  <Sparkles className="mb-4 h-6 w-6 text-muted-foreground/30" />
-                  <p className="text-sm leading-5 text-muted-foreground">
-                    {t("emptyPreview")}
-                  </p>
-                </div>
-              )}
+              <div className="space-y-4 px-4 py-3.5 sm:px-5 sm:py-4">
+                <InputWithIcon icon={<User className="h-4 w-4" />} required>
+                  <Input
+                    placeholder={t("namePlaceholder")}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    aria-label={t("nameLabel")}
+                  />
+                </InputWithIcon>
+                <InputWithIcon icon={<Building2 className="h-4 w-4" />}>
+                  <Input
+                    placeholder={t("companyPlaceholder")}
+                    value={company}
+                    onChange={(e) => setCompany(e.target.value)}
+                    aria-label={t("companyLabel")}
+                  />
+                </InputWithIcon>
+                <InputWithIcon
+                  icon={<Mail className="h-4 w-4" />}
+                  required
+                  error={showEmailError ? t("invalidEmail") : undefined}
+                  errorId="contact-email-error"
+                >
+                  <Input
+                    id="contact-email"
+                    type="email"
+                    placeholder={t("emailPlaceholder")}
+                    value={userEmail}
+                    onChange={(e) => setUserEmail(e.target.value)}
+                    onBlur={() => setHasBlurredEmail(true)}
+                    aria-label={t("emailLabel")}
+                    aria-describedby={
+                      showEmailError ? "contact-email-error" : undefined
+                    }
+                    aria-invalid={showEmailError}
+                    className={
+                      showEmailError
+                        ? "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/40"
+                        : undefined
+                    }
+                  />
+                </InputWithIcon>
+                <InputWithIcon icon={<Briefcase className="h-4 w-4" />}>
+                  <Input
+                    placeholder={t("businessPlaceholder")}
+                    value={business}
+                    onChange={(e) => setBusiness(e.target.value)}
+                    aria-label={t("businessLabel")}
+                  />
+                </InputWithIcon>
+              </div>
             </section>
 
-            {/* Send button */}
+            {/* Custom prompt card */}
+            <section className={contactCardClass}>
+              <header className={contactCardHeaderClass}>
+                <div className="flex items-center gap-2">
+                  <MessageSquare className="h-4 w-4 text-primary" />
+                  <div className="text-xs font-semibold uppercase tracking-[0.15em] text-foreground">
+                    {t("customPromptLabel")}
+                  </div>
+                </div>
+              </header>
+              <div className="px-4 py-3.5 sm:px-5 sm:py-4">
+                <div className="relative">
+                  <span
+                    aria-hidden="true"
+                    className="pointer-events-none absolute left-3 top-2.5 z-10 text-sm font-semibold text-destructive"
+                  >
+                    *
+                  </span>
+                  <Textarea
+                    className="min-h-[100px] pl-7"
+                    placeholder={t("customPromptPlaceholder")}
+                    value={customPrompt}
+                    onChange={(e) => setCustomPrompt(e.target.value)}
+                  />
+                </div>
+              </div>
+            </section>
+
+            {/* Generate button */}
             <button
-              onClick={handleSend}
-              disabled={!canSend || isSending}
-              className="inline-flex w-full items-center justify-center gap-2 border-2 border-primary/40 bg-primary/10 px-5 py-3 text-sm font-medium text-primary backdrop-blur-sm transition-colors duration-200 hover:border-primary/60 hover:bg-primary/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-40"
+              onClick={handleGenerate}
+              disabled={!canGenerate || isGenerating}
+              className="inline-flex w-full items-center justify-center gap-2 border-2 border-border/60 bg-background/80 px-5 py-3 text-sm font-medium text-foreground backdrop-blur-sm transition-colors duration-200 hover:border-primary/50 hover:bg-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-40"
             >
-              {isSending ? (
+              {isGenerating ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  {t("sending")}
+                  {t("generating")}
                 </>
               ) : (
                 <>
-                  <Send className="h-4 w-4" />
-                  {t("sendButton")}
+                  <Sparkles className="h-4 w-4" />
+                  {t("generateButton")}
                 </>
               )}
             </button>
+            <p
+              className={`text-center text-xs leading-5 ${canGenerate ? "text-primary" : "text-muted-foreground"}`}
+              aria-live="polite"
+            >
+              {canGenerate
+                ? "Ready to generate."
+                : showEmailError
+                  ? "Please enter a valid email address."
+                  : "Name, email, and message are required. Company and job opportunity are optional."}
+            </p>
+          </div>
+
+          {/* Right: Email preview */}
+          <div>
+            <div className="sticky top-24 space-y-5">
+              <section className={contactCardClass}>
+                <header
+                  className={`${contactCardHeaderClass} flex items-center gap-2`}
+                >
+                  <Pencil className="h-4 w-4 text-primary" />
+                  <div className="text-xs font-semibold uppercase tracking-[0.15em] text-foreground">
+                    {t("previewSection")}
+                  </div>
+                </header>
+
+                {generated ? (
+                  <div className="space-y-4 px-4 py-3.5 sm:px-5 sm:py-4">
+                    <div>
+                      <label className="mb-1.5 block text-xs font-medium text-muted-foreground">
+                        {t("subjectLabel")}
+                      </label>
+                      <Input
+                        value={editedSubject}
+                        onChange={(e) => setEditedSubject(e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-1.5 block text-xs font-medium text-muted-foreground">
+                        {t("bodyLabel")}
+                      </label>
+                      <Textarea
+                        className="min-h-[260px]"
+                        value={editedBody}
+                        onChange={(e) => setEditedBody(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center px-4 py-20 text-center">
+                    <Sparkles className="mb-4 h-6 w-6 text-muted-foreground/30" />
+                    <p className="text-sm leading-5 text-muted-foreground">
+                      {t("emptyPreview")}
+                    </p>
+                  </div>
+                )}
+              </section>
+
+              {/* Send button */}
+              <button
+                onClick={handleSend}
+                disabled={!canSend || isSending}
+                className="inline-flex w-full items-center justify-center gap-2 border-2 border-primary/40 bg-primary/10 px-5 py-3 text-sm font-medium text-primary backdrop-blur-sm transition-colors duration-200 hover:border-primary/60 hover:bg-primary/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-40"
+              >
+                {isSending ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    {t("sending")}
+                  </>
+                ) : (
+                  <>
+                    <Send className="h-4 w-4" />
+                    {t("sendButton")}
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }
 
 /* ─── Icon wrapper for inputs ─── */
 
-function InputWithIcon({ icon, children }: { icon: React.ReactNode; children: React.ReactNode }) {
+function InputWithIcon({
+  icon,
+  required = false,
+  error,
+  errorId,
+  children,
+}: {
+  icon: React.ReactNode
+  required?: boolean
+  error?: string
+  errorId?: string
+  children: React.ReactNode
+}) {
   return (
-    <div className="relative">
-      <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">
-        {icon}
+    <div className="space-y-1.5">
+      <div className="relative">
+        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">
+          {icon}
+        </div>
+        {required ? (
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-y-0 left-9 z-10 flex items-center text-sm font-semibold text-destructive"
+          >
+            *
+          </span>
+        ) : null}
+        <div className={required ? "[&_input]:pl-12" : "[&_input]:pl-9"}>
+          {children}
+        </div>
       </div>
-      <div className="[&_input]:pl-9">{children}</div>
+      {error ? (
+        <p id={errorId} className="text-xs text-destructive" role="alert">
+          {error}
+        </p>
+      ) : null}
     </div>
   )
 }
