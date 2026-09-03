@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useRef } from "react"
 import { useTranslations } from "next-intl"
 import {
   Send,
@@ -49,15 +49,42 @@ export default function ContactForm() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [isSending, setIsSending] = useState(false)
   const [hasBlurredEmail, setHasBlurredEmail] = useState(false)
+  const [hasAttemptedGenerate, setHasAttemptedGenerate] = useState(false)
+  const [hasAttemptedSend, setHasAttemptedSend] = useState(false)
+
+  const nameRef = useRef<HTMLInputElement>(null)
+  const emailRef = useRef<HTMLInputElement>(null)
+  const promptRef = useRef<HTMLTextAreaElement>(null)
+  const subjectRef = useRef<HTMLInputElement>(null)
+  const bodyRef = useRef<HTMLTextAreaElement>(null)
 
   const trimmedEmail = userEmail.trim()
   const emailIsInvalid =
     Boolean(trimmedEmail) && !emailPattern.test(trimmedEmail)
-  const showEmailError = hasBlurredEmail && emailIsInvalid
+  const emailError = trimmedEmail
+    ? emailIsInvalid && (hasBlurredEmail || hasAttemptedGenerate)
+      ? t("invalidEmail")
+      : undefined
+    : hasAttemptedGenerate
+      ? t("emailRequired")
+      : undefined
+  const showEmailError = Boolean(emailError)
   const canGenerate = Boolean(
     name.trim() && trimmedEmail && !emailIsInvalid && customPrompt.trim(),
   )
-  const canSend = editedSubject.trim() && editedBody.trim()
+  const canSend = Boolean(editedSubject.trim() && editedBody.trim())
+  const generateErrorMessage = !name.trim()
+    ? t("nameRequired")
+    : emailError
+      ? emailError
+      : !customPrompt.trim()
+        ? t("messageRequired")
+        : undefined
+  const sendErrorMessage = !editedSubject.trim()
+    ? t("subjectRequired")
+    : !editedBody.trim()
+      ? t("bodyRequired")
+      : undefined
 
   const notify = useCallback(
     (tone: FeedbackTone, message: string) => {
@@ -82,11 +109,24 @@ export default function ContactForm() {
   )
 
   const handleGenerate = useCallback(async () => {
+    setHasAttemptedGenerate(true)
     if (!canGenerate) {
-      notify(
-        "error",
-        emailIsInvalid ? t("invalidEmail") : t("requiredFieldsError"),
-      )
+      setHasBlurredEmail(true)
+      if (!name.trim()) {
+        nameRef.current?.focus()
+      } else if (!trimmedEmail || emailIsInvalid) {
+        emailRef.current?.focus()
+      } else {
+        promptRef.current?.focus()
+      }
+      const validationError = !name.trim()
+        ? t("nameRequired")
+        : !trimmedEmail
+          ? t("emailRequired")
+          : emailIsInvalid
+            ? t("invalidEmail")
+            : t("messageRequired")
+      notify("error", validationError)
       return
     }
 
@@ -106,12 +146,15 @@ export default function ContactForm() {
 
       const data = await res.json().catch(() => ({}))
       if (!res.ok) {
-        throw new Error(data.error || "Generation failed")
+        throw new Error(
+          typeof data.error === "string" ? data.error : t("generateError"),
+        )
       }
 
       setGenerated(data)
       setEditedSubject(data.subject)
       setEditedBody(data.body)
+      setHasAttemptedSend(false)
       notify("success", t("generated"))
     } catch (error) {
       notify(
@@ -134,8 +177,14 @@ export default function ContactForm() {
   ])
 
   const handleSend = useCallback(async () => {
+    setHasAttemptedSend(true)
     if (!canSend) {
-      notify("error", t("emailContentRequired"))
+      if (!editedSubject.trim()) {
+        subjectRef.current?.focus()
+      } else {
+        bodyRef.current?.focus()
+      }
+      notify("error", sendErrorMessage ?? t("emailContentRequired"))
       return
     }
 
@@ -152,9 +201,11 @@ export default function ContactForm() {
         }),
       })
 
-      const data = await res.json()
+      const data = await res.json().catch(() => ({}))
       if (!res.ok) {
-        throw new Error(data.error || "Send failed")
+        throw new Error(
+          typeof data.error === "string" ? data.error : t("emailError"),
+        )
       }
 
       notify("success", t("emailSent"))
@@ -163,7 +214,16 @@ export default function ContactForm() {
     } finally {
       setIsSending(false)
     }
-  }, [canSend, name, userEmail, editedSubject, editedBody, notify, t])
+  }, [
+    canSend,
+    name,
+    userEmail,
+    editedSubject,
+    editedBody,
+    sendErrorMessage,
+    notify,
+    t,
+  ])
 
   return (
     <>
@@ -185,51 +245,106 @@ export default function ContactForm() {
         {/* Main grid */}
         <div className="grid gap-6 lg:grid-cols-2">
           {/* Left: Input panel */}
-          <div className="space-y-5">
+          <form
+            className="space-y-5"
+            aria-labelledby="contact-info-heading contact-prompt-heading"
+            aria-busy={isGenerating}
+            noValidate
+            onSubmit={(event) => {
+              event.preventDefault()
+              void handleGenerate()
+            }}
+          >
+            {hasAttemptedGenerate && !canGenerate && generateErrorMessage ? (
+              <p
+                className="border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-danger"
+                role="alert"
+              >
+                {generateErrorMessage}
+              </p>
+            ) : null}
+
             {/* About You card */}
             <section className={contactCardClass}>
               <header className={contactCardHeaderClass}>
                 <div className="flex items-center gap-2">
-                  <User className="h-4 w-4 text-primary" />
-                  <div className="text-xs font-semibold uppercase tracking-[0.15em] text-foreground">
+                  <User className="h-4 w-4 text-primary" aria-hidden="true" />
+                  <h2
+                    id="contact-info-heading"
+                    className="text-xs font-semibold uppercase tracking-[0.15em] text-foreground"
+                  >
                     {t("infoSection")}
-                  </div>
+                  </h2>
                 </div>
                 <p className="mt-2 text-xs leading-5 text-muted-foreground">
                   {t("infoHint")}
                 </p>
               </header>
               <div className="space-y-4 px-4 py-3.5 sm:px-5 sm:py-4">
-                <InputWithIcon icon={<User className="h-4 w-4" />} required>
+                <InputWithIcon
+                  htmlFor="contact-name"
+                  label={t("nameLabel")}
+                  icon={<User className="h-4 w-4" aria-hidden="true" />}
+                  required
+                  error={
+                    hasAttemptedGenerate && !name.trim()
+                      ? t("nameRequired")
+                      : undefined
+                  }
+                  errorId="contact-name-error"
+                >
                   <Input
+                    ref={nameRef}
+                    id="contact-name"
+                    name="name"
+                    autoComplete="name"
+                    required
+                    aria-required="true"
+                    aria-invalid={hasAttemptedGenerate && !name.trim()}
+                    aria-describedby={
+                      hasAttemptedGenerate && !name.trim()
+                        ? "contact-name-error"
+                        : undefined
+                    }
                     placeholder={t("namePlaceholder")}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    aria-label={t("nameLabel")}
-                  />
-                </InputWithIcon>
-                <InputWithIcon icon={<Building2 className="h-4 w-4" />}>
-                  <Input
-                    placeholder={t("companyPlaceholder")}
-                    value={company}
-                    onChange={(e) => setCompany(e.target.value)}
-                    aria-label={t("companyLabel")}
                   />
                 </InputWithIcon>
                 <InputWithIcon
-                  icon={<Mail className="h-4 w-4" />}
+                  htmlFor="contact-company"
+                  label={t("companyLabel")}
+                  icon={<Building2 className="h-4 w-4" aria-hidden="true" />}
+                >
+                  <Input
+                    id="contact-company"
+                    name="company"
+                    autoComplete="organization"
+                    placeholder={t("companyPlaceholder")}
+                    value={company}
+                    onChange={(e) => setCompany(e.target.value)}
+                  />
+                </InputWithIcon>
+                <InputWithIcon
+                  htmlFor="contact-email"
+                  label={t("emailLabel")}
+                  icon={<Mail className="h-4 w-4" aria-hidden="true" />}
                   required
-                  error={showEmailError ? t("invalidEmail") : undefined}
+                  error={emailError}
                   errorId="contact-email-error"
                 >
                   <Input
+                    ref={emailRef}
                     id="contact-email"
+                    name="email"
                     type="email"
+                    autoComplete="email"
+                    required
+                    aria-required="true"
                     placeholder={t("emailPlaceholder")}
                     value={userEmail}
                     onChange={(e) => setUserEmail(e.target.value)}
                     onBlur={() => setHasBlurredEmail(true)}
-                    aria-label={t("emailLabel")}
                     aria-describedby={
                       showEmailError ? "contact-email-error" : undefined
                     }
@@ -241,12 +356,17 @@ export default function ContactForm() {
                     }
                   />
                 </InputWithIcon>
-                <InputWithIcon icon={<Briefcase className="h-4 w-4" />}>
+                <InputWithIcon
+                  htmlFor="contact-business"
+                  label={t("businessLabel")}
+                  icon={<Briefcase className="h-4 w-4" aria-hidden="true" />}
+                >
                   <Input
+                    id="contact-business"
+                    name="business"
                     placeholder={t("businessPlaceholder")}
                     value={business}
                     onChange={(e) => setBusiness(e.target.value)}
-                    aria-label={t("businessLabel")}
                   />
                 </InputWithIcon>
               </div>
@@ -256,44 +376,72 @@ export default function ContactForm() {
             <section className={contactCardClass}>
               <header className={contactCardHeaderClass}>
                 <div className="flex items-center gap-2">
-                  <MessageSquare className="h-4 w-4 text-primary" />
-                  <div className="text-xs font-semibold uppercase tracking-[0.15em] text-foreground">
+                  <MessageSquare
+                    className="h-4 w-4 text-primary"
+                    aria-hidden="true"
+                  />
+                  <h2
+                    id="contact-prompt-heading"
+                    className="text-xs font-semibold uppercase tracking-[0.15em] text-foreground"
+                  >
                     {t("customPromptLabel")}
-                  </div>
+                  </h2>
                 </div>
               </header>
               <div className="px-4 py-3.5 sm:px-5 sm:py-4">
-                <div className="relative">
-                  <span
-                    aria-hidden="true"
-                    className="pointer-events-none absolute left-3 top-2.5 z-10 text-sm font-semibold text-danger"
-                  >
+                <label
+                  htmlFor="contact-prompt"
+                  className="mb-2 block text-xs font-medium text-muted-foreground"
+                >
+                  {t("customPromptLabel")}
+                  <span aria-hidden="true" className="ml-1 text-danger">
                     *
                   </span>
-                  <Textarea
-                    className="min-h-[100px] pl-7"
-                    placeholder={t("customPromptPlaceholder")}
-                    value={customPrompt}
-                    onChange={(e) => setCustomPrompt(e.target.value)}
-                  />
-                </div>
+                </label>
+                <Textarea
+                  ref={promptRef}
+                  id="contact-prompt"
+                  name="message"
+                  required
+                  aria-required="true"
+                  aria-invalid={hasAttemptedGenerate && !customPrompt.trim()}
+                  aria-describedby={
+                    hasAttemptedGenerate && !customPrompt.trim()
+                      ? "contact-message-error"
+                      : undefined
+                  }
+                  className={`min-h-[100px] ${hasAttemptedGenerate && !customPrompt.trim() ? "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/40" : ""}`}
+                  placeholder={t("customPromptPlaceholder")}
+                  value={customPrompt}
+                  onChange={(e) => setCustomPrompt(e.target.value)}
+                />
+                {hasAttemptedGenerate && !customPrompt.trim() ? (
+                  <p
+                    id="contact-message-error"
+                    className="mt-1.5 text-xs text-danger"
+                    role="alert"
+                  >
+                    {t("messageRequired")}
+                  </p>
+                ) : null}
               </div>
             </section>
 
             {/* Generate button */}
             <button
-              onClick={handleGenerate}
-              disabled={!canGenerate || isGenerating}
+              type="submit"
+              disabled={isGenerating}
+              aria-busy={isGenerating}
               className="inline-flex w-full items-center justify-center gap-2 border-2 border-border/60 bg-background/80 px-5 py-3 text-sm font-medium text-foreground backdrop-blur-sm transition-colors duration-200 hover:border-primary/50 hover:bg-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-40"
             >
               {isGenerating ? (
                 <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
                   {t("generating")}
                 </>
               ) : (
                 <>
-                  <Sparkles className="h-4 w-4" />
+                  <Sparkles className="h-4 w-4" aria-hidden="true" />
                   {t("generateButton")}
                 </>
               )}
@@ -301,53 +449,117 @@ export default function ContactForm() {
             <p
               className={`text-center text-xs leading-5 ${canGenerate ? "text-primary" : "text-muted-foreground"}`}
               aria-live="polite"
+              aria-atomic="true"
             >
-              {canGenerate
-                ? "Ready to generate."
-                : showEmailError
-                  ? "Please enter a valid email address."
-                  : "Name, email, and message are required. Company and job opportunity are optional."}
+              {canGenerate ? t("readyToGenerate") : t("requiredFieldsHint")}
             </p>
-          </div>
+          </form>
 
           {/* Right: Email preview */}
           <div>
-            <div className="sticky top-24 space-y-5">
+            <form
+              className="sticky top-24 space-y-5"
+              aria-labelledby="contact-preview-heading"
+              aria-busy={isSending}
+              noValidate
+              onSubmit={(event) => {
+                event.preventDefault()
+                void handleSend()
+              }}
+            >
               <section className={contactCardClass}>
                 <header
                   className={`${contactCardHeaderClass} flex items-center gap-2`}
                 >
-                  <Pencil className="h-4 w-4 text-primary" />
-                  <div className="text-xs font-semibold uppercase tracking-[0.15em] text-foreground">
+                  <Pencil className="h-4 w-4 text-primary" aria-hidden="true" />
+                  <h2
+                    id="contact-preview-heading"
+                    className="text-xs font-semibold uppercase tracking-[0.15em] text-foreground"
+                  >
                     {t("previewSection")}
-                  </div>
+                  </h2>
                 </header>
 
                 {generated ? (
                   <div className="space-y-4 px-4 py-3.5 sm:px-5 sm:py-4">
                     <div>
-                      <label className="mb-1.5 block text-xs font-medium text-muted-foreground">
+                      <label
+                        htmlFor="contact-subject"
+                        className="mb-1.5 block text-xs font-medium text-muted-foreground"
+                      >
                         {t("subjectLabel")}
+                        <span aria-hidden="true" className="ml-1 text-danger">
+                          *
+                        </span>
                       </label>
                       <Input
+                        ref={subjectRef}
+                        id="contact-subject"
+                        name="subject"
+                        required
+                        aria-required="true"
+                        aria-invalid={hasAttemptedSend && !editedSubject.trim()}
+                        aria-describedby={
+                          hasAttemptedSend && !editedSubject.trim()
+                            ? "contact-subject-error"
+                            : undefined
+                        }
                         value={editedSubject}
                         onChange={(e) => setEditedSubject(e.target.value)}
                       />
+                      {hasAttemptedSend && !editedSubject.trim() ? (
+                        <p
+                          id="contact-subject-error"
+                          className="mt-1.5 text-xs text-danger"
+                          role="alert"
+                        >
+                          {t("subjectRequired")}
+                        </p>
+                      ) : null}
                     </div>
                     <div>
-                      <label className="mb-1.5 block text-xs font-medium text-muted-foreground">
+                      <label
+                        htmlFor="contact-body"
+                        className="mb-1.5 block text-xs font-medium text-muted-foreground"
+                      >
                         {t("bodyLabel")}
+                        <span aria-hidden="true" className="ml-1 text-danger">
+                          *
+                        </span>
                       </label>
                       <Textarea
+                        ref={bodyRef}
+                        id="contact-body"
+                        name="message"
+                        required
+                        aria-required="true"
+                        aria-invalid={hasAttemptedSend && !editedBody.trim()}
+                        aria-describedby={
+                          hasAttemptedSend && !editedBody.trim()
+                            ? "contact-body-error"
+                            : undefined
+                        }
                         className="min-h-[260px]"
                         value={editedBody}
                         onChange={(e) => setEditedBody(e.target.value)}
                       />
+                      {hasAttemptedSend && !editedBody.trim() ? (
+                        <p
+                          id="contact-body-error"
+                          className="mt-1.5 text-xs text-danger"
+                          role="alert"
+                        >
+                          {t("bodyRequired")}
+                        </p>
+                      ) : null}
                     </div>
                   </div>
                 ) : (
                   <div className="flex flex-col items-center justify-center px-4 py-20 text-center">
-                    <Sparkles className="mb-4 h-6 w-6 text-muted-foreground/30" />
+                    <Sparkles
+                      className="mb-4 h-6 w-6 text-muted-foreground/30"
+                      aria-hidden="true"
+                    />
                     <p className="text-sm leading-5 text-muted-foreground">
                       {t("emptyPreview")}
                     </p>
@@ -355,25 +567,35 @@ export default function ContactForm() {
                 )}
               </section>
 
+              {hasAttemptedSend && !canSend && sendErrorMessage ? (
+                <p
+                  className="border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-danger"
+                  role="alert"
+                >
+                  {sendErrorMessage}
+                </p>
+              ) : null}
+
               {/* Send button */}
               <button
-                onClick={handleSend}
-                disabled={!canSend || isSending}
+                type="submit"
+                disabled={!generated || isSending}
+                aria-busy={isSending}
                 className="inline-flex w-full items-center justify-center gap-2 border-2 border-primary/40 bg-primary/10 px-5 py-3 text-sm font-medium text-primary backdrop-blur-sm transition-colors duration-200 hover:border-primary/60 hover:bg-primary/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-40"
               >
                 {isSending ? (
                   <>
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
                     {t("sending")}
                   </>
                 ) : (
                   <>
-                    <Send className="h-4 w-4" />
+                    <Send className="h-4 w-4" aria-hidden="true" />
                     {t("sendButton")}
                   </>
                 )}
               </button>
-            </div>
+            </form>
           </div>
         </div>
       </div>
@@ -385,12 +607,16 @@ export default function ContactForm() {
 
 function InputWithIcon({
   icon,
+  htmlFor,
+  label,
   required = false,
   error,
   errorId,
   children,
 }: {
   icon: React.ReactNode
+  htmlFor: string
+  label: string
   required?: boolean
   error?: string
   errorId?: string
@@ -398,18 +624,21 @@ function InputWithIcon({
 }) {
   return (
     <div className="space-y-1.5">
+      <label
+        htmlFor={htmlFor}
+        className="block text-xs font-medium text-muted-foreground"
+      >
+        {label}
+        {required ? (
+          <span aria-hidden="true" className="ml-1 text-danger">
+            *
+          </span>
+        ) : null}
+      </label>
       <div className="relative">
         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">
           {icon}
         </div>
-        {required ? (
-          <span
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-y-0 left-9 z-10 flex items-center text-sm font-semibold text-danger"
-          >
-            *
-          </span>
-        ) : null}
         <div className={required ? "[&_input]:pl-12" : "[&_input]:pl-9"}>
           {children}
         </div>

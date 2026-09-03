@@ -190,8 +190,16 @@ function PendingToolNotice({
   const t = useTranslations("ai")
 
   return (
-    <div className="flex items-center gap-2 py-1 text-muted-foreground">
-      <span className="inline-block h-1.5 w-1.5 animate-pulse bg-primary" />
+    <div
+      className="flex items-center gap-2 py-1 text-muted-foreground"
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+    >
+      <span
+        className="inline-block h-1.5 w-1.5 animate-pulse bg-primary"
+        aria-hidden="true"
+      />
       <span className="text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground/86">
         {getPendingToolLabel(toolName, input, t)}
       </span>
@@ -214,8 +222,13 @@ function InlineToolResult({
 
   if (!payload || !hasRenderableArtifactContent(payload.data)) {
     return (
-      <div className="flex items-center gap-2 py-1">
-        <span className="inline-block h-1.5 w-1.5 bg-primary" />
+      <div
+        className="flex items-center gap-2 py-1"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        <span className="inline-block h-1.5 w-1.5 bg-primary" aria-hidden="true" />
         <span className="text-[10px] font-medium uppercase tracking-[0.12em] text-primary/88">
           {summary}
         </span>
@@ -227,8 +240,13 @@ function InlineToolResult({
 
   return (
     <div className="space-y-3 py-1">
-      <div className="flex items-center gap-2">
-        <span className="inline-block h-1.5 w-1.5 bg-primary" />
+      <div
+        className="flex items-center gap-2"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        <span className="inline-block h-1.5 w-1.5 bg-primary" aria-hidden="true" />
         <span className="text-[10px] font-medium uppercase tracking-[0.12em] text-primary/88">
           {summary}
         </span>
@@ -461,12 +479,20 @@ const ChatMessagesViewport = React.memo(function ChatMessagesViewport({
   showThinking,
   lastAssistantMessageId,
   loadingLabel,
+  messagesLabel,
+  userLabel,
+  assistantLabel,
+  toolErrorLabel,
 }: {
   messages: UIMessage[]
   isBusy: boolean
   showThinking: boolean
   lastAssistantMessageId?: string
   loadingLabel: string
+  messagesLabel: string
+  userLabel: string
+  assistantLabel: string
+  toolErrorLabel: string
 }) {
   const scrollViewportRef = useRef<HTMLDivElement>(null)
   const shouldReduceMotion = useReducedMotion()
@@ -484,115 +510,127 @@ const ChatMessagesViewport = React.memo(function ChatMessagesViewport({
   return (
     <div
       ref={scrollViewportRef}
+      role="log"
+      aria-label={messagesLabel}
+      aria-live="off"
+      aria-busy={isBusy}
       className="ai-lab-messages-viewport flex-1 overflow-y-auto px-4 pb-6 pt-5 md:px-8 md:pb-8 md:pt-7"
     >
       <div className="mx-auto flex w-full max-w-[860px] flex-col gap-8 md:gap-10">
-          {messages.map((message) => {
-            const isUser = message.role === "user"
+        {messages.map((message) => {
+          const isUser = message.role === "user"
 
-            return (
-              <div
-                key={message.id}
-                className={cn("flex", isUser ? "justify-end" : "justify-start")}
+          return (
+            <div
+              key={message.id}
+              className={cn("flex", isUser ? "justify-end" : "justify-start")}
+            >
+              <article
+                className={cn(
+                  "ai-lab-message-card",
+                  isUser
+                    ? "ai-lab-message-card--user max-w-[min(100%,36rem)] px-4 py-3.5 md:px-5"
+                    : "ai-lab-message-card--assistant w-full max-w-none px-0 py-0",
+                )}
+                aria-label={isUser ? userLabel : assistantLabel}
               >
-                <div
+                <span
                   className={cn(
-                    "ai-lab-message-card",
-                    isUser
-                      ? "ai-lab-message-card--user max-w-[min(100%,36rem)] px-4 py-3.5 md:px-5"
-                      : "ai-lab-message-card--assistant w-full max-w-none px-0 py-0",
+                    "mb-2 block text-[10px] font-semibold uppercase tracking-[0.16em]",
+                    isUser ? "text-primary/82" : "text-muted-foreground/60",
                   )}
                 >
-                  <span
-                    className={cn(
-                      "mb-2 block text-[10px] font-semibold uppercase tracking-[0.16em]",
-                      isUser ? "text-primary/82" : "text-muted-foreground/60",
-                    )}
-                  >
-                    {isUser ? "You" : "AI"}
-                  </span>
+                  {isUser ? userLabel : assistantLabel}
+                </span>
 
-                  <div
-                    className={cn(
-                      "space-y-3",
-                      isUser
-                        ? "text-[12px] leading-7 tracking-[0.04em] text-foreground md:text-[13px]"
-                        : "text-[12px] leading-7 tracking-[0.04em] text-foreground md:text-[13px]",
-                    )}
-                  >
-                    {message.parts.map((part, index) => {
-                      if (part.type === "text") {
+                <div
+                  className={cn(
+                    "space-y-3",
+                    isUser
+                      ? "text-[12px] leading-7 tracking-[0.04em] text-foreground md:text-[13px]"
+                      : "text-[12px] leading-7 tracking-[0.04em] text-foreground md:text-[13px]",
+                  )}
+                >
+                  {message.parts.map((part, index) => {
+                    if (part.type === "text") {
+                      return (
+                        <MemoizedMarkdownRenderer
+                          key={`${message.id}-${index}`}
+                          text={part.text}
+                          streamCodeBlocks={
+                            isBusy &&
+                            message.role === "assistant" &&
+                            message.id === lastAssistantMessageId
+                          }
+                        />
+                      )
+                    }
+
+                    if (isToolUIPart(part)) {
+                      const toolName = getToolName(part)
+                      const sourceId = `${message.id}-${index}`
+
+                      if (part.state === "input-available") {
                         return (
-                          <MemoizedMarkdownRenderer
-                            key={`${message.id}-${index}`}
-                            text={part.text}
-                            streamCodeBlocks={
-                              isBusy &&
-                              message.role === "assistant" &&
-                              message.id === lastAssistantMessageId
-                            }
+                          <PendingToolNotice
+                            key={sourceId}
+                            toolName={toolName}
+                            input={part.input}
                           />
                         )
                       }
 
-                      if (isToolUIPart(part)) {
-                        const toolName = getToolName(part)
-                        const sourceId = `${message.id}-${index}`
-
-                        if (part.state === "input-available") {
-                          return (
-                            <PendingToolNotice
-                              key={sourceId}
-                              toolName={toolName}
-                              input={part.input}
-                            />
-                          )
-                        }
-
-                        if (part.state === "output-available") {
-                          return (
-                            <InlineToolResult
-                              key={sourceId}
-                              toolName={toolName}
-                              output={part.output}
-                              sourceId={sourceId}
-                            />
-                          )
-                        }
-
-                        if (part.state === "output-error") {
-                          return (
-                            <div
-                              key={sourceId}
-                              className="text-[10px] font-medium uppercase tracking-[0.12em] text-danger"
-                            >
-                              Error: {part.errorText}
-                            </div>
-                          )
-                        }
+                      if (part.state === "output-available") {
+                        return (
+                          <InlineToolResult
+                            key={sourceId}
+                            toolName={toolName}
+                            output={part.output}
+                            sourceId={sourceId}
+                          />
+                        )
                       }
 
-                      return null
-                    })}
-                  </div>
-                </div>
-              </div>
-            )
-          })}
+                      if (part.state === "output-error") {
+                        return (
+                          <div
+                            key={sourceId}
+                            className="text-[10px] font-medium uppercase tracking-[0.12em] text-danger"
+                            role="alert"
+                            aria-live="assertive"
+                          >
+                            {toolErrorLabel}: {part.errorText}
+                          </div>
+                        )
+                      }
+                    }
 
-          {showThinking ? (
-            <div className="flex justify-start">
-              <div className="ai-lab-message-card ai-lab-message-card--assistant w-full max-w-none px-0 py-0">
-                <span className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground/60">
-                  AI
-                </span>
-                <div className="text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground/84">
-                  {loadingLabel}
+                    return null
+                  })}
                 </div>
+              </article>
+            </div>
+          )
+        })}
+
+        {showThinking ? (
+          <div className="flex justify-start">
+            <div className="ai-lab-message-card ai-lab-message-card--assistant w-full max-w-none px-0 py-0">
+              <span className="mb-2 block text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground/60">
+                {assistantLabel}
+              </span>
+              <div
+                className="text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground/84"
+                role="status"
+                aria-live="polite"
+                aria-atomic="true"
+              >
+                {loadingLabel}
               </div>
             </div>
-          ) : null}
-        </div>
+          </div>
+        ) : null}
+      </div>
     </div>
   )
 })
@@ -612,8 +650,9 @@ const ChatComposer = React.memo(function ChatComposer({
   verySlowLabel,
   connectingLabel,
   cancelLabel,
-  locale,
   shortcutHint,
+  promptLabel,
+  tokensLabel,
 }: {
   sendMessage: (message: { text: string }) => Promise<void>
   stop: () => void
@@ -629,8 +668,9 @@ const ChatComposer = React.memo(function ChatComposer({
   verySlowLabel: string
   connectingLabel: string
   cancelLabel: string
-  locale: string
   shortcutHint: string
+  promptLabel: string
+  tokensLabel: string
 }) {
   const [input, setInput] = useState("")
   const textareaRef = useRef<HTMLTextAreaElement>(null)
@@ -680,25 +720,39 @@ const ChatComposer = React.memo(function ChatComposer({
     }
   }
 
-  const tokenText = `${formatTokenCount(tokenEstimate.estimatedPromptTokens)} tokens`
+  const tokenText = `${formatTokenCount(tokenEstimate.estimatedPromptTokens)} ${tokensLabel}`
 
   return (
-    <div className="ai-lab-composer w-full shrink-0 px-4 pb-4 pt-3 md:px-8 md:pb-6">
+    <div
+      className="ai-lab-composer w-full shrink-0 px-4 pb-4 pt-3 md:px-8 md:pb-6"
+      aria-busy={isBusy}
+    >
       <div className="mx-auto max-w-[1120px] space-y-3">
         {error && errorLabel ? (
-          <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-danger">
+          <p
+            className="text-[10px] font-medium uppercase tracking-[0.12em] text-danger"
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true"
+          >
             {errorLabel}
           </p>
         ) : null}
 
         {statusLabel && !error ? (
           <div className="flex items-center justify-between gap-3">
-            <p className="text-[10px] font-medium uppercase tracking-[0.12em] text-amber-600">
+            <p
+              className="text-[10px] font-medium uppercase tracking-[0.12em] text-amber-600"
+              role="status"
+              aria-live="polite"
+              aria-atomic="true"
+            >
               {statusLabel}
             </p>
             <button
               type="button"
               onClick={stop}
+              aria-label={cancelLabel}
               className="ai-lab-pixel-button px-3 py-1.5 text-[10px] hover:border-destructive/70 hover:bg-destructive/10 hover:text-danger"
             >
               {cancelLabel}
@@ -706,14 +760,18 @@ const ChatComposer = React.memo(function ChatComposer({
           </div>
         ) : null}
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} aria-labelledby="ai-chat-prompt-label">
           <div className="ai-lab-composer-shell flex min-h-[104px] items-end gap-4 border-2 border-border px-5 py-4 transition-[border-color,background-color] duration-200 focus-within:border-primary">
+            <label id="ai-chat-prompt-label" htmlFor="ai-chat-composer-input" className="sr-only">
+              {promptLabel}
+            </label>
             <Textarea
               ref={textareaRef}
+              id="ai-chat-composer-input"
               value={input}
               onChange={(event) => setInput(event.target.value)}
               placeholder={placeholder}
-              className="min-h-[64px] flex-1 resize-none border-0 bg-transparent p-0 text-[12px] leading-8 tracking-[0.02em] shadow-none focus-visible:border-transparent focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:tracking-[0.02em] placeholder:text-muted-foreground/60"
+              className="min-h-[64px] flex-1 resize-none border-0 bg-transparent p-0 text-[12px] leading-8 tracking-[0.02em] shadow-none focus-visible:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/70 focus-visible:ring-offset-2 focus-visible:ring-offset-background placeholder:tracking-[0.02em] placeholder:text-muted-foreground/60"
               onKeyDown={(event) => {
                 if (event.key === "Enter" && !event.shiftKey) {
                   event.preventDefault()
@@ -725,6 +783,8 @@ const ChatComposer = React.memo(function ChatComposer({
             <button
               type="submit"
               disabled={!input.trim() || isBusy}
+              aria-busy={isBusy}
+              aria-label={isBusy ? loadingLabel : submitLabel}
               className={cn(
                 "ai-lab-pixel-button mb-1 h-12 min-w-[112px] shrink-0 border-border px-5 text-[10px] text-foreground",
                 input.trim() && !isBusy
@@ -789,6 +849,9 @@ function ChatThreadView({
     })
 
   const errorLabel = getErrorLabel(error, t)
+  const [completionAnnouncement, setCompletionAnnouncement] = useState("")
+  const wasBusyRef = useRef(false)
+  const wasCancelledRef = useRef(false)
 
   const lastAssistantMessage = [...messages]
     .reverse()
@@ -803,8 +866,34 @@ function ChatThreadView({
       return isToolUIPart(part) && part.state !== "input-streaming"
     }),
   )
-  const showThinking = isBusy && !lastAssistantHasContent
+  const lastMessage = messages[messages.length - 1]
+  const showThinking =
+    isBusy &&
+    (lastMessage?.role !== "assistant" || !lastAssistantHasContent)
   const hasConversation = messages.some((message) => message.role === "user")
+
+  useEffect(() => {
+    if (isBusy) {
+      setCompletionAnnouncement("")
+    } else if (
+      wasBusyRef.current &&
+      !wasCancelledRef.current &&
+      !error &&
+      lastAssistantHasContent
+    ) {
+      setCompletionAnnouncement(t("assistantResponseReady"))
+    }
+
+    if (!isBusy) {
+      wasCancelledRef.current = false
+    }
+    wasBusyRef.current = isBusy
+  }, [error, isBusy, lastAssistantHasContent, t])
+
+  const handleStop = useCallback(() => {
+    wasCancelledRef.current = true
+    stop()
+  }, [stop])
 
   const handleSuggestedPromptSelect = useCallback(
     async (prompt: SuggestedPrompt) => {
@@ -859,7 +948,7 @@ function ChatThreadView({
             <div className="flex w-full flex-col items-center gap-8">
               <ChatComposer
                 sendMessage={sendMessage}
-                stop={stop}
+                stop={handleStop}
                 isBusy={isBusy}
                 slowPhase={slowPhase}
                 estimateInputTokens={estimateInputTokens}
@@ -872,8 +961,9 @@ function ChatThreadView({
                 verySlowLabel={t("verySlowRequest")}
                 connectingLabel={t("connectingModel")}
                 cancelLabel={t("cancel")}
-                locale={locale}
                 shortcutHint={t("shortcutHint")}
+                promptLabel={t("promptLabel")}
+                tokensLabel={t("tokenCountLabel")}
               />
 
               <RecommendedPromptChips
@@ -899,17 +989,29 @@ function ChatThreadView({
 
   return (
     <div className="ai-lab-thread-view flex h-full flex-col overflow-hidden">
+      <div
+        className="sr-only"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        {completionAnnouncement}
+      </div>
       <ChatMessagesViewport
         messages={messages}
         isBusy={isBusy}
         showThinking={showThinking}
         lastAssistantMessageId={lastAssistantMessageId}
         loadingLabel={t("loading")}
+        messagesLabel={t("messagesLabel")}
+        userLabel={t("youLabel")}
+        assistantLabel={t("assistantLabel")}
+        toolErrorLabel={t("toolError")}
       />
 
       <ChatComposer
         sendMessage={sendMessage}
-        stop={stop}
+        stop={handleStop}
         isBusy={isBusy}
         slowPhase={slowPhase}
         estimateInputTokens={estimateInputTokens}
@@ -922,8 +1024,9 @@ function ChatThreadView({
         verySlowLabel={t("verySlowRequest")}
         connectingLabel={t("connectingModel")}
         cancelLabel={t("cancel")}
-        locale={locale}
         shortcutHint={t("shortcutHint")}
+        promptLabel={t("promptLabel")}
+        tokensLabel={t("tokenCountLabel")}
       />
     </div>
   )
@@ -1094,6 +1197,7 @@ export default function AIPlayground() {
                 <div className="flex min-w-0 items-center gap-3">
                   <button
                     ref={mobileSidebarTriggerRef}
+                    type="button"
                     onClick={() => setSidebarOpen((open) => !open)}
                     className="ai-lab-pixel-button h-10 w-10 shrink-0 bg-background text-foreground md:hidden"
                     aria-label={
@@ -1123,6 +1227,7 @@ export default function AIPlayground() {
                   onClick={() => {
                     createThread()
                   }}
+                  aria-label={t("newChat")}
                   className="ai-lab-pixel-button h-9 bg-background px-3 text-[10px] text-foreground md:hidden"
                 >
                   {t("newChat")}
@@ -1133,7 +1238,11 @@ export default function AIPlayground() {
             <div className="min-h-0 flex-1">
               {!hydrated ? (
                 <div className="flex h-full items-center justify-center">
-                  <p className="text-[10px] font-medium uppercase tracking-[0.16em] text-muted-foreground/68">
+                  <p
+                    className="text-[10px] font-medium uppercase tracking-[0.16em] text-muted-foreground/68"
+                    role="status"
+                    aria-live="polite"
+                  >
                     {t("loadingChats")}
                   </p>
                 </div>

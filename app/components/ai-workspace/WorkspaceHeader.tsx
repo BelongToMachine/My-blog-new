@@ -53,8 +53,10 @@ export default function WorkspaceHeader({
         </span>
         {artifactCount > 0 ? (
           <button
+            type="button"
             onClick={handleClear}
             className="px-2 py-1 text-[9px] font-medium uppercase tracking-[0.16em] text-muted-foreground/50 transition-colors hover:text-danger"
+            aria-label={t("clearWorkspace")}
             title={t("clearWorkspace")}
           >
             {t("clear")}

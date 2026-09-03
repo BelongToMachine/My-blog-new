@@ -30,6 +30,30 @@
 - [x] ThreadTitleMenu 增加方向键、Home/End、Escape 和 Tab 退出行为。
 - [ ] 在真实浏览器和屏幕阅读器中验证焦点顺序与响应式切换。
 
+### 第三阶段：联系表单语义与反馈
+
+- [x] 将生成和发送流程改为两个语义明确的 `<form>`，支持 Enter 提交。
+- [x] 为所有字段增加持久可见的 `<label>`、稳定 `id`、`name`、`required` 和合适的 `autocomplete`。
+- [x] 为生成表单和邮件预览增加字段级错误、页面级错误摘要以及第一个无效字段聚焦。
+- [x] 为错误字段补充 `aria-invalid`、`aria-describedby` 和本地化错误文案。
+- [x] 为生成和发送按钮补充 `aria-busy`，并保留可触发校验的提交操作。
+- [x] 将表单状态提示和 API 错误回退文案接入中英文翻译。
+- [ ] 在真实浏览器、键盘和 VoiceOver/TalkBack 中验证提交、错误聚焦和状态播报。
+
+验证结果：`bun lint`、`bunx tsc --noEmit`、`git diff --check` 均通过。浏览器、键盘和屏幕阅读器实测尚未执行。
+
+### 第四阶段：AI 对话读屏模型
+
+- [x] 将消息区域命名为 `role="log"`，关闭逐 token live 更新，并标记生成中的 `aria-busy` 状态。
+- [x] 为用户、AI 助手、工具处理中、工具结果和工具错误增加明确的本地化语义。
+- [x] 为生成完成增加独立的 `role="status"` 播报，避免把流式内容逐字符读出。
+- [x] 为 Composer 增加本地化 label、表单名称、加载/错误状态和可见的 `focus-visible` 样式。
+- [x] 为发送、取消、新建会话和加载状态补充稳定的可访问名称或状态。
+- [x] 为 Workspace 制品选择控件增加 `aria-pressed`、工具栏名称和非颜色状态文字。
+- [ ] 在 VoiceOver/TalkBack 中验证消息播报节奏、工具状态和取消生成后的行为。
+
+验证结果：`bun lint`、`bunx tsc --noEmit`、`git diff --check` 均通过。浏览器、键盘和屏幕阅读器实测尚未执行。
+
 ## 1. 结论
 
 当前项目已经具备动态语言标记、语义化页面骨架、基础焦点样式、响应式布局和 `prefers-reduced-motion` 等良好基础，但仍不能认为达到 WCAG 2.2 AA。
@@ -39,8 +63,6 @@
 - 低对比度语义色和小字号低透明度文字。
 - 隐藏侧栏仍可被键盘聚焦。
 - Modal、Menu、Tabs 等自定义交互缺少完整的 ARIA 和键盘模型。
-- 联系表单缺少真正的表单结构、可见标签和完整错误反馈。
-- AI 流式对话缺少适合屏幕阅读器的状态与消息播报机制。
 - 自动循环动画没有站内暂停或减少动画控制。
 - 文章内容管线没有自动检查图片替代文本、标题层级、表格和链接质量。
 
@@ -166,28 +188,18 @@
 - `app/[locale]/contact/ContactForm.tsx`
 - `app/[locale]/contact/ContactFeedbackToast.tsx`
 
-当前问题：
+第三阶段已完成的改动：
 
-- 没有真正的 `<form>` 元素。
-- 多数输入框依赖 placeholder 或 `aria-label`，缺少持久可见的 `<label>`。
-- 视觉星号没有同步为 `required` 或 `aria-required`。
-- Custom Prompt Textarea 没有可访问名称。
-- Subject 和 Body 标签没有通过 `htmlFor` 关联控件。
-- Generate 按钮在输入不完整时直接禁用，用户无法通过提交触发完整错误说明。
-- 加载、成功和失败状态没有统一的读屏策略。
-- 部分状态提示为硬编码英文。
+- 生成和发送流程现在分别使用语义明确的 `<form>`，支持 Enter 提交。
+- 所有字段都有持久可见的 `<label>`、稳定 `id`，并补充了 `required`、`aria-required` 和 `autocomplete`。
+- 错误信息通过 `aria-describedby` 关联字段，提交失败时聚焦第一个无效字段，并提供页面级错误摘要。
+- 生成和发送按钮使用 `aria-busy`，生成按钮在校验前保持可提交状态。
+- 表单状态、校验文案和 API 错误回退均已接入 next-intl 的中英文消息。
 
-改动建议：
+待验证项：
 
-1. 将输入流程组织为一个真正的 `<form>`，或者两个语义明确的分步 form。
-2. 所有字段增加可见 label，并通过 `htmlFor` 和 `id` 关联。
-3. 增加 `required`、`autocomplete`、合适的 `type` 和 `inputMode`。
-4. 错误信息使用 `aria-describedby` 关联字段。
-5. 提交失败后聚焦第一个无效字段。
-6. 提供页面级错误摘要以及字段级错误。
-7. 成功提示使用 `role="status"`，失败提示使用 `role="alert"`。
-8. 提交中使用 `aria-busy`，同时保持按钮文本稳定、可理解。
-9. 所有状态文案进入 next-intl。
+- 在真实浏览器和键盘流程中验证 Enter 提交、错误聚焦和表单重排。
+- 在 VoiceOver/TalkBack 中确认字段名称、必填状态、错误原因和 toast/status 播报顺序。
 
 验收标准：
 
@@ -199,25 +211,18 @@
 
 相关位置：`app/[locale]/ai/AIPlayground.tsx`
 
-当前问题：
+第四阶段已完成的改动：
 
-- 消息区只是普通 div，没有对话记录或列表语义。
-- 流式响应、thinking、工具调用和错误不会稳定播报。
-- Composer Textarea 只有 placeholder。
-- 错误没有 `role="alert"`，处理中状态没有 `role="status"`。
-- Textarea 的焦点环被移除，只依赖父容器边框变化。
+- 消息区现在使用命名的 `role="log"`，并通过 `aria-live="off"` 避免逐 token 播报。
+- 用户消息、AI 助手消息、工具处理中、工具完成和工具错误均有明确语义与中英文名称。
+- 生成完成后通过独立的 `role="status"` live region 播报一次，取消生成不会误报完成。
+- Composer Textarea 增加本地化 label，错误使用 `role="alert"`，处理中使用 `role="status"` 和 `aria-busy`。
+- 恢复 Textarea 的 `focus-visible` 焦点环，并为发送、取消、新建会话和加载状态补充可访问名称。
 
-改动建议：
+待验证项：
 
-1. 消息区使用 `role="log"` 或语义列表，并提供区域名称。
-2. 每条消息标记发言人，视觉标签全部本地化。
-3. 不逐 token 播报流式内容；在完整响应结束后通过独立的隐藏 live region 播报一次。
-4. 工具执行中使用 `aria-busy` 和 `role="status"`。
-5. 错误使用 `role="alert"`。
-6. Composer Textarea 增加可见或 `sr-only` 的本地化 label。
-7. 恢复明确的 `focus-visible` 样式。
-8. 发送、停止、重试和新建会话都应提供明确的名称和状态。
-9. Artifact 选择控件使用 Tabs 或 `aria-pressed`，状态点不能只依赖颜色。
+- 在 VoiceOver/TalkBack 中确认历史消息、流式完成、工具状态和错误播报顺序。
+- 在键盘流程中确认取消生成、重新发送和新建会话时焦点位置稳定。
 
 验收标准：
 

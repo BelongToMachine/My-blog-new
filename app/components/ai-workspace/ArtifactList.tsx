@@ -27,16 +27,30 @@ export default function ArtifactList({
 
   return (
     <div className="shrink-0 border-b border-border/40 px-4 py-2 md:px-5">
-      <div className="flex gap-2 overflow-x-auto pb-1">
+      <div
+        className="flex gap-2 overflow-x-auto pb-1"
+        role="toolbar"
+        aria-label={t("workspaceArtifactsLabel")}
+      >
         {artifacts.map((artifact) => {
           const isPendingTarget = pendingIntent?.targetArtifactId === artifact.id
           const isActive = activeArtifactId === artifact.id
           const hasError = artifact.status === "error"
+          const statusText = hasError
+            ? t("artifactError")
+            : isPendingTarget || artifact.status === "updating"
+              ? t("artifactUpdating")
+              : null
+          const artifactLabel =
+            artifact.title || t(getWorkspaceArtifactLabelKey(artifact.type))
 
           return (
             <button
               key={artifact.id}
+              type="button"
               onClick={() => onSelect(artifact.id)}
+              aria-pressed={isActive}
+              aria-label={statusText ? `${artifactLabel} · ${statusText}` : artifactLabel}
               className={cn(
                 "flex shrink-0 items-center gap-2 border-2 px-3 py-1.5 text-[9px] font-medium uppercase tracking-[0.14em] transition-colors",
                 isActive
@@ -53,10 +67,21 @@ export default function ArtifactList({
                       ? "animate-pulse bg-primary"
                       : "bg-border/60",
                 )}
+                aria-hidden="true"
               />
               <span className="block max-w-[148px] truncate">
-                {artifact.title || t(getWorkspaceArtifactLabelKey(artifact.type))}
+                {artifactLabel}
               </span>
+              {statusText ? (
+                <span
+                  className={cn(
+                    "shrink-0 text-[8px]",
+                    hasError ? "text-danger" : "text-primary",
+                  )}
+                >
+                  {statusText}
+                </span>
+              ) : null}
             </button>
           )
         })}

@@ -54,10 +54,14 @@ export default function ThreadSidebar({
     <div className="flex h-full flex-col">
       <div className="shrink-0 border-b border-border/35 p-3 md:p-4">
         <button
+          type="button"
           onClick={onCreateThread}
+          aria-label={t("newChat")}
           className="ai-lab-pixel-button w-full gap-2 bg-background px-3 py-2.5 text-[10px] text-foreground"
         >
-          <span className="text-lg leading-none">+</span>
+          <span className="text-lg leading-none" aria-hidden="true">
+            +
+          </span>
           <span>{t("newChat") ?? "New Chat"}</span>
         </button>
       </div>
@@ -113,7 +117,10 @@ export default function ThreadSidebar({
                   >
                     <div className="flex items-center gap-2">
                       {thread.isStarred ? (
-                        <Star className="h-3.5 w-3.5 shrink-0 fill-current text-amber-500" />
+                        <Star
+                          className="h-3.5 w-3.5 shrink-0 fill-current text-amber-500"
+                          aria-hidden="true"
+                        />
                       ) : null}
                       <p
                         className={cn(
