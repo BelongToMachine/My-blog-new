@@ -1,7 +1,8 @@
 "use client"
 
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
-import { useMemo, useState } from "react"
+import { AnimatePresence, motion } from "framer-motion"
+import { useMemo, useRef, useState, type KeyboardEvent } from "react"
+import { useAdaptiveMotion } from "@/app/hooks/useAdaptiveMotion"
 import styles from "./jquery-article-experience.module.css"
 
 type DemoId = "selector" | "styling" | "event"
@@ -140,11 +141,35 @@ function highlightLine(line: string) {
 
 export default function JQueryArticleExperience() {
   const [activeId, setActiveId] = useState<DemoId>("selector")
-  const shouldReduceMotion = useReducedMotion()
+  const { motionLevel } = useAdaptiveMotion()
+  const shouldReduceMotion = motionLevel !== "full"
+  const tabRefs = useRef<Array<HTMLButtonElement | null>>([])
   const activeDemo = useMemo(
     () => demos.find((demo) => demo.id === activeId) ?? demos[0],
     [activeId]
   )
+
+  const handleTabKeyDown = (
+    event: KeyboardEvent<HTMLButtonElement>,
+    index: number,
+  ) => {
+    let nextIndex = index
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      nextIndex = (index + 1) % demos.length
+    } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      nextIndex = (index - 1 + demos.length) % demos.length
+    } else if (event.key === "Home") {
+      nextIndex = 0
+    } else if (event.key === "End") {
+      nextIndex = demos.length - 1
+    } else {
+      return
+    }
+
+    event.preventDefault()
+    setActiveId(demos[nextIndex].id)
+    tabRefs.current[nextIndex]?.focus()
+  }
 
   return (
     <section className={styles.panel}>
@@ -154,16 +179,26 @@ export default function JQueryArticleExperience() {
         <p className={styles.subline}>
           这不是额外装饰，而是把“选择元素、改变样式、绑定事件”从文字说明转成可切换、可观察的阅读体验。对招聘方来说，它也更像一个有观点的技术展示，而不是普通文档页。
         </p>
-        <div className={styles.tabRow}>
+        <div className={styles.tabRow} role="tablist" aria-label="交互示例">
           {demos.map((demo) => {
             const isActive = demo.id === activeId
+            const index = demos.indexOf(demo)
 
             return (
               <button
                 key={demo.id}
+                ref={(element) => {
+                  tabRefs.current[index] = element
+                }}
                 type="button"
+                id={`jquery-tab-${demo.id}`}
+                role="tab"
+                aria-selected={isActive}
+                aria-controls="jquery-demo-panel"
+                tabIndex={isActive ? 0 : -1}
                 className={`${styles.tab} ${isActive ? styles.tabActive : ""}`}
                 onClick={() => setActiveId(demo.id)}
+                onKeyDown={(event) => handleTabKeyDown(event, index)}
               >
                 <span className={styles.tabIndex}>{demo.index}</span>
                 <span>{demo.label}</span>
@@ -173,7 +208,13 @@ export default function JQueryArticleExperience() {
         </div>
       </div>
 
-      <div className={styles.body}>
+      <div
+        id="jquery-demo-panel"
+        role="tabpanel"
+        aria-labelledby={`jquery-tab-${activeDemo.id}`}
+        tabIndex={0}
+        className={styles.body}
+      >
         <div className={`${styles.frame} ${styles.codeFrame}`}>
           <div className={styles.frameBar}>
             <div className={styles.frameDots}>

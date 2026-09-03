@@ -1,3 +1,6 @@
+"use client"
+
+import { useEffect, useRef } from "react"
 import AiAgentInlineBlock from "./AiAgentInlineBlock"
 import NextjsRenderingInlineBlock from "./NextjsRenderingInlineBlock"
 import styles from "@/app/articles/post.module.css"
@@ -7,6 +10,7 @@ interface ArticleBodyProps {
   slug: string
   htmlContent: string
   headings: Heading[]
+  locale?: string
 }
 
 interface ArticleSection {
@@ -72,11 +76,79 @@ function splitHtmlByHeadings(htmlContent: string, headings: Heading[]): ArticleS
   return sections.filter((section) => section.html.trim().length > 0)
 }
 
-export default function ArticleBody({ slug, htmlContent, headings }: ArticleBodyProps) {
+export default function ArticleBody({
+  slug,
+  htmlContent,
+  headings,
+  locale = "zh",
+}: ArticleBodyProps) {
   const sections = splitHtmlByHeadings(htmlContent, headings)
+  const articleRef = useRef<HTMLDivElement>(null)
+  const copyStatusRef = useRef<HTMLSpanElement>(null)
+
+  useEffect(() => {
+    const root = articleRef.current
+    if (!root) return
+
+    const fallbackLabels =
+      locale.startsWith("en")
+        ? { copy: "Copy code", error: "Copy failed" }
+        : { copy: "复制代码", error: "复制失败" }
+    const buttons = Array.from(
+      root.querySelectorAll<HTMLButtonElement>(".article-code-copy"),
+    )
+    const timeoutIds: number[] = []
+
+    const cleanups = buttons.map((button) => {
+      const originalText = button.textContent || fallbackLabels.copy
+      const copyLabel = button.dataset.copyLabel || fallbackLabels.copy
+      const errorLabel =
+        button.dataset.copyErrorLabel || fallbackLabels.error
+
+      button.setAttribute("aria-label", copyLabel)
+
+      const handleCopy = async () => {
+        try {
+          if (!navigator.clipboard) throw new Error("Clipboard unavailable")
+          await navigator.clipboard.writeText(button.dataset.code || "")
+          button.classList.add("is-copied")
+          button.textContent = ""
+          button.setAttribute("aria-label", copyLabel)
+          if (copyStatusRef.current) {
+            copyStatusRef.current.textContent = "✓"
+          }
+        } catch {
+          button.classList.remove("is-copied")
+          button.textContent = errorLabel
+          button.setAttribute("aria-label", errorLabel)
+          if (copyStatusRef.current) {
+            copyStatusRef.current.textContent = errorLabel
+          }
+        }
+
+        const timeoutId = window.setTimeout(() => {
+          button.classList.remove("is-copied")
+          button.textContent = originalText
+          button.setAttribute("aria-label", copyLabel)
+          if (copyStatusRef.current) {
+            copyStatusRef.current.textContent = ""
+          }
+        }, 1500)
+        timeoutIds.push(timeoutId)
+      }
+
+      button.addEventListener("click", handleCopy)
+      return () => button.removeEventListener("click", handleCopy)
+    })
+
+    return () => {
+      cleanups.forEach((cleanup) => cleanup())
+      timeoutIds.forEach((timeoutId) => window.clearTimeout(timeoutId))
+    }
+  }, [htmlContent, locale])
 
   return (
-    <div className={styles.articleFlow}>
+    <div ref={articleRef} className={styles.articleFlow}>
       {sections.map((section) => (
         <div key={section.key} className={styles.articleSection}>
           <div
@@ -88,6 +160,13 @@ export default function ArticleBody({ slug, htmlContent, headings }: ArticleBody
           <AiAgentInlineBlock slug={slug} sectionKey={section.key} headingText={section.headingText} />
         </div>
       ))}
+      <span
+        ref={copyStatusRef}
+        className="sr-only"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+      />
     </div>
   )
 }

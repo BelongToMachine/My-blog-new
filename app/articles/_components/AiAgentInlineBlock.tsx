@@ -1,8 +1,9 @@
 "use client"
 
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion"
 import { useLocale } from "next-intl"
-import { useMemo, useState } from "react"
+import { useMemo, useRef, useState, type KeyboardEvent } from "react"
+import { useAdaptiveMotion } from "@/app/hooks/useAdaptiveMotion"
 import styles from "./ai-agent-inline.module.css"
 
 type PillarId = "ui" | "loop" | "tools"
@@ -48,6 +49,10 @@ interface UiCopy {
   sdkEyebrow: string
   sdkTitle: string
   sdkLead: string
+  pillarsControlLabel: string
+  copyCodeLabel: string
+  copyCodeVisibleLabel: string
+  copyCodeErrorLabel: string
 }
 
 interface LocalizedCopy {
@@ -158,6 +163,10 @@ const COPY: Record<Locale, LocalizedCopy> = {
       sdkTitle: "Vercel AI SDK 把 Agent 拆成清晰的三层",
       sdkLead:
         "工具定义、后端路由、前端 UI——三层各司其职，谁跑在哪里也清清楚楚。",
+      pillarsControlLabel: "Agent 支柱",
+      copyCodeLabel: "复制代码",
+      copyCodeVisibleLabel: "copy",
+      copyCodeErrorLabel: "复制失败",
     },
   },
   en: {
@@ -267,6 +276,10 @@ const COPY: Record<Locale, LocalizedCopy> = {
       sdkTitle: "The Vercel AI SDK splits an agent into three clear layers",
       sdkLead:
         "Tool definitions, backend route, frontend UI — each layer has one job, and where each one runs is unambiguous.",
+      pillarsControlLabel: "Agent pillars",
+      copyCodeLabel: "Copy code",
+      copyCodeVisibleLabel: "copy",
+      copyCodeErrorLabel: "Copy failed",
     },
   },
 }
@@ -277,11 +290,35 @@ function resolveLocale(raw: string): Locale {
 
 function PillarsBlock({ copy }: { copy: LocalizedCopy }) {
   const [activeId, setActiveId] = useState<PillarId>("loop")
-  const shouldReduceMotion = useReducedMotion()
+  const { motionLevel } = useAdaptiveMotion()
+  const shouldReduceMotion = motionLevel !== "full"
+  const tabRefs = useRef<Array<HTMLButtonElement | null>>([])
   const active = useMemo(
     () => copy.pillars.find((item) => item.id === activeId) ?? copy.pillars[0],
     [activeId, copy.pillars],
   )
+
+  const handleTabKeyDown = (
+    event: KeyboardEvent<HTMLButtonElement>,
+    index: number,
+  ) => {
+    let nextIndex = index
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      nextIndex = (index + 1) % copy.pillars.length
+    } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      nextIndex = (index - 1 + copy.pillars.length) % copy.pillars.length
+    } else if (event.key === "Home") {
+      nextIndex = 0
+    } else if (event.key === "End") {
+      nextIndex = copy.pillars.length - 1
+    } else {
+      return
+    }
+
+    event.preventDefault()
+    setActiveId(copy.pillars[nextIndex].id)
+    tabRefs.current[nextIndex]?.focus()
+  }
 
   return (
     <section className={styles.panel}>
@@ -292,13 +329,26 @@ function PillarsBlock({ copy }: { copy: LocalizedCopy }) {
       </div>
 
       <div className={styles.pillarLayout}>
-        <div className={styles.pillarGrid}>
-          {copy.pillars.map((pillar) => (
+        <div
+          className={styles.pillarGrid}
+          role="tablist"
+          aria-label={copy.ui.pillarsControlLabel}
+        >
+          {copy.pillars.map((pillar, index) => (
             <button
               key={pillar.id}
+              ref={(element) => {
+                tabRefs.current[index] = element
+              }}
               type="button"
+              id={`ai-agent-tab-${pillar.id}`}
+              role="tab"
+              aria-selected={pillar.id === activeId}
+              aria-controls="ai-agent-spotlight"
+              tabIndex={pillar.id === activeId ? 0 : -1}
               className={`${styles.pillarCard} ${pillar.id === activeId ? styles.pillarCardActive : ""}`}
               onClick={() => setActiveId(pillar.id)}
+              onKeyDown={(event) => handleTabKeyDown(event, index)}
             >
               <span className={styles.pillarIcon}>{pillar.index}</span>
               <div className={styles.pillarBody}>
@@ -314,6 +364,10 @@ function PillarsBlock({ copy }: { copy: LocalizedCopy }) {
           <motion.div
             key={active.id}
             className={styles.spotlight}
+            id="ai-agent-spotlight"
+            role="tabpanel"
+            aria-labelledby={`ai-agent-tab-${active.id}`}
+            tabIndex={0}
             initial={shouldReduceMotion ? false : { opacity: 0, y: 12 }}
             animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
             exit={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: -10 }}
@@ -392,21 +446,11 @@ function SdkStackBlock({ copy }: { copy: LocalizedCopy }) {
                       type="button"
                       className="article-code-copy"
                       data-code={code}
-                      onClick={(e) => {
-                        const btn = e.currentTarget
-                        navigator.clipboard
-                          .writeText(btn.dataset.code || "")
-                          .then(() => {
-                            btn.classList.add("is-copied")
-                            setTimeout(
-                              () => btn.classList.remove("is-copied"),
-                              1500,
-                            )
-                          })
-                      }}
-                      aria-label="复制代码"
+                      data-copy-label={copy.ui.copyCodeLabel}
+                      data-copy-error-label={copy.ui.copyCodeErrorLabel}
+                      aria-label={copy.ui.copyCodeLabel}
                     >
-                      copy
+                      {copy.ui.copyCodeVisibleLabel}
                     </button>
                     <pre className="shiki">
                       <code>

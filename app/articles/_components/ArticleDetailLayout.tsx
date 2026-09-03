@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useCallback, useEffect, useRef, useState } from "react"
+import React, { useCallback, useRef, useState } from "react"
 import { Box, Container, Grid } from "@radix-ui/themes"
 import { cn } from "@/lib/utils"
 import PixelMenuIcon from "@/app/components/system/PixelMenuIcon"
@@ -10,7 +10,6 @@ import ArticleEnhancement from "@/app/articles/_components/ArticleEnhancement"
 import ArticleBody from "@/app/articles/_components/ArticleBody"
 import ArticleFooter from "@/app/articles/_components/ArticleFooter"
 import type { Heading } from "@/app/service/BlogParser"
-import { useReadingFontStore } from "@/app/service/Store"
 import styles from "@/app/articles/post.module.css"
 import { useFocusTrap } from "@/app/hooks/useFocusTrap"
 
@@ -25,52 +24,10 @@ interface ArticleDetailLayoutProps {
   }
 }
 
-function FontToggle() {
-  const isNormalFont = useReadingFontStore((s) => s.isNormalFont)
-  const setNormalFont = useReadingFontStore((s) => s.setNormalFont)
-
-  return (
-    <div className="flex items-center gap-1 border border-border/70 bg-background/60 p-0.5">
-      <button
-        type="button"
-        onClick={() => setNormalFont(true)}
-        className={cn(
-          "flex-1 px-2 py-1.5 text-[11px] uppercase tracking-[0.22em] transition-colors",
-          isNormalFont
-            ? "bg-primary/10 text-foreground"
-            : "text-muted-foreground hover:text-foreground"
-        )}
-        aria-pressed={isNormalFont}
-      >
-        Normal
-      </button>
-      <button
-        type="button"
-        onClick={() => setNormalFont(false)}
-        className={cn(
-          "font-pixel flex-1 px-2 py-1.5 text-[11px] uppercase tracking-[0.22em] transition-colors",
-          !isNormalFont
-            ? "bg-primary/10 text-foreground"
-            : "text-muted-foreground hover:text-foreground"
-        )}
-        aria-pressed={!isNormalFont}
-      >
-        Pixel
-      </button>
-    </div>
-  )
-}
-
 export default function ArticleDetailLayout({ article }: ArticleDetailLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const sidebarTriggerRef = useRef<HTMLButtonElement>(null)
   const sidebarRef = useRef<HTMLElement>(null)
-  const setNormalFont = useReadingFontStore((s) => s.setNormalFont)
-
-  useEffect(() => {
-    const stored = localStorage.getItem("reading-font-mode")
-    setNormalFont(stored !== "pixel")
-  }, [setNormalFont])
 
   const closeSidebar = useCallback(() => setSidebarOpen(false), [])
 
@@ -117,9 +74,6 @@ export default function ArticleDetailLayout({ article }: ArticleDetailLayoutProp
             )}
           >
             <div className="h-full overflow-y-auto p-4">
-              <div className="mb-3">
-                <FontToggle />
-              </div>
               <TableOfContent
                 headings={article.headings}
                 locale={article.locale}
@@ -156,15 +110,13 @@ export default function ArticleDetailLayout({ article }: ArticleDetailLayoutProp
                   slug={article.slug}
                   htmlContent={article.htmlContent}
                   headings={article.headings}
+                  locale={article.locale}
                 />
               </div>
               <ArticleFooter />
             </Box>
             <Box className="hidden lg:block lg:col-span-1">
               <div className="lg:sticky lg:top-24">
-                <div className="mb-3">
-                  <FontToggle />
-                </div>
                 <TableOfContent headings={article.headings} locale={article.locale} />
               </div>
             </Box>

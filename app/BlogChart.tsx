@@ -8,14 +8,20 @@ const chartShellClassName =
 const chartBodyClassName =
   "flex min-h-[220px] flex-1 items-center justify-center text-sm text-muted-foreground md:min-h-[280px] lg:min-h-[300px]"
 
+const ChartLoading = () => {
+  const t = useTranslations("home")
+
+  return (
+    <div className={chartShellClassName} role="status" aria-live="polite">
+      <div className={chartBodyClassName}>{t("loadingMore")}</div>
+    </div>
+  )
+}
+
 // 动态导入图表组件（SSR 禁用）
 const Chart = dynamic(() => import("@/app/components/ChartInner"), {
   ssr: false,
-  loading: () => (
-    <div className={chartShellClassName}>
-      <div className={chartBodyClassName}>Loading chart...</div>
-    </div>
-  ),
+  loading: () => <ChartLoading />,
 })
 
 interface Props {
@@ -30,7 +36,7 @@ const BlogChart = (props: Props) => {
   return (
     <Suspense
       fallback={
-        <div className={chartShellClassName}>
+        <div className={chartShellClassName} role="status" aria-live="polite">
           <div className={chartBodyClassName}>{t("loadingMore")}</div>
         </div>
       }

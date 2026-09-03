@@ -1,8 +1,9 @@
 "use client"
 
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion"
 import { useLocale } from "next-intl"
-import { useMemo, useState } from "react"
+import { useMemo, useRef, useState, type KeyboardEvent } from "react"
+import { useAdaptiveMotion } from "@/app/hooks/useAdaptiveMotion"
 import styles from "./nextjs-rendering-inline.module.css"
 
 type StrategyId =
@@ -555,27 +556,66 @@ function resolveLocale(raw: string): Locale {
 
 function OverviewBlock({ copy }: { copy: LocalizedCopy }) {
   const [activeId, setActiveId] = useState<StrategyId>("ssr")
-  const shouldReduceMotion = useReducedMotion()
+  const { motionLevel } = useAdaptiveMotion()
+  const shouldReduceMotion = motionLevel !== "full"
+  const tabRefs = useRef<Array<HTMLButtonElement | null>>([])
   const active = useMemo(
     () => copy.strategies.find((item) => item.id === activeId) ?? copy.strategies[0],
     [activeId, copy.strategies]
   )
 
+  const handleTabKeyDown = (
+    event: KeyboardEvent<HTMLButtonElement>,
+    index: number,
+  ) => {
+    let nextIndex = index
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      nextIndex = (index + 1) % copy.strategies.length
+    } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      nextIndex = (index - 1 + copy.strategies.length) % copy.strategies.length
+    } else if (event.key === "Home") {
+      nextIndex = 0
+    } else if (event.key === "End") {
+      nextIndex = copy.strategies.length - 1
+    } else {
+      return
+    }
+
+    event.preventDefault()
+    setActiveId(copy.strategies[nextIndex].id)
+    tabRefs.current[nextIndex]?.focus()
+  }
+
   return (
     <section className={styles.panel}>
       <div className={styles.panelHeader}>
         <div className={styles.eyebrow}>{copy.ui.overviewEyebrow}</div>
-        <h3 className={styles.panelTitle}>{copy.ui.overviewTitle}</h3>
+        <h3 id="nextjs-overview-heading" className={styles.panelTitle}>
+          {copy.ui.overviewTitle}
+        </h3>
         <p className={styles.panelLead}>{copy.ui.overviewLead}</p>
       </div>
 
-      <div className={styles.tabRow}>
-        {copy.strategies.map((strategy) => (
+      <div
+        className={styles.tabRow}
+        role="tablist"
+        aria-labelledby="nextjs-overview-heading"
+      >
+        {copy.strategies.map((strategy, index) => (
           <button
             key={strategy.id}
+            ref={(element) => {
+              tabRefs.current[index] = element
+            }}
             type="button"
+            id={`nextjs-strategy-tab-${strategy.id}`}
+            role="tab"
+            aria-selected={strategy.id === activeId}
+            aria-controls="nextjs-strategy-panel"
+            tabIndex={strategy.id === activeId ? 0 : -1}
             className={`${styles.pill} ${strategy.id === activeId ? styles.pillActive : ""}`}
             onClick={() => setActiveId(strategy.id)}
+            onKeyDown={(event) => handleTabKeyDown(event, index)}
           >
             <span>{strategy.label}</span>
             <small>{strategy.short}</small>
@@ -589,6 +629,7 @@ function OverviewBlock({ copy }: { copy: LocalizedCopy }) {
             <button
               key={strategy.id}
               type="button"
+              aria-pressed={strategy.id === activeId}
               className={`${styles.scoreCard} ${strategy.id === activeId ? styles.scoreCardActive : ""}`}
               onClick={() => setActiveId(strategy.id)}
             >
@@ -631,6 +672,11 @@ function OverviewBlock({ copy }: { copy: LocalizedCopy }) {
           <motion.div
             key={active.id}
             className={styles.spotlight}
+            id="nextjs-strategy-panel"
+            role="tabpanel"
+            aria-labelledby={`nextjs-strategy-tab-${active.id}`}
+            aria-live="polite"
+            tabIndex={0}
             initial={shouldReduceMotion ? false : { opacity: 0, y: 12 }}
             animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
             exit={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: -10 }}
@@ -674,6 +720,7 @@ function PipelineBlock({ copy }: { copy: LocalizedCopy }) {
             <button
               key={item}
               type="button"
+              aria-pressed={item === mode}
               className={`${styles.segmentedButton} ${item === mode ? styles.segmentedButtonActive : ""}`}
               onClick={() => setMode(item)}
             >
@@ -721,6 +768,7 @@ function BoundaryBlock({ copy }: { copy: LocalizedCopy }) {
             <button
               key={item}
               type="button"
+              aria-pressed={item === mode}
               className={`${styles.segmentedButton} ${item === mode ? styles.segmentedButtonActive : ""}`}
               onClick={() => setMode(item)}
             >
@@ -745,23 +793,62 @@ function BoundaryBlock({ copy }: { copy: LocalizedCopy }) {
 function FreshnessBlock({ copy }: { copy: LocalizedCopy }) {
   const [mode, setMode] = useState<FreshnessMode>("isr")
   const current = copy.freshness[mode]
+  const tabRefs = useRef<Array<HTMLButtonElement | null>>([])
+  const freshnessModes = ["ssg", "isr", "ssr"] as const
+
+  const handleTabKeyDown = (
+    event: KeyboardEvent<HTMLButtonElement>,
+    index: number,
+  ) => {
+    let nextIndex = index
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+      nextIndex = (index + 1) % freshnessModes.length
+    } else if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+      nextIndex = (index - 1 + freshnessModes.length) % freshnessModes.length
+    } else if (event.key === "Home") {
+      nextIndex = 0
+    } else if (event.key === "End") {
+      nextIndex = freshnessModes.length - 1
+    } else {
+      return
+    }
+
+    event.preventDefault()
+    setMode(freshnessModes[nextIndex])
+    tabRefs.current[nextIndex]?.focus()
+  }
 
   return (
     <section className={styles.panel}>
       <div className={styles.inlineHeader}>
         <div>
           <div className={styles.eyebrow}>{copy.ui.freshnessEyebrow}</div>
-          <h3 className={styles.inlineTitle}>{copy.ui.freshnessTitle}</h3>
+          <h3 id="nextjs-freshness-heading" className={styles.inlineTitle}>
+            {copy.ui.freshnessTitle}
+          </h3>
         </div>
       </div>
 
-      <div className={styles.tabRow}>
-        {(["ssg", "isr", "ssr"] as const).map((item) => (
+      <div
+        className={styles.tabRow}
+        role="tablist"
+        aria-labelledby="nextjs-freshness-heading"
+      >
+        {freshnessModes.map((item, index) => (
           <button
             key={item}
+            ref={(element) => {
+              tabRefs.current[index] = element
+            }}
             type="button"
+            id={`nextjs-freshness-tab-${item}`}
+            role="tab"
+            aria-selected={item === mode}
+            aria-controls="nextjs-freshness-panel"
+            tabIndex={item === mode ? 0 : -1}
             className={`${styles.pill} ${item === mode ? styles.pillActive : ""}`}
             onClick={() => setMode(item)}
+            onKeyDown={(event) => handleTabKeyDown(event, index)}
           >
             <span>{copy.freshness[item].label}</span>
             <small>{copy.freshness[item].caption}</small>
@@ -769,7 +856,14 @@ function FreshnessBlock({ copy }: { copy: LocalizedCopy }) {
         ))}
       </div>
 
-      <div className={styles.dualPanel}>
+      <div
+        id="nextjs-freshness-panel"
+        role="tabpanel"
+        aria-labelledby={`nextjs-freshness-tab-${mode}`}
+        aria-live="polite"
+        tabIndex={0}
+        className={styles.dualPanel}
+      >
         <div className={styles.noteCard}>
           <div className={styles.noteLabel}>{copy.ui.freshnessContentUpdate}</div>
           <p>{current.freshness}</p>

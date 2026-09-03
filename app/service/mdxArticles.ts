@@ -162,10 +162,12 @@ export async function getMdxArticle(slug: string, locale?: string) {
   }
 
   const rawContent = await readArticleFile(matchedRecord)
-  const parser = new BlogParser(rawContent)
-  const { header, htmlContent, headings } = await parser.getParserdContent()
   const { data } = matter(rawContent)
   const frontmatter = data as Frontmatter
+  const parser = new BlogParser(rawContent)
+  const { header, htmlContent, headings } = await parser.getParserdContent(
+    frontmatter.locale ?? matchedRecord.locale,
+  )
   const normalized = normalizeArticleRecord(matchedRecord, frontmatter)
 
   return {

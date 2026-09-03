@@ -13,6 +13,19 @@ const languageAliasMap: Record<string, string> = {
   md: "markdown",
 }
 
+const CODE_COPY_LABELS = {
+  zh: {
+    copy: "复制代码",
+    visibleCopy: "copy",
+    error: "复制失败",
+  },
+  en: {
+    copy: "Copy code",
+    visibleCopy: "copy",
+    error: "Copy failed",
+  },
+} as const
+
 function escapeHtml(value: string) {
   return value
     .replaceAll("&", "&amp;")
@@ -61,9 +74,14 @@ async function getArticleCodeHighlighter() {
   })
 }
 
-export async function renderArticleCodeBlock(code: string, info: string) {
+export async function renderArticleCodeBlock(
+  code: string,
+  info: string,
+  locale: string = "zh",
+) {
   const highlighter = await getArticleCodeHighlighter()
   const { language, title } = extractFenceMetadata(info)
+  const labels = locale.startsWith("en") ? CODE_COPY_LABELS.en : CODE_COPY_LABELS.zh
 
   await highlighter.loadLanguage(language as any)
 
@@ -89,7 +107,7 @@ export async function renderArticleCodeBlock(code: string, info: string) {
     `<div class="article-code-shell" data-language="${escapeHtml(language)}" data-line-count="${lineCount}"${
       title ? ` data-title="${escapeHtml(title)}"` : ""
     }>`,
-    `<button class="article-code-copy" data-code="${escapeHtml(code)}" onclick="navigator.clipboard.writeText(this.dataset.code).then(()=>{this.classList.add('is-copied');setTimeout(()=>this.classList.remove('is-copied'),1500)})" aria-label="复制代码">copy</button>`,
+    `<button type="button" class="article-code-copy" data-code="${escapeHtml(code)}" data-copy-label="${escapeHtml(labels.copy)}" data-copy-error-label="${escapeHtml(labels.error)}" aria-label="${escapeHtml(labels.copy)}">${escapeHtml(labels.visibleCopy)}</button>`,
     highlightedHtml,
     "</div>",
   ].join("")

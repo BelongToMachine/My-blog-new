@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useId, useState } from "react"
 import { Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 import { useTranslations } from "next-intl"
 import { BREAKPOINTS, isTabletViewport } from "@/app/lib/responsive"
@@ -147,6 +147,7 @@ const ChartInner = ({
   typography = "retro",
 }: Props) => {
   const t = useTranslations("home")
+  const chartId = useId().replace(/:/g, "")
   const [viewportWidth, setViewportWidth] = useState(() =>
     typeof window === "undefined" ? BREAKPOINTS.desktop : window.innerWidth
   )
@@ -169,9 +170,9 @@ const ChartInner = ({
 
   const chartHeight = isMobileViewport ? 228 : isTabletOnlyViewport ? 280 : 300
   const barSize = isMobileViewport ? 30 : isTabletOnlyViewport ? 38 : 48
-  const xTickFontSize = isMobileViewport ? 8 : isTabletOnlyViewport ? 10 : 11
+  const xTickFontSize = isMobileViewport ? 10 : isTabletOnlyViewport ? 10 : 11
   const xTickDy = isMobileViewport ? 12 : 16
-  const yTickFontSize = isMobileViewport ? 9 : 11
+  const yTickFontSize = isMobileViewport ? 10 : 11
   const yTickDx = isMobileViewport ? -6 : -10
   const yAxisWidth = isMobileViewport ? 24 : 32
   const chartMargin = isMobileViewport
@@ -196,8 +197,18 @@ const ChartInner = ({
   ]
 
   return (
-    <div className="pixel-panel !shadow-none panel-grid flex min-w-0 flex-1 flex-col overflow-hidden border border-border/80 bg-card/88 p-3 sm:p-4 md:p-5">
-      <div className="pixel-chart flex h-full w-full items-center justify-center">
+    <figure
+      className="pixel-panel !shadow-none panel-grid flex min-w-0 flex-1 flex-col overflow-hidden border border-border/80 bg-card/88 p-3 sm:p-4 md:p-5"
+      aria-labelledby={`${chartId}-label`}
+      aria-describedby={`${chartId}-summary`}
+    >
+      <figcaption id={`${chartId}-label`} className="sr-only">
+        {t("chartLabel")}
+      </figcaption>
+      <p id={`${chartId}-summary`} className="sr-only">
+        {t("chartSummary", { open, inProgress, closed })}
+      </p>
+      <div className="pixel-chart flex h-full w-full items-center justify-center" aria-hidden="true">
         <ResponsiveContainer width="100%" height={chartHeight}>
           <BarChart
             data={data}
@@ -258,7 +269,7 @@ const ChartInner = ({
           </BarChart>
         </ResponsiveContainer>
       </div>
-    </div>
+    </figure>
   )
 }
 

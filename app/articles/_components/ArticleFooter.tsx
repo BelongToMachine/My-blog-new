@@ -22,7 +22,7 @@ interface ArticleFooterProps {
 
 const ArticleFooter = ({
   initialLikes = 0,
-  label = "ARTICLE REACTION",
+  label,
   fullWidth = false,
   compact = false,
   showHeader = true,
@@ -30,6 +30,14 @@ const ArticleFooter = ({
 }: ArticleFooterProps) => {
   const t = useTranslations("article")
   const [likes, setLikes] = useState(initialLikes)
+  const [likeAnnouncement, setLikeAnnouncement] = useState("")
+  const reactionLabel = label ?? t("reactionLabel")
+
+  const handleLike = () => {
+    const nextLikes = likes + 1
+    setLikes(nextLikes)
+    setLikeAnnouncement(t("likeStatus", { count: nextLikes }))
+  }
 
   return (
     <div
@@ -42,7 +50,7 @@ const ArticleFooter = ({
       {showHeader ? (
         <div className="mb-8 flex items-center gap-3">
           <div className="h-px flex-1 bg-border/50" />
-          <span className="terminal-label">{label}</span>
+          <span className="terminal-label">{reactionLabel}</span>
           <div className="h-px flex-1 bg-border/50" />
         </div>
       ) : null}
@@ -62,9 +70,10 @@ const ArticleFooter = ({
               styles.reactionCtaButton,
               styles.likeButton,
             )}
-            onClick={() => setLikes((v) => v + 1)}
+            onClick={handleLike}
+            aria-label={t("likeButton", { count: likes })}
           >
-            LIKES ({likes})
+            {t("likeButton", { count: likes })}
           </RoundedButton>
         ) : (
           <Button
@@ -78,9 +87,10 @@ const ArticleFooter = ({
               styles.reactionCtaButton,
               styles.likeButton,
             )}
-            onClick={() => setLikes((v) => v + 1)}
+            onClick={handleLike}
+            aria-label={t("likeButton", { count: likes })}
           >
-            LIKES ({likes})
+            {t("likeButton", { count: likes })}
           </Button>
         )}
 
@@ -99,8 +109,9 @@ const ArticleFooter = ({
                   styles.reactionCtaButton,
                   styles.dislikeButton,
                 )}
+                aria-label={t("dislikeButton")}
               >
-                DISLIKE
+                {t("dislikeButton")}
               </RoundedButton>
             ) : (
               <Button
@@ -114,14 +125,16 @@ const ArticleFooter = ({
                   styles.reactionCtaButton,
                   styles.dislikeButton,
                 )}
+                aria-label={t("dislikeButton")}
               >
-                DISLIKE
+                {t("dislikeButton")}
               </Button>
             )}
           </Wind>
           <Image
             src={fan}
-            alt="a fan"
+            alt=""
+            aria-hidden="true"
             height={130}
             width={130}
             className={`pixelated ${styles.fanImage}`}
@@ -129,7 +142,11 @@ const ArticleFooter = ({
         </div>
       </div>
 
-      <p className="mt-4 max-w-[60ch] text-pretty text-center text-[15px] leading-7 text-foreground/82 md:text-base md:leading-8">
+      <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        {likeAnnouncement}
+      </p>
+
+      <p className="mt-4 max-w-[60ch] text-pretty text-center text-[15px] leading-7 text-foreground md:text-base md:leading-8">
         {t("fanDescription")}
       </p>
     </div>
