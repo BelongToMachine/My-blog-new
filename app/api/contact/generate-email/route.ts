@@ -1,6 +1,11 @@
+import { randomUUID } from "crypto"
 import { generateText } from "ai"
 import { getModel } from "@/lib/ai/providers"
 import { z } from "zod"
+import {
+  checkContactRateLimit,
+  rateLimitHeaders,
+} from "@/lib/ai/rate-limit.server"
 
 export const maxDuration = 30
 export const dynamic = "force-dynamic"
@@ -52,6 +57,30 @@ Guidelines:
 - Sign off with the sender's name if provided.`
 }
 
+function rateLimitResponse(
+  result: Awaited<ReturnType<typeof checkContactRateLimit>>,
+) {
+  const retryAfter = Math.max(
+    1,
+    Math.ceil((result.resetAt - Date.now()) / 1000),
+  )
+
+  return Response.json(
+    {
+      error: result.unavailable
+        ? "Email generation is temporarily unavailable. Please try again later."
+        : "Too many email generation requests. Please wait a few minutes.",
+    },
+    {
+      status: result.unavailable ? 503 : 429,
+      headers: {
+        ...rateLimitHeaders(result),
+        "Retry-After": String(retryAfter),
+      },
+    },
+  )
+}
+
 export async function POST(request: Request) {
   let body: unknown
   try {
@@ -67,6 +96,13 @@ export async function POST(request: Request) {
       { status: 400 },
     )
   }
+
+  const limitResult = await checkContactRateLimit(request, "generate-email")
+  if (!limitResult.allowed) {
+    return rateLimitResponse(limitResult)
+  }
+
+  const requestId = randomUUID()
 
   try {
     const model = getModel()
@@ -93,10 +129,13 @@ export async function POST(request: Request) {
 
     return Response.json({ subject: email.subject, body: email.body })
   } catch (error) {
-    console.error("[generate-email] error:", error)
+    console.error("[generate-email] error", { requestId, error })
     return Response.json(
-      { error: "Failed to generate email. Please try again." },
-      { status: 500 },
+      {
+        error: "Failed to generate email. Please try again later.",
+        requestId,
+      },
+      { status: 503 },
     )
   }
 }

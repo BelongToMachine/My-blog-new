@@ -1,57 +1,86 @@
+import { randomUUID } from "crypto"
 import { Resend } from "resend"
 import { z } from "zod"
+import {
+  checkContactRateLimit,
+  rateLimitHeaders,
+} from "@/lib/ai/rate-limit.server"
 
 export const dynamic = "force-dynamic"
 
+const headerText = (max: number) =>
+  z
+    .string()
+    .min(1)
+    .max(max)
+    .refine((value) => !/[\r\n]/.test(value), "Line breaks are not allowed")
+
 const requestSchema = z.object({
-  fromName: z.string().min(1).max(100),
-  fromEmail: z.string().email().max(200),
-  subject: z.string().min(1).max(200),
+  fromName: headerText(100),
+  fromEmail: z.string().email().max(200).optional(),
+  subject: headerText(200),
   message: z.string().min(1).max(5000),
 })
 
-function getResend(): Resend {
-  const apiKey = process.env.RESEND_API_KEY
-  if (!apiKey) throw new Error("RESEND_API_KEY is not configured")
+function getResend(): Resend | null {
+  const apiKey = process.env.RESEND_API_KEY?.trim()
+  if (!apiKey) return null
   return new Resend(apiKey)
 }
 
-// Simple in-memory rate limiter (per IP, 3 requests per 10 minutes)
-const rateMap = new Map<string, { count: number; resetAt: number }>()
-
-function checkRateLimit(ip: string): boolean {
-  const now = Date.now()
-  const entry = rateMap.get(ip)
-
-  if (!entry || now > entry.resetAt) {
-    rateMap.set(ip, { count: 1, resetAt: now + 10 * 60 * 1000 })
-    return true
+function getContactFromEmail(): string | null {
+  const configured = process.env.CONTACT_FROM_EMAIL?.trim()
+  if (configured && z.string().email().safeParse(configured).success) {
+    return configured
   }
 
-  if (entry.count >= 3) return false
+  // The shared resend.dev sender is useful for local testing only. Resend
+  // restricts it to the account owner and it cannot be used for production
+  // recipients without a verified domain.
+  if (process.env.NODE_ENV !== "production") {
+    return "onboarding@resend.dev"
+  }
 
-  entry.count++
-  return true
+  return null
 }
 
-// Clean up stale entries periodically
-setInterval(() => {
-  const now = Date.now()
-  rateMap.forEach((val, key) => {
-    if (now > val.resetAt) rateMap.delete(key)
-  })
-}, 60_000).unref()
-
-export async function POST(request: Request) {
-  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown"
-
-  if (!checkRateLimit(ip)) {
-    return Response.json(
-      { error: "Too many requests. Please wait a few minutes." },
-      { status: 429 },
-    )
+function getErrorDetails(error: unknown) {
+  if (!error || typeof error !== "object") {
+    return { message: String(error) }
   }
 
+  const value = error as Record<string, unknown>
+  return {
+    name: typeof value.name === "string" ? value.name : undefined,
+    message: typeof value.message === "string" ? value.message : undefined,
+    code: typeof value.code === "string" ? value.code : undefined,
+    statusCode:
+      typeof value.statusCode === "number" ? value.statusCode : undefined,
+  }
+}
+
+function rateLimitResponse(
+  result: Awaited<ReturnType<typeof checkContactRateLimit>>,
+) {
+  const retryAfter = Math.max(1, Math.ceil((result.resetAt - Date.now()) / 1000))
+
+  return Response.json(
+    {
+      error: result.unavailable
+        ? "Email service is temporarily unavailable. Please try again later."
+        : "Too many email requests. Please wait a few minutes.",
+    },
+    {
+      status: result.unavailable ? 503 : 429,
+      headers: {
+        ...rateLimitHeaders(result),
+        "Retry-After": String(retryAfter),
+      },
+    },
+  )
+}
+
+export async function POST(request: Request) {
   let body: unknown
   try {
     body = await request.json()
@@ -61,36 +90,92 @@ export async function POST(request: Request) {
 
   const parsed = requestSchema.safeParse(body)
   if (!parsed.success) {
-    return Response.json({ error: parsed.error.flatten().fieldErrors }, { status: 400 })
+    return Response.json(
+      { error: parsed.error.flatten().fieldErrors },
+      { status: 400 },
+    )
   }
 
-  const { fromName, fromEmail, subject, message } = parsed.data
-  const recipientEmail = process.env.CONTACT_RECIPIENT_EMAIL
-
-  if (!recipientEmail) {
-    console.error("[contact/send] CONTACT_RECIPIENT_EMAIL is not configured")
-    return Response.json({ error: "Server misconfiguration." }, { status: 500 })
+  const limitResult = await checkContactRateLimit(request, "send-email")
+  if (!limitResult.allowed) {
+    return rateLimitResponse(limitResult)
   }
+
+  const configuredRecipient = process.env.CONTACT_RECIPIENT_EMAIL?.trim()
+  const recipientEmail =
+    configuredRecipient &&
+    z.string().email().safeParse(configuredRecipient).success
+      ? configuredRecipient
+      : null
+  const fromEmail = getContactFromEmail()
+  const resend = getResend()
+
+  if (!recipientEmail || !fromEmail || !resend) {
+    console.error("[contact/send] missing email configuration", {
+      hasRecipient: Boolean(recipientEmail),
+      hasFrom: Boolean(fromEmail),
+      hasApiKey: Boolean(process.env.RESEND_API_KEY),
+      nodeEnv: process.env.NODE_ENV,
+    })
+    return Response.json(
+      { error: "Email service is not configured. Please try again later." },
+      { status: 503 },
+    )
+  }
+
+  const requestId = randomUUID()
+  const suppliedIdempotencyKey = request.headers
+    .get("idempotency-key")
+    ?.trim()
+  const idempotencyKey =
+    suppliedIdempotencyKey &&
+    suppliedIdempotencyKey.length <= 256 &&
+    !/[\r\n]/.test(suppliedIdempotencyKey)
+      ? suppliedIdempotencyKey
+      : requestId
 
   try {
-    const resend = getResend()
-
-    const { error } = await resend.emails.send({
-      from: `${fromName} via Portfolio <onboarding@resend.dev>`,
-      to: [recipientEmail],
-      replyTo: fromEmail,
-      subject: `[Portfolio Contact] ${subject}`,
-      text: `${message}\n\n---\nFrom: ${fromName} (${fromEmail})`,
-    })
+    const { data, error } = await resend.emails.send(
+      {
+        from: `Jie's Portfolio <${fromEmail}>`,
+        to: [recipientEmail],
+        ...(parsed.data.fromEmail
+          ? { replyTo: parsed.data.fromEmail }
+          : {}),
+        subject: `[Portfolio Contact] ${parsed.data.subject}`,
+        text: `${parsed.data.message}\n\n---\nFrom: ${parsed.data.fromName}${
+          parsed.data.fromEmail ? ` (${parsed.data.fromEmail})` : ""
+        }`,
+      },
+      { idempotencyKey },
+    )
 
     if (error) {
-      console.error("[contact/send] Resend error:", error)
-      return Response.json({ error: "Failed to send email. Please try again." }, { status: 500 })
+      console.error("[contact/send] Resend error", {
+        requestId,
+        ...getErrorDetails(error),
+      })
+      return Response.json(
+        {
+          error: "Failed to send email. Please try again later.",
+          requestId,
+        },
+        { status: 502 },
+      )
     }
 
-    return Response.json({ success: true })
+    return Response.json({ success: true, id: data?.id })
   } catch (error) {
-    console.error("[contact/send] error:", error)
-    return Response.json({ error: "Failed to send email. Please try again." }, { status: 500 })
+    console.error("[contact/send] unexpected error", {
+      requestId,
+      ...getErrorDetails(error),
+    })
+    return Response.json(
+      {
+        error: "Failed to send email. Please try again later.",
+        requestId,
+      },
+      { status: 502 },
+    )
   }
 }

@@ -146,6 +146,8 @@ export default function ContactForm() {
 
       const data = await res.json().catch(() => ({}))
       if (!res.ok) {
+        if (res.status === 429) throw new Error(t("rateLimitError"))
+        if (res.status >= 500) throw new Error(t("serviceUnavailableError"))
         throw new Error(
           typeof data.error === "string" ? data.error : t("generateError"),
         )
@@ -192,10 +194,14 @@ export default function ContactForm() {
     try {
       const res = await fetch("/api/contact/send", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Idempotency-Key": crypto.randomUUID(),
+        },
         body: JSON.stringify({
-          fromName: name.trim() || userEmail.split("@")[0],
-          fromEmail: userEmail.trim(),
+          fromName:
+            name.trim() || userEmail.trim().split("@")[0] || "Website visitor",
+          fromEmail: userEmail.trim() || undefined,
           subject: editedSubject.trim(),
           message: editedBody.trim(),
         }),
@@ -203,6 +209,8 @@ export default function ContactForm() {
 
       const data = await res.json().catch(() => ({}))
       if (!res.ok) {
+        if (res.status === 429) throw new Error(t("rateLimitError"))
+        if (res.status >= 500) throw new Error(t("serviceUnavailableError"))
         throw new Error(
           typeof data.error === "string" ? data.error : t("emailError"),
         )
@@ -286,6 +294,7 @@ export default function ContactForm() {
                   label={t("nameLabel")}
                   icon={<User className="h-4 w-4" aria-hidden="true" />}
                   required
+                  requiredLabel={t("requiredLabel")}
                   error={
                     hasAttemptedGenerate && !name.trim()
                       ? t("nameRequired")
@@ -307,6 +316,7 @@ export default function ContactForm() {
                         : undefined
                     }
                     placeholder={t("namePlaceholder")}
+                    maxLength={100}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                   />
@@ -315,12 +325,14 @@ export default function ContactForm() {
                   htmlFor="contact-company"
                   label={t("companyLabel")}
                   icon={<Building2 className="h-4 w-4" aria-hidden="true" />}
+                  optionalLabel={t("optionalLabel")}
                 >
                   <Input
                     id="contact-company"
                     name="company"
                     autoComplete="organization"
                     placeholder={t("companyPlaceholder")}
+                    maxLength={100}
                     value={company}
                     onChange={(e) => setCompany(e.target.value)}
                   />
@@ -330,6 +342,7 @@ export default function ContactForm() {
                   label={t("emailLabel")}
                   icon={<Mail className="h-4 w-4" aria-hidden="true" />}
                   required
+                  requiredLabel={t("requiredLabel")}
                   error={emailError}
                   errorId="contact-email-error"
                 >
@@ -342,6 +355,7 @@ export default function ContactForm() {
                     required
                     aria-required="true"
                     placeholder={t("emailPlaceholder")}
+                    maxLength={200}
                     value={userEmail}
                     onChange={(e) => setUserEmail(e.target.value)}
                     onBlur={() => setHasBlurredEmail(true)}
@@ -360,11 +374,13 @@ export default function ContactForm() {
                   htmlFor="contact-business"
                   label={t("businessLabel")}
                   icon={<Briefcase className="h-4 w-4" aria-hidden="true" />}
+                  optionalLabel={t("optionalLabel")}
                 >
                   <Input
                     id="contact-business"
                     name="business"
                     placeholder={t("businessPlaceholder")}
+                    maxLength={200}
                     value={business}
                     onChange={(e) => setBusiness(e.target.value)}
                   />
@@ -397,6 +413,7 @@ export default function ContactForm() {
                   <span aria-hidden="true" className="ml-1 text-danger">
                     *
                   </span>
+                  <span className="sr-only">{t("requiredLabel")}</span>
                 </label>
                 <Textarea
                   ref={promptRef}
@@ -412,6 +429,7 @@ export default function ContactForm() {
                   }
                   className={`min-h-[100px] ${hasAttemptedGenerate && !customPrompt.trim() ? "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/40" : ""}`}
                   placeholder={t("customPromptPlaceholder")}
+                  maxLength={500}
                   value={customPrompt}
                   onChange={(e) => setCustomPrompt(e.target.value)}
                 />
@@ -491,6 +509,7 @@ export default function ContactForm() {
                         <span aria-hidden="true" className="ml-1 text-danger">
                           *
                         </span>
+                        <span className="sr-only">{t("requiredLabel")}</span>
                       </label>
                       <Input
                         ref={subjectRef}
@@ -505,6 +524,7 @@ export default function ContactForm() {
                             : undefined
                         }
                         value={editedSubject}
+                        maxLength={200}
                         onChange={(e) => setEditedSubject(e.target.value)}
                       />
                       {hasAttemptedSend && !editedSubject.trim() ? (
@@ -526,6 +546,7 @@ export default function ContactForm() {
                         <span aria-hidden="true" className="ml-1 text-danger">
                           *
                         </span>
+                        <span className="sr-only">{t("requiredLabel")}</span>
                       </label>
                       <Textarea
                         ref={bodyRef}
@@ -540,6 +561,7 @@ export default function ContactForm() {
                             : undefined
                         }
                         className="min-h-[260px]"
+                        maxLength={5000}
                         value={editedBody}
                         onChange={(e) => setEditedBody(e.target.value)}
                       />
@@ -610,6 +632,8 @@ function InputWithIcon({
   htmlFor,
   label,
   required = false,
+  requiredLabel,
+  optionalLabel,
   error,
   errorId,
   children,
@@ -618,6 +642,8 @@ function InputWithIcon({
   htmlFor: string
   label: string
   required?: boolean
+  requiredLabel?: string
+  optionalLabel?: string
   error?: string
   errorId?: string
   children: React.ReactNode
@@ -626,12 +652,19 @@ function InputWithIcon({
     <div className="space-y-1.5">
       <label
         htmlFor={htmlFor}
-        className="block text-xs font-medium text-muted-foreground"
+        className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground"
       >
-        {label}
+        <span>{label}</span>
         {required ? (
-          <span aria-hidden="true" className="ml-1 text-danger">
-            *
+          <>
+            <span aria-hidden="true" className="text-primary">
+              *
+            </span>
+            <span className="sr-only">{requiredLabel}</span>
+          </>
+        ) : optionalLabel ? (
+          <span className="text-[10px] uppercase tracking-[0.1em] text-muted-foreground/70">
+            {optionalLabel}
           </span>
         ) : null}
       </label>
@@ -644,7 +677,7 @@ function InputWithIcon({
         </div>
       </div>
       {error ? (
-        <p id={errorId} className="text-xs text-danger" role="alert">
+        <p id={errorId ?? `${htmlFor}-error`} className="text-xs text-danger" role="alert">
           {error}
         </p>
       ) : null}
