@@ -8,6 +8,7 @@
     "build": "if [ -n \"$VERCEL\" ]; then [ -d private-blog-content ] || git clone --depth 1 \"https://x-access-token:${GITHUB_TOKEN}@github.com/BelongToMachine/Private-Blog-Content.git\" private-blog-content; fi && next build",
     "start": "next start",
     "lint": "next lint",
+    "test:a11y": "playwright test -c playwright.a11y.config.ts",
     "prisma:generate": "prisma generate",
     "postinstall": "prisma generate"
   },
@@ -87,6 +88,7 @@
     "zustand": "^5.0.2"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@pigment-css/nextjs-plugin": "^0.0.30",
     "@playwright/test": "^1.59.1",
     "@tailwindcss/typography": "^0.5.10",
